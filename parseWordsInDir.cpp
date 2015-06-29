@@ -137,9 +137,11 @@ int main(int argc, char* argv[]){
 		pthread_join(thread[i],NULL);
 
 	uint64_t checkVal = 0;
+	pthread_mutex_lock(&mut_freq);
 	for (map<string,uint64_t>::iterator it = global_freq.begin() ; it != global_freq.end(); it++){
 		cout << it->first << " - " << it->second / (1.0 * totalwords) << endl;
 	}
+	pthread_mutex_unlock(&mut_freq);
 
 	//approx of wall time = total time of each thread on each core / numthreads
 	cout << "runtime: " << stopChrono() / NUMTHREADS << endl;
