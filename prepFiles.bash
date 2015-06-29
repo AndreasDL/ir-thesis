@@ -1,11 +1,15 @@
+if [ ! -d "/home/drew/done/megaTest" ]; then
+	exit;
+fi
+
 cd /home/drew/done/megaTest;
 
 # extract all
-find -iname "*.epub" -exec 7z x {} -aoa > /dev/null 2>&1\;
+find -iname "*.epub" -exec 7z x {} -aoa \;
 
 # cleanup other files than .xhtml
 mkdir /tmp/files;
-mv "*.xhtml" /tmp/files \;
+mv *.xhtml /tmp/files;
 rm -rvf *;
 mv /tmp/files/* .;
 rmdir /tmp/files;
