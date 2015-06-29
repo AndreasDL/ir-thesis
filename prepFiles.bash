@@ -17,4 +17,3 @@ find -iname '*.xhtml' -exec sed -i -e 's/<[^>]*>//g' {} \;
 find -iname '*.xhtml' -exec sed -i -e 's/[^a-zA-Z0-9 ]//g' {} \;
 
 cd -;
-./a.out freqs.txt;

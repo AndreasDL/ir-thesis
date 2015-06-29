@@ -14,7 +14,7 @@ Opens a directory and constructs a frequency map of all words in all files in th
 Multithreaded
 */
 
-const int NUMTHREADS = 1250;
+const int NUMTHREADS = 25;
 //thr   time    check   freqS
 //1   = 9.70839 4794910 116349
 //2   = 5.81199 4794910 116349
