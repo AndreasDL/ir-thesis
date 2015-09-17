@@ -24,3 +24,4 @@ lessen/
 *.mtc1
 *.out
 *.synctex.gz
+*.tex.bak
