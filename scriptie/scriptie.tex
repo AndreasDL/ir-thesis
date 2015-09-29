@@ -17,6 +17,7 @@
 \usepackage[latin1]{inputenc}           % Om niet ascii karakters rechtstreeks te kunnen typen
 \usepackage{fancyhdr}
 \usepackage{hyperref}
+\usepackage{float}
 
 \usepackage{nomencl}
 \makenomenclature
@@ -61,15 +62,36 @@
   \renewcommand{\footrulewidth}{0pt}
 }
 
-% anderhalve interlinie (opm: titelblad gaat uit van 1.5)
-\renewcommand{\baselinestretch}{1.5}
-
 \setlength{\parindent}{0cm}             % Inspringen van eerste lijn van paragrafen is niet gewenst
 
 % Vandaar dat we expliciet aangeven wanneer we wensen dat een nieuwe paragraaf begint:
 % \par zorgt ervoor dat er een nieuwe paragraaf begint en
 % \vspace zorgt voor vertikale ruimte.
 \newcommand{\npar}{\par \vspace{2.3ex plus 0.3ex minus 0.3ex}}
+
+\makeatletter
+\renewcommand{\@chapapp}{}% Not necessary...
+\newenvironment{chapquote}[2][2em]
+  {\setlength{\@tempdima}{#1}%
+   \def\chapquote@author{#2}%
+   \parshape 1 \@tempdima \dimexpr\textwidth-2\@tempdima\relax%
+   \itshape}
+  {\par\normalfont\hfill--\ \chapquote@author\hspace*{\@tempdima}\par\bigskip}
+\makeatother
+
+% Nieuw commando om figuren in te voegen. Gebruik:
+% \mijnfiguur[H]{width=5cm}{bestandsnaam}{Het bijschrift bij deze figuur}
+\newcommand{\mijnfiguur}[4][H]{            % Het eerste argument is standaar `ht'. op H zetten voor HIER EN NERGENS ANDERS
+    \begin{figure}[#1]                      % Beginnen van de figure omgeving
+        \begin{center}                      % Beginnen van de center omgeving
+            \includegraphics[#2]{#3}        % Het eigenlijk invoegen van de figuur (2: opties, 3: bestandsnaam)
+            \caption{#4\label{#3}}          % Het bijschrift (argument 4) en het label (argument 3)
+        \end{center}
+    \end{figure}
+    }
+
+\graphicspath{{fig/}}               % De plaars waar latex zijn figuren gaat halen.
+
 
 % PDF specifieke opties, niet strict noodzakelijk voor een thesis.
 % Is hetgeen verschijnt wanneer je in acroread de documentproperties bekijkt.

@@ -1,15 +1,75 @@
 \chapter{Introduction}
 
-%BCI
-hier staan een referentie \cite{einstein}. \\
+\begin{chapquote}{R.W. Picard, J. Klein\cite{CompRecognizeEmotion}}
+Bad feelings do not necessarily cause bad things to happen: mild irritations that simmer and create distress or frustration, then boil into anger, can serve as impetus to find a better way.
+\end{chapquote}
 
-En hier staan een afkorting (Federation 4 FIRE)\nomenclature{FED4FIRE}{Federation 4 FIRE}
+\section{The role of emotions}
+Emotions play a major role in non-verbal communication, are quite complex and essential to understand human behavior. Literature claims that the ability to recognize emotions will improve the ability of computers to understand human interaction\cite{CompRecognizeEmotion}. It is safe to say that the need for computer applications to detect the emotional state is ever growing. 
 
-%EEG based emotion recognition
+\npar
 
-%how emotion recognition works
+But how does one define emotion ? In psychology a clear distinction is made between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. The expression consists of many parts, including the facial expression, body language and voice concern. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance, pupil dilation, is much harder to control. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion.
+
+\section{The arousal - valence classification}
+A common model to classify emotions is the arousal-valence model\cite{ExtendedPaper}\cite{RealTimeEEGEmotion}. The arousal-valence model consists of two or three dimensions: 
+\begin{enumerate}
+\item \textbf{Valence:} whether or not the emotion is perceived as positive or negative.
+\item \textbf{Arousal:} measures how excited or calm a person is.
+\item \textbf{Dominance:} how strong an emotion is, this dimension is often neglected.
+\end{enumerate}
+Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. The main advantage of this model is that it models all discrete emotions in its space, even when no particular label can be used to define the current feeling. 
+
+\mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.}
+
+\section{Brain activity measurement}
+
+\subsection{Electroencephalography}
+Different technologies exist to analyse the brain, the most convenient method is via Electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery; they simply measure electrical activity of the brain using electrodes placed on the scalp. This data is then recorded as an EEG from which noise and artifacts have to be removed. The result is used to train a classifier. 
+
+\npar
+
+Signals originating from the cortex, close to the skull, are most visible. Signals originating deeper in the brain are cannot be observed directly. Even for signals originating from the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Still EEG data can provide significant insight into electrical activity of the cortex.
+
+\subsection{Origin of the signals}
+
+The electrical activity in a brain is caused when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighboring neurons. It is this activity that is measured by the surface electrodes.
+
+\npar
+
+Brain waves are usually divided in 5 bands\cite{EmotionRelativePower}.
+\begin{enumerate}
+\item \textbf{Alpha:} 8-13Hz
+\item \textbf{Beta:} 13-30HZ
+\item \textbf{Gamma:} 30-50Hz
+\item \textbf{Delta:} 0-4hz
+\item \textbf{theta:} 4-8Hz
+\end{enumerate}
+The delta band is often polluted with noise from pulses, neck movement and eye blinking and therefore neglected. 
 
 
-% P300 speller
+\section{Electrode positioning}
+To ensure that experiments are replicable, standards for locations of electrodes have been developed. One of these systems is the 10/20 system, an internationally recognized methods to describe location of scalp electrodes\cite{TenTwentyManual}. The numbers 10 and 20 refer to the distances between the electrodes, which are either 10\% or 20\% of the total front-back or left-right distance of the skull.
 
-% combining them
+\subsection{Positions}
+Each site is identified with a letter that determines the lobe and hemisphere location.
+\begin{itemize}
+\item \textbf{F:} Frontal
+\item \textbf{T:} Temporal
+\item \textbf{C:} Central
+\item \textbf{P:} Parietal
+\item \textbf{O:} Occipital
+\end{itemize}
+Note that no central lobe exists, the C letter is only used for identification purposes. The letter z indicates that the electrode is placed on the central line. Even numbers are use for the right hemisphere, while odd numbers are used for the left hemisphere. A picture of the 10/20 system is added below for clarification.
+
+\mijnfiguur{width=0.9\textwidth}{1020ElectrodePlacementSystem}{The electrode placement system\cite{1020Site}.}
+
+\subsection{Monopoles and dipoles}
+Two different types of EEG channels exist, monopolar and dipolar. A monopolar channel records the potential difference of a signal, compared to a neutral electrode, usually connected to an ear lobe of mastoid. A bipolar channel is obtained by subtracting two monopolar EEG signals, which improves SNR by removing shared artifacts\cite{MonoBiPolar}. 
+
+
+
+%emotion and EEG data
+
+
+ 
