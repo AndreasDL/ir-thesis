@@ -10,6 +10,19 @@
 \documentclass[11pt,a4paper,oneside,notitlepage]{book}
 \usepackage[english]{babel}
 \usepackage{a4wide}                     % Iets meer tekst op een bladzijde
+\usepackage{pdfpages}					% Pdf includeren
+\usepackage{subcaption}					% 2 figuren naast mekaar, met elk een caption
+\usepackage[bottom]{footmisc}			% footnotes forceren naar bottom
+\usepackage{graphicx}                   % Om figuren te kunnen verwerken
+\usepackage[latin1]{inputenc}           % Om niet ascii karakters rechtstreeks te kunnen typen
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+
+\usepackage{nomencl}
+\makenomenclature
+
+\usepackage[nottoc]{tocbibind}
+\usepackage[numbers]{natbib}
 
 % marges aanpassen
 % (opmerking: moet *voor* inclusie van fancyhdr package komen)
@@ -23,10 +36,6 @@
 \setlength{\textwidth}{16cm}
 \setlength{\textheight}{23.3cm}
 \setlength{\footskip}{1.5cm}
-
-\usepackage{fancyhdr}
-\usepackage{graphicx}
-% \usepackage[colorlinks]{hyperref}
 
 \pagestyle{fancy}
 
@@ -55,21 +64,30 @@
 % anderhalve interlinie (opm: titelblad gaat uit van 1.5)
 \renewcommand{\baselinestretch}{1.5}
 
-
+\setlength{\parindent}{0cm}             % Inspringen van eerste lijn van paragrafen is niet gewenst
 
 % Vandaar dat we expliciet aangeven wanneer we wensen dat een nieuwe paragraaf begint:
 % \par zorgt ervoor dat er een nieuwe paragraaf begint en
 % \vspace zorgt voor vertikale ruimte.
 \newcommand{\npar}{\par \vspace{2.3ex plus 0.3ex minus 0.3ex}}
 
+% PDF specifieke opties, niet strict noodzakelijk voor een thesis.
+% Is hetgeen verschijnt wanneer je in acroread de documentproperties bekijkt.
+\hypersetup{
+    pdfauthor = {Andreas De Lille},
+    pdftitle = {title},
+    pdfsubject = {research to emotion recognition using EEG data},
+    pdfkeywords = {EEG, Emotion recognition}
+}
+
 \begin{document}
 
 % titelblad (voor kaft)
-\include{titel}
+\include{titel} %moet nog via plato
 
 % lege pagina (!!)
 
-% titelblad (!!)
+% titelblad (!!) => via pdf van plato!
 
 % geen paginanummering tot we aan de inhoudsopgave komen
 \pagestyle{empty}
@@ -85,6 +103,14 @@
 
 % inhoudstafel
 \tableofcontents
+
+%afkortingen
+\printnomenclature.
+
+% eventueel: lijst van figuren en tabellen
+%\listoffigures
+%\listoftables
+
 
 % opmaak voor het eigenlijke boek; onderstaande lijnen
 % weglaten als de eerste regel van een nieuwe alinea moet
@@ -105,13 +131,13 @@
 % hier worden de appendices ingevoegd (\includes)
 
 
-\include{references}
+%\include{references}
 
 \backmatter
 
-% eventueel: lijst van figuren en tabellen
-%\listoffigures
-%\listoftables
+\bibliographystyle{plainnat}
+\bibliography{bibfile.bib}
+
 
 % lege pagina (!!)
 
