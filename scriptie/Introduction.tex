@@ -9,18 +9,7 @@ Emotions play a major role in non-verbal communication, are quite complex and es
 
 \npar
 
-But how does one define emotion ? In psychology a clear distinction is made between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. The expression consists of many parts, including the facial expression, body language and voice concern. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance, pupil dilation, is much harder to control. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion.
-
-\section{The arousal - valence classification}
-A common model to classify emotions is the arousal-valence model\cite{ExtendedPaper}\cite{RealTimeEEGEmotion}. The arousal-valence model consists of two or three dimensions: 
-\begin{enumerate}
-\item \textbf{Valence:} whether or not the emotion is perceived as positive or negative.
-\item \textbf{Arousal:} measures how excited or calm a person is.
-\item \textbf{Dominance:} how strong an emotion is, this dimension is often neglected.
-\end{enumerate}
-Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. The main advantage of this model is that it models all discrete emotions in its space, even when no particular label can be used to define the current feeling. 
-
-\mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.}
+But how does one define emotion ? In psychology a clear distinction is made between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. The expression consists of many parts, including the facial expression, body language and voice concern. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance, pupil dilation, is much harder to control. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion. One possibility for this is analysis of brain waves via Electroencephalography\cite{EEGDatasets}.
 
 \section{Brain activity measurement}
 
@@ -34,19 +23,6 @@ Signals originating from the cortex, close to the skull, are most visible. Signa
 \subsection{Origin of the signals}
 
 The electrical activity in a brain is caused when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighboring neurons. It is this activity that is measured by the surface electrodes.
-
-\npar
-
-Brain waves are usually divided in 5 bands\cite{EmotionRelativePower}.
-\begin{enumerate}
-\item \textbf{Alpha:} 8-13Hz
-\item \textbf{Beta:} 13-30HZ
-\item \textbf{Gamma:} 30-50Hz
-\item \textbf{Delta:} 0-4hz
-\item \textbf{theta:} 4-8Hz
-\end{enumerate}
-The delta band is often polluted with noise from pulses, neck movement and eye blinking and therefore neglected. 
-
 
 \section{Electrode positioning}
 To ensure that experiments are replicable, standards for locations of electrodes have been developed. One of these systems is the 10/20 system, an internationally recognized methods to describe location of scalp electrodes\cite{TenTwentyManual}. The numbers 10 and 20 refer to the distances between the electrodes, which are either 10\% or 20\% of the total front-back or left-right distance of the skull.
@@ -67,9 +43,65 @@ Note that no central lobe exists, the C letter is only used for identification p
 \subsection{Monopoles and dipoles}
 Two different types of EEG channels exist, monopolar and dipolar. A monopolar channel records the potential difference of a signal, compared to a neutral electrode, usually connected to an ear lobe of mastoid. A bipolar channel is obtained by subtracting two monopolar EEG signals, which improves SNR by removing shared artifacts\cite{MonoBiPolar}. 
 
+\section{Emotion and EEG data}
+
+\subsection{Arousal - valence (- dominance) classification}
+Before emotions can be recognized, a classification model is needed. A common model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper}\cite{RealTimeEEGEmotion}, that places emotions in a two dimensional space. The main advantage of using a multidimensional model, is that all discrete emotions are modelled in its space, even when no particular label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. Adding a third dimension, dominance, that indicate how strong the emotion is perceived is also possible\cite{EEGDatasets}. Note that this dimension is less important for the emotion classification.
+\begin{enumerate}
+\item \textbf{Valence:} whether or not the emotion is perceived as positive or negative.
+\item \textbf{Arousal:} measures how excited or calm a person is.
+\item \textbf{Dominance:} how strong the emotion is perceived.
+\end{enumerate}
+
+\mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.}
+
+\subsection{Determining arousal}
+Usually, brain waves are split into different bands, based on their frequency\cite{EmotionRelativePower}\cite{WavesSite}.
+\begin{enumerate}
+\item \textbf{Alpha:} 8-13Hz, indicate that the brain is relaxed and/or inactive.
+\item \textbf{Beta:} 13-30HZ, point to a more active and focused brain.
+\item \textbf{Gamma:} 30-50Hz, relate to simultaneous processing of information from different brain areas.
+\item \textbf{Delta:} 0-4hz, these waves are generated during dreamless sleep and meditation.
+\item \textbf{theta:} 4-8Hz, occur during dreaming
+\end{enumerate}
+For the emotion recognition, only alpha and beta bands are considered. The alpha bands corresponds with a relaxed state and are often connected to brain inactivity\cite{ExtendedPaper}\cite{RealTimeEEGEmotion}. Beta waves on the other hand are an indication that the brain is a more active state, which corresponds to a higher level of arousal. These two parameters are often combined into the beta/alpha ratio.
+
+\npar
+
+Since most muscle and eye artifacts are within the range of 1.2Hz and $>$30hz respectively and powerline cause artifacts around the 50Hz range, using only alpha and beta waves will already remove a lot of noise and artifact from the signal\cite{ExtendedPaper}.
+
+\subsection{Determining valence}
+The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion}\cite{EEGDatasets}. Note that individual difference might affect the location\cite{ExtendedPaper}.
+
+\npar
+
+Since high alpha rates correspond with an inactive brain and high beta waves with an active brain, one should look for an increase in beta activity and a decrease in alpha activity at one side. The other hemisphere should show an increase in alpha waves and a decrease of beta waves as indication that is becomes less active. Another possibility is to use the gamma band instead of the alpha band. 
+
+\subsection{Classifaction procedures}
+!!TODO!
+
+Fractal dimension %=> hichigu
+Higher order crossing
+Principal component analysis
+sliding window
+fishers
+etc
 
 
-%emotion and EEG data
+\subsection{Datasets}
+The center for the study of emotion and attention (CSEA)\nomenclature{CSEA}{Center for the Study of Emotion and Attention}, by the university of Florida made several datasets available:
+\begin{itemize}
+\item \textbf{IAPS:} International Affective Picture System\nomenclature{IAPS}{International Affective Picture System}\\
+This dataset consists of a large set op emotional stimuli in the form of color photographs.
+\item \textbf{IADS:} International Affective Digital Sounds \nomenclature{IADS}{International Affective Digital Sounds}\\
+This dataset consists of acoustic emotional stimuli designed for investigation and research of emotion and attention.
+\item \textbf{ANEW:} Affective Norms for English Words\nomenclature{ANEW}{Affective Norms for English Words}\\
+This dataset provides a set of emotional ratings for a large number of english words.
+\item \textbf{ANET:} Affective Norms for English Text\nomenclature{ANET}{Affective Norms for English Text}\\
+This set provides normative ratings of emotion for a large set of brief texts.
+\item \textbf{SAM:} Self-Assessment Manikin\nomenclature{SAM}{Self-Assessment Manikin}\\
+A non-verbal pictorial assessment technique that measures the pleasure, arousal and dominance associated with a person's affective reaction to a wide variety of stimuli.
+\end{itemize}
+All datasets are available for non-profit research at a degree-granting institution\cite{DataSets}. For this thesis, the first two datasets seem most important as they are used in many experiments regarding emotion detection\cite{ExtendedPaper}\cite{EmotionSite}\cite{RealTimeEEGEmotion}\cite{EEGDatasets}.
 
-
- 
+\section{The P300 speller}
