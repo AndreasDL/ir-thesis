@@ -25,3 +25,6 @@ lessen/
 *.out
 *.synctex.gz
 *.tex.bak
+*.bak
+*.nlo
+*.nls
