@@ -1,11 +1,11 @@
 \chapter{Introduction}
 
-\begin{chapquote}{R.W. Picard, J. Klein\cite{CompRecognizeEmotion}}
-Bad feelings do not necessarily cause bad things to happen: mild irritations that simmer and create distress or frustration, then boil into anger, can serve as impetus to find a better way.
-\end{chapquote}
+%\begin{chapquote}{R.W. Picard, J. Klein\cite{CompRecognizeEmotion}}
+%Bad feelings do not necessarily cause bad things to happen: mild irritations that simmer and create distress %or frustration, then boil into anger, can serve as impetus to find a better way.
+%\end{chapquote}
 
 \section{The role of emotions}
-Emotions play a major role in non-verbal communication, are quite complex and essential to understand human behavior. Literature claims that the ability to recognize emotions will improve the ability of computers to understand human interaction\cite{CompRecognizeEmotion}. It is safe to say that the need for computer applications to detect the emotional state is ever growing. 
+Emotions play a major role in non-verbal communication, are quite complex and essential to understand human behavior. Literature claims that the ability to recognize emotions will improve the ability of computers to understand human interaction\cite{CompRecognizeEmotion}. The need for computer applications to detect the emotional state is ever growing. 
 
 \npar
 
@@ -18,7 +18,7 @@ Different technologies exist to analyse the brain, the most convenient method is
 
 \npar
 
-Signals originating from the cortex, close to the skull, are most visible. Signals originating deeper in the brain are cannot be observed directly. Even for signals originating from the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Still EEG data can provide significant insight into electrical activity of the cortex.
+Signals originating from the cortex, close to the skull, are most visible. Signals originating deeper in the brain cannot be observed directly. Even for signals originating from the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Still EEG data can provide significant insight into electrical activity of the cortex.
 
 \subsection{Origin of the signals}
 
@@ -46,7 +46,7 @@ Two different types of EEG channels exist, monopolar and dipolar. A monopolar ch
 \section{Emotion and EEG data}
 
 \subsection{Arousal - valence (- dominance) classification}
-Before emotions can be recognized, a classification model is needed. A common model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper}\cite{RealTimeEEGEmotion}, that places emotions in a two dimensional space. The main advantage of using a multidimensional model, is that all discrete emotions are modelled in its space, even when no particular label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. Adding a third dimension, dominance, that indicate how strong the emotion is perceived is also possible\cite{EEGDatasets}. Note that this dimension is less important for the emotion classification.
+Before emotions can be recognized, a classification model is needed. A common model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper}\cite{RealTimeEEGEmotion}, that places emotions in a two dimensional space. The main advantage of using a multidimensional model, is that all discrete emotions are modeled in its space, even when no particular label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. Adding a third dimension, dominance, that indicate how strong the emotion is perceived is also possible\cite{EEGDatasets}. Note that this dimension is less important for the emotion classification.
 \begin{enumerate}
 \item \textbf{Valence:} whether or not the emotion is perceived as positive or negative.
 \item \textbf{Arousal:} measures how excited or calm a person is.
@@ -68,7 +68,7 @@ For the emotion recognition, only alpha and beta bands are considered. The alpha
 
 \npar
 
-Since most muscle and eye artifacts are within the range of 1.2Hz and $>$30hz respectively and powerline cause artifacts around the 50Hz range, using only alpha and beta waves will already remove a lot of noise and artifact from the signal\cite{ExtendedPaper}.
+Since most muscle and eye artifacts are within the range of 1.2Hz and $>$30hz respectively and power line cause artifacts around the 50Hz range, using only alpha and beta waves will already remove a lot of noise and artifact from the signal\cite{ExtendedPaper}.
 
 \subsection{Determining valence}
 The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion}\cite{EEGDatasets}. Note that individual difference might affect the location\cite{ExtendedPaper}.
@@ -105,3 +105,21 @@ A non-verbal pictorial assessment technique that measures the pleasure, arousal 
 All datasets are available for non-profit research at a degree-granting institution\cite{DataSets}. For this thesis, the first two datasets seem most important as they are used in many experiments regarding emotion detection\cite{ExtendedPaper}\cite{EmotionSite}\cite{RealTimeEEGEmotion}\cite{EEGDatasets}.
 
 \section{The P300 speller}
+The P300 speller uses a six by six grid of characters, each row and column is flashed in a random order while the subject silently counts the number of flashes of a certain character, as shown in figure \ref{P300Scheme}. This procedure, where a train of stimuli with some infrequent occurring target stimuli is applied, is called the oddball paradigm. The technique triggers an increase in potential difference in the EEG around the parietal lobe. This Event Related Potential (ERP)\nomenclature{ERP}{Event Related Potential} occurs +- 300 milliseconds after the stimuli is flashed and is called the P300 waveform\cite{ComparisonClassifications}. The presence or absence of the P300 waveform is used by the P300 speller to determine what character the subject was focusing on, which allows the subject to spell text. 
+
+\mijnfiguur{width=0.9\textwidth}{P300Scheme}{Different parts of the P300 speller, found at \cite{P300Scheme}.}
+
+To improve the spelling time many improvements and research has been done. Language models were developed that predicted the word achieved great speedups\cite{LangModel}, classifiers were compared and tested on both healthy\cite{ClassTechniqueComp} and unhealthy subjects\cite{ComparisonClassifications}. Since many unhealthy subjects might have an impaired vision or eye movement, tactile\cite{TactileP300} and auditory\cite{AuditoryP300} spellers have been developed. Additional information like error potentials has been used to detect spelling errors\cite{ErrorPotentials}. 
+
+\npar
+
+To improve accuracy common problems like, adjacency distraction and double flashes were avoided using new randomized paradigms\cite{PaperThibault}. Adjacency distraction occurs when a subject is distracted by a flash from a neighboring row or column. Double flash errors occur when the target row and column are flashed close after each other, which causes the P300 wave to have a lower amplitude. Both problems deform the P300 wave, making it harder to detect. Other paradigms like the T9 interface P300 speller have also been developed\cite{P300T9}.
+
+\npar
+
+All the problems above are more technology related, other more subject related factors also influence the P300 ERP wave. A recent study showed that amount of sleep a subject had the night before a test run, had significant influence on the P300 ERP wave. Subjects who had less than 8 hours of sleep elicited a larger P300 amplitude\cite{HowManyPeople}. The same research also compares row - column flashes with single character flashes. Contrary to what one would expect, the single character system didn't yield higher P300 amplitudes, since subjects were tired by the long waiting times. 
+
+
+
+
+
