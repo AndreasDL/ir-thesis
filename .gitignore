@@ -30,3 +30,4 @@ lessen/
 *.nls
 #dataset(s)
 dataset/
+*.dat
