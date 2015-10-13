@@ -41,30 +41,32 @@ def loadData(pad, startFileIndex, fileCount):
 def calculateFeatures(samples):
 	#structure of samples[channel, sample]
 
-	#FFT to get frequency componentsprint(y)
-	for i in range(1):#len(samples)):
-		Fs = 128                         # sampling rate
-		Ts = 1.0/Fs                      # sampling interval
-		t = np.arange(0,1,Ts)            # time vector
-		n = len(samples[i])              # length of the signal
-		k = np.arange(n)
-		T = n/Fs
-		frq = k/T # two sides frequency range
-		freq = frq[range(round(n/2))]           # one side frequency range
-
-		Y = np.fft.fft(samples[i])/n              # fft computing and normalization
+	#FFT to get frequency components
+	Fs = 128
+	n = len(samples[0])
+	alpha_component = np.zeros(40)
+	for i in [1,3,4,7,8,11,14,16,19,21,24,26,28,30,31]:
+		Y = np.fft.fft(samples[i])/n 					# fft computing and normalization
 		Y = Y[range(round(n/2))]
-
-		plt.plot(freq, abs(Y), 'r-')
-		plt.xlabel('freq (Hz)')
-		plt.ylabel('|Y(freq)|')
-
-		plt.show()
-
-	#sum Alpha components
+		
+	#sum Alpha components for left and right
 	#alpha runs from 8 - 13Hz
+	#freq = index * Fs / n => value = abs(Y[j])
+	#8hz = index * Fs/n <=> index = 8hz * 4032 / 128
+	startIndex  = round(8  * n / Fs)
+	stopIndex   = round(13 * (n / Fs))
+	alpha_left  = 0
+	alpha_right = 0
+	for i in [1,3,4,7,8,11,14]:
+		for j in range(startIndex,stopIndex+1):
+			alpha_left += Y[j]
 
-	#todo L-R/L+R voor alpha components zie gegeven paper p6
+	for i in [16,19,21,24,26,28,30,31]:
+		for j in range(startIndex,stopIndex+1):
+			alpha_right += Y[j]		
+
+	return [ (alpha_left - alpha_right) / (alpha_left + alpha_right) ]
+	#L-R/L+R voor alpha components zie gegeven paper p6
 
 
 if __name__ == "__main__":
