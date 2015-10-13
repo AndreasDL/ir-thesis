@@ -81,12 +81,28 @@ For the emotion recognition, only alpha and beta bands are considered. The alpha
 
 Since most muscle and eye artifacts are within the range of 1.2Hz and $>$30hz respectively and power line cause artifacts around the 50Hz range, using only alpha and beta waves will already remove a lot of noise and artifact from the signal\cite{ExtendedPaper}.
 
+\npar
+
+Additionally one can extract spectral power features such as the frontal midline theta power. 
+%!!TODO up & down
+A more advanced feature for arousal is the Asymmetry index (AsI)\nomenclature{AsI}{Asymmetry Index}, which computes multidimensional directed information (MDI)\nomenclature{MDI}{Multidimensional Directed Information} between different EEG channels\cite{GivenPaper}. AsI indicates whether or not an emotional state was elicited. 
+
+\npar 
+
 \subsection{Determining valence}
 The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion}\cite{EEGDatasets}. Note that individual difference might affect the location\cite{ExtendedPaper}.
 
 \npar
 
 Since high alpha rates correspond with an inactive brain and high beta waves with an active brain, one should look for an increase in beta activity and a decrease in alpha activity at one side. The other hemisphere should show an increase in alpha waves and a decrease of beta waves as indication that is becomes less active. Another possibility is to use the gamma band instead of the alpha band. 
+
+\npar
+
+Another way of determining the valence is measuring the frontal alpha asymmetry\cite{GivenPaper}. The assymmetry is given for L and R being the Left and Right frontal alpha powers as:\\
+\begin{center}
+$Index = \frac{L-R}{L+R}$
+\end{center}
+Computing the spectral power of the alpha band is possible via multiple methods such as Fourier transform, power spectral density and wavelet transform.
 
 \subsection{Classifaction procedures}
 !!TODO!
@@ -100,7 +116,11 @@ etc
 
 
 \subsection{Datasets}
-The center for the study of emotion and attention (CSEA)\nomenclature{CSEA}{Center for the Study of Emotion and Attention}, by the university of Florida made several datasets available:
+One of the most used datasets is the Dataset for Emotion Analysis using Physiological Signals (DEAP)\nomenclature{DEAP}{Dataset for Emotion Analysis using Physiological Signals} dataset\cite{DEAP}. The preprocessed dataset combines data of 32 persons for 40 videos with 40 EEG channels and was used extensively during this thesis.
+
+\npar
+
+Furthermore, the center for the study of emotion and attention (CSEA)\nomenclature{CSEA}{Center for the Study of Emotion and Attention}, by the university of Florida made several visual datasets available:
 \begin{itemize}
 \item \textbf{IAPS:} International Affective Picture System\nomenclature{IAPS}{International Affective Picture System}\\
 This dataset consists of a large set op emotional stimuli in the form of color photographs.
