@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import fft
+#stolen with pride from http://www.bogotobogo.com/python/OpenCV_Python/python_opencv3_Signal_Processing_with_NumPy_Fourier_Transform_FFT_DFT.php
 
 Fs = 150                         # sampling rate
 Ts = 1.0/Fs                      # sampling interval
