@@ -44,6 +44,7 @@ channelNames = {
 }
 
 def getFrequencyPower(waveband, samplesAtChannel):
+
 	#uses FFT to get the power of a certain waveband for a certain channel sample
 	#E.G.: sum Alpha components for left and right
 	#alpha runs from 8 - 13Hz
@@ -52,7 +53,7 @@ def getFrequencyPower(waveband, samplesAtChannel):
 
 	#FFT to get frequency components
 	Fs = 128 #samples have freq 128Hz
-	n = len(samplesAtChannel) 
+	n = len(samplesAtChannel)
 	component = 0
 
 	startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
@@ -92,8 +93,11 @@ def FrontlineMidlineThetaPower(samples):
 	#structure of samples[channel, sample]
 	
 	power = 0
-	for i in [channelNames['Fz'], channelNames['Pz'], channelNames['Oz'], channelNames['Cz']]:
+	for i in [channelNames['Fz'], channelNames['Cz'], channelNames['FC1'], channelNames['FC2']]:
 		power += getFrequencyPower('theta', samples[i])
 
 	return power
 
+def calculateFeatures(samples):
+	#return LRFraction(samples)
+	return FrontlineMidlineThetaPower(samples)
