@@ -98,6 +98,27 @@ def FrontlineMidlineThetaPower(samples):
 
 	return power
 
+def leftMeanAlphaPower(samples):
+	#structure of samples[channel, sample]
+	#return L-R / L+R, voor alpha components zie gegeven paper p6
+	alpha_left = 0
+	for i in [channelNames['F3'], channelNames['C3'], channelNames['P3']]:
+		alpha_left += getFrequencyPower('alpha',samples[i])
+
+	return alpha_left / 3
+
+def rightMeanAlphaPower(samples):
+	#structure of samples[channel, sample]
+	#return L-R / L+R, voor alpha components zie gegeven paper p6
+	alpha_right = 0
+	for i in [channelNames['F4'], channelNames['C4'], channelNames['P4']]:
+		alpha_right += getFrequencyPower('alpha',samples[i])
+
+	return alpha_right / 3
+
+
+
 def calculateFeatures(samples):
 	#return LRFraction(samples)
-	return FrontlineMidlineThetaPower(samples)
+	#return FrontlineMidlineThetaPower(samples)
+	return [leftMeanAlphaPower(samples), rightMeanAlphaPower(samples)]

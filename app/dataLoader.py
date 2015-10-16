@@ -3,8 +3,10 @@ import numpy as np
 from sklearn import linear_model
 import featureExtractor as FE
 
+import pprint
+
 def loadData(pad, startFileIndex, fileCount):
-	features = np.zeros((40, 1)) #40 x 1 feature
+	features = np.zeros((40, 2)) #40 x 1 feature
 	labels = np.zeros((40, 1)) #40 x 1 label
 
 	#load testSet
