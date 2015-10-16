@@ -43,7 +43,10 @@ channelNames = {
 	'Temperature' : 40
 }
 
-def getFrequencyPower(waveband, samplesAtChannel):
+def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopTime = 63):
+	#turn bands into frequency ranges
+	startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
+	stopFreq = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
 
 	#uses FFT to get the power of a certain waveband for a certain channel sample
 	#E.G.: sum Alpha components for left and right
@@ -51,13 +54,13 @@ def getFrequencyPower(waveband, samplesAtChannel):
 	#freq = index * Fs / n => value = abs(Y[j])
 	#8hz = index * Fs/n <=> index = 8hz * 4032 / 128
 
+
 	#FFT to get frequency components
 	Fs = 128 #samples have freq 128Hz
-	n = len(samplesAtChannel)
-	component = 0
-
-	startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
-	stopFreq = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
+	offsetStartIndex = offsetStartTime * Fs       #fix offset
+	offestStopIndex = offsetStopTime * Fs
+	samplesAtOffset = samplesAtChannel[offsetStartIndex:offestStopIndex]
+	n = len(samplesAtOffset)
 
 	if not (waveband in startFreq and waveband in stopFreq):
 		print("Error Wrong waveband selection for frequencyPower")	
@@ -66,59 +69,70 @@ def getFrequencyPower(waveband, samplesAtChannel):
 	startIndex  = round(startFreq[waveband]  * n / Fs)
 	stopIndex   = round(stopFreq[waveband] * n / Fs)
 
-	Y = np.fft.fft(samplesAtChannel)/n 					# fft computing and normalization
+	Y = np.fft.fft(samplesAtOffset)/n 					# fft computing and normalization
 	Y = Y[range(round(n/2))]
 
+	component = 0
 	for i in range(startIndex,stopIndex+1):
 		component += abs(Y[i])
 
 	return component
 
 
-def LRFraction(samples):
+def LRFraction(samples,offsetStartTime=0,offsetStopTime=63):
 	#structure of samples[channel, sample]
 	#return L-R / L+R, voor alpha components zie gegeven paper p6
 	alpha_left = 0
 	for i in [channelNames['F3'], channelNames['C3'], channelNames['P3']]:
-		alpha_left += getFrequencyPower('alpha',samples[i])
+		alpha_left += getFrequencyPower('alpha',samples[i],offsetStartTime,offsetStopTime)
 
 	alpha_right = 0
 	for i in [channelNames['F4'], channelNames['C4'], channelNames['P4']]:
-		alpha_right += getFrequencyPower('alpha',samples[i])
+		alpha_right += getFrequencyPower('alpha',samples[i],offsetStartTime,offsetStopTime)
 
 	return [ (alpha_left - alpha_right) / (alpha_left + alpha_right) ]
 	
-def FrontlineMidlineThetaPower(samples):
+def FrontlineMidlineThetaPower(samples,offsetStartTime=0,offsetStopTime=63):
 	#frontal midline theta power is increase by positive emotion
 	#structure of samples[channel, sample]
 	
 	power = 0
 	for i in [channelNames['Fz'], channelNames['Cz'], channelNames['FC1'], channelNames['FC2']]:
-		power += getFrequencyPower('theta', samples[i])
+		power += getFrequencyPower('theta', samples[i],offsetStartTime,offsetStopTime)
 
 	return power
 
-def leftMeanAlphaPower(samples):
+def leftMeanAlphaPower(samples,offsetStartTime=0,offsetStopTime=63):
 	#structure of samples[channel, sample]
 	#return L-R / L+R, voor alpha components zie gegeven paper p6
 	alpha_left = 0
 	for i in [channelNames['F3'], channelNames['C3'], channelNames['P3']]:
-		alpha_left += getFrequencyPower('alpha',samples[i])
+		alpha_left += getFrequencyPower('alpha',samples[i],offsetStartTime,offsetStopTime)
 
 	return alpha_left / 3
 
-def rightMeanAlphaPower(samples):
+def rightMeanAlphaPower(samples,offsetStartTime=0,offsetStopTime=63):
 	#structure of samples[channel, sample]
 	#return L-R / L+R, voor alpha components zie gegeven paper p6
 	alpha_right = 0
 	for i in [channelNames['F4'], channelNames['C4'], channelNames['P4']]:
-		alpha_right += getFrequencyPower('alpha',samples[i])
+		alpha_right += getFrequencyPower('alpha',samples[i],offsetStartTime,offsetStopTime)
 
 	return alpha_right / 3
+
+def alphaBetaRatio(samples,offsetStartTime=0,offsetStopTime=63):
+	alpha = 0
+	beta = 0
+	for i in range(32):
+		alpha += getFrequencyPower('alpha', samples[i])
+		beta += getFrequencyPower('beta', samples[i])
+
+	return alpha / beta
 
 
 
 def calculateFeatures(samples):
 	#return LRFraction(samples)
 	#return FrontlineMidlineThetaPower(samples)
-	return [leftMeanAlphaPower(samples), rightMeanAlphaPower(samples)]
+	#[leftMeanAlphaPower(samples,22,30), rightMeanAlphaPower(samples,22,30)]
+	return alphaBetaRatio(samples)

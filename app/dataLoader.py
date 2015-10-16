@@ -3,10 +3,10 @@ import numpy as np
 from sklearn import linear_model
 import featureExtractor as FE
 
-import pprint
+from pprint import pprint
 
 def loadData(pad, startFileIndex, fileCount):
-	features = np.zeros((40, 2)) #40 x 1 feature
+	features = np.zeros((40, 1)) #40 x 1 feature
 	labels = np.zeros((40, 1)) #40 x 1 label
 
 	#load testSet
@@ -24,7 +24,7 @@ def loadData(pad, startFileIndex, fileCount):
 			#data['labels'][video , attribute]
 			#data['data'][video, channel, value]
 
-			labels = data['labels'][:,1] #only valence needed
+			labels = data['labels'][:,2] #only valence needed
 			#structure y_train[video]
 
 			#get features
