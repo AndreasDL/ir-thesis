@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import fft
 from sklearn import linear_model
+import featureExtractor as FE
 
 def loadData(pad, startFileIndex, fileCount):
 	features = np.zeros((40, 1)) #40 x 1 feature
@@ -35,42 +36,14 @@ def loadData(pad, startFileIndex, fileCount):
 			for j in range(len(data['data'])): #for each video
 				features[j] = calculateFeatures(data['data'][j])
 
-
 	return [features, labels]
 
 def calculateFeatures(samples):
-	#structure of samples[channel, sample]
-
-	#FFT to get frequency components
-	Fs = 128
-	n = len(samples[0])
-	alpha_component = np.zeros(40)
-	for i in [1,3,4,7,8,11,14,16,19,21,24,26,28,30,31]:
-		Y = np.fft.fft(samples[i])/n 					# fft computing and normalization
-		Y = Y[range(round(n/2))]
-		
-	#sum Alpha components for left and right
-	#alpha runs from 8 - 13Hz
-	#freq = index * Fs / n => value = abs(Y[j])
-	#8hz = index * Fs/n <=> index = 8hz * 4032 / 128
-	startIndex  = round(8  * n / Fs)
-	stopIndex   = round(13 * (n / Fs))
-	alpha_left  = 0
-	alpha_right = 0
-	for i in [1,3,4,7,8,11,14]:
-		for j in range(startIndex,stopIndex+1):
-			alpha_left += Y[j]
-
-	for i in [16,19,21,24,26,28,30,31]:
-		for j in range(startIndex,stopIndex+1):
-			alpha_right += Y[j]		
-
-	return [ (alpha_left - alpha_right) / (alpha_left + alpha_right) ]
-	#L-R/L+R voor alpha components zie gegeven paper p6
+	return FE.LRFraction(samples)
 
 
 if __name__ == "__main__":
-	trainPersons = 1 # one set = one person
+	trainPersons = 5 # one set = one person
 	testPersons = 1 # one set = one person
 
 	#load trainSet
