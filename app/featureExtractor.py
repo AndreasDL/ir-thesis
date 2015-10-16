@@ -43,7 +43,7 @@ channelNames = {
 	'Temperature' : 40
 }
 
-def getFrequencyPower(waveBand, samplesAtChannel):
+def getFrequencyPower(waveband, samplesAtChannel):
 	#uses FFT to get the power of a certain waveband for a certain channel sample
 	#E.G.: sum Alpha components for left and right
 	#alpha runs from 8 - 13Hz
@@ -52,15 +52,20 @@ def getFrequencyPower(waveBand, samplesAtChannel):
 
 	#FFT to get frequency components
 	Fs = 128 #samples have freq 128Hz
-	n = len(samples[0]) 
+	n = len(samplesAtChannel) 
 	component = 0
 
 	startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
 	stopFreq = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
-	startIndex  = round(startFreq[waveBand]  * n / Fs)
-	stopIndex   = round(stopFreq[waveBand] * n / Fs)
 
-	Y = np.fft.fft(samples)/n 					# fft computing and normalization
+	if not (waveband in startFreq and waveband in stopFreq):
+		print("Error Wrong waveband selection for frequencyPower")	
+		exit(-1)
+
+	startIndex  = round(startFreq[waveband]  * n / Fs)
+	stopIndex   = round(stopFreq[waveband] * n / Fs)
+
+	Y = np.fft.fft(samplesAtChannel)/n 					# fft computing and normalization
 	Y = Y[range(round(n/2))]
 
 	for i in range(startIndex,stopIndex+1):
@@ -76,51 +81,19 @@ def LRFraction(samples):
 	for i in [channelNames['F3'], channelNames['C3'], channelNames['P3']]:
 		alpha_left += getFrequencyPower('alpha',samples[i])
 
-		Y = np.fft.fft(samples[i])/n 					# fft computing and normalization
-		Y = Y[range(round(n/2))]
-		
-		for j in range(startIndex,stopIndex+1):
-			alpha_left += abs(Y[j])
-
-
 	alpha_right = 0
 	for i in [channelNames['F4'], channelNames['C4'], channelNames['P4']]:
-		Y = np.fft.fft(samples[i])/n 					# fft computing and normalization
-		Y = Y[range(round(n/2))]
-
-		for j in range(startIndex,stopIndex+1):
-			alpha_right += abs(Y[j])
+		alpha_right += getFrequencyPower('alpha',samples[i])
 
 	return [ (alpha_left - alpha_right) / (alpha_left + alpha_right) ]
 	
 def FrontlineMidlineThetaPower(samples):
 	#frontal midline theta power is increase by positive emotion
 	#structure of samples[channel, sample]
-
-	#FFT to get frequency components
-	Fs = 128 #samples have freq 128Hz
-	n = len(samples[0]) 
-	theta_component = np.zeros(40)
-
-	#theta runs from 4 - 8Hz
-	#freq = index * Fs / n => value = abs(Y[j])
-	startIndex  = round(4  * n / Fs)
-	stopIndex   = round(8 * n / Fs)
-	alpha_left  = 0
-	alpha_right = 0
 	
-	for i in [channelNames['F3'], channelNames['C3'], channelNames['P3']]:
-		Y = np.fft.fft(samples[i])/n 					# fft computing and normalization
-		Y = Y[range(round(n/2))]
-		
-		for j in range(startIndex,stopIndex+1):
-			alpha_left += abs(Y[j])
+	power = 0
+	for i in [channelNames['Fz'], channelNames['Pz'], channelNames['Oz'], channelNames['Cz']]:
+		power += getFrequencyPower('theta', samples[i])
 
-	for i in [channelNames['F4'], channelNames['C4'], channelNames['P4']]:
-		Y = np.fft.fft(samples[i])/n 					# fft computing and normalization
-		Y = Y[range(round(n/2))]
+	return power
 
-		for j in range(startIndex,stopIndex+1):
-			alpha_right += abs(Y[j])
-
-	return [ (alpha_left - alpha_right) / (alpha_left + alpha_right) ]

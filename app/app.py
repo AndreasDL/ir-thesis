@@ -39,7 +39,9 @@ def loadData(pad, startFileIndex, fileCount):
 	return [features, labels]
 
 def calculateFeatures(samples):
-	return FE.LRFraction(samples)
+	#return FE.LRFraction(samples)
+	return FE.FrontlineMidlineThetaPower(samples)
+
 
 
 if __name__ == "__main__":
