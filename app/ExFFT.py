@@ -4,17 +4,7 @@ from scipy import fft
 #stolen with pride from http://www.bogotobogo.com/python/OpenCV_Python/python_opencv3_Signal_Processing_with_NumPy_Fourier_Transform_FFT_DFT.php
 
 Fs = 150                         # sampling rate
-Ts = 1.0/Fs                      # sampling interval
-t = np.arange(0,1,Ts)            # time vector
-ff = 5                           # frequency of the signal
-y = np.sin(2 * np.pi * ff * t)
 
-plt.subplot(2,1,1)
-plt.plot(t,y,'k-')
-plt.xlabel('time')
-plt.ylabel('amplitude')
-
-plt.subplot(2,1,2)
 n = len(y)                       # length of the signal
 k = np.arange(n)
 T = n/Fs

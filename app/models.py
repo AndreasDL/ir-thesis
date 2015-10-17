@@ -56,3 +56,6 @@ def polyReg(x_train,y_train,x_test,y_test):
 
 	plt.xlabel('metric')
 	plt.ylabel('valence|')
+
+	plt.show()
+	return 
