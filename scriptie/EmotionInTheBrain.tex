@@ -1,21 +1,21 @@
 \chapter{Emotion in the brain}
+{\samenvatting This chapter starts with explaining some BCI basics, before discussing some commonly used methods to recognize emotion in the brain.}
 
-How does one define emotion? In psychology a clear distinction is made between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. The expression consists of many parts, including the facial expression, body language and voice concern. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance, pupil dilation, is much harder to control. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion. One possibility for this is analysis of brain activity via Electroencephalography\cite{EEGDatasets}.
+\npar
+How does one define emotion? Psychology makes a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. The expression consists of many parts, including the facial expression, body language and voice concern. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion. One possibility for this is analysis of brain activity via Electroencephalography\cite{EEGDatasets}.
 
 \section{Brain Computer Interface (BCI) basics}
 
 \subsection{Electroencephalography}
-Different technologies exist to analyse the brain, the most convenient method is via Electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery; they simply measure electrical activity of the brain using electrodes placed on the scalp.
+Different technologies exist to analyse the brain, the most convenient method is via Electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery; they simply measure electrical activity using electrodes placed on the scalp.
 
 \npar
 
-Signals originating from the cortex, close to the skull, are most visible. Signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally other artifacts like eye and muscle movement add a lot a noise to the signal, that has to be removed. Even though the noise is persistent and has very low spatial resolution, EEG data can provide significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
+Signals originating from the cortex, close to the skull, are most visible, but signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally other artifacts like eye and muscle movement add a lot a noise to the signal, that has to be removed. Even though the noise is persistent and has very low spatial resolution, EEG data can provide significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
 
 \npar
 
 Note that EEG records electrical activity, other methods like magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} measure brain activity using magnetic fields. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, shielding is required, making this method less preferable.
-
-\clearpage
 
 \subsection{Electrode positioning and types}
 As mentioned before, electrodes are placed on the scalp to measure the electrical activity. To ensure that experiments are replicable, standards for locations of electrodes have been developed. One of these systems is the 10/20 system, an internationally recognized methods to describe location of scalp electrodes\cite{TenTwentyManual}. The numbers 10 and 20 refer to the distances between the electrodes, which are either 10\% or 20\% of the total front-back or left-right distance of the skull. Each site is identified with a letter that determines the lobe and hemisphere location.
@@ -26,7 +26,7 @@ As mentioned before, electrodes are placed on the scalp to measure the electrica
 \item \textbf{P:} Parietal
 \item \textbf{O:} Occipital
 \end{itemize}
-Note that no central lobe exists, the C letter is only used for identification purposes. The letter z indicates that the electrode is placed on the central line. Even numbers are use for the right hemisphere, while odd numbers are used for the left hemisphere. A picture of the 10/20 system is added below for clarification. Note that some experiments may use more channels than shown in figure \ref{1020ElectrodePlacementSystem}, but they all follow the same naming convention.
+Note that no central lobe exists, the C letter is only used for identification purposes. The letter z indicates that the electrode is placed on the central line. Even numbers are use for the right hemisphere, while odd numbers are used for the left hemisphere. A picture of a 23 channel 10/20 system is added below for clarification. Note that some experiments may use more channels than shown in figure \ref{1020ElectrodePlacementSystem}, but they all follow the same naming convention.
 
 \mijnfiguur{width=0.9\textwidth}{1020ElectrodePlacementSystem}{The electrode placement system\cite{1020Site}.}
 
@@ -34,7 +34,7 @@ Two different types of EEG channels exist, monopolar and dipolar. A monopolar ch
 
 \subsection{Event related potentials}
 
-The electrical activity in a brain is caused when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighboring neurons. It is this activity that is measured by the surface electrodes.
+The electrical activity in a brain is caused when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighboring neurons, this activity is captured by the surface electrodes.
 
 \npar
 
@@ -49,58 +49,55 @@ The most important one is the P300 wave, which is usually elicited using the odd
 \clearpage
 
 \subsection{Brain waves}
-Usually, brain waves are split into different bands, based on their frequency\cite{EmotionRelativePower}\cite{WavesSite}.
+Usually, brain waves are split into different bands, based on their frequency\cite{EmotionRelativePower,WavesSite}.
 \begin{enumerate}
-\item \textbf{Alpha:} 8-13Hz, indicate that the brain is relaxed and/or inactive.
-\item \textbf{Beta:} 13-30HZ, point to a more active and focused brain.
+\item \textbf{Alpha:} 8-13Hz, indicate how relaxed and/or inactive the brain is.
+\item \textbf{Beta:} 13-30HZ, indicate a more active and focused state of mind.
 \item \textbf{Gamma:} 30-50Hz, relate to simultaneous processing of information from different brain areas.
 \item \textbf{Delta:} 0-4hz, these waves are generated during dreamless sleep and meditation.
-\item \textbf{theta:} 4-8Hz, occur during dreaming
+\item \textbf{theta:} 4-8Hz, occur during dreaming.
 \end{enumerate}
-To remove most muscle and eye artifacts have a frequency around 1.2Hz, and artificats caused by nearby power lines, with a frequency of around 50Hz\cite{ExtendedPaper}, usually a bandpass filter is applied to filter out frequencies below 4Hz and above 40-45Hz. This already removes a lot of noise from the data.
+To remove most muscle and eye artifacts have a frequency around 1.2Hz, and artificats caused by nearby power lines, with a frequency of around 50Hz\cite{ExtendedPaper}, usually a bandpass filter is applied to filter out frequencies below 4Hz and above 40-45Hz.
 
 \section{Extracting emotion from EEG data}
 
 \subsection{Arousal - valence (- dominance) classification}
-Before emotions can be recognized, a classification model is needed. A common model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper}\cite{RealTimeEEGEmotion}, that places emotions in a two dimensional space. The main advantage of using a multidimensional model, is that all emotions are modeled in its space, even when no particular label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model.
+Before emotions can be recognized, a classification model is needed. A common model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, that places emotions in a two dimensional space. The main advantage of using a multidimensional model, is that all emotions are modeled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
 
-Sometimes a third dimension is added, the dominance, an indication for how strong the emotion is perceived \cite{EEGDatasets}. Note that this dimension is less important for the emotion classification. To summarize, the three dimension are:
-\begin{enumerate}
-\item \textbf{Valence:} whether or not the emotion is perceived as positive or negative.
-\item \textbf{Arousal:} measures how excited or calm a person is.
-\item \textbf{Dominance:} how strong the emotion is perceived.
-\end{enumerate}
+\npar
+
+Since this thesis aims to recognize emotion and change in emotion when a subject performs several erroneous actions, the linear model is the best choice, since it enables to track the state continuously.
 
 \mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.}
 
 \subsection{Determining arousal}
 
-Arousal can be determined in several ways. A first methods for the arousal recognition uses only alpha and beta bands. the Alpha band corresponds with a relaxed state and is often connected to brain inactivity\cite{ExtendedPaper}\cite{RealTimeEEGEmotion}. Beta waves, on the other hand, are an indication that the brain is a more active state or has a higher level of arousal. Combining these two parameters gives the beta/alpha ratio as an indication of the arousal level. 
+Arousal can be determined in several ways. A first methods for the arousal recognition uses only alpha and beta bands. the Alpha band corresponds with a relaxed state and is often connected to brain inactivity\cite{ExtendedPaper,RealTimeEEGEmotion}. Beta waves, on the other hand, are an indication that the brain is a more active state or has a higher level of arousal. Combining these two parameters gives the beta/alpha ratio as an indication of the arousal level. 
 
 \npar
 
-EEG coherence across prefrontal and posterior beta oscillations is known to increase when high arousal images are viewed. Additionally, the gamma power around 46-65Hz increase with arousal with a delay of 500ms.
+Other methods are based on the EEG coherence across the prefrontal and posterior beta oscillations, which is known to increase when high arousal images are viewed. Additionally, the gamma power is said to increase with arousal with a delay of 500ms\cite{GivenPaper}.
 
 \subsection{Determining valence}
-An often reported features is the frontal asymmetry of the alpha power\cite{GivenPaper}.
-The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion}\cite{EEGDatasets}. The assymmetry is given for L and R being the Left and Right frontal alpha powers as:\\
+The most known and used feature is the frontal asymmetry of the alpha power\cite{GivenPaper}.
+The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets}. The assymmetry is given for L and R being the Left and Right frontal alpha powers as:\\
 \begin{center}
 $Index = \frac{L-R}{L+R}$
 \end{center}
-Computing the spectral power of the alpha band is possible via e.g. the fast fourier transform or wavelet transform. Some papers also include the left and right anterior temporal lobe channels.
+Computing the spectral power of the alpha band is possible via e.g. the fast fourier transform or wavelet transform.
 
 \npar
 
-It is also possible to include beta waves in the process. High alpha rates correspond with an inactive brain, while high beta waves with an active brain. Looking for an increase in beta activity and a decrease in alpha activity at one side, while the other hemisphere should show an increase in alpha waves and a decrease of beta waves as indication that is becomes less active, offers an insight to the valence\cite{ExtendedPaper}. 
+It is also possible to include beta waves in the process. High alpha rates correspond with an inactive brain, while high beta waves with an active brain. Looking for an increase in beta activity and a decrease in alpha activity at one side, while the other hemisphere should show an increase in alpha waves and a decrease of beta waves as indication that is becomes less active, offers an insight to the frontal asymmetry and thus the valence\cite{ExtendedPaper}. 
 
 \npar
 
-Another features is the frontal midline (Fm)\nomenclature{Fm}{Frontal Midline} theta power, that is shown to increase with increasing pleasant ratings for audio stimuli\cite{MusicPaper}. Gamma phase synchronization increases for unpleasant images.
+Another features is the frontal midline (Fm)\nomenclature{Fm}{Frontal Midline} theta power, that is shown to increase with increasing pleasant ratings for audio stimuli\cite{MusicPaper}. %Gamma phase synchronization increases for unpleasant images.
 
 \subsection{Datasets}
 One of the most used datasets is the Dataset for Emotion Analysis using Physiological Signals (DEAP)\nomenclature{DEAP}{Dataset for Emotion Analysis using Physiological Signals} dataset\cite{DEAP}. This dataset contains EEG samples at 512 Hz of 32 persons each viewing 40 videos. A preprocessed version of this dataset, that is down sampled and has EOG removal was used extensively during this thesis.
 
-\npar
+\clearpage
 
 Furthermore, the center for the study of emotion and attention (CSEA)\nomenclature{CSEA}{Center for the Study of Emotion and Attention}, by the university of Florida made several visual datasets available:
 \begin{itemize}
@@ -115,4 +112,4 @@ This set provides normative ratings of emotion for a large set of brief texts.
 \item \textbf{SAM:} Self-Assessment Manikin\nomenclature{SAM}{Self-Assessment Manikin}\\
 A non-verbal pictorial assessment technique that measures the pleasure, arousal and dominance associated with a person's affective reaction to a wide variety of stimuli.
 \end{itemize}
-The stimuli from these sets are often used in experiments to trigger emotions\cite{ExtendedPaper}\cite{EmotionSite}\cite{RealTimeEEGEmotion}\cite{EEGDatasets}.
+The stimuli from these sets are often used in experiments to trigger emotions\cite{ExtendedPaper, EmotionSite, RealTimeEEGEmotion, EEGDatasets}.

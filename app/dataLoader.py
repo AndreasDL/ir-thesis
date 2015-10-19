@@ -24,7 +24,7 @@ def loadData(pad, startFileIndex, fileCount):
 			#data['labels'][video , attribute]
 			#data['data'][video, channel, value]
 
-			labels = data['labels'][:,2] #only valence needed
+			labels = data['labels'][:,1] #only valence needed
 			#structure y_train[video]
 
 			#get features

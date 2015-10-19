@@ -21,6 +21,6 @@ if __name__ == "__main__":
 	(x_test, y_test) = DL.loadData('dataset/s', trainPersons, testPersons)	
 
 	#models.linReg(x_train,y_train,x_test,y_test)
-	models.polyReg(x_train,y_train,x_test,y_test)
+	models.linReg(x_train,y_train,x_test,y_test)
 
 	#plotters.plot3D(x_train[0], x_train[1], y_train, 'leftPower', 'rightPower', 'Valence' )

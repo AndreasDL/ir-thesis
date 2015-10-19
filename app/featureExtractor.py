@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn import preprocessing as PREP
 
 channelNames = {
 	'Fp1' : 1,
@@ -49,10 +50,7 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 	stopFreq = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
 
 	#uses FFT to get the power of a certain waveband for a certain channel sample
-	#E.G.: sum Alpha components for left and right
-	#alpha runs from 8 - 13Hz
-	#freq = index * Fs / n => value = abs(Y[j])
-	#8hz = index * Fs/n <=> index = 8hz * 4032 / 128
+
 
 
 	#FFT to get frequency components
@@ -66,18 +64,21 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 		print("Error Wrong waveband selection for frequencyPower")	
 		exit(-1)
 
+	#E.G.: sum Alpha components for left and right
+	#alpha runs from 8 - 13Hz
+	#freq = index * Fs / n => value = abs(Y[j])
+	#8hz = index * Fs/n <=> index = 8hz * 4032 / 128
 	startIndex  = round(startFreq[waveband]  * n / Fs)
 	stopIndex   = round(stopFreq[waveband] * n / Fs)
 
 	Y = np.fft.fft(samplesAtOffset)/n 					# fft computing and normalization
 	Y = Y[range(round(n/2))]
 
-	component = 0
+	value = 0
 	for i in range(startIndex,stopIndex+1):
-		component += abs(Y[i])
+		value += Y[i] * np.conj(Y[i])
 
-	return component
-
+	return value / n ** 2 #(stopIndex - startIndex) ** 2
 
 def LRFraction(samples,offsetStartTime=0,offsetStopTime=63):
 	#structure of samples[channel, sample]
@@ -135,4 +136,4 @@ def calculateFeatures(samples):
 	#return LRFraction(samples)
 	#return FrontlineMidlineThetaPower(samples)
 	#[leftMeanAlphaPower(samples,22,30), rightMeanAlphaPower(samples,22,30)]
-	return alphaBetaRatio(samples)
+	return LRFraction(samples)

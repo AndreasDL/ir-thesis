@@ -21,4 +21,3 @@ plt.xlabel('freq (Hz)')
 plt.ylabel('|Y(freq)|')
 
 plt.show()
-
