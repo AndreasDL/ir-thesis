@@ -48,13 +48,21 @@ channelNames = {
 	'Temperature' : 40
 }
 
-relevantElectrodes = [ channelNames['AF3'], channelNames['AF4'], channelNames['Fp1'],
-	channelNames['Fp2'], channelNames['F7'], channelNames['F8'], channelNames['F3'],
-	channelNames['F4'], channelNames['FC1'], channelNames['FC2'], channelNames['FC5'],
-	channelNames['FC6']
+relevantElectrodes = [ channelNames['AF3'], channelNames['AF4'], 
+#	channelNames['Fp1'], channelNames['Fp2'], 
+#	channelNames['F7'] , channelNames['F8' ], 
+#	channelNames['F3'] , channelNames['F4' ], 
+#	channelNames['FC1'], channelNames['FC2'], 
+#	channelNames['FC5'], channelNames['FC6']
 ]
 
-relevantElectrodeNames = ['AF3', 'AF4', 'Fp1', 'Fp2', 'F7', 'F8', 'F3', 'F4', 'FC1', 'FC2', 'FC5', 'FC6']
+relevantElectrodeNames = ['AF3 alpha', 'AF3 beta', 'AF3 alpha/beta', 'AF4 alpha', 'AF4 beta', 'AF4 alpha/beta',
+#	'Fp1', 'Fp2',
+#	'F7', 'F8',
+#	'F3', 'F4',
+#	'FC1', 'FC2',
+#	'FC5', 'FC6'
+]
 
 
 def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopTime = 63):
@@ -82,7 +90,7 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 	samplesAtBand = lfilter(b, a, samplesAtOffset)	
 
 	#fft => get components
-	Y = np.fft.fft(samplesAtBand)/n 					# fft computing and normalization
+	Y = np.fft.fft(samplesAtBand)					# fft computing and normalization
 	Y = Y[range(round(n/2))]
 
 	#show result of bandpass filter
@@ -98,7 +106,8 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 	for i in range(len(Y)):
 		value += abs(Y[i] **2 )# ** 2
 
-	return np.sqrt(value / n)
+	return value / ( 2 * n * n + 1)
+	#return np.sqrt(value / n)
 
 def LRFraction(samples,offsetStartTime=0,offsetStopTime=63):
 	#structure of samples[channel, sample]
@@ -147,19 +156,23 @@ def alphaBetaRatio(samples,offsetStartTime=0,offsetStopTime=63):
 	alpha = 0
 	beta = 0
 	for i in range(32):
-		alpha += getFrequencyPower('alpha', samples[i])
-		beta += getFrequencyPower('beta', samples[i])
+		alpha += getFrequencyPower('alpha', samples[i], offsetStartTime, offsetStopTime)
+		beta += getFrequencyPower('beta', samples[i], offsetStartTime, offsetStopTime)
 
 	return alpha / beta
 
 
 
 def calculateFeatures(samples):
-	retArray = np.zeros(len(relevantElectrodes))
-	i = 0
+	retArray = np.empty(0)
 	for channel in relevantElectrodes:
-		retArray[i] = getFrequencyPower('alpha',samples[channel])
-		i += 1
-	
+		alpha = getFrequencyPower('alpha',samples[channel])
+		beta = getFrequencyPower('beta', samples[channel])
+		
+		retArray = np.append(retArray, alpha)
+		retArray = np.append(retArray, beta)
+		retArray = np.append(retArray, alpha/beta)
+		
+
 	return retArray
 	#return LRFraction(samples)
