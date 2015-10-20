@@ -71,7 +71,7 @@ def loadSinglePersonData(trainVideoCount, pad='dataset/s'):
 		#data['labels'][video , attribute]
 		#data['data'][video, channel, value]
 
-		y_train = data['labels'][0:trainVideoCount,1] #only valence needed
+		y_train = data['labels'][:trainVideoCount,1] #only valence needed
 		y_test  = data['labels'][trainVideoCount:,1]
 
 		#split single person in test and train set

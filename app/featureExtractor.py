@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn import preprocessing as PREP
+from scipy.signal import butter, lfilter
 
 channelNames = {
 	'Fp1' : 1,
@@ -49,46 +50,44 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 	startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
 	stopFreq = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
 
-	#uses FFT to get the power of a certain waveband for a certain channel sample
+	if not (waveband in startFreq and waveband in stopFreq):
+		print("Error Wrong waveband selection for frequencyPower. you selected:", waveband)	
+		exit(-1)
 
-
-
-	#FFT to get frequency components
 	Fs = 128 #samples have freq 128Hz
+
+	#select only certain time
 	offsetStartIndex = offsetStartTime * Fs       #fix offset
 	offestStopIndex = offsetStopTime * Fs
 	samplesAtOffset = samplesAtChannel[offsetStartIndex:offestStopIndex]
 	n = len(samplesAtOffset)
 
-	if not (waveband in startFreq and waveband in stopFreq):
-		print("Error Wrong waveband selection for frequencyPower")	
-		exit(-1)
+	#bandpass filter to get wavemand
+	nyq = 0.5 * Fs
+	low = startFreq[waveband] / nyq
+	high = stopFreq[waveband] / nyq
+	b, a = butter(6, [low, high], btype='band')
+	y = lfilter(b, a, samplesAtOffset)	
 
-	#E.G.: sum Alpha components for left and right
-	#alpha runs from 8 - 13Hz
-	#freq = index * Fs / n => value = abs(Y[j])
-	#8hz = index * Fs/n <=> index = 8hz * 4032 / 128
-	startIndex  = round(startFreq[waveband]  * n / Fs)
-	stopIndex   = round(stopFreq[waveband] * n / Fs)
-
+	#fft => get components
 	Y = np.fft.fft(samplesAtOffset)/n 					# fft computing and normalization
 	Y = Y[range(round(n/2))]
 
 	value = 0
-	for i in range(startIndex,stopIndex+1):
-		value += Y[i] * np.conj(Y[i])
+	for i in range(len(Y)):
+		value += abs(Y[i]) ** 2
 
-	return value / n ** 2 #(stopIndex - startIndex) ** 2
+	return value / (2*n + 1)
 
 def LRFraction(samples,offsetStartTime=0,offsetStopTime=63):
 	#structure of samples[channel, sample]
 	#return L-R / L+R, voor alpha components zie gegeven paper p6
 	alpha_left = 0
-	for i in [channelNames['F3'], channelNames['C3'], channelNames['P3']]:
+	for i in [channelNames['Fp1'], channelNames['F3'], channelNames['F7'], channelNames['AF3']]:
 		alpha_left += getFrequencyPower('alpha',samples[i],offsetStartTime,offsetStopTime)
 
 	alpha_right = 0
-	for i in [channelNames['F4'], channelNames['C4'], channelNames['P4']]:
+	for i in [channelNames['Fp2'], channelNames['F4'], channelNames['F8'],channelNames['AF4']]:
 		alpha_right += getFrequencyPower('alpha',samples[i],offsetStartTime,offsetStopTime)
 
 	return [ (alpha_left - alpha_right) / (alpha_left + alpha_right) ]
