@@ -2,6 +2,8 @@ import numpy as np
 from sklearn import preprocessing as PREP
 from scipy.signal import butter, lfilter
 
+import matplotlib.pyplot as plt
+
 channelNames = {
 	'Fp1' : 1,
 	'AF3' : 2,
@@ -67,17 +69,26 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 	low = startFreq[waveband] / nyq
 	high = stopFreq[waveband] / nyq
 	b, a = butter(6, [low, high], btype='band')
-	y = lfilter(b, a, samplesAtOffset)	
+	samplesAtBand = lfilter(b, a, samplesAtOffset)	
 
 	#fft => get components
-	Y = np.fft.fft(samplesAtOffset)/n 					# fft computing and normalization
+	Y = np.fft.fft(samplesAtBand)/n 					# fft computing and normalization
 	Y = Y[range(round(n/2))]
 
+	#show result of bandpass filter
+	#frq = np.arange(n)*Fs/n # two sides frequency range
+	#freq = frq[range(round(n/2))]           # one side frequency range
+	#plt.plot(freq, abs(Y), 'r-')
+	#plt.xlabel('freq (Hz)')
+	#plt.ylabel('|Y(freq)|')
+	#plt.show()
+
+	#Root Mean Square
 	value = 0
 	for i in range(len(Y)):
 		value += abs(Y[i]) ** 2
 
-	return value / (2*n + 1)
+	return np.sqrt(value / n)
 
 def LRFraction(samples,offsetStartTime=0,offsetStopTime=63):
 	#structure of samples[channel, sample]
