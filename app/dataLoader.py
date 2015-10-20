@@ -57,9 +57,9 @@ def loadMultiPersonData(train_fileCount, test_fileCount, pad='dataset/s'):
 	return [x_train, y_train, x_test, y_test]
 
 def loadSinglePersonData(trainVideoCount, pad='dataset/s'):
-	x_train = np.zeros((trainVideoCount, 1)) # .. x 1 feature
+	x_train = np.zeros((trainVideoCount, 12)) # .. x 1 feature
 	y_train = np.zeros((trainVideoCount, 1)) # .. x 1 label
-	x_test  = np.zeros((40-trainVideoCount, 1)) # .. x 1 feature
+	x_test  = np.zeros((40-trainVideoCount, 12)) # .. x 1 feature
 	y_test  = np.zeros((40-trainVideoCount, 1)) # .. x 1 label
 
 	fname = str(pad) +'01.dat'
@@ -79,6 +79,6 @@ def loadSinglePersonData(trainVideoCount, pad='dataset/s'):
 			x_train[j] = FE.calculateFeatures(data['data'][j])
 		
 		for j in range(len(data['data']) - trainVideoCount): #for each video
-			x_test[j] = FE.calculateFeatures(data['data'][j])
+			x_test[j] = FE.calculateFeatures(data['data'][j + trainVideoCount])
 
 	return [x_train, y_train, x_test, y_test]

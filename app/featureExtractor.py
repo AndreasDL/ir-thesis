@@ -3,6 +3,7 @@ from sklearn import preprocessing as PREP
 from scipy.signal import butter, lfilter
 
 import matplotlib.pyplot as plt
+from pprint import pprint
 
 channelNames = {
 	'Fp1' : 1,
@@ -47,6 +48,15 @@ channelNames = {
 	'Temperature' : 40
 }
 
+relevantElectrodes = [ channelNames['AF3'], channelNames['AF4'], channelNames['Fp1'],
+	channelNames['Fp2'], channelNames['F7'], channelNames['F8'], channelNames['F3'],
+	channelNames['F4'], channelNames['FC1'], channelNames['FC2'], channelNames['FC5'],
+	channelNames['FC6']
+]
+
+relevantElectrodeNames = ['AF3', 'AF4', 'Fp1', 'Fp2', 'F7', 'F8', 'F3', 'F4', 'FC1', 'FC2', 'FC5', 'FC6']
+
+
 def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopTime = 63):
 	#turn bands into frequency ranges
 	startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
@@ -86,14 +96,14 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 	#Root Mean Square
 	value = 0
 	for i in range(len(Y)):
-		value += abs(Y[i]) ** 2
+		value += abs(Y[i] **2 )# ** 2
 
 	return np.sqrt(value / n)
 
 def LRFraction(samples,offsetStartTime=0,offsetStopTime=63):
 	#structure of samples[channel, sample]
 	#return L-R / L+R, voor alpha components zie gegeven paper p6
-	
+
 	alpha_left = 0
 	for i in [channelNames['Fp1']]:
 		alpha_left += getFrequencyPower('alpha',samples[i],offsetStartTime,offsetStopTime)
@@ -145,7 +155,11 @@ def alphaBetaRatio(samples,offsetStartTime=0,offsetStopTime=63):
 
 
 def calculateFeatures(samples):
+	retArray = np.zeros(len(relevantElectrodes))
+	i = 0
+	for channel in relevantElectrodes:
+		retArray[i] = getFrequencyPower('alpha',samples[channel])
+		i += 1
+	
+	return retArray
 	#return LRFraction(samples)
-	#return FrontlineMidlineThetaPower(samples)
-	#[leftMeanAlphaPower(samples,22,30), rightMeanAlphaPower(samples,22,30)]
-	return LRFraction(samples)

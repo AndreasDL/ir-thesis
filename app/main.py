@@ -11,7 +11,7 @@ import numpy as np
 from pprint import pprint
 
 def regression():
-	trainVideos = 30
+	trainVideos = 40
 
 	#load trainSet
 	#y_train: holds all valence values for each movie
@@ -25,4 +25,6 @@ def regression():
 	#plotters.plot3D(x_train[0], x_train[1], y_train, 'leftPower', 'rightPower', 'Valence' )
 
 if __name__ == "__main__":
-	regression()
+	(x_train, y_train, x_test, y_test) = DL.loadSinglePersonData(30)
+
+	plotters.plot2DSub(x_train,y_train,FE.relevantElectrodeNames,'valence')
