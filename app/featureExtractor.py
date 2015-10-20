@@ -93,15 +93,17 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 def LRFraction(samples,offsetStartTime=0,offsetStopTime=63):
 	#structure of samples[channel, sample]
 	#return L-R / L+R, voor alpha components zie gegeven paper p6
+	
 	alpha_left = 0
-	for i in [channelNames['Fp1'], channelNames['F3'], channelNames['F7'], channelNames['AF3']]:
+	for i in [channelNames['Fp1']]:
 		alpha_left += getFrequencyPower('alpha',samples[i],offsetStartTime,offsetStopTime)
 
 	alpha_right = 0
-	for i in [channelNames['Fp2'], channelNames['F4'], channelNames['F8'],channelNames['AF4']]:
+	for i in [channelNames['Fp2']]:
 		alpha_right += getFrequencyPower('alpha',samples[i],offsetStartTime,offsetStopTime)
 
 	return [ (alpha_left - alpha_right) / (alpha_left + alpha_right) ]
+
 	
 def FrontlineMidlineThetaPower(samples,offsetStartTime=0,offsetStopTime=63):
 	#frontal midline theta power is increase by positive emotion
