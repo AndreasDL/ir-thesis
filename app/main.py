@@ -25,6 +25,9 @@ def regression():
 	#plotters.plot3D(x_train[0], x_train[1], y_train, 'leftPower', 'rightPower', 'Valence' )
 
 if __name__ == "__main__":
-	(x_train, y_train, x_test, y_test) = DL.loadSinglePersonData(30)
+	regression();
+	exit()
+
+	(x_train, y_train, x_test, y_test) = DL.loadSinglePersonData(40)
 
 	plotters.plot2DSub(x_train,y_train,FE.relevantElectrodeNames,'valence')
