@@ -17,16 +17,17 @@ def regression():
 	#y_train: holds all valence values for each movie
 	#x_train: holds all features for each movie
 	#similar for test set
-	(x_train, y_train, x_test, y_test) = DL.loadSinglePersonData(1,trainVideos)
+	(x_train, y_train, x_test, y_test) = DL.loadSinglePersonData(7,trainVideos)
 
-	#models.linReg(x_train,y_train,x_test,y_test)
+	models.linReg(x_train,y_train,x_test,y_test)
 	models.ridgeReg(x_train,y_train,x_test,y_test)
 
 	#plotters.plot3D(x_train[0], x_train[1], y_train, 'leftPower', 'rightPower', 'Valence' )
 
 if __name__ == "__main__":
-	#regression();
+	regression()
+	exit()
 
-	(x_train, y_train, x_test, y_test) = DL.loadSinglePersonData(2,40)
+	(x_train, y_train, x_test, y_test) = DL.loadSinglePersonData(7,40)
 
 	plotters.plot2DSub(x_train,y_train,FE.relevantElectrodeNames,'valence')

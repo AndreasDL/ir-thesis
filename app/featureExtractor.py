@@ -48,15 +48,15 @@ channelNames = {
 	'Temperature' : 40
 }
 
-relevantElectrodes = [ channelNames['AF3'], channelNames['AF4'], 
+#relevantElectrodes = [ #channelNames['AF3'], channelNames['AF4'], 
 #	channelNames['Fp1'], channelNames['Fp2'], 
 #	channelNames['F7'] , channelNames['F8' ], 
 #	channelNames['F3'] , channelNames['F4' ], 
 #	channelNames['FC1'], channelNames['FC2'], 
 #	channelNames['FC5'], channelNames['FC6']
-]
+#]
 
-relevantElectrodeNames = ['AF3 alpha', 'AF3 beta', 'AF3 alpha/beta', 'AF4 alpha', 'AF4 beta', 'AF4 alpha/beta',
+relevantElectrodeNames = ['Left alpha', 'Right alpha', 'L/R alpha', 'log L - log R'
 #	'Fp1', 'Fp2',
 #	'F7', 'F8',
 #	'F3', 'F4',
@@ -90,7 +90,7 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 	samplesAtBand = lfilter(b, a, samplesAtOffset)	
 
 	#fft => get components
-	Y = np.fft.fft(samplesAtBand)					# fft computing and normalization
+	Y = np.fft.fft(samplesAtBand)/n					# fft computing and normalization
 	Y = Y[range(round(n/2))]
 
 	#show result of bandpass filter
@@ -104,10 +104,13 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 	#Root Mean Square
 	value = 0
 	for i in range(len(Y)):
-		value += abs(Y[i] **2 )# ** 2
+		value += abs(Y[i]) **2
 
-	return value / ( 2 * n * n + 1)
+	return np.sqrt( value / len(Y) )
 	#return np.sqrt(value / n)
+
+#def getSpectralDensity(waveband, samplesAtChannel,offsetStartTime=0,offsetStopTime=63):
+
 
 def LRFraction(samples,offsetStartTime=0,offsetStopTime=63):
 	#structure of samples[channel, sample]
@@ -161,17 +164,16 @@ def alphaBetaRatio(samples,offsetStartTime=0,offsetStopTime=63):
 
 	return alpha / beta
 
-
-
 def calculateFeatures(samples):
 	retArray = np.empty(0)
-	for channel in relevantElectrodes:
-		alpha = getFrequencyPower('alpha',samples[channel])
-		beta = getFrequencyPower('beta', samples[channel])
-		
-		retArray = np.append(retArray, alpha)
-		retArray = np.append(retArray, beta)
-		retArray = np.append(retArray, alpha/beta)
+	
+	LeftAlpha  = getFrequencyPower('alpha',samples[channelNames['F3']])
+	RightAlpha = getFrequencyPower('alpha',samples[channelNames['F4']])
+
+	#retArray = np.append(retArray, F3alpha)
+	#retArray = np.append(retArray, F4alpha)
+	#retArray = np.append(retArray, F3alpha/F4alpha)
+	retArray = np.append( retArray, np.log(RightAlpha) - np.log(LeftAlpha) )
 		
 
 	return retArray

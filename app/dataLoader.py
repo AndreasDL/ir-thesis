@@ -57,7 +57,7 @@ def loadMultiPersonData(train_fileCount, test_fileCount, pad='dataset/s'):
 	return [x_train, y_train, x_test, y_test]
 
 def loadSinglePersonData(person, trainVideoCount, pad='dataset/s'):
-	featureCount = len(FE.relevantElectrodeNames)
+	featureCount = 1#len(FE.relevantElectrodeNames)
 
 	x_train = np.zeros((0, featureCount)) # .. x 1 feature
 	y_train = np.zeros((trainVideoCount, 1)) # .. x 1 label

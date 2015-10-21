@@ -15,24 +15,17 @@ def linReg(x_train,y_train,x_test,y_test):
 	#perform linear regression
 	
 	#Create linear regression object
-	regr = SKL.linear_model.LinearRegression(normalize=True, copy_X=False,n_jobs=-1)
+	regr = SKL.linear_model.LinearRegression(n_jobs=-1)
 
 	# Train the model using the training sets
 	regr.fit(x_train, y_train)
 
 	# The coefficients
-	print('Coefficients: \n', regr.coef_)
-
-	# The mean square error
-	print("Residual sum of squares: %.2f"
-	      % np.mean((regr.predict(x_test) - y_test) ** 2))
-	# Explained variance score: 1 is perfect prediction
-	print('Variance score: %.2f' % regr.score(x_test, y_test))
+	print('model: linear\n\ttrain error: ' , np.mean((regr.predict(x_train) - y_train) ** 2), '\n\tcoef:' , regr.coef_)
 
 	# Plot outputs
-	plt.scatter(x_test, y_test,  color='black')
-	plt.plot(x_test, regr.predict(x_test), color='blue',
-	         linewidth=3)
+	plt.scatter(x_train, y_train,  color='black')
+	plt.plot(x_train, regr.predict(x_train), color='blue', linewidth=3)
 
 	plt.xticks(())
 	plt.yticks(())
@@ -45,8 +38,8 @@ def linReg(x_train,y_train,x_test,y_test):
 
 def ridgeReg(x_train,y_train,x_test,y_test):
 	#perform linear regression
-	alphaValues = [0.001,0.003,0.01,0.03,0.1,0.3,1,3,10,30,100]
-	cvSets = 4
+	alphaValues = [0,0.0003,0.001,0.003,0.01,0.03,0.1,0.3,1,3,10,30,100]
+	cvSets = 8
 	cvSize = len(x_train) / cvSets
 
 	#get sets
@@ -62,25 +55,26 @@ def ridgeReg(x_train,y_train,x_test,y_test):
 		for i in range(len(alphaValues)):
 			alpha = alphaValues[i]
 
-			regr = SKL.linear_model.Ridge(normalize=True, copy_X=False,alpha=alpha) #Create linear regression object
+			regr = SKL.linear_model.Ridge(alpha=alpha) #Create linear regression object
 			regr.fit(x, y) # Train the model using the training sets
 
 			err[i] += np.mean((regr.predict(x_cv) - y_cv) ** 2)
-
 	err /= cvSets
-	#pprint(err)
-	#pprint(np.argmin(err))
-	#print('best alpha value: ', alphaValues[np.argmin(err)])
-	#exit()
+	pprint(err)
+	print('model: ridge\n\ttrain error: ' , err[np.argmin(err)], '\n\talpha: ', alphaValues[np.argmin(err)], '\n\tcoef:' , regr.coef_)
 
 	# Plot outputs
-	#plt.scatter(x_cv, y_cv,  color='black')
-	#plt.plot(x_CV, regr.predict(x_CV), color='blue',linewidth=3)
-	#plt.xticks(())
-	#plt.yticks(())
-	#plt.xlabel('metric')
-	#plt.ylabel('valence|')
-	#plt.show()
+	#TODO testsets!!
+	regr = SKL.linear_model.Ridge(alpha=alphaValues[np.argmin(err)]) #	Create linear regression object
+	regr.fit(x_train, y_train) # Train the model using the training sets
+
+	plt.scatter(x_train, y_train,  color='black')
+	plt.plot(x_train, regr.predict(x_train), color='blue',linewidth=3)
+	plt.xticks(())
+	plt.yticks(())
+	plt.xlabel('metric')
+	plt.ylabel('valence')
+	plt.show()
 	
 	return
 

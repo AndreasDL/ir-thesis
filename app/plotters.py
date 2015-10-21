@@ -14,17 +14,14 @@ def plot2D(x,y, labelX='X label', labelY='Y label'):
 
 def plot2DSub(x,y,labelsX,labelY):
 	# Four axes, returned as a 2-d array
-	f, axarr = plt.subplots(round(len(labelsX) / 3), 3)
+	f, axarr = plt.subplots(round(len(labelsX) / 2), 2)
 
-	for i in range(0,len(x[0]),3):
-		axarr[np.floor(i/3), 0].scatter(x[:,i], y)
-		axarr[np.floor(i/3), 0].set_title(labelsX[i])
+	for i in range(0,len(x[0]),2):
+		axarr[np.floor(i/2), 0].scatter(x[:,i], y)
+		axarr[np.floor(i/2), 0].set_title(labelsX[i])
 		
-		axarr[np.floor(i/3), 1].scatter(x[:,i+1], y)
-		axarr[np.floor(i/3), 1].set_title(labelsX[i+1])
-
-		axarr[np.floor(i/3), 2].scatter(x[:,i+2], y)
-		axarr[np.floor(i/3), 2].set_title(labelsX[i+2])
+		axarr[np.floor(i/2), 1].scatter(x[:,i+1], y)
+		axarr[np.floor(i/2), 1].set_title(labelsX[i+1])
 
 	# Fine-tune figure; hide x ticks for top plots and y ticks for right plots
 	plt.setp([a.get_xticklabels() for a in axarr[0, :]], visible=False)
