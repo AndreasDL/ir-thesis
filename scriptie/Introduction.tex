@@ -1,5 +1,5 @@
 \chapter{Introduction}
-{\samenvatting This chapter gives a quick abstract of the thesis, starting with explaining the P300 speller and P300 paradigm, before justifying the need for an emotionally aware P300 speller.}
+{\samenvatting This chapter described the context of the thesis, starting with explaining the P300 speller and P300 paradigm, before justifying the need for an emotionally aware P300 speller.}
 
 %\begin{chapquote}{R.W. Picard, J. Klein\cite{CompRecognizeEmotion}}
 %Bad feelings do not necessarily cause bad things to happen: mild irritations that simmer and create distress %or frustration, then boil into anger, can serve as impetus to find a better way.
@@ -7,13 +7,13 @@
 
 \section{The P300 speller}
 \subsection{The P300 speller explained}
-The P300 speller is an active topic of research that utulises EEG data to enables persons with locked in syndrome to communicate\cite{P300Origin}. The basic version uses a six by six grid of characters, each row and column is flashed in a random order while the subject silently counts the number of flashes of a certain character, as shown in figure \ref{P300SpellerPerson}. This procedure, where a train of stimuli with some infrequent occurring target stimuli is applied, is called the oddball paradigm\cite{PaperThibault}. It is known that this technique triggers an increase in potential difference in the EEG around the parietal lobe. This Event Related Potential (ERP) occurs +- 300 milliseconds after the stimuli is flashed, hence its name, the P300 waveform\cite{ComparisonClassifications}. The presence or absence of the P300 waveform is used by the P300 speller to determine what character the subject was focusing on, which basically allows the subject to spell text. 
+The P300 speller is an active topic of research that uses EEG data to enable persons with the locked in syndrome to communicate\cite{P300Origin}. The basic version uses a six by six grid of characters, each row and column is flashed in a random order while the subject silently counts the number of flashes of a certain character, as shown in figure \ref{P300SpellerPerson}. This procedure, where a train of stimuli with some infrequent occurring target stimuli is applied, is called the oddball paradigm\cite{PaperThibault}. It is known that this technique triggers an increase in the potential difference in the EEG around the parietal lobe. This Event Related Potential (ERP) occurs +- 300 milliseconds after the stimuli is flashed, hence its name, the P300 waveform\cite{ComparisonClassifications}. The presence or absence of the P300 waveform is used by the P300 speller to determine what character the subject was focusing on, which basically allows the subject to spell text. 
 
 \mijnfiguur{width=0.7\textwidth}{P300SpellerPerson}{Different parts of the P300 speller, found at \cite{P300SpellerPerson}.}
 
 \clearpage
 
-To improve the spelling time many improvements and research has been done. Language models were used to predicted the word based on the first characters, which enabled great speedups\cite{LangModel}, classifiers were compared and tested on both healthy\cite{ClassTechniqueComp} and unhealthy subjects\cite{ComparisonClassifications}. Since many unhealthy subjects might have an impaired vision or eye movement, tactile\cite{TactileP300} and auditory\cite{AuditoryP300} spellers have been developed to circumvent this problem.
+To improve the spelling time many improvements and research has been done. Language models were used to predict the word based on the first characters, which enabled great speedups\cite{LangModel}, classifiers were compared and tested on both healthy\cite{ClassTechniqueComp} and unhealthy subjects\cite{ComparisonClassifications}. Since many unhealthy subjects might have an impaired vision or eye movement, tactile\cite{TactileP300} and auditory\cite{AuditoryP300} spellers have been developed to circumvent this problem.
 
 \npar
 
@@ -21,7 +21,7 @@ To improve accuracy, common problems such as adjacency distraction, when a subje
 
 \npar
 
-To further speedup the spelling, error potentials were explored. Error potentials are triggered when the user becomes aware of en erroneous action\cite{ErrorPotentials}, i.e. when a wrong character is selected. When an Error potential is detected, the character is usually changed to the second most probable character according to the P300 decoding\cite{ErrSecChar}, which is the most viable character.
+To further speedup the spelling, error potentials were explored. Error potentials are triggered when the user becomes aware of an erroneous action\cite{ErrorPotentials}, i.e. when a wrong character is selected. When an Error potential is detected, the character is usually changed to the second most probable character according to the P300 decoding\cite{ErrSecChar}, which is the most viable character.
 
 \subsection{Unsupervised P300 speller}
 
@@ -44,7 +44,7 @@ Research with visual stimuli on healthy subjects, show that emotion has an effec
 
 \npar
 
-Interestingly, the P300 amplitudes were significantly larger for woman than for men. Additionally women showed lower amplitudes for for pleasure than neutrality or sadness while man showed smaller amplitudes for pleasure then either neutral or sadness. 
+Interestingly, the P300 amplitudes were significantly larger for woman than for men. Additionally women showed lower amplitudes for pleasure than neutrality or sadness while man showed smaller amplitudes for pleasure then either neutral or sadness. 
 
 \subsection{Ethical issues}
 
