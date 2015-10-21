@@ -1,17 +1,69 @@
 \chapter{Introduction}
-{\samenvatting This chapter described the context of the thesis, starting with explaining the P300 speller and P300 paradigm, before justifying the need for an emotionally aware P300 speller.}
+%TODO {\samenvatting This chapter described the context of the thesis, starting with explaining the P300 speller and P300 paradigm, before justifying the need for an emotionally aware P300 speller.}
 
-%\begin{chapquote}{R.W. Picard, J. Klein\cite{CompRecognizeEmotion}}
-%Bad feelings do not necessarily cause bad things to happen: mild irritations that simmer and create distress %or frustration, then boil into anger, can serve as impetus to find a better way.
-%\end{chapquote}
 
-\section{The P300 speller}
-\subsection{The P300 speller explained}
-The P300 speller is an active topic of research that uses EEG data to enable persons with the locked in syndrome to communicate\cite{P300Origin}. The basic version uses a six by six grid of characters, each row and column is flashed in a random order while the subject silently counts the number of flashes of a certain character, as shown in figure \ref{P300SpellerPerson}. This procedure, where a train of stimuli with some infrequent occurring target stimuli is applied, is called the oddball paradigm\cite{PaperThibault}. It is known that this technique triggers an increase in the potential difference in the EEG around the parietal lobe. This Event Related Potential (ERP) occurs +- 300 milliseconds after the stimuli is flashed, hence its name, the P300 waveform\cite{ComparisonClassifications}. The presence or absence of the P300 waveform is used by the P300 speller to determine what character the subject was focusing on, which basically allows the subject to spell text. 
+\section{Brain computer interfaces}
 
-\mijnfiguur{width=0.7\textwidth}{P300SpellerPerson}{Different parts of the P300 speller, found at \cite{P300SpellerPerson}.}
+%TODO inleiding
+
+\subsection{Electroencephalography (EEG)}
+Different technologies exist to analyse the brain, the most convenient method is via Electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery; they simply measure electrical activity using electrodes placed on the scalp.
+
+\npar
+
+The electrical activity in a brain is caused when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighboring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significantly, making it visible to the surface electrodes. The surface electrodes can thus only capture synchronized activity of many, many neurons.
+
+\npar
+
+Signals originating from the cortex, close to the skull, are most visible, but signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally other artifacts like eye and muscle movement add a lot a noise to the signal, that has to be removed. Even though the noise is persistent and has very low spatial resolution, EEG data can provide significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
+
+\npar
+
+Note that EEG records electrical activity, other methods like magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} measure brain activity using magnetic fields. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile. 
 
 \clearpage
+
+EEG uses electrodes that are placed on the scalp to measure the electrical activity. To ensure that experiments are replicable, standards for locations of electrodes have been developed. One of these systems is the 10/20 system, an internationally recognized methods to describe location of scalp electrodes\cite{TenTwentyManual}. The numbers 10 and 20 refer to the distances between the electrodes, which are either 10\% or 20\% of the total front-back or left-right distance of the skull. Each site is identified with a letter that determines the lobe and hemisphere location.
+\begin{itemize}
+\item \textbf{F:} Frontal
+\item \textbf{T:} Temporal
+\item \textbf{C:} Central
+\item \textbf{P:} Parietal
+\item \textbf{O:} Occipital
+\end{itemize}
+Note that no central lobe exists; the C letter is only used for identification purposes. The letter z indicates that the electrode is placed on the central line. Even numbers are use for the right hemisphere, while odd numbers are used for the left hemisphere. A picture of a 23 channel 10/20 system is added below for clarification. Note that some experiments may use more channels than shown in figure \ref{1020ElectrodePlacementSystem}, but they all follow the same naming convention.
+
+\mijnfiguur{width=0.9\textwidth}{1020ElectrodePlacementSystem}{The electrode placement of a 23 channel system\cite{1020Site}.}
+
+Two different types of EEG channels exist, monopolar and dipolar. A monopolar channel records the potential difference of a signal, compared to a neutral electrode, usually connected to an ear lobe of mastoid. A bipolar channel is obtained by subtracting two monopolar EEG signals, which improves SNR by removing shared artifacts\cite{MonoBiPolar}. 
+
+\clearpage
+
+In the frequency domain, brain waves are usually split up into different bands\cite{EmotionRelativePower,WavesSite}. These wavebands are:
+\begin{enumerate}
+\item \textbf{Alpha:} 8-13Hz, indicate how relaxed and/or inactive the brain is.
+\item \textbf{Beta:} 13-30HZ, indicate a more active and focused state of mind.
+\item \textbf{Gamma:} 30-50Hz, relate to simultaneous processing of information from different brain areas.
+\item \textbf{Delta:} 0-4hz, these waves are generated during dreamless sleep and meditation.
+\item \textbf{theta:} 4-8Hz, occur during dreaming.
+\end{enumerate}
+Most muscle and eye artifacts have a frequency around 1.2Hz. Artificats caused by nearby power lines, have a frequency around 50Hz\cite{ExtendedPaper}. To remove most of this noise, a bandpass filter is usually applied to filter out frequencies below 4Hz and above 40-45Hz.
+
+\subsubsection{Event related potentials}
+
+An Event related potential (ERP)\nomenclature{ERP}{Event Related Potential}, is a measured brain response to an event, measured by EEG or MEG. The ERP nomenclature usually starts with a letter that indicates the polarity: the P corresponds to a positive polarity, while the N indicates a negative polarity. The number indicates the mean latency, measured between the ERP and the stimulus, which might may variate significantly between subjects.
+
+\npar
+
+The most important one is the P300 wave, which is usually elicited using the oddball paradigm; when a low probability target item occurs between high probability items. It consists of two components, the P3a with a latency of 240ms and the P3b with a latency of 350 ms\cite{P300TwoParts}. The later component, P3b only occurs when the subject actively counted either the targeted or more frequent stimuli.
+
+\mijnfiguur{width=0.6\textwidth}{waves}{The Different ERP linked to an oddball paradigm, found at\cite{P300Figure}.}
+
+\subsection{The P300 speller}
+
+The P300 speller is an active topic of research that uses EEG data to enable persons with the locked in syndrome to communicate\cite{P300Origin}. The basic version uses a six by six grid of characters, each row and column is flashed in a random order while the subject silently counts the number of flashes of a certain character, as shown in figure \ref{P300SpellerPerson}. This procedure, where a train of stimuli with some infrequent occurring target stimuli is applied, is called the oddball paradigm\cite{PaperThibault}. It is known that this technique triggers an increase in the potential difference in the EEG around the parietal lobe. This ERP occurs +- 300 milliseconds after the stimuli is flashed, hence its name, the P300 waveform\cite{ComparisonClassifications}. The presence or absence of the P300 waveform is used by the P300 speller to determine what character the subject was focusing on, which basically allows the subject to spell text. 
+
+\mijnfiguur{width=0.7\textwidth}{P300SpellerPerson}{Different parts of the P300 speller, found at \cite{P300SpellerPerson}.}
 
 To improve the spelling time many improvements and research has been done. Language models were used to predict the word based on the first characters, which enabled great speedups\cite{LangModel}, classifiers were compared and tested on both healthy\cite{ClassTechniqueComp} and unhealthy subjects\cite{ComparisonClassifications}. Since many unhealthy subjects might have an impaired vision or eye movement, tactile\cite{TactileP300} and auditory\cite{AuditoryP300} spellers have been developed to circumvent this problem.
 
@@ -23,33 +75,88 @@ To improve accuracy, common problems such as adjacency distraction, when a subje
 
 To further speedup the spelling, error potentials were explored. Error potentials are triggered when the user becomes aware of an erroneous action\cite{ErrorPotentials}, i.e. when a wrong character is selected. When an Error potential is detected, the character is usually changed to the second most probable character according to the P300 decoding\cite{ErrSecChar}, which is the most viable character.
 
-\subsection{Unsupervised P300 speller}
+\clearpage
 
 The basic P300 speller needs a calibration period before it can be used, when a healthy subject makes a mistake during calibration, he can communicate this and the problem can be resolved. This is not the case for a patient, who has no other means of communication than the P300 speller. Having wrongly labeled data during calibration can lead to severe problems. The unsupervised speller as proposed in \cite{P300Unsupervised} solves this problem by removing the need for a calibration procedure. The speller works with expectation maximization and has an undemanding linear classification backend and achieves good results, after a warm-up period when the system is adapting to the given condition.
 
+\section{Emotion recognition}
 
-\section{Benefits of creating an emotionally aware P300 speller}
+How does one define emotion? Psychology makes a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. The expression consists of many parts, including the facial expression, body language and voice concern. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion. One possibility for this is analysis of brain activity via Electroencephalography\cite{EEGDatasets}.
+
+
+\subsection{Emotion in the brain}
+
+%\subsection{Arousal - valence (- dominance) classification}
+Before emotions can be recognized, a classification model is needed. A common model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, that places emotions in a two dimensional space. The main advantage of using a multidimensional model, is that all emotions are modeled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
+
+\npar
+
+Since this thesis aims to recognize emotion and change in emotion when a subject performs several erroneous actions, the continuous space model is the best choice, since it enables to track the change in the emotional space continuously.
+
+\mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.}
+
+\subsubsection{Determining arousal}
+
+Arousal can be determined in several ways. A first methods for the arousal recognition uses only alpha and beta bands. the Alpha band corresponds with a relaxed state and is often connected to brain inactivity\cite{ExtendedPaper,RealTimeEEGEmotion}. Beta waves, on the other hand, are an indication that the brain is a more active state or has a higher level of arousal. Combining these two parameters gives the beta/alpha ratio as an indication of the arousal level. 
+
+\npar
+
+Other methods are based on the EEG coherence across the prefrontal and posterior beta oscillations, which is known to increase when high arousal images are viewed. Additionally, the gamma power is said to increase with arousal with a delay of 500ms\cite{GivenPaper}.
+
+\subsubsection{Determining valence}
+
+The most known and used feature is the frontal asymmetry of the alpha power\cite{GivenPaper}.
+The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets}. The assymmetry is given for L and R being the Left and Right frontal alpha powers as:\\
+\begin{center}
+$Index = \frac{L-R}{L+R}$
+\end{center}
+Computing the spectral power of the alpha band is possible via e.g. the fast fourier transform or wavelet transform.
+
+\npar
+
+It is also possible to include beta waves in the process. High alpha rates correspond with an inactive brain, while high beta waves with an active brain. Looking for an increase in beta activity and a decrease in alpha activity at one side, while the other hemisphere should show an increase in alpha waves and a decrease of beta waves as indication that is becomes less active, offers an insight to the frontal asymmetry and thus the valence\cite{ExtendedPaper}. 
+
+\npar
+
+Another feature is the frontal midline (Fm)\nomenclature{Fm}{Frontal Midline} theta power, that is shown to increase with increasing pleasant ratings for audio stimuli\cite{MusicPaper}. %Gamma phase synchronization increases for unpleasant images.
+
+\subsubsection{Datasets}
+One of the most used datasets is the Dataset for Emotion Analysis using Physiological Signals (DEAP)\nomenclature{DEAP}{Dataset for Emotion Analysis using Physiological Signals} dataset\cite{DEAP}. This dataset contains EEG samples at 512 Hz of 32 persons each viewing 40 videos. A preprocessed version of this dataset, that is down sampled and has EOG removal will be used extensively during this thesis.
+
+\npar
+
+Furthermore, the center for the study of emotion and attention (CSEA)\nomenclature{CSEA}{Center for the Study of Emotion and Attention}, by the university of Florida made several visual datasets available:
+\begin{itemize}
+\item \textbf{IAPS:} International Affective Picture System\nomenclature{IAPS}{International Affective Picture System}\\
+This dataset consists of a large set op emotional stimuli in the form of color photographs.
+\item \textbf{IADS:} International Affective Digital Sounds \nomenclature{IADS}{International Affective Digital Sounds}\\
+This dataset consists of acoustic emotional stimuli designed for investigation and research of emotion and attention.
+\item \textbf{ANEW:} Affective Norms for English Words\nomenclature{ANEW}{Affective Norms for English Words}\\
+This dataset provides a set of emotional ratings for a large number of english words.
+\item \textbf{ANET:} Affective Norms for English Text\nomenclature{ANET}{Affective Norms for English Text}\\
+This set provides normative ratings of emotion for a large set of brief texts.
+\item \textbf{SAM:} Self-Assessment Manikin\nomenclature{SAM}{Self-Assessment Manikin}\\
+A non-verbal pictorial assessment technique that measures the pleasure, arousal and dominance associated with a person's affective reaction to a wide variety of stimuli.
+\end{itemize}
+The stimuli from these sets are often used in experiments to trigger emotions\cite{ExtendedPaper, EmotionSite, RealTimeEEGEmotion, EEGDatasets}.
+
+
+\subsection{Benefits of creating an emotionally aware P300 speller}
 
 Emotions play a major role in non-verbal communication, are quite complex and essential to understand human behavior. The ability to recognize emotions will improve the ability of computers to understand human interaction\cite{CompRecognizeEmotion} and are likely to improve the P300 speller's accuracy.
 
-\subsection{Aid in Error potential detection}
+\npar
 
 To improve the detection of error potentials, emotion can be used. It is expected that when a person makes a lot of mistakes, his/her emotional state will change to a less happy, more frustrated state. Making the speller emotionally aware, could improve the detection of error potentials.
 
+\npar
+
+Research with visual stimuli on healthy subjects, show that emotion has an effect on the auditory P300 wave\cite{AuditoryP300Effect}. Both the P300 peak amplitude and area was highest when viewing neutral pictures and descended further, in decreasing order, for sadness, anger and pleasure. The amplitudes were significantly lower at both Fz and C3 positions than Pz and Oz. The latency of the P300 ERP speller was shortest or neutrality and in increasing order longer for pleasure, anger and sadness. Interestingly, the P300 amplitudes were significantly larger for woman than for men. Additionally women showed lower amplitudes for pleasure than neutrality or sadness while man showed smaller amplitudes for pleasure then either neutral or sadness. 
+
+\npar
+
+Contrary to what subjects might think, the P300 speller is unable to read the mind and know what a person is thinking about\cite{P300Origin}. The P300 speller provides no more than a means of communication that the subject can use. Should he chose to ignore the instructions and focus his attention elsewhere, then the recordings become useless. Knowing how the subject feels, can help him communicate more humane on one hand, while providing more insight for ethical issues, on the other hand, e.g. "How does the subject think about the P300 speller recording and analyzing his brain activity?". Information about the subject's emotional state can help answer some of these ethical questions.
+
 \clearpage
 
-\subsection{Effect on the P300 wave}
-
-Research with visual stimuli on healthy subjects, show that emotion has an effect on the auditory P300 wave\cite{AuditoryP300Effect}. Both the P300 peak amplitude and area was highest when viewing neutral pictures and descended further, in decreasing order, for sadness, anger and pleasure. The amplitudes were significantly lower at both Fz and C3 positions than Pz and Oz. The latency of the P300 ERP speller was shortest or neutrality and in increasing order longer for pleasure, anger and sadness. 
-
-\npar
-
-Interestingly, the P300 amplitudes were significantly larger for woman than for men. Additionally women showed lower amplitudes for pleasure than neutrality or sadness while man showed smaller amplitudes for pleasure then either neutral or sadness. 
-
-\subsection{Ethical issues}
-
-Contrary to what subjects might think, the P300 speller is unable to read the mind and know what a person is thinking about\cite{P300Origin}. The P300 speller provides no more than a means of communication that the subject can use. Should he chose to ignore the instructions and focus his attention elsewhere, then the recordings become useless.
-
-\npar
-
-Knowing how the subject feels, can help him communicate more humane on one hand, while providing more insight for ethical issues, on the other hand, e.g. "How does the subject think about the P300 speller recording and analyzing his brain activity?". Information about the subject's emotional state can help answer some of these ethical questions.
+\section{Goal of the thesis}
