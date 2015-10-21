@@ -1,10 +1,11 @@
 \chapter{Introduction}
-%TODO {\samenvatting This chapter described the context of the thesis, starting with explaining the P300 speller and P300 paradigm, before justifying the need for an emotionally aware P300 speller.}
+{\samenvatting This chapter describes the context of the thesis, starting with brain computer interfaces(BCI), before defining some BCI basics. After that, the P300 speller and P300 paradigm are introduced. Before the need for an emotionally aware P300 speller is justified, the basic process of emotion in the brain is explained.}
 
 
 \section{Brain computer interfaces}
 
-%TODO inleiding
+A Brain Computer Interface (BCI)\nomenclature{BCI}{Brain Computer Interface}, creates a direct neural link from the brain to the computer\cite{LangModel}, that tries to recognize patterns and based on the extracted information, performs actions. A BCI removes to need for physical actions, i.e. typing or moving a mouse, for the transfer of information. The neural link provided by the BCI is made of two important components. First component is the extraction component, interfaces with the brain to extract brain signals. The second component is the computer that interprets the signals and performs actions based on the outcome.
+
 
 \subsection{Electroencephalography (EEG)}
 Different technologies exist to analyse the brain, the most convenient method is via Electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery; they simply measure electrical activity using electrodes placed on the scalp.
@@ -21,8 +22,6 @@ Signals originating from the cortex, close to the skull, are most visible, but s
 
 Note that EEG records electrical activity, other methods like magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} measure brain activity using magnetic fields. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile. 
 
-\clearpage
-
 EEG uses electrodes that are placed on the scalp to measure the electrical activity. To ensure that experiments are replicable, standards for locations of electrodes have been developed. One of these systems is the 10/20 system, an internationally recognized methods to describe location of scalp electrodes\cite{TenTwentyManual}. The numbers 10 and 20 refer to the distances between the electrodes, which are either 10\% or 20\% of the total front-back or left-right distance of the skull. Each site is identified with a letter that determines the lobe and hemisphere location.
 \begin{itemize}
 \item \textbf{F:} Frontal
@@ -36,8 +35,6 @@ Note that no central lobe exists; the C letter is only used for identification p
 \mijnfiguur{width=0.9\textwidth}{1020ElectrodePlacementSystem}{The electrode placement of a 23 channel system\cite{1020Site}.}
 
 Two different types of EEG channels exist, monopolar and dipolar. A monopolar channel records the potential difference of a signal, compared to a neutral electrode, usually connected to an ear lobe of mastoid. A bipolar channel is obtained by subtracting two monopolar EEG signals, which improves SNR by removing shared artifacts\cite{MonoBiPolar}. 
-
-\clearpage
 
 In the frequency domain, brain waves are usually split up into different bands\cite{EmotionRelativePower,WavesSite}. These wavebands are:
 \begin{enumerate}
@@ -57,7 +54,7 @@ An Event related potential (ERP)\nomenclature{ERP}{Event Related Potential}, is 
 
 The most important one is the P300 wave, which is usually elicited using the oddball paradigm; when a low probability target item occurs between high probability items. It consists of two components, the P3a with a latency of 240ms and the P3b with a latency of 350 ms\cite{P300TwoParts}. The later component, P3b only occurs when the subject actively counted either the targeted or more frequent stimuli.
 
-\mijnfiguur{width=0.6\textwidth}{waves}{The Different ERP linked to an oddball paradigm, found at\cite{P300Figure}.}
+\mijnfiguur{width=0.45\textwidth}{waves}{The Different ERP linked to an oddball paradigm, found at\cite{P300Figure}.}
 
 \subsection{The P300 speller}
 
@@ -123,7 +120,7 @@ Another feature is the frontal midline (Fm)\nomenclature{Fm}{Frontal Midline} th
 \subsubsection{Datasets}
 One of the most used datasets is the Dataset for Emotion Analysis using Physiological Signals (DEAP)\nomenclature{DEAP}{Dataset for Emotion Analysis using Physiological Signals} dataset\cite{DEAP}. This dataset contains EEG samples at 512 Hz of 32 persons each viewing 40 videos. A preprocessed version of this dataset, that is down sampled and has EOG removal will be used extensively during this thesis.
 
-\npar
+\clearpage
 
 Furthermore, the center for the study of emotion and attention (CSEA)\nomenclature{CSEA}{Center for the Study of Emotion and Attention}, by the university of Florida made several visual datasets available:
 \begin{itemize}
@@ -160,3 +157,9 @@ Contrary to what subjects might think, the P300 speller is unable to read the mi
 \clearpage
 
 \section{Goal of the thesis}
+
+This thesis aims to improve the performance of the P300 speller by making the speller emotionally aware, which gives them a lot of benefits, as explained before. An emotionally aware speller is expected to yield better performance, since the P300 wave is affected by the emotion. Additionally, the detection of error potentials can be combined with the emotional state, since the emotional state is expected to change with increasing errors.
+
+\npar
+
+Introducing emotion in the P300 speller, provides not only technological benefits, knowing the emotional state of a human, can provide insight that enables us to research some typical ethical questions, i.e. "how does the person feel about the recording and analysis of his brain activity?"
