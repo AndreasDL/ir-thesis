@@ -4,19 +4,19 @@
 
 \section{Brain computer interfaces}
 
-A Brain Computer Interface (BCI)\nomenclature{BCI}{Brain Computer Interface}, creates a direct neural link from the brain to the computer\cite{LangModel}, that tries to recognize patterns and based on the extracted information, performs actions. A BCI removes to need for physical actions, i.e. typing or moving a mouse, for the transfer of information. The neural link provided by the BCI is made of two important components. First component is the extraction component, interfaces with the brain to extract brain signals. The second component is the computer that interprets the signals and performs actions based on the outcome.
+A Brain Computer Interface (BCI)\nomenclature{BCI}{Brain Computer Interface}, creates a direct neural link from the brain to the computer\cite{LangModel}, that tries to recognize patterns and based on the extracted information, performs actions. A BCI removes to need for physical actions, i.e. typing or moving a mouse, for the transfer of information. The neural link provided by the BCI is made of two important components. The first component is the extraction component, which extract brain signals from the brain. The second component is the computer that interprets signals and performs actions based on the outcome.
 
 
 \subsection{Electroencephalography (EEG)}
-Different technologies exist to analyse the brain, the most convenient method is via Electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery; they simply measure electrical activity using electrodes placed on the scalp.
+Different technologies exist to analyze the brain, the most convenient method is via Electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery; they simply measure electrical activity using electrodes placed on the scalp.
 
 \npar
 
-The electrical activity in a brain is caused when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighboring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significantly, making it visible to the surface electrodes. The surface electrodes can thus only capture synchronized activity of many, many neurons.
+The electrical activity in a brain is caused when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighboring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significantly, making it visible to the EEG surface electrodes. EEG can thus only capture synchronized activity of many, many neurons.
 
 \npar
 
-Signals originating from the cortex, close to the skull, are most visible, but signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally other artifacts like eye and muscle movement add a lot a noise to the signal, that has to be removed. Even though the noise is persistent and has very low spatial resolution, EEG data can provide significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
+Signals originating from the cortex, close to the skull, are most visible, while signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally other artifacts like eye and muscle movement add a lot a noise to the signal, that has to be removed. Even though the noise is persistent and has very low spatial resolution, EEG data can provide significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
 
 \npar
 
@@ -158,8 +158,18 @@ Contrary to what subjects might think, the P300 speller is unable to read the mi
 
 \section{Goal of the thesis}
 
-This thesis aims to improve the performance of the P300 speller by making the speller emotionally aware, which gives them a lot of benefits, as explained before. An emotionally aware speller is expected to yield better performance, since the P300 wave is affected by the emotion. Additionally, the detection of error potentials can be combined with the emotional state, since the emotional state is expected to change with increasing errors.
+This thesis aims to improve the performance of the P300 speller by making the speller emotionally aware. An emotional aware speller is expected to yield better performance, since the P300 wave is affected by the emotion. Furthermore, the detection of error potentials can be combined with the emotional state, since the emotional state is expected to change with increasing errors.
 
 \npar
 
-Introducing emotion in the P300 speller, provides not only technological benefits, knowing the emotional state of a human, can provide insight that enables us to research some typical ethical questions, i.e. "how does the person feel about the recording and analysis of his brain activity?"
+More concrete, the main goal is to recognize emotions in the arousal-valence model, using the DEAP dataset. First the emotions of a single person should be recognized, since the features are known to differ from person to person. Later, the model will be adjusted so that it is capable of detecting emotion of different persons. Once the emotion recognition is able to classify the emotions with decent accuracy, it will be integrated in the P300 speller, which should give additional accuracy and aid in the error potential detection. The expected results are:
+\begin{itemize}
+\item Being able to recognize emotions of a single person
+\item Being able to recognize emotions across different persons
+\item Improved accuracy for the P300 speller
+\item Improved error potential recognition for the P300 speller
+\end{itemize}
+
+\npar
+
+Additionally the gained information for emotion recognition can be used for other ethical research studies, to answer ethical questions about the usage of BCI on patients.
