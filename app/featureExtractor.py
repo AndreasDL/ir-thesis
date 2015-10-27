@@ -76,13 +76,18 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 
 	Fs = 128 #samples have freq 128Hz
 
+	#hamming window to smoothen edges
+	ham = np.hamming(len(samplesAtChannel))
+	samplesAtChannel = np.multiply(samplesAtChannel, ham)
+
+
 	#select only certain time
 	offsetStartIndex = offsetStartTime * Fs       #fix offset
 	offestStopIndex = offsetStopTime * Fs
 	samplesAtOffset = samplesAtChannel[offsetStartIndex:offestStopIndex]
 	n = len(samplesAtOffset)
 
-	#bandpass filter to get wavemand
+	#bandpass filter to get waveband
 	nyq = 0.5 * Fs
 	low = startFreq[waveband] / nyq
 	high = stopFreq[waveband] / nyq
@@ -94,12 +99,14 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 	Y = Y[range(round(n/2))]
 
 	#show result of bandpass filter
-	#frq = np.arange(n)*Fs/n # two sides frequency range
-	#freq = frq[range(round(n/2))]           # one side frequency range
-	#plt.plot(freq, abs(Y), 'r-')
-	#plt.xlabel('freq (Hz)')
-	#plt.ylabel('|Y(freq)|')
-	#plt.show()
+	frq = np.arange(n)*Fs/n # two sides frequency range
+	freq = frq[range(round(n/2))]           # one side frequency range
+	plt.plot(freq, abs(Y), 'r-')
+	plt.xlabel('freq (Hz)')
+	plt.ylabel('|Y(freq)|')
+	plt.show()
+
+	exit()
 
 	#Root Mean Square
 	value = 0
