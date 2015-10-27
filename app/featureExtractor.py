@@ -64,7 +64,6 @@ relevantElectrodeNames = ['Left alpha', 'Right alpha', 'L/R alpha', 'log L - log
 #	'FC5', 'FC6'
 ]
 
-
 def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopTime = 63):
 	#turn bands into frequency ranges
 	startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
@@ -114,9 +113,72 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 		value += abs(Y[i]) **2
 
 	return np.sqrt( value / len(Y) )
-	#return np.sqrt(value / n)
 
-#def getSpectralDensity(waveband, samplesAtChannel,offsetStartTime=0,offsetStopTime=63):
+
+
+def getFrequencyPowerDensity(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopTime = 63):
+	#turn bands into frequency ranges
+	startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
+	stopFreq = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
+
+	if not (waveband in startFreq and waveband in stopFreq):
+		print("Error Wrong waveband selection for frequencyPower. you selected:", waveband)	
+		exit(-1)
+
+	#chunks of 2 seconds
+	Fs = 128 #samples have freq 128Hz
+	intervalsize = 2 * Fs #size of one interval
+
+	#75% overlap => each chunck starts intervalsize/4 later
+	for startIndex in range(0,len(samplesAtChannel), round(intervalsize/4)):
+		
+		stopIndex = startIndex + intervalsize
+		samples = samplesAtChannel[startIndex:stopIndex]
+		n = len(samples) #equal to intervalsize, except for last part
+		
+		#bandpass filter to get waveband
+		nyq = 0.5 * Fs
+		low = startFreq[waveband] / nyq
+		high = stopFreq[waveband] / nyq
+		b, a = butter(6, [low, high], btype='band')
+		samples = lfilter(b, a, samples)	
+
+		#hamming window to smoothen edges
+		ham = np.hamming(n)
+		samples = np.multiply(samples, ham)
+
+		#fft => get power components
+		# fft computing and normalization
+		Y = np.fft.fft(samples)/n
+		Y = Y[range(round(n/2))]
+
+		#average
+		avg = 0
+		for i in range(len(Y)):
+			avg += abs(Y[i])
+		avg /= len(Y)
+
+		#convert to power density
+
+
+
+
+	#show the power spectrum
+	frq = np.arange(n)*Fs/n # two sides frequency range
+	freq = frq[range(round(n/2))]           # one side frequency range
+	plt.plot(freq, abs(Y), 'r-')
+	plt.xlabel('freq (Hz)')
+	plt.ylabel('|Y(freq)|')
+	plt.show()
+
+	exit()
+
+	#Root Mean Square
+	value = 0
+	for i in range(len(Y)):
+		value += abs(Y[i]) **2
+
+	return np.sqrt( value / len(Y) )
 
 
 def LRFraction(samples,offsetStartTime=0,offsetStopTime=63):
@@ -174,8 +236,8 @@ def alphaBetaRatio(samples,offsetStartTime=0,offsetStopTime=63):
 def calculateFeatures(samples):
 	retArray = np.empty(0)
 	
-	LeftAlpha  = getFrequencyPower('alpha',samples[channelNames['F3']])
-	RightAlpha = getFrequencyPower('alpha',samples[channelNames['F4']])
+	LeftAlpha  = getFrequencyPowerDensity('alpha',samples[channelNames['F3']])
+	RightAlpha = getFrequencyPowerDensity('alpha',samples[channelNames['F4']])
 
 	#retArray = np.append(retArray, F3alpha)
 	#retArray = np.append(retArray, F4alpha)
