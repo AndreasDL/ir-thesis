@@ -2,7 +2,7 @@ import pickle
 import numpy as np
 from sklearn import linear_model
 import featureExtractor as FE
-
+from sklearn.decomposition import PCA
 from pprint import pprint
 
 
@@ -59,9 +59,9 @@ def loadMultiPersonData(train_fileCount, test_fileCount, pad='dataset/s'):
 def loadSinglePersonData(person, trainVideoCount, pad='dataset/s'):
 	featureCount = 1#len(FE.relevantElectrodeNames)
 
-	x_train = np.zeros((0, featureCount)) # .. x 1 feature
+	x_train = []#np.zeros((0, featureCount)) # .. x 1 feature
 	y_train = np.zeros((trainVideoCount, 1)) # .. x 1 label
-	x_test  = np.zeros((0, featureCount)) # .. x 1 feature
+	x_test  = []#np.zeros((0, featureCount)) # .. x 1 feature
 	y_test  = np.zeros((40-trainVideoCount, 1)) # .. x 1 label
 
 	fname = str(pad)
@@ -81,9 +81,13 @@ def loadSinglePersonData(person, trainVideoCount, pad='dataset/s'):
 
 		#split single person in test and train set
 		for j in range(trainVideoCount): #for each video
-			x_train = np.append( x_train, [FE.calculateFeatures(data['data'][j])] , 0 )
+			x_train.append( FE.calculateFeatures(data['data'][j]) )
 		
 		for j in range(len(data['data']) - trainVideoCount): #for each video
-			x_test = np.append( x_test, [FE.calculateFeatures(data['data'][j + trainVideoCount])] , 0 )
+			x_test.append( FE.calculateFeatures(data['data'][j + trainVideoCount]) )
 
-	return [x_train, y_train, x_test, y_test]
+		#PCA?
+		pca = PCA(n_components=1)
+		x_train = pca.fit_transform(x_train,y_train)
+		
+	return [np.array(x_train), y_train, np.array(x_test), y_test]
