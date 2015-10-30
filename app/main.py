@@ -26,6 +26,7 @@ def regression():
 
 if __name__ == "__main__":
 	regression()
+	
 	exit()
 
 	(x_train, y_train, x_test, y_test) = DL.loadSinglePersonData(7,40)

@@ -3,14 +3,16 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from pprint import pprint
 
-def plot2D(x,y, labelX='X label', labelY='Y label'):
-	plt.scatter(x, y,  color='black')
+def plot2D(x,y, labelX='X label', labelY='Y label', title=''):
+	plt.plot(x, y, '-o')# color='black')
 
 	plt.xlabel(labelX)
 	plt.ylabel(labelY)
 
 	plt.xticks(())
 	plt.yticks(())
+	
+	plt.show()
 
 def plot2DSub(x,y,labelsX,labelY):
 	# Four axes, returned as a 2-d array

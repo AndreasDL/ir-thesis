@@ -57,11 +57,10 @@ def loadMultiPersonData(train_fileCount, test_fileCount, pad='dataset/s'):
 	return [x_train, y_train, x_test, y_test]
 
 def loadSinglePersonData(person, trainVideoCount, pad='dataset/s'):
-	featureCount = 1#len(FE.relevantElectrodeNames)
 
-	x_train = []#np.zeros((0, featureCount)) # .. x 1 feature
+	x_train = []
 	y_train = np.zeros((trainVideoCount, 1)) # .. x 1 label
-	x_test  = []#np.zeros((0, featureCount)) # .. x 1 feature
+	x_test  = []
 	y_test  = np.zeros((40-trainVideoCount, 1)) # .. x 1 label
 
 	fname = str(pad)
@@ -86,8 +85,6 @@ def loadSinglePersonData(person, trainVideoCount, pad='dataset/s'):
 		for j in range(len(data['data']) - trainVideoCount): #for each video
 			x_test.append( FE.calculateFeatures(data['data'][j + trainVideoCount]) )
 
-		#PCA?
-		pca = PCA(n_components=1)
-		x_train = pca.fit_transform(x_train,y_train)
+
 		
 	return [np.array(x_train), y_train, np.array(x_test), y_test]

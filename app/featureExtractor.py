@@ -1,3 +1,7 @@
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
+
 import numpy as np
 from sklearn import preprocessing as PREP
 from sklearn.decomposition import PCA
@@ -240,7 +244,7 @@ def calculateFeatures(samples):
 	values = []
 
 	#75% overlap => each chunck starts intervalsize/4 later
-	for startIndex in range(0,len(LeftChannel), round(intervalsize/4)):
+	for startIndex in range( 7 * round(intervalsize/4), int(len(LeftChannel)/12), round(intervalsize/4)):
 		stopIndex = startIndex + intervalsize
 		left_samples  = LeftChannel[startIndex:stopIndex]
 		right_samples = RightChannel[startIndex:stopIndex]
