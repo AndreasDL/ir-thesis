@@ -117,7 +117,7 @@ def getFrequencyPowerDensity(waveband, samplesAtChannel, intervalLength):
 
 	#75% overlap => each chunck starts intervalsize/4 later
 	for startIndex in range(0, len(samplesAtChannel), round(intervalsize/4)):
-		
+
 		stopIndex = startIndex + intervalsize
 		samples = samplesAtChannel[startIndex:stopIndex]
 		n = len(samples) #equal to intervalsize, except for last part
@@ -141,8 +141,9 @@ def getFrequencyPowerDensity(waveband, samplesAtChannel, intervalLength):
 		#average within one chunck
 		avg = 0
 		for i in range(len(Y)):
-			avg += abs(Y[i])
+			avg += abs(Y[i]) **2
 		avg /= len(Y)
+		avg = np.sqrt(avg)
 
 		#add to values
 		retArr = np.append(retArr, avg )

@@ -7,10 +7,7 @@ import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-import numpy as np
-from pprint import pprint
-
-def regression():
+if __name__ == "__main__":
 	trainVideos = 32
 
 	#load trainSet
@@ -32,8 +29,3 @@ def regression():
 		'\n\tTrain error: ', train_err,
 		'\n\tTest error: ' , test_err
 	)
-
-if __name__ == "__main__":
-	regression()
-	
-	exit()
