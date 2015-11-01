@@ -11,7 +11,7 @@ import numpy as np
 from pprint import pprint
 
 def regression():
-	trainVideos = 40
+	trainVideos = 32
 
 	#load trainSet
 	#y_train: holds all valence values for each movie
@@ -19,16 +19,21 @@ def regression():
 	#similar for test set
 	(x_train, y_train, x_test, y_test) = DL.loadSinglePersonData(7,trainVideos)
 
-	models.linReg(x_train,y_train,x_test,y_test)
-	models.ridgeReg(x_train,y_train,x_test,y_test)
+	#linear regression
+	train_err, test_err, regr = models.linReg(x_train,y_train,x_test,y_test)
+	print('model: linear',
+		'\n\tTrain error: ', train_err,
+		'\n\tTest error: ' , test_err
+	)
 
-	#plotters.plot3D(x_train[0], x_train[1], y_train, 'leftPower', 'rightPower', 'Valence' )
+	#ridge regression
+	train_err, test_err, regr = models.ridgeReg(x_train, y_train, x_test, y_test, cvSets=2)
+	print('model: ridge',
+		'\n\tTrain error: ', train_err,
+		'\n\tTest error: ' , test_err
+	)
 
 if __name__ == "__main__":
 	regression()
 	
 	exit()
-
-	(x_train, y_train, x_test, y_test) = DL.loadSinglePersonData(7,40)
-
-	plotters.plot2DSub(x_train,y_train,FE.relevantElectrodeNames,'valence')

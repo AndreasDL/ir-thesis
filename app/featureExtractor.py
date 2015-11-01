@@ -53,22 +53,7 @@ channelNames = {
 	'Temperature' : 40
 }
 
-#relevantElectrodes = [ #channelNames['AF3'], channelNames['AF4'], 
-#	channelNames['Fp1'], channelNames['Fp2'], 
-#	channelNames['F7'] , channelNames['F8' ], 
-#	channelNames['F3'] , channelNames['F4' ], 
-#	channelNames['FC1'], channelNames['FC2'], 
-#	channelNames['FC5'], channelNames['FC6']
-#]
-
-relevantElectrodeNames = ['Left alpha', 'Right alpha', 'L/R alpha', 'log L - log R'
-#	'Fp1', 'Fp2',
-#	'F7', 'F8',
-#	'F3', 'F4',
-#	'FC1', 'FC2',
-#	'FC5', 'FC6'
-]
-
+#util
 def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopTime = 63):
 	#turn bands into frequency ranges
 	startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
@@ -116,9 +101,8 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 		value += abs(Y[i]) **2
 
 	return np.sqrt( value / len(Y) )
-
-
-def getFrequencyPowerDensity(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopTime = 63):
+#splits the samlesAtChannel into chuncks of intervalLength size and calculates the frequency powers of a certain waveband using the fast fourier transform
+def getFrequencyPowerDensity(waveband, samplesAtChannel, intervalLength):
 	#turn bands into frequency ranges
 	startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
 	stopFreq = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
@@ -127,13 +111,12 @@ def getFrequencyPowerDensity(waveband, samplesAtChannel,offsetStartTime = 0,offs
 		print("Error Wrong waveband selection for frequencyPower. you selected:", waveband)	
 		exit(-1)
 
-	#chunks of 2 seconds
 	Fs = 128 #samples have freq 128Hz
-	intervalsize = 2 * Fs #size of one interval
-	values = []
+	intervalsize = intervalLength * Fs #size of one chunk
+	retArr = np.empty(0)
 
 	#75% overlap => each chunck starts intervalsize/4 later
-	for startIndex in range(0,len(samplesAtChannel), round(intervalsize/4)):
+	for startIndex in range(0, len(samplesAtChannel), round(intervalsize/4)):
 		
 		stopIndex = startIndex + intervalsize
 		samples = samplesAtChannel[startIndex:stopIndex]
@@ -155,16 +138,14 @@ def getFrequencyPowerDensity(waveband, samplesAtChannel,offsetStartTime = 0,offs
 		Y = np.fft.fft(samples)/n
 		Y = Y[range(round(n/2))]
 
-		#average
+		#average within one chunck
 		avg = 0
 		for i in range(len(Y)):
 			avg += abs(Y[i])
 		avg /= len(Y)
 
-		#convert to power density
-
 		#add to values
-		values.append(avg)
+		retArr = np.append(retArr, avg )
 
 	#show the power spectrum
 	'''
@@ -178,10 +159,10 @@ def getFrequencyPowerDensity(waveband, samplesAtChannel,offsetStartTime = 0,offs
 	exit()
 	'''
 
-	return np.array(values)
+	return retArr
 
-
-def LRFraction(samples,offsetStartTime=0,offsetStopTime=63):
+#valence
+def LMinRFraction(samples,offsetStartTime=0,offsetStopTime=63):
 	#structure of samples[channel, sample]
 	#return L-R / L+R, voor alpha components zie gegeven paper p6
 
@@ -194,15 +175,6 @@ def LRFraction(samples,offsetStartTime=0,offsetStopTime=63):
 		alpha_right += getFrequencyPower('alpha',samples[i],offsetStartTime,offsetStopTime)
 
 	return [ (alpha_left - alpha_right) / (alpha_left + alpha_right) ]
-def FrontlineMidlineThetaPower(samples,offsetStartTime=0,offsetStopTime=63):
-	#frontal midline theta power is increase by positive emotion
-	#structure of samples[channel, sample]
-	
-	power = 0
-	for i in [channelNames['Fz'], channelNames['Cz'], channelNames['FC1'], channelNames['FC2']]:
-		power += getFrequencyPower('theta', samples[i],offsetStartTime,offsetStopTime)
-
-	return power
 def leftMeanAlphaPower(samples,offsetStartTime=0,offsetStopTime=63):
 	#structure of samples[channel, sample]
 	#return L-R / L+R, voor alpha components zie gegeven paper p6
@@ -228,63 +200,25 @@ def alphaBetaRatio(samples,offsetStartTime=0,offsetStopTime=63):
 
 	return alpha / betaw
 
+def LRAlphaValence(samples, intervalLength=2):
+	left_values  = np.log( getFrequencyPowerDensity('alpha', samples[channelNames['F3']], intervalLength) )
+	right_values = np.log( getFrequencyPowerDensity('alpha', samples[channelNames['F4']], intervalLength) )
+
+	#log left - log right
+	return left_values - right_values
+
+#arousal
+def FrontlineMidlineThetaPower(samples,offsetStartTime=0,offsetStopTime=63):
+	#frontal midline theta power is increase by positive emotion
+	#structure of samples[channel, sample]
+	
+	power = 0
+	for i in [channelNames['Fz'], channelNames['Cz'], channelNames['FC1'], channelNames['FC2']]:
+		power += getFrequencyPower('theta', samples[i],offsetStartTime,offsetStopTime)
+
+	return power
+
+
+#all features to be used
 def calculateFeatures(samples):
-	retArr = np.empty(0)
-
-	LeftChannel  = samples[channelNames['F3']]
-	RightChannel = samples[channelNames['F4']]
-
-	#turn bands into frequency ranges
-	startFreq = 8
-	stopFreq  = 13
-
-	#chunks of 2 seconds
-	Fs = 128 #samples have freq 128Hz
-	intervalsize = 2 * Fs #size of one interval
-	values = []
-
-	#75% overlap => each chunck starts intervalsize/4 later
-	for startIndex in range( 0 * round(intervalsize/4), int( len(LeftChannel) ), round(intervalsize/4)):
-		stopIndex = startIndex + intervalsize
-		left_samples  = LeftChannel[startIndex:stopIndex]
-		right_samples = RightChannel[startIndex:stopIndex]
-		n = len(left_samples) #equal to intervalsize, except for last part
-		
-		#bandpass filter to get waveband
-		nyq = 0.5 * Fs
-		low = startFreq / nyq
-		high = stopFreq / nyq
-		b, a = butter(6, [low, high], btype='band')
-		left_samples  = lfilter(b, a, left_samples)	
-		right_samples = lfilter(b, a, right_samples)	
-
-		#hamming window to smoothen edges
-		ham = np.hamming(n)
-		left_samples  = np.multiply(left_samples, ham)
-		right_samples = np.multiply(right_samples, ham)
-
-		#fft => get power components
-		# fft computing and normalization
-		Y_left = np.fft.fft(left_samples)/n
-		Y_left = Y_left[range(round(n/2))]
-
-		Y_right = np.fft.fft(right_samples)/n
-		Y_right = Y_right[range(round(n/2))]
-
-
-		#average
-		avg_left  = 0
-		avg_right = 0
-		for i in range(len(Y_left)):
-			avg_left  += abs(Y_left[i])
-			avg_right += abs(Y_right[i])
-
-		avg_left  /= len(Y_left)
-		avg_right /= len(Y_right)
-
-		#convert to power density
-
-		#add to values
-		retArr = np.append(retArr, np.log(avg_left) - np.log(avg_right) )
-
-	return retArr
+	return LRAlphaValence(samples, 2)

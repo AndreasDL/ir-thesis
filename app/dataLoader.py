@@ -82,9 +82,7 @@ def loadSinglePersonData(person, trainVideoCount, pad='dataset/s'):
 		for j in range(trainVideoCount): #for each video
 			x_train.append( FE.calculateFeatures(data['data'][j]) )
 		
-		for j in range(len(data['data']) - trainVideoCount): #for each video
-			x_test.append( FE.calculateFeatures(data['data'][j + trainVideoCount]) )
+		for j in range( trainVideoCount, len(data['data']) ): #for each video
+			x_test.append( FE.calculateFeatures(data['data'][j]) )
 
-
-		
 	return [np.array(x_train), y_train, np.array(x_test), y_test]
