@@ -226,7 +226,7 @@ def alphaBetaRatio(samples,offsetStartTime=0,offsetStopTime=63):
 		alpha += getFrequencyPower('alpha', samples[i], offsetStartTime, offsetStopTime)
 		beta += getFrequencyPower('beta', samples[i], offsetStartTime, offsetStopTime)
 
-	return alpha / beta
+	return alpha / betaw
 
 def calculateFeatures(samples):
 	retArr = np.empty(0)
@@ -244,7 +244,7 @@ def calculateFeatures(samples):
 	values = []
 
 	#75% overlap => each chunck starts intervalsize/4 later
-	for startIndex in range( 7 * round(intervalsize/4), int(len(LeftChannel)/12), round(intervalsize/4)):
+	for startIndex in range( 0 * round(intervalsize/4), int( len(LeftChannel) ), round(intervalsize/4)):
 		stopIndex = startIndex + intervalsize
 		left_samples  = LeftChannel[startIndex:stopIndex]
 		right_samples = RightChannel[startIndex:stopIndex]
@@ -257,7 +257,6 @@ def calculateFeatures(samples):
 		b, a = butter(6, [low, high], btype='band')
 		left_samples  = lfilter(b, a, left_samples)	
 		right_samples = lfilter(b, a, right_samples)	
-
 
 		#hamming window to smoothen edges
 		ham = np.hamming(n)
@@ -286,6 +285,6 @@ def calculateFeatures(samples):
 		#convert to power density
 
 		#add to values
-		retArr = np.append(retArr, avg_left / avg_right)
+		retArr = np.append(retArr, np.log(avg_left) - np.log(avg_right) )
 
 	return retArr
