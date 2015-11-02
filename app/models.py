@@ -24,9 +24,14 @@ def linReg(x_train,y_train,x_test,y_test):
 	test_err  = np.mean((regr.predict(x_test)  - y_test) ** 2)
 
 	return train_err, test_err, regr
+
 def ridgeReg(x_train,y_train,x_test,y_test, cvSets= 8):
+	if cvSets <= 1:
+		print("a minimum of 2 cv sets is required to actually have a train and validation set")
+		exit()
+		
 	#perform linear regression
-	alphaValues = [0,0.0003,0.001,0.003,0.01,0.03,0.1,0.3,1,3,10,30,100]
+	alphaValues = [0.01,0.03,0.1,0.3,1,3,10,20,30,50,70,100,200,300]
 	cvSize = round( len(x_train) / cvSets )
 
 	#get sets
@@ -52,5 +57,7 @@ def ridgeReg(x_train,y_train,x_test,y_test, cvSets= 8):
 	train_err = err[np.argmin(err)]
 	test_err  = np.mean( (regr.predict(x_test) - y_test)**2 )
 	regr = regrs[np.argmin(err)]
+
+	#print('ridgeReg lowest alpha: ', alphaValues[np.argmin(err)])
 
 	return train_err, test_err, regr

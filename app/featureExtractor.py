@@ -116,7 +116,7 @@ def getFrequencyPowerDensity(waveband, samplesAtChannel, intervalLength):
 	retArr = np.empty(0)
 
 	#75% overlap => each chunck starts intervalsize/4 later
-	for startIndex in range(0, len(samplesAtChannel), round(intervalsize/4)):
+	for startIndex in range( 0, len(samplesAtChannel), round(intervalsize/4)):
 
 		stopIndex = startIndex + intervalsize
 		samples = samplesAtChannel[startIndex:stopIndex]
@@ -163,19 +163,23 @@ def getFrequencyPowerDensity(waveband, samplesAtChannel, intervalLength):
 	return retArr
 
 #valence
-def LMinRFraction(samples,offsetStartTime=0,offsetStopTime=63):
+def LMinRFraction(samples,intervalLength=2):
 	#structure of samples[channel, sample]
 	#return L-R / L+R, voor alpha components zie gegeven paper p6
 
-	alpha_left = 0
-	for i in [channelNames['Fp1']]:
-		alpha_left += getFrequencyPower('alpha',samples[i],offsetStartTime,offsetStopTime)
+	alpha_left  = getFrequencyPowerDensity('alpha', samples[channelNames['F3']], intervalLength )
+	alpha_right = getFrequencyPowerDensity('alpha', samples[channelNames['F4']], intervalLength )
 
-	alpha_right = 0
-	for i in [channelNames['Fp2']]:
-		alpha_right += getFrequencyPower('alpha',samples[i],offsetStartTime,offsetStopTime)
 
-	return [ (alpha_left - alpha_right) / (alpha_left + alpha_right) ]
+	return np.divide( alpha_left-alpha_right, alpha_left+alpha_right )
+def LRAlphaValence(samples, intervalLength=2):
+	#log(left) - log(right)
+	left_values  = getFrequencyPowerDensity('alpha', samples[channelNames['P3']], intervalLength)
+	right_values = getFrequencyPowerDensity('alpha', samples[channelNames['P4']], intervalLength)
+
+	#log left - log right
+	return np.log(left_values) - np.log(right_values)
+
 def leftMeanAlphaPower(samples,offsetStartTime=0,offsetStopTime=63):
 	#structure of samples[channel, sample]
 	#return L-R / L+R, voor alpha components zie gegeven paper p6
@@ -201,13 +205,6 @@ def alphaBetaRatio(samples,offsetStartTime=0,offsetStopTime=63):
 
 	return alpha / betaw
 
-def LRAlphaValence(samples, intervalLength=2):
-	left_values  = np.log( getFrequencyPowerDensity('alpha', samples[channelNames['F3']], intervalLength) )
-	right_values = np.log( getFrequencyPowerDensity('alpha', samples[channelNames['F4']], intervalLength) )
-
-	#log left - log right
-	return left_values - right_values
-
 #arousal
 def FrontlineMidlineThetaPower(samples,offsetStartTime=0,offsetStopTime=63):
 	#frontal midline theta power is increase by positive emotion
@@ -221,5 +218,7 @@ def FrontlineMidlineThetaPower(samples,offsetStartTime=0,offsetStopTime=63):
 
 
 #all features to be used
+#samples =all channels of a single video
 def calculateFeatures(samples):
+	#return LMinRFraction(samples,2)
 	return LRAlphaValence(samples, 2)
