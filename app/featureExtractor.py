@@ -88,12 +88,12 @@ def getFrequencyPower(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopT
 	Y = Y[range(round(n/2))]
 
 	#show result of bandpass filter
-	frq = np.arange(n)*Fs/n # two sides frequency range
+	'''frq = np.arange(n)*Fs/n # two sides frequency range
 	freq = frq[range(round(n/2))]           # one side frequency range
 	plt.plot(freq, abs(Y), 'r-')
 	plt.xlabel('freq (Hz)')
 	plt.ylabel('|Y(freq)|')
-	plt.show()
+	plt.show()'''
 
 	#Root Mean Square
 	value = 0
@@ -220,5 +220,5 @@ def FrontlineMidlineThetaPower(samples,offsetStartTime=0,offsetStopTime=63):
 #all features to be used
 #samples =all channels of a single video
 def calculateFeatures(samples):
-	#return LMinRFraction(samples,2)
-	return LRAlphaValence(samples, 2)
+	return LMinRFraction(samples,2)
+	#return LRAlphaValence(samples, 2)

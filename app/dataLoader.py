@@ -28,7 +28,7 @@ def loadMultiPersonData(train_fileCount, test_fileCount, pad='dataset/s'):
 			#data['labels'][video , attribute]
 			#data['data'][video, channel, value]
 
-			y_train = data['labels'][:,1] #only valence needed
+			y_train = data['labels'][:,0] #only valence needed
 			#structure y_train[video]
 
 			for j in range(len(data['data'])): #for each video
@@ -75,8 +75,8 @@ def loadSinglePersonData(person, trainVideoCount, pad='dataset/s'):
 		#data['labels'][video , attribute]
 		#data['data'][video, channel, value]
 
-		y_train = data['labels'][:trainVideoCount,1] #only valence needed
-		y_test  = data['labels'][trainVideoCount:,1]
+		y_train = data['labels'][:trainVideoCount,0] #only valence needed
+		y_test  = data['labels'][trainVideoCount:,0]
 
 		#split single person in test and train set
 		for j in range(trainVideoCount): #for each video

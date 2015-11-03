@@ -10,7 +10,7 @@ if __name__ == "__main__":
     trainVideoCount = 36
     intervalLength = 2
     cvs = 2
-    pad = '../dataset/s'
+    
 
     left_channels  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'P3']
     right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'P4']
