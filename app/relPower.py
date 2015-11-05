@@ -86,25 +86,19 @@ if __name__ == "__main__":
             print('\tP:', person, '\tmod: lin', 
                 '\tTr err: ', train_err,
                 '\tTe err: ' , test_err
-            )
+            )'''
 
             #ridge regression
-            #train_err, test_err, regr = models.ridgeReg(np.array(x_train), y_train, None, None, cvSets=8)
-            #print('\tP:', person, '\tmod: ridge', 
-            #    '\tTr err: ', train_err,
-            #    '\tTe err: ' , test_err
-            #)
-            '''
-            train_err, test_err, regr = models.polyReg(np.array(x_train), y_train, None, None, cvSets=8)
-            print('\tP:', person, '\tmod: ploy', 
+            train_err, test_err, regr = models.ridgeReg(np.array(x_train), y_train, None, None, cvSets=8)
+            print('\tP:', person, '\tmod: ridge', 
                 '\tTr err: ', train_err,
                 '\tTe err: ' , test_err
             )
 
             train_sizes, train_scores, test_scores = learning_curve(regr, 
                 x_train, y_train, 
-                train_sizes=np.linspace(0.1, 1, 20),
-                scoring="mean_squared_error", cv=10)
+                train_sizes=np.linspace(0.1, 1, 40),
+                scoring="mean_squared_error", cv=8)
 
             #https://github.com/scikit-learn/scikit-learn/issues/2439
             plt.plot(train_sizes, -1 * train_scores.mean(1), 'o-', color="r")
