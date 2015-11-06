@@ -2,26 +2,37 @@ import dataLoader as DL
 import models
 import plotters
 
-if __name__ == "__main__":
+def main_single():
 	test_size = 4
 	used_person = 7
 
-	#load trainSet
-	#y_train: holds all valence values for each movie
-	#x_train: holds all features for each movie
-	#similar for test set
+	#load dataset
 	(X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(person=used_person, test_size=test_size)
 
-	#linear regression
-	train_err, test_err, regr = models.linReg(X_train,y_train,X_test,y_test)
-	print('model: linear',
-		'\n\tTrain error: ', train_err,
-		'\n\tTest error: ' , test_err
+	#classify
+	train_acc, test_acc, clf = models.linSVM(X_train,y_train, X_test,y_test)
+
+	#scores
+	print('model: lin SVM',
+		'\n\tTrain accuracy: ', train_acc,
+		'\n\tTest accuracy: ' , test_acc
 	)
 
-	#ridge regression
-	train_err, test_err, regr = models.ridgeReg(X_train, y_train, X_test, y_test, cvSets=2)
-	print('model: ridge',
-		'\n\tTrain error: ', train_err,
-		'\n\tTest error: ' , test_err
-	)
+def main_All():
+	test_size = 4
+	for person in range(1,32):
+		#load dataset
+		(X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(person=person, test_size=test_size)
+
+		#classify
+		train_acc, test_acc, clf = models.linSVM(X_train,y_train, X_test,y_test)
+
+		#scores
+		print('Person: ', person,
+			'\tmodel: lin SVM',
+			'\tTrain accuracy: ', train_acc,
+			'\tTest accuracy: ' , test_acc
+		)
+
+if __name__ == "__main__":
+	main_All()

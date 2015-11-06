@@ -1,6 +1,24 @@
 import numpy as np
+from util import accuracy
 from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.svm import SVC
 from sklearn.cross_validation import KFold
+
+
+def linSVM(X_train, y_train, X_test, y_test):
+    #use linear kernel
+    clf = SVC(kernel='linear', probability=False) #true for later
+    clf.fit(X_train, y_train)
+
+    #MSE train err
+    train_acc = accuracy(clf.predict(X_train), y_train)
+
+    test_acc = -1
+    if len(X_test) != 0 and len(y_test) != 0:
+        test_acc = accuracy(clf.predict(X_test), y_test)
+
+    return train_acc, test_acc, clf
+
 
 def linReg(X_train, y_train, X_test, y_test):
     #perform linear regression
@@ -20,7 +38,6 @@ def linReg(X_train, y_train, X_test, y_test):
         test_err  = np.mean( (regr.predict(X_test) - y_test)**2 )
 
     return train_err, test_err, regr
-
 def ridgeReg(X_train, y_train, X_test, y_test, cvSets= 8):
     #linear regression with I2 regularisation
 
