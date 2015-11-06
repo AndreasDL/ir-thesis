@@ -1,30 +1,25 @@
 import dataLoader as DL
-import featureExtractor as FE
 import models
 import plotters
 
-import warnings
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-warnings.filterwarnings("ignore", category=FutureWarning)
-
 if __name__ == "__main__":
-	trainVideos = 32
+	test_size = 4
 
 	#load trainSet
 	#y_train: holds all valence values for each movie
 	#x_train: holds all features for each movie
 	#similar for test set
-	(x_train, y_train, x_test, y_test) = DL.loadSinglePersonData(7,trainVideos)
+	(X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(person=7, test_size=test_size)
 
 	#linear regression
-	train_err, test_err, regr = models.linReg(x_train,y_train,x_test,y_test)
+	train_err, test_err, regr = models.linReg(X_train,y_train,X_test,y_test)
 	print('model: linear',
 		'\n\tTrain error: ', train_err,
 		'\n\tTest error: ' , test_err
 	)
 
 	#ridge regression
-	train_err, test_err, regr = models.ridgeReg(x_train, y_train, x_test, y_test, cvSets=2)
+	train_err, test_err, regr = models.ridgeReg(X_train, y_train, X_test, y_test, cvSets=2)
 	print('model: ridge',
 		'\n\tTrain error: ', train_err,
 		'\n\tTest error: ' , test_err
