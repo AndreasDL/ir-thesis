@@ -91,4 +91,5 @@ docs/_build/
 target/
 #dataset(s)
 dataset/
+dumpedData/
 *.dat
