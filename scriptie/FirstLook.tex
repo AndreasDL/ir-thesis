@@ -6,7 +6,17 @@ This thesis uses the DEAP dataset\cite{DEAP}, a dataset for emotion analysis tha
 
 \npar
 
-For assessment of these scales, the self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins}, were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scale with pictures. Each picture corresponds to a discrete value, but the user can click in between the different figures, which makes the output continuous. The used figures are shown in Figure \ref{SAM}. The first row gives the valence scale, ranging from sad to happy. The second row shows the arousal scale, ranging from bored to excited. The last row represents the different dominance levels. The left figure represents a submissive emotion, while the right figure corresponds with a dominant feeling.
+For assessment of these scales, the self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins}, were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scale with pictures, each picture corresponds to a discrete value. The user can click between the different figures, which makes the scales continuous.All dimension are given by a float between 1 and 9, which isn't very practical, therefor a preprocessing step scales these value so they range between 0 and 1. Zero corresponds to the minimum of the scale and one corresponds or the maximum value of the scale.
+
+ The used SAM figures are shown in Figure \ref{SAM}. The first row gives the valence scale, ranging from sad to happy. The second row shows the arousal scale, ranging from bored to excited. The last row represents the different dominance levels. The left figure represents a submissive emotion, while the right figure corresponds with a dominant feeling.
 
 \mijnfiguur{width=0.5\textwidth}{SAM}{The images used for the SAM\cite{DEAP}.}
+
+
+
+%verdeling waardes
+
+
+
+%channel selection
 
