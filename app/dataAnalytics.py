@@ -20,6 +20,7 @@ if __name__ == '__main__':
     bins.append([0] * 8)
     bins.append([0] * 8)
     bins.append([0] * 8)
+    total_videos = float(32 * 40)
 
     for person in range(1,33):
         fname = str(pad) + '/s'
@@ -45,7 +46,7 @@ if __name__ == '__main__':
 
                 v[i].extend(vals)
             
-            matrix = []
+            '''matrix = []
             matrix.append([0] * 8)
             matrix.append([0] * 8)
             matrix.append([0] * 8)
@@ -82,18 +83,13 @@ if __name__ == '__main__':
         bins.append([0] * 8)
         bins.append([0] * 8)
         bins.append([0] * 8)
-
-        if person == 14:
-            pprint(matrix)
-            exit()
-
-
-    exit()
+        '''
+    
     print('global averages: ')
     for i in range(4):
         print('\t', names[i], np.mean(v[i]), '\t')
     
-    
+    bins = np.array(bins) / total_videos
     for k in range(4):
         print('occurences ', names[k], ': ')
         for i in range(8):

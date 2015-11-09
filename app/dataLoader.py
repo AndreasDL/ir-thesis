@@ -3,12 +3,13 @@ import pickle
 import numpy as np
 import featureExtractor as FE
 from sklearn.cross_validation import train_test_split
+import random
 
-def loadSinglePersonData(person, test_size=4, pad='../dataset', happyThres=0.5, borderDist=0.125, featureFunc=FE.extract):
+def loadSinglePersonData(person, test_chance, pad='../dataset', happyThres=0.5, borderDist=0.125, featureFunc=FE.extract):
 	#loads data and creates two classes happy and not happy
 
-	X = []
-	y = None
+	X_train, X_test = [], []
+	y_train, y_test = [], []
 
 	fname = str(pad) + '/s'
 	if person < 10:
@@ -29,26 +30,33 @@ def loadSinglePersonData(person, test_size=4, pad='../dataset', happyThres=0.5, 
 		underbound = happyThres - borderDist
 		upperbound = happyThres + borderDist
 
-		used_indexes = []
-		y = []
+		used_indexes_train = []
+		used_indexes_test  = []
+		
 		for index, valence in enumerate(valences):
-			#assign classes when valence matches criteria
-			if valence <= underbound: #sad
-				y.append(0)
-				used_indexes.append(index)
-			elif valence >= upperbound: #happy
-				y.append(1)
-				used_indexes.append(index)
+			if random.random() < test_chance:
+				used_indexes_test.append(index)
+				if valence <= happyThres:
+					y_test.append(0)
+				else:
+					y_test.append(1)
 
-		y = np.array(y)
+			else:
+				#trainset should only hold clear examples
+				if valence <= underbound: #sad
+					y_train.append(0)
+					used_indexes_train.append(index)
 
+				elif valence >= upperbound: #happy
+					y_train.append(1)
+					used_indexes_train.append(index)
 
 		#extract features
-		for j in used_indexes: #for each video
-			X.append( featureFunc(data['data'][j]) )
+		for i in used_indexes_train: #for each video
+			X_train.append( featureFunc(data['data'][i]) )
+		for i in used_indexes_test:
+			X_test.append( featureFunc(data['data'][i]) )
 
-	#split into train and test set, while shuffeling
-	X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=test_size, random_state=42)
 
 	return [np.array(X_train), np.array(y_train), np.array(X_test), np.array(y_test)]
 

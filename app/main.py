@@ -31,7 +31,7 @@ def main_single():
 		'\n\tTest accuracy: ' , test_acc
 	)
 def main_all_one_by_one():
-	test_size = 0.25
+	test_chance = 0.25
 	avg_train, avg_test = 0, 0
 
 	for left, right in zip(left_channels_to_try, right_channels_to_try):
@@ -43,7 +43,7 @@ def main_all_one_by_one():
 
 		for person in range(1,33):
 			#load dataset
-			(X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(featureFunc=func, person=person, test_size=test_size)
+			(X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(featureFunc=func, person=person, test_chance=test_chance)
 
 			#classify
 			train_acc, test_acc, clf = models.linSVM(X_train,y_train, X_test,y_test)
