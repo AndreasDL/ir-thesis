@@ -1,10 +1,10 @@
 import os
 import pickle
 import numpy as np
-from featureExtractor import extract
+import featureExtractor as FE
 from sklearn.cross_validation import train_test_split
 
-def loadSinglePersonData(person, test_size=4, pad='../dataset', happyThres=0.5):
+def loadSinglePersonData(person, test_size=4, pad='../dataset', happyThres=0.5, borderDist=0.125, featureFunc=FE.extract):
 	#loads data and creates two classes happy and not happy
 
 	X = []
@@ -22,14 +22,30 @@ def loadSinglePersonData(person, test_size=4, pad='../dataset', happyThres=0.5):
 		#data['labels'][video] = [valence, arousal, dominance, liking]
 		#data['data'][video][channel] = [samples * 8064]
 
-		y = np.array( data['labels'][:,0] ) #ATM only valence needed
-		y = (y - 1) / 8 #1->9 to 0->8 to 0->1
-		y[ y <= happyThres ] = 0
-		y[ y > happyThres ] = 1
+		valences = np.array( data['labels'][:,0] ) #ATM only valence needed
+		valences = (valences - 1) / 8 #1->9 to 0->8 to 0->1
+
+		#only keep elements that are suffiently positioned away from the border		
+		underbound = happyThres - borderDist
+		upperbound = happyThres + borderDist
+
+		used_indexes = []
+		y = []
+		for index, valence in enumerate(valences):
+			#assign classes when valence matches criteria
+			if valence <= underbound: #sad
+				y.append(0)
+				used_indexes.append(index)
+			elif valence >= upperbound: #happy
+				y.append(1)
+				used_indexes.append(index)
+
+		y = np.array(y)
+
 
 		#extract features
-		for j in range(len(data['data'])): #for each video
-			X.append( extract(data['data'][j]) )
+		for j in used_indexes: #for each video
+			X.append( featureFunc(data['data'][j]) )
 
 	#split into train and test set, while shuffeling
 	X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=test_size, random_state=42)
@@ -88,7 +104,6 @@ def dump(X_train, y_train, X_test, y_test, name, path='../dumpedData'):
 	}
 	with open(fname, 'wb') as f:
 		pickle.dump( data, f )
-
 def load(name, path='../dumpedData'):
 	fname = path + '/' + name
 

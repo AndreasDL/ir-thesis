@@ -1,0 +1,12 @@
+\chapter{A first look at the data}
+{\samenvatting }
+
+\section{The DEAP dataset}
+This thesis uses the DEAP dataset\cite{DEAP}, a dataset for emotion analysis that is publicly available for academic research. This dataset contains EEG recordings of 32 participants, each watching 40 one minute excerpts of music videos. Each video was rated individually by each person on valence, arousal, dominance and liking. The first three ratings correspond to the valence, arousal and dominance space of an emotion. The liking component indicates how much the person liked the video excerpt and should not be confused with the valence component. The liking measure inquires about the participants' tastes and not their feelings, i.e. a person can like a video that triggers angry or sad emotions. Since liking is not a part of the emotion space, the liking rates are neglected for this thesis.
+
+\npar
+
+For assessment of these scales, the self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins}, were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scale with pictures. Each picture corresponds to a discrete value, but the user can click in between the different figures, which makes the output continuous. The used figures are shown in Figure \ref{SAM}. The first row gives the valence scale, ranging from sad to happy. The second row shows the arousal scale, ranging from bored to excited. The last row represents the different dominance levels. The left figure represents a submissive emotion, while the right figure corresponds with a dominant feeling.
+
+\mijnfiguur{width=0.5\textwidth}{SAM}{The images used for the SAM\cite{DEAP}.}
+

@@ -80,7 +80,14 @@
 \makeatother
 
 % Nieuw commando om figuren in te voegen. Gebruik:
-)
+\newcommand{\mijnfiguur}[4][H]{            % Het eerste argument is standaar `ht'. op H zetten voor HIER EN NERGENS ANDERS
+    \begin{figure}[#1]                      % Beginnen van de figure omgeving
+        \begin{center}                      % Beginnen van de center omgeving
+            \includegraphics[#2]{#3}        % Het eigenlijk invoegen van de figuur (2: opties, 3: bestandsnaam)
+            \caption{#4\label{#3}}          % Het bijschrift (argument 4) en het label (argument 3)
+        \end{center}
+    \end{figure}
+    }
 
 \graphicspath{{fig/}}               % De plaars waar latex zijn figuren gaat halen.
 
@@ -140,6 +147,7 @@
 
 % hier worden de hoofdstukken ingevoegd (\includes)
 \include{Introduction}
+\include{FirstLook}
 
 % appendices
 \appendix

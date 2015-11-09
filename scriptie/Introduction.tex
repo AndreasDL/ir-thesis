@@ -72,8 +72,6 @@ To improve accuracy, common problems such as adjacency distraction, when a subje
 
 To further speedup the spelling, error potentials were explored. Error potentials are triggered when the user becomes aware of an erroneous action\cite{ErrorPotentials}, i.e. when a wrong character is selected. When an Error potential is detected, the character is usually changed to the second most probable character according to the P300 decoding\cite{ErrSecChar}, which is the most viable character.
 
-\clearpage
-
 The basic P300 speller needs a calibration period before it can be used, when a healthy subject makes a mistake during calibration, he can communicate this and the problem can be resolved. This is not the case for a patient, who has no other means of communication than the P300 speller. Having wrongly labeled data during calibration can lead to severe problems. The unsupervised speller as proposed in \cite{P300Unsupervised} solves this problem by removing the need for a calibration procedure. The speller works with expectation maximization and has an undemanding linear classification backend and achieves good results, after a warm-up period when the system is adapting to the given condition.
 
 \section{Emotion recognition}
@@ -87,8 +85,7 @@ How does one define emotion? Psychology makes a clear distinction between physio
 Before emotions can be recognized, a classification model is needed. A common model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, that places emotions in a two dimensional space. The main advantage of using a multidimensional model, is that all emotions are modeled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
 
 \npar
-
-Since this thesis aims to recognize emotion and change in emotion when a subject performs several erroneous actions, the continuous space model is the best choice, since it enables to track the change in the emotional space continuously.
+Even though arousal and valence describe emotion quite well, a third dimension can also be added. The new model than has three dimensions: arousal, valence, dominance and liking. Arousal indicates how active a person is and ranges from inactive, bored to active, excited. The valence indicates if the emotion is perceived as positive or negative. The third dimension, the dominance, indicates how strong the emotional feeling was and ranges from a weak feeling to an empower, overwhelming feeling.
 
 \mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.}
 

@@ -1,7 +1,6 @@
 import numpy as np
 from sklearn import preprocessing as PREP
 from scipy.signal import butter, lfilter
-
 #import matplotlib.pyplot as plt
 
 #global const vars!
@@ -135,11 +134,11 @@ def getBandPDChunks(waveband, samplesAtChannel, intervalLength=2, overlap=0.75 )
 	return retArr
 
 #valence
-def LMinRFraction(samples,intervalLength=2, overlap=0.75):
+def LMinRFraction(samples,intervalLength=2, overlap=0.75, left_channel='F3', right_channel='F4'):
 	#structure of samples[channel, sample]
 	#return L-R / L+R, voor alpha components zie gegeven paper p6
-	alpha_left  = getBandPDChunks('alpha', samples[channelNames['F3']], intervalLength, overlap )
-	alpha_right = getBandPDChunks('alpha', samples[channelNames['F4']], intervalLength, overlap )
+	alpha_left  = getBandPDChunks('alpha', samples[channelNames[left_channel]], intervalLength, overlap )
+	alpha_right = getBandPDChunks('alpha', samples[channelNames[right_channel]], intervalLength, overlap )
 
 	return np.divide( alpha_left-alpha_right, alpha_left+alpha_right )
 	
