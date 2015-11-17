@@ -44,12 +44,12 @@ def loadSinglePersonData(person, test_chance, pad='../dataset', happyThres=0.5, 
 
 				else: #no hard test => only use clear examples in test set
 					if valence <= underbound: #sad
-						y_train.append(0)
-						used_indexes_train.append(index)
+						y_test.append(0)
+						used_indexes_test.append(index)
 
 					elif valence >= upperbound: #happy
-						y_train.append(1)
-						used_indexes_train.append(index)
+						y_test.append(1)
+						used_indexes_test.append(index)
 
 			else:
 				#trainset should only hold clear examples

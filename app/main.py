@@ -28,11 +28,13 @@ def main_single():
 		'\n\tTest accuracy: ' , test_acc
 	)
 def main_all_one_by_one():
-	f = open('output-125border.txt', 'w')
+	f = open('output-noborder.txt', 'w')
 
 	test_chance = 0.25
-	borderDist = 0.125
-	f.write('test_chance: ' + str(test_chance) + ' borderDist: ' + str(borderDist) + "\n")
+	borderDist = 0
+	hardTest = False
+
+	f.write('test_chance: ' + str(test_chance) + ' borderDist: ' + str(borderDist) + ' hardTest: ' + str(hardTest) + "\n")
 
 	avg_train, avg_test = 0, 0
 
@@ -47,7 +49,7 @@ def main_all_one_by_one():
 		for person in range(1,33):
 			print('\tperson', person, end='\r')
 			#load dataset
-			(X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(hardTest = False, featureFunc=func, person=person, test_chance=test_chance, borderDist=borderDist)
+			(X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(hardTest=hardTest, featureFunc=func, person=person, test_chance=test_chance, borderDist=borderDist)
 
 			#classify
 			train_acc, test_acc, clf = models.linSVM(X_train,y_train, X_test,y_test)
