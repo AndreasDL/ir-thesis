@@ -5,7 +5,7 @@ import featureExtractor as FE
 from sklearn.cross_validation import train_test_split
 import random
 
-def loadSinglePersonData(person, test_chance, pad='../dataset', happyThres=0.5, borderDist=0.125, featureFunc=FE.extract):
+def loadSinglePersonData(person, test_chance, pad='../dataset', happyThres=0.5, borderDist=0.125, featureFunc=FE.extract, hardTest=True):
 	#loads data and creates two classes happy and not happy
 
 	X_train, X_test = [], []
@@ -35,11 +35,21 @@ def loadSinglePersonData(person, test_chance, pad='../dataset', happyThres=0.5, 
 		
 		for index, valence in enumerate(valences):
 			if random.random() < test_chance:
-				used_indexes_test.append(index)
-				if valence <= happyThres:
-					y_test.append(0)
-				else:
-					y_test.append(1)
+				if hardTest:
+					used_indexes_test.append(index)
+					if valence <= happyThres:
+						y_test.append(0)
+					else:
+						y_test.append(1)
+
+				else: #no hard test => only use clear examples in test set
+					if valence <= underbound: #sad
+						y_train.append(0)
+						used_indexes_train.append(index)
+
+					elif valence >= upperbound: #happy
+						y_train.append(1)
+						used_indexes_train.append(index)
 
 			else:
 				#trainset should only hold clear examples

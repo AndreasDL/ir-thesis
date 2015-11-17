@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from pprint import pprint
 font = {'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 15}
+        'size'   : 20}
 matplotlib.rc('font', **font)
 
 
@@ -13,7 +13,7 @@ if __name__ == '__main__':
     pad = '../dataset'   
     names = ['valence', 'arousal', 'dominance', 'liking']
 
-    v = [[],[],[],[]]
+    v = [[],[],[],[]] #keep for calculating mean
     
     bins = []
     bins.append([0] * 8)
@@ -45,51 +45,14 @@ if __name__ == '__main__':
                     bins[i][bin] += 1
 
                 v[i].extend(vals)
-            
-            '''matrix = []
-            matrix.append([0] * 8)
-            matrix.append([0] * 8)
-            matrix.append([0] * 8)
-            matrix.append([0] * 8)
-            
-            matrix.append([0] * 8)
-            matrix.append([0] * 8)
-            matrix.append([0] * 8)
-            matrix.append([0] * 8)
-            
-            for i in range(len(data['labels'])):
-                valence   = int(np.floor(data['labels'][i][0] - 1))
-                dominance = int(np.floor(data['labels'][i][2] - 1))
-
-                if valence == 8:
-                    valence = 7
-
-                if dominance == 8:
-                    dominance = 7
-
-                matrix[dominance][valence] += 1
-
-        print('person ', person, ': sad->' , np.sum(bins[0][:3]), '\t\thappy->', np.sum(bins[0][4:]))
-        for i in range(8):
-            print('\t' , i , '->', bins[0][i], ' ', end ='')
-        print()
-
-        for i in range(8):
-            print('\t' , i , '->', bins[2][i], ' ', end ='')
-        print()
-
-        bins = []
-        bins.append([0] * 8)
-        bins.append([0] * 8)
-        bins.append([0] * 8)
-        bins.append([0] * 8)
-        '''
     
     print('global averages: ')
     for i in range(4):
         print('\t', names[i], np.mean(v[i]), '\t')
     
     bins = np.array(bins) / total_videos
+    bins = bins * 100
+
     for k in range(4):
         print('occurences ', names[k], ': ')
         for i in range(8):
@@ -99,16 +62,18 @@ if __name__ == '__main__':
     #2 x  2 plots
     fig, ax = plt.subplots(2,2)
     fig.subplots_adjust(hspace=.5)
+
+    ind = np.arange(8)
+    
     for j in range(2):
         for i in range(2):
             index = 2 * j + i
-            ind = np.arange(8)
+            
             ax[j,i].bar(ind,bins[index])
+            
             ax[j,i].set_title(names[index])
+            ax[j,i].set_xlabel(names[index]  + ' value')
+            ax[j,i].set_ylabel('percentage of videos')
+            ax[j,i].set_xticklabels(('0', '0.125', '0.25', '0.375', '0.5', '0.625', '0.75', '0.875', '1'))
+
     plt.show()
-'''
-    sad = np.sum(bins[0][:4])
-    hap = np.sum(bins[0][4:])
-    print(sad)
-    print(hap)
-'''

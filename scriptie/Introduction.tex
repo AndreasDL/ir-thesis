@@ -85,26 +85,19 @@ How does one define emotion? Psychology makes a clear distinction between physio
 Before emotions can be recognized, a classification model is needed. A common model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, that places emotions in a two dimensional space. The main advantage of using a multidimensional model, is that all emotions are modeled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
 
 \npar
-Even though arousal and valence describe emotion quite well, a third dimension can also be added. The new model than has three dimensions: arousal, valence, dominance and liking. Arousal indicates how active a person is and ranges from inactive, bored to active, excited. The valence indicates if the emotion is perceived as positive or negative. The third dimension, the dominance, indicates how strong the emotional feeling was and ranges from a weak feeling to an empower, overwhelming feeling.
+Even though arousal and valence describe emotion quite well, a third dimension can also be added. The new model than has three dimensions: arousal, valence, dominance and liking. Arousal indicates how active a person is and ranges from inactive, bored to active, excited. The valence indicates if the emotion is perceived as positive or negative. The third dimension, the dominance, indicates how strong the emotional feeling was and ranges from a weak feeling to an empower, overwhelming feeling. The dominance can help to filter out samples of strong feelings, since feelings with low dominance are less likely to show significant effects.
 
 \mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.}
 
-\subsubsection{Determining arousal}
-
-Arousal can be determined in several ways. A first methods for the arousal recognition uses only alpha and beta bands. the Alpha band corresponds with a relaxed state and is often connected to brain inactivity\cite{ExtendedPaper,RealTimeEEGEmotion}. Beta waves, on the other hand, are an indication that the brain is a more active state or has a higher level of arousal. Combining these two parameters gives the beta/alpha ratio as an indication of the arousal level. 
-
-\npar
-
-Other methods are based on the EEG coherence across the prefrontal and posterior beta oscillations, which is known to increase when high arousal images are viewed. Additionally, the gamma power is said to increase with arousal with a delay of 500ms\cite{GivenPaper}.
-
 \subsubsection{Determining valence}
+\label{DetValence}
 
 The most known and used feature is the frontal asymmetry of the alpha power\cite{GivenPaper}.
-The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets}. The assymmetry is given for L and R being the Left and Right frontal alpha powers as:\\
+The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets}. The asymmetry is given for L and R being the Left and Right frontal alpha powers as:\\
 \begin{center}
-$Index = \frac{L-R}{L+R}$
+$Asymmetry index = \frac{L-R}{L+R}$
 \end{center}
-Computing the spectral power of the alpha band is possible via e.g. the fast fourier transform or wavelet transform.
+Computing the spectral power of the alpha band is possible via e.g. the fast Fourier transform or wavelet transform.
 
 \npar
 
@@ -113,6 +106,15 @@ It is also possible to include beta waves in the process. High alpha rates corre
 \npar
 
 Another feature is the frontal midline (Fm)\nomenclature{Fm}{Frontal Midline} theta power, that is shown to increase with increasing pleasant ratings for audio stimuli\cite{MusicPaper}. %Gamma phase synchronization increases for unpleasant images.
+
+\subsubsection{Determining arousal}
+\label{DetArousal}
+
+Arousal can be determined in several ways. A first methods for the arousal recognition uses only alpha and beta bands. the Alpha band corresponds with a relaxed state and is often connected to brain inactivity\cite{ExtendedPaper,RealTimeEEGEmotion}. Beta waves, on the other hand, are an indication that the brain is a more active state or has a higher level of arousal. Combining these two parameters gives the beta/alpha ratio as an indication of the arousal level. 
+
+\npar
+
+Other methods are based on the EEG coherence across the prefrontal and posterior beta oscillations, which is known to increase when high arousal images are viewed. Additionally, the gamma power is said to increase with arousal with a delay of 500ms\cite{GivenPaper}.
 
 \subsubsection{Datasets}
 One of the most used datasets is the Dataset for Emotion Analysis using Physiological Signals (DEAP)\nomenclature{DEAP}{Dataset for Emotion Analysis using Physiological Signals} dataset\cite{DEAP}. This dataset contains EEG samples at 512 Hz of 32 persons each viewing 40 videos. A preprocessed version of this dataset, that is down sampled and has EOG removal will be used extensively during this thesis.

@@ -47,7 +47,7 @@ def main_all_one_by_one():
 		for person in range(1,33):
 			print('\tperson', person, end='\r')
 			#load dataset
-			(X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(featureFunc=func, person=person, test_chance=test_chance, borderDist=borderDist)
+			(X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(hardTest = False, featureFunc=func, person=person, test_chance=test_chance, borderDist=borderDist)
 
 			#classify
 			train_acc, test_acc, clf = models.linSVM(X_train,y_train, X_test,y_test)

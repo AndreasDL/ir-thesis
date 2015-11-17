@@ -6,17 +6,38 @@ This thesis uses the DEAP dataset\cite{DEAP}, a dataset for emotion analysis tha
 
 \npar
 
-For assessment of these scales, the self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins}, were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scale with pictures, each picture corresponds to a discrete value. The user can click between the different figures, which makes the scales continuous.All dimension are given by a float between 1 and 9, which isn't very practical, therefor a preprocessing step scales these value so they range between 0 and 1. Zero corresponds to the minimum of the scale and one corresponds or the maximum value of the scale.
+For assessment of these scales, the self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins}, were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scale with pictures, each picture corresponds to a discrete value. The user can click between the different figures, which makes the scales continuous.All dimension are given by a float between 1 and 9. A preprocessing step scaled and translated these value to ensure they range between 0 and 1. Zero corresponds to the minimum of the scale and one corresponds or the maximum value of the scale.
 
 The used SAM figures are shown in Figure \ref{SAM}. The first row gives the valence scale, ranging from sad to happy. The second row shows the arousal scale, ranging from bored to excited. The last row represents the different dominance levels. The left figure represents a submissive emotion, while the right figure corresponds with a dominant feeling.
 
 \mijnfiguur{width=0.5\textwidth}{SAM}{The images used for the SAM\cite{DEAP}.}
 
-
-
 %verdeling waardes
+To further inspect the distribution of the user ratings and whether or not the data is balanced, the average for each emotion dimension (valence, arousal and dominance), was determined using all videos of all persons. These can be seen in Table \ref{avg-vals}. A uniform distribution would give a value of 0.5. The averages of the DEAP are a little above 0.5, which gives a first indication that the data is balanced.
 
+\begin{table}[H]
+\centering
+\caption{The average value of each component.}
+\label{avg-vals}
+\begin{tabular}{llll}
+\textbf{}  & \textbf{Valence} & \textbf{Arousal} & \textbf{Dominance} \\
+\textbf{value} & 0.5317890625     & 0.5195888671875  & 0.54784375        
+\end{tabular}
+\end{table}
 
+To further inspect the data, each component was divided in 8 ranges or bins. Next all user ratings are placed in their corresponding bin. Then the percentage of movies for each bin was calculated. This shown in Figure \ref{valence}, \ref{arousal} and \ref{dominance} for valence, arousal and dominance respectively. It is clear that even though all components have most of their weight in the higher bins, the data is more or less balanced. Therefor no further measurements to balance the data, e.g. extra penalty for one class, was taken.
 
-%channel selection
+\mijnfiguur{width=0.7\textwidth}{valence}{The distribution of the valence values.}
+\mijnfiguur{width=0.7\textwidth}{arousal}{The distribution of the arousal values.}
+\mijnfiguur{width=0.7\textwidth}{dominance}{The distribution of the dominance values.}
 
+\section{Feature selection}
+
+The first step in this thesis is to recognize emotion of a single person. To do this, good features are needed. These features are evaluated using the following steps: for each person the data is split in a train and test set, with ratio: 0.75 / 0.25. Then a linear SVM is trained using the train set and the result is evaluated using the test set. This is done for each of the 32 persons in the DEAP set. The last step is to average all results. Averaging over all persons limits the influence person specific effects on the feature selection, while still using a person specific classifier.
+
+\subsection{Valence}
+As discussed in \ref{DetValence}, the most used feature to determine valence is the alpha asymmetry, given by :
+\begin{center}
+$Asymmetry index = \frac{L-R}{L+R}$
+\end{center}
+To determine which channels are useful, each left channel is first grouped with its corresponding right channel. For each channel pair the asymmetry is determined and the feature selection procedure described above is executed. The result is a test value averaged over all persons, shown in table \ref{}.
