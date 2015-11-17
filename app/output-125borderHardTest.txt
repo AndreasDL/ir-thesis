@@ -1,0 +1,14 @@
+test_chance: 0.25 borderDist: 0.125
+left: Fp1 - right: Fp2	Test accuracy: 0.384615384615
+left: AF3 - right: AF4	Test accuracy: 0.714285714286
+left: F3 - right: F4	Test accuracy: 0.444444444444
+left: F7 - right: F8	Test accuracy: 0.615384615385
+left: FC5 - right: FC6	Test accuracy: 0.428571428571
+left: FC1 - right: FC2	Test accuracy: 0.444444444444
+left: C3 - right: C4	Test accuracy: 0.375
+left: T7 - right: T8	Test accuracy: 0.7
+left: CP5 - right: CP6	Test accuracy: 0.5
+left: CP1 - right: CP2	Test accuracy: 0.555555555556
+left: P3 - right: P4	Test accuracy: 0.538461538462
+left: P7 - right: P8	Test accuracy: 0.5
+left: PO3 - right: PO4	Test accuracy: 0.75

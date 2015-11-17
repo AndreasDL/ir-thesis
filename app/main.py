@@ -1,9 +1,6 @@
 import dataLoader as DL
 import featureExtractor as FE
 import models
-import plotters
-import numpy as np
-
 
 
 left_channels_to_try  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1', 'P3', 'P7', 'PO3']
@@ -31,19 +28,26 @@ def main_single():
 		'\n\tTest accuracy: ' , test_acc
 	)
 def main_all_one_by_one():
+	f = open('output-125border.txt', 'w')
+
 	test_chance = 0.25
+	borderDist = 0.125
+	f.write('test_chance: ' + str(test_chance) + ' borderDist: ' + str(borderDist) + "\n")
+
 	avg_train, avg_test = 0, 0
 
 	for left, right in zip(left_channels_to_try, right_channels_to_try):
 		print('left: ', left, ' - right: ', right)
+		f.write('left: ' + left + ' - right: ' + right)
 
 		#generate the extraction function
 		def func(samples):
 			return FE.LMinRFraction(samples, left_channel=left, right_channel=right)
 
 		for person in range(1,33):
+			print('\tperson', person, end='\r')
 			#load dataset
-			(X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(featureFunc=func, person=person, test_chance=test_chance)
+			(X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(featureFunc=func, person=person, test_chance=test_chance, borderDist=borderDist)
 
 			#classify
 			train_acc, test_acc, clf = models.linSVM(X_train,y_train, X_test,y_test)
@@ -60,10 +64,13 @@ def main_all_one_by_one():
 		avg_test  /= 32
 		avg_train /= 32
 
-		print('avg\t',
+		print('\navg\t',
 			'\tTrain accuracy: ', train_acc,
 			'\tTest accuracy: ' , test_acc
 		)
+		f.write('\tTest accuracy: ' + str(test_acc) + "\n")
+
+	f.close()
 
 def main_all():
 	test_size = 4
