@@ -93,3 +93,4 @@ target/
 dataset/
 dumpedData/
 *.dat
+.fuse_hidden*
