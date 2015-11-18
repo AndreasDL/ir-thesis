@@ -1,3 +1,0 @@
-testVideos: 8
-left: Fp1 - right: Fp2	Test accuracy: 0.25
-left: AF3 - right: AF4
