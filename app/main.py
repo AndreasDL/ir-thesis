@@ -30,11 +30,9 @@ def main_single():
 def main_all_one_by_one():
 	f = open('output-noborder.txt', 'w')
 
-	test_chance = 0.25
-	borderDist = 0
-	hardTest = False
-
-	f.write('test_chance: ' + str(test_chance) + ' borderDist: ' + str(borderDist) + ' hardTest: ' + str(hardTest) + "\n")
+	testVideos=8
+	classCount = 2
+	f.write('testVideos: ' + str(testVideos) + "\n")
 
 	avg_train, avg_test = 0, 0
 
@@ -49,7 +47,7 @@ def main_all_one_by_one():
 		for person in range(1,33):
 			print('\tperson', person, end='\r')
 			#load dataset
-			(X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(hardTest=hardTest, featureFunc=func, person=person, test_chance=test_chance, borderDist=borderDist)
+			(X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(classCount=classCount, testVideos=testVideos, featureFunc=func, person=person)
 
 			#classify
 			train_acc, test_acc, clf = models.linSVM(X_train,y_train, X_test,y_test)

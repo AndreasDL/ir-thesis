@@ -5,7 +5,47 @@ import featureExtractor as FE
 from sklearn.cross_validation import train_test_split
 import random
 
-def loadSinglePersonData(person, test_chance, pad='../dataset', happyThres=0.5, borderDist=0.125, featureFunc=FE.extract, hardTest=True):
+def loadSinglePersonData(person, testVideos = 8, classCount =  2, pad='../dataset', featureFunc=FE.extract):
+	#loads data and creates two classes happy and not happy
+
+	X = []
+	y = []
+
+
+	fname = str(pad) + '/s'
+	if person < 10:
+		fname += '0'
+	fname += str(person) + '.dat'
+	with open(fname,'rb') as f:
+		p = pickle._Unpickler(f)
+		p.encoding= ('latin1')
+		data = p.load()
+		#structure of data element:
+		#data['labels'][video] = [valence, arousal, dominance, liking]
+		#data['data'][video][channel] = [samples * 8064]
+
+		valences = np.array( data['labels'][:,0] ) #ATM only valence needed
+		valences = (valences - 1) / 8 #1->9 to 0->8 to 0->1
+
+		#transform into classes
+		valences = valences * classCount
+		valences = np.floor(valences)
+		valences[ valences == classCount] = classCount - 1
+
+		for valence in valences:
+			y.append(valence)
+
+		#extract features
+		for i in range(len(data['data'])):
+			X.append( featureFunc(data['data'][i]) )
+
+	#X & y : <-testset-><-trainset->
+	return [np.array(X[testVideos:]), np.array(y[testVideos:]), #train set
+		np.array(X[:testVideos]), np.array(y[:testVideos])]
+
+
+
+def loadSinglePersonData_old(person, test_chance, pad='../dataset', happyThres=0.5, borderDist=0.125, featureFunc=FE.extract, hardTest=True):
 	#loads data and creates two classes happy and not happy
 
 	X_train, X_test = [], []
