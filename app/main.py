@@ -32,7 +32,7 @@ def main_all_one_by_one():
 
 	testVideos=8
 	classCount = 2
-	f.write('testVideos: ' + str(testVideos) + "\n")
+	f.write('testVideos: ' + str(testVideos) + ' classCount: ' + str(classCount) + "\n")
 
 	avg_train, avg_test = 0, 0
 
