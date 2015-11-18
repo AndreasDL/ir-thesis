@@ -54,7 +54,7 @@ def main_all_one_by_one():
 			avg_test  += test_acc
 			avg_train += train_acc
 
-			#scores
+			#scores for one person
 			#print('Person: ', person,
 			#	'\tmodel: lin SVM',
 			#	'\tTrain accuracy: ', train_acc,
