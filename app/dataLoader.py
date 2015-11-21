@@ -5,12 +5,14 @@ import featureExtractor as FE
 from sklearn.cross_validation import train_test_split
 import random
 
-def loadSinglePersonData(person, testVideos = 8, classCount =  2, pad='../dataset', featureFunc=FE.extract):
-	#loads data and creates two classes happy and not happy
+def loadSinglePersonData(person, borderDist= 0.125, testVideosRatio = 0.25 , classCount =  2, pad='../dataset', featureFunc=FE.extract):
+	
+	if 1 <= borderDist*2:
+		print('borderDist (', borderDist, ' is too large for the given number of classes (', classCount, ')')
+		exit(-1)
 
 	X = []
 	y = []
-
 
 	fname = str(pad) + '/s'
 	if person < 10:
@@ -29,17 +31,32 @@ def loadSinglePersonData(person, testVideos = 8, classCount =  2, pad='../datase
 
 		#transform into classes
 		valences = valences * classCount
-		valences = np.floor(valences)
-		valences[ valences == classCount] = classCount - 1
+		classes = np.floor(valences)
+		classes[ valences == classCount] = classCount - 1
 
-		for valence in valences:
-			y.append(valence)
+		used_indexes = []
+		for i, valence, klass in zip(range(len(data['labels'])),valences, classes):
+			dist_up, dist_bot = 1, 1 #classwidth is always 1
+
+			if klass < classCount - 1:  #if there is an upper border
+				dist_up  = (klass+1) - valence #distance to upper border
+
+			elif klass > 0: #if there is a bottom border
+				dist_bot = valence - klass #distance to bottom border
+			
+			#print(klass , ' - ', valence, ' - dist:', dist_bot, ' - ', dist_up)
+
+			if dist_up > borderDist and dist_bot > borderDist: 
+				y.append(klass)
+				used_indexes.append(i)
 
 		#extract features
-		for i in range(len(data['data'])):
+		for i in used_indexes:
 			X.append( featureFunc(data['data'][i]) )
 
 	#X & y : <-testset-><-trainset->
+	testVideos = int( len(X) * testVideosRatio )
+
 	return [np.array(X[testVideos:]), np.array(y[testVideos:]), #train set
 		np.array(X[:testVideos]), np.array(y[:testVideos])]
 

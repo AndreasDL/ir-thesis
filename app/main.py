@@ -22,13 +22,15 @@ def func(samples):
 def personWorker(person):
     #print('working on person ', person)
 
-    testVideos = 8
+    testVideosRatio = 0.25
     classCount = 2
+    borderDist = 0.25
     
     #load dataset
     (X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(
         classCount=classCount,
-        testVideos=testVideos,
+        borderDist=borderDist,
+        testVideosRatio=testVideosRatio,
         featureFunc=func,
         person=person
     )
@@ -40,9 +42,10 @@ def personWorker(person):
 
 
 def main_all_one_by_one():
-    pool = Pool(processes=4)
+    pool = Pool(processes=8)
     results = pool.map( personWorker, range(1,33) )
-
+    pool.close()
+    pool.join()
     print('test results: ', np.mean(np.array(results)))
 
 
