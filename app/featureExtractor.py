@@ -153,8 +153,8 @@ def LogLMinRAlpha(samples,intervalLength=2, overlap=0.75, left_channel='F3', rig
 def FrontlineMidlineThetaPower(samples, channels, intervalLength=2, overlap=0.75):
 	#frontal midline theta power is increase by positive emotion
 	#structure of samples[channel, sample]
-	power = 0
-	for channel in channels:
-		power += np.sum( getBandPDChunks('alpha', samples[channelNames[channel]], intervalLength, overlap) )
+	power = getBandPDChunks('theta', samples[channelNames[channels[0]]], intervalLength, overlap)
+	for channel in channels[1:]:
+		power += getBandPDChunks('theta', samples[channelNames[channel]], intervalLength, overlap)
 
 	return power
