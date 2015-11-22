@@ -142,21 +142,19 @@ def LMinRFraction(samples,intervalLength=2, overlap=0.75, left_channel='F3', rig
 
 	return np.divide( alpha_left-alpha_right, alpha_left+alpha_right )
 	
-def LogLMinRAlpha(samples, intervalLength=2,overlap=0.75):
+def LogLMinRAlpha(samples,intervalLength=2, overlap=0.75, left_channel='F3', right_channel='F4'):
 	#log(left) - log(right)
-	left_values  = getBandPDChucks('alpha', samples[channelNames['P3']], intervalLength, overlap)
-	right_values = getBandPDChunks('alpha', samples[channelNames['P4']], intervalLength, overlap)
+	alpha_left  = getBandPDChunks('alpha', samples[channelNames[left_channel]], intervalLength, overlap )
+	alpha_right = getBandPDChunks('alpha', samples[channelNames[right_channel]], intervalLength, overlap )
 
 	#log left - log right
-	return np.log(left_values) - np.log(right_values)
+	return np.log(alpha_left) - np.log(alpha_right)
 
-#arousal
-def FrontlineMidlineThetaPower(samples,offsetStartTime=0,offsetStopTime=63):
+def FrontlineMidlineThetaPower(samples, channels, intervalLength=2, overlap=0.75):
 	#frontal midline theta power is increase by positive emotion
 	#structure of samples[channel, sample]
-	
 	power = 0
-	for i in [channelNames['Fz'], channelNames['Cz'], channelNames['FC1'], channelNames['FC2']]:
-		power += getBandPD('theta', samples[i],offsetStartTime,offsetStopTime)
+	for channel in channels:
+		power += np.sum( getBandPDChunks('alpha', samples[channelNames[channel]], intervalLength, overlap) )
 
 	return power

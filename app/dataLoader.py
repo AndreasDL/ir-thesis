@@ -6,13 +6,12 @@ from sklearn.cross_validation import train_test_split
 import random
 
 def loadSinglePersonData(person, borderDist= 0.125, testVideosRatio = 0.25 , classCount =  2, pad='../dataset', featureFunc=FE.extract):
-	
 	if 1 <= borderDist*2:
 		print('borderDist (', borderDist, ' is too large for the given number of classes (', classCount, ')')
 		exit(-1)
 
-	X = []
-	y = []
+	X_train, y_train = [], []
+	X_test, y_test = [], []
 
 	fname = str(pad) + '/s'
 	if person < 10:
@@ -34,31 +33,36 @@ def loadSinglePersonData(person, borderDist= 0.125, testVideosRatio = 0.25 , cla
 		classes = np.floor(valences)
 		classes[ valences == classCount] = classCount - 1
 
-		used_indexes = []
+		used_indexes_train = []
+		used_indexes_test  = []
 		for i, valence, klass in zip(range(len(data['labels'])),valences, classes):
+			
+			#distance to borders
 			dist_up, dist_bot = 1, 1 #classwidth is always 1
-
 			if klass < classCount - 1:  #if there is an upper border
 				dist_up  = (klass+1) - valence #distance to upper border
-
 			elif klass > 0: #if there is a bottom border
 				dist_bot = valence - klass #distance to bottom border
 			
-			#print(klass , ' - ', valence, ' - dist:', dist_bot, ' - ', dist_up)
 
-			if dist_up > borderDist and dist_bot > borderDist: 
-				y.append(klass)
-				used_indexes.append(i)
+			if dist_up > borderDist and dist_bot > borderDist: #add if sample is far enough from border
+				
+				if random.random() > testVideosRatio: # in train set
+					y_train.append(klass)
+					used_indexes_train.append(i)
+				else: #test set
+					y_test.append(klass)
+					used_indexes_test.append(i)
 
 		#extract features
-		for i in used_indexes:
-			X.append( featureFunc(data['data'][i]) )
-
-	#X & y : <-testset-><-trainset->
-	testVideos = int( len(X) * testVideosRatio )
-
-	return [np.array(X[testVideos:]), np.array(y[testVideos:]), #train set
-		np.array(X[:testVideos]), np.array(y[:testVideos])]
+		for i in used_indexes_train:
+			X_train.append( featureFunc(data['data'][i]) )
+		
+		for i in used_indexes_test:
+			X_test.append( featureFunc(data['data'][i]) )
+	
+	return [np.array(X_train), np.array(y_train), 
+		np.array(X_test), np.array(y_test)]
 
 
 
