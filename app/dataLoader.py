@@ -5,13 +5,12 @@ import featureExtractor as FE
 from sklearn.cross_validation import train_test_split
 import random
 
-def loadSinglePersonData(person, borderDist= 0.125, testVideosRatio = 0.25 , classCount =  2, pad='../dataset', featureFunc=FE.extract):
+def loadSinglePersonData(person, borderDist= 0.125, classCount =  2, pad='../dataset', featureFunc=FE.extract):
 	if 1 <= borderDist*2:
 		print('borderDist (', borderDist, ' is too large for the given number of classes (', classCount, ')')
 		exit(-1)
 
-	X_train, y_train = [], []
-	X_test, y_test = [], []
+	X, y = [], []
 
 	fname = str(pad) + '/s'
 	if person < 10:
@@ -33,8 +32,7 @@ def loadSinglePersonData(person, borderDist= 0.125, testVideosRatio = 0.25 , cla
 		classes = np.floor(valences)
 		classes[ valences == classCount] = classCount - 1
 
-		used_indexes_train = []
-		used_indexes_test  = []
+		used_indexes = []
 		for i, valence, klass in zip(range(len(data['labels'])),valences, classes):
 			
 			#distance to borders
@@ -46,23 +44,14 @@ def loadSinglePersonData(person, borderDist= 0.125, testVideosRatio = 0.25 , cla
 			
 
 			if dist_up > borderDist and dist_bot > borderDist: #add if sample is far enough from border
-				
-				if random.random() > testVideosRatio: # in train set
-					y_train.append(klass)
-					used_indexes_train.append(i)
-				else: #test set
-					y_test.append(klass)
-					used_indexes_test.append(i)
+				y.append(klass)
+				used_indexes.append(i)
 
 		#extract features
-		for i in used_indexes_train:
-			X_train.append( featureFunc(data['data'][i]) )
-		
-		for i in used_indexes_test:
-			X_test.append( featureFunc(data['data'][i]) )
+		for i in used_indexes:
+			X.append( featureFunc(data['data'][i]) )
 	
-	return [np.array(X_train), np.array(y_train), 
-		np.array(X_test), np.array(y_test)]
+	return [np.array(X), np.array(y)]
 
 
 

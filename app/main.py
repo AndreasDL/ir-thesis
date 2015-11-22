@@ -1,5 +1,6 @@
 import dataLoader as DL
 import featureExtractor as FE
+import util as UT
 import models
 import numpy as np
 from multiprocessing import Pool
@@ -28,20 +29,16 @@ def func(samples):
 
 def personWorker(person):
     #print('working on person ', person)
-
-    
-    
     #load dataset
-    (X_train, y_train, X_test, y_test) = DL.loadSinglePersonData(
+    (X, y) = DL.loadSinglePersonData(
         classCount=classCount,
         borderDist=borderDist,
-        testVideosRatio=testVideosRatio,
         featureFunc=func,
         person=person
     )
 
     #classify
-    train_acc, test_acc, clf = models.linSVM(X_train,y_train, X_test,y_test)
+    test_acc = models.linSVM(X, y)
 
     return test_acc
 

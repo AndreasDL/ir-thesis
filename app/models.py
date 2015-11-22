@@ -5,19 +5,20 @@ from sklearn.svm import SVC
 from sklearn.cross_validation import KFold
 
 
-def linSVM(X_train, y_train, X_test, y_test):
+def linSVM(X, y, CVSets=4):
     #use linear kernel
     clf = SVC(kernel='linear', probability=False) #true for later
-    clf.fit(X_train, y_train)
+    K_CV = KFold(len(X), n_folds=CVSets, random_state=17, shuffle=True)
+    
+    err = 0
+    for train_index, CV_index in K_CV:
+        clf.fit(X[train_index], y[train_index])
 
-    #MSE train err
-    train_acc = accuracy(clf.predict(X_train), y_train)
+        #MSE train err
+        err += accuracy(clf.predict(X[CV_index]), y[CV_index])
 
-    test_acc = -1
-    if len(X_test) != 0 and len(y_test) != 0:
-        test_acc = accuracy(clf.predict(X_test), y_test)
-
-    return train_acc, test_acc, clf
+    test_acc = err / float(CVSets)
+    return test_acc
 
 
 def linReg(X_train, y_train, X_test, y_test):
@@ -38,6 +39,7 @@ def linReg(X_train, y_train, X_test, y_test):
         test_err  = np.mean( (regr.predict(X_test) - y_test)**2 )
 
     return train_err, test_err, regr
+
 def ridgeReg(X_train, y_train, X_test, y_test, cvSets= 8):
     #linear regression with I2 regularisation
 
