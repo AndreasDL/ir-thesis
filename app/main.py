@@ -26,22 +26,22 @@ def channelFunc(samples):
     #features.extend( FE.FrontlineMidlineThetaPower(samples,['AF3', 'AF4', 'F7', 'F8', 'T7', 'T8' ]) )
 
     return features
-
+'''
 used_interval=[1]
-def func(samples):
+def intervalFunc(samples):
     features = []
     for interval in used_interval:
         features.extend( FE.LMinRFraction(samples,left_channel='F7', right_channel='F8', intervalLength=interval) )
 
     return features
-
+'''
 def personWorker(person):
     #print('working on person ', person)
     #load dataset
     (X, y) = DL.loadSinglePersonData(
         classCount=classCount,
         borderDist=borderDist,
-        featureFunc=func, #channelFunc
+        featureFunc=channelFunc, #channelFunc
         person=person
     )
 
@@ -52,8 +52,22 @@ def personWorker(person):
 
 
 def main_channel_search():
-    #opplistsen!
+        pool = Pool(processes=8)
+        results = pool.map( personWorker, range(1,33) )
+        pool.close()
+        pool.join()
 
+        return np.mean(np.array(results))      
+
+def main_interval_search():
+        pool = Pool(processes=8)
+        results = pool.map( personWorker, range(1,33) )
+        pool.close()
+        pool.join()
+
+        return np.mean(np.array(results))
+
+if __name__ == "__main__":
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 
     f = open("output" + str(st) + ".txt", 'w')
@@ -68,47 +82,20 @@ def main_channel_search():
         used_right_channels = [right]
         print(left, " - ", right)
 
-        pool = Pool(processes=8)
-        results = pool.map( personWorker, range(1,33) )
-        pool.close()
-        pool.join()
-
-        test_result = np.mean(np.array(results))
+        test_result = main_channel_search()
         print(test_result)
 
-    f.write('Left: ' + left + ' - right: ' + right + " result: " + str(test_result) + "\n")
-    #f.write(" result: " + str(test_result) + "\n")
+        f.write('Left: ' + left + ' - right: ' + right + " result: " + str(test_result) + "\n")
 
-    f.close()
-
-def main_interval_search():
-        pool = Pool(processes=8)
-        results = pool.map( personWorker, range(1,33) )
-        pool.close()
-        pool.join()
-
-        test_result = np.mean(np.array(results))
-        return test_result
-
-if __name__ == "__main__":
-    st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-
-    f = open("output" + str(st) + ".txt", 'w')
-    f.write(
-        'testVideosRatio: ' + str(testVideosRatio) +
-        ' classCount: ' + str(classCount) +
-        ' borderDist: ' + str(borderDist) + "\n"
-    )
-
-    for interval in [1,2,4,8,16,32]:
+    '''for interval in [1,2,4,8,16,32]:
         used_interval = [ interval ]
 
         print("interval - ", interval)
 
         test_result = main_interval_search()
         print(test_result)
+        f.write('interval: ' + interval + " result: " + str(test_result) + "\n")
+    '''
 
-    f.write('interval: ' + interval + " result: " + str(test_result) + "\n")
-    #f.write(" result: " + str(test_result) + "\n")
 
     f.close()
