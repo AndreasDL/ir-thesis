@@ -133,6 +133,50 @@ def getBandPDChunks(waveband, samplesAtChannel, intervalLength=2, overlap=0.75 )
 
 	return retArr
 
+def getRelPower(samples):
+
+	Fs = 128 #samples have freq 128Hz
+	totalPower = 0
+	powerComponents = {'alpha': 0, 'beta':0, 'gamma':0, 'delta':0, 'theta':0}
+
+	for channel in range(32):
+
+		samplesAtChannel = samples[channel]
+		n = len(samplesAtChannel) #equal to intervalsize, except for last part
+
+		for waveband in startFreq:
+			#bandpass filter to get waveband
+			nyq = 0.5 * Fs
+			low = startFreq[waveband] / nyq
+			high = stopFreq[waveband] / nyq
+			b, a = butter(6, [low, high], btype='band')
+			filteredSamples = lfilter(b, a, samplesAtChannel)	
+
+			#hamming window to smoothen edges
+			ham = np.hamming(n)
+			hamSamples = np.multiply(filteredSamples, ham)
+
+			#fft => get power components
+			# fft computing and normalization
+			Y = np.fft.fft(hamSamples)/n
+			Y = Y[range(round(n/2))]
+
+			#average within one chunck
+			avg = 0
+			for i in range(len(Y)):
+				avg += abs(Y[i]) **2
+			avg /= len(Y)
+			avg = np.sqrt(avg)
+
+			powerComponents[waveband] += avg
+			totalPower += avg
+
+	retArr = []
+	for band in powerComponents:
+		retArr.append( powerComponents[band] / float(totalPower) )
+
+	return np.array(retArr)
+	
 #valence
 def LMinRFraction(samples,intervalLength=2, overlap=0.75, left_channel='F3', right_channel='F4'):
 	#structure of samples[channel, sample]
