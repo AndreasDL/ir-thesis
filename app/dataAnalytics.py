@@ -12,17 +12,19 @@ matplotlib.rc('font', **font)
 if __name__ == '__main__':
     pad = '../dataset'   
     names = ['valence', 'arousal', 'dominance', 'liking']
-
-    v = [[],[],[],[]] #keep for calculating mean
     
-    bins = []
-    bins.append([0] * 8)
-    bins.append([0] * 8)
-    bins.append([0] * 8)
-    bins.append([0] * 8)
-    total_videos = float(32 * 40)
-
+    print('person;0<->1;1<->2;2<->3;3<->4;4<->5;5<->6;6<->7;7<->8;avg;std;median;sad;happy')
     for person in range(1,33):
+        
+        v = [[],[],[],[]] #keep for calculating mean
+
+        bins = []
+        bins.append([0] * 8)
+        bins.append([0] * 8)
+        bins.append([0] * 8)
+        bins.append([0] * 8)
+        total_videos = float(32 * 40)
+
         fname = str(pad) + '/s'
         if person < 10:
             fname += '0'
@@ -35,7 +37,7 @@ if __name__ == '__main__':
             #data['labels'][video] = [valence, arousal, dominance, liking]
             #data['data'][video][channel] = [samples * 8064]
             for i in range(4):
-                vals = np.array( data['labels'][:,i] ) #ATM only valence needed
+                vals = np.array( data['labels'][:,i] )
                 vals = (vals - 1) #1->9 to 0->8
                 
                 for val in vals:
@@ -45,14 +47,22 @@ if __name__ == '__main__':
                     bins[i][bin] += 1
 
                 v[i].extend(vals)
+        
+        
+        print(str(person), ';' , end='')
+        for j in range(len(bins[0])):
+            print( bins[0][j] , ';', end='' )
+
+        print( np.mean(v[0]), ';', np.std(v[0]), ';', np.median(v[0]), ';', np.sum(bins[0][:4]), ';', np.sum(bins[0][4:]) )
     
+    exit()
     print('global averages: ')
     for i in range(4):
         print('\t', names[i], np.mean(v[i]), '\t')
     
     bins = np.array(bins) / total_videos
     bins = bins * 100
-
+    
     for k in range(4):
         print('occurences ', names[k], ': ')
         for i in range(8):
