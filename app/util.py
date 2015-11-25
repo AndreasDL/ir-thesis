@@ -12,16 +12,16 @@ def tptnfpfn(predictions, truths):
     fp, fn = 0, 0
 
     for pred, truth in zip(predictions, truths):
-        if pred == truth: #True
-            if pred == 0: #negative
-                tn += 1
-            else: #positive
+        if pred == truth: #prediction is true
+            if pred == 1:
                 tp += 1
-        else: #false
-            if pred == 0: #negative
+            else:
                 tn += 1
-            else: #positive
-                tp += 1
+        else:
+            if pred == 1:
+                fp += 1
+            else:
+                fn += 1
 
     return tp, tn, fp, fn
 
