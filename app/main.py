@@ -2,6 +2,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 import numpy as np
 import os
 import pickle
+import util
 from scipy.signal import butter, lfilter
 
 #global const vars!
@@ -25,8 +26,8 @@ stopFreq = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
 
 def featureFunc(samples):
     #return np.array(samples[:][:32][:]) #only use EEG channels
-    all_left_channels  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1', 'P3', 'P7', 'PO3']
-    all_right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6', 'CP2', 'P4', 'P8', 'PO4']
+    #all_left_channels  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1', 'P3', 'P7', 'PO3']
+    #all_right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6', 'CP2', 'P4', 'P8', 'PO4']
 
     Fs = 128 #samples have freq 128Hz
     n = 8064 #number of samples
@@ -135,45 +136,66 @@ def loadPerson(person, preprocessFunc=csp, featureFunc=featureFunc, pad='../data
         #data['labels'][video] = [valence, arousal, dominance, liking]
         #data['data'][video][channel] = [samples * 8064]
 
+        #only use EEG channels
+        samples = np.array(data['data'])[:,:32,:] #throw out non-EEG channels
+
+        #rescale
         valences = np.array( data['labels'][:,0] ) #ATM only valence needed
         valences = (valences - 1) / 8 #1->9 to 0->8 to 0->1
-
-        #transform into classes
+        
         #median
         median = np.median(valences)
-
+        #classes
         y = valences
         y[ y <= median ] = 0
         y[ y >  median ] = 1
         y = np.array(y, dtype='int')
-        
-        #preprocess data
-        samples = np.array(data['data'])[:,:32,:] #throw out non-EEG channels
+
+        #preprocessing
         X = preprocessFunc(samples=samples, labels=y)
 
         #extract features for each video
-        for video in range(len(X)):
-            X[video] = featureFunc(X[video])
-        
+        for video in range(len(data['data'])):
+            X[video] = featureFunc(samples[video])        
+
     return [np.array(X), y]
 
 if __name__ == "__main__":
+    CVSets = float(4)
+
     for person in range(1,33):
         #split using median, use all data
-        X, y = loadPerson(person, featureFunc=featureFunc)
+        X, y = loadPerson(person, 
+            featureFunc=featureFunc,
+            preprocessFunc=csp
+        )
         #print(len(X), 'x', len(X[0]), 'x', len(X[0][0]))
-
-
 
         #LDA
         lda = LinearDiscriminantAnalysis()
-        
-        print(X_only.shape)
-        print(y.shape)
+        K_CV = KFold(len(X), n_folds=CVSets, random_state=17, shuffle=True)
+        acc, tp, tn , fp , fn , auc
+        for train_index, CV_index in K_CV:
+            lda = lda.fit(X[train_index], y[train_index])
 
-        lda = lda.fit(X_only, y)
-        print(lda)
-        
+            predictions = lda.predict(X[CV_index])
+            #MSE train err
+            acc += accuracy(predictions, y[CV_index])
+            (ttp,ttn,tfp,tfn) = tptnfpfn(predictions, y[CV_index])
+            tp += ttp
+            tn += ttn
+            fp += tfp
+            fn += tfn
+            auc += auc(predictions, y[CV_index])
+
         #accuracy
+        acc /= CVSets
+        
         #tptnfpfn
+        tp /= CVSets
+        fp /= CVSets
+        tn /= CVSets
+        fn /= CVSets
+
         #auc
+        auc /= CVSets
