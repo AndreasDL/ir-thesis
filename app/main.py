@@ -2,6 +2,8 @@ import os
 import pickle
 import util as UT
 import numpy as np
+import datetime
+import time
 from scipy.signal import butter, lfilter
 from sklearn.cross_validation import KFold
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -164,6 +166,12 @@ def loadPerson(person, preprocessFunc=csp, featureFunc=featureFunc, pad='../data
 
 if __name__ == "__main__":
     CVSets = float(4)
+    st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+
+    f = open("output" + str(st) + ".txt", 'w')
+    f.write('CVSets: ' + str(CVSets) + '\n' +
+        'person;acc;tp;tn;fp;fn;auc\n'
+    )
 
     for person in range(1,33):
         #split using median, use all data
@@ -211,3 +219,10 @@ if __name__ == "__main__":
 #            ' - fn: ' , str(fn),
             ' - auc: ', str(auc)
         )
+        f.write(str(person) + ';' + str(acc) + ';' + 
+            str(tp) + ';' + str(tn) + ';' +
+            str(fp) + ';' + str(fn) + ';' +
+            str(auc)
+        )
+
+    f.close()
