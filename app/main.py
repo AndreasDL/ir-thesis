@@ -24,6 +24,7 @@ startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
 stopFreq = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
 
 def featureFunc(samples):
+    #return np.array(samples[:][:32][:]) #only use EEG channels
     all_left_channels  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1', 'P3', 'P7', 'PO3']
     all_right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6', 'CP2', 'P4', 'P8', 'PO4']
 
@@ -68,27 +69,29 @@ def featureFunc(samples):
         features.append(right_avg)
 
     return np.array(features)
-
-def csp(features, labels):
+def csp(samples, labels):
     #based on http://lib.ugent.be/fulltxt/RUG01/001/805/425/RUG01-001805425_2012_0001_AC.pdf    
+    videoCount = len(labels)
+    inputChannelCount = len(samples[0])
+    sampleLength = len(samples[0][0]) #should be 8064
 
     #divide in two classes
-    E  = [[],[]] #two classess
-    for klass, sample in zip(labels, features):
-        E[klass].append(sample)
-    E = np.array(E)
-    
+    E = [np.zeros(( inputChannelCount,inputChannelCount ))] *2
+    for klass, sample in zip(labels, samples):
+        #each sample = 32 channels x 8064 samples
+        E[klass] += np.cov(sample)
+
     #step one
-    E_combined = np.cov(E[0]) + np.cov(E[1])
+    E_combined = E[0] + E[1]
 
     #step two Vt * E * V = P
     P, V = np.linalg.eig(E_combined)
+    #put eigen values on diagonal => after **-.5 in step three
     
     #step three whitening
-    U = np.dot( (P**-0.5), np.transpose(V) )
-    P = P * np.eye(len(P))#put eigen values on diagonal
-    Rnul = np.dot( np.dot(U, E[0]), np.transpose(U) )
-    Reen = np.dot( np.dot(U, E[1]), np.transpose(U) )
+    U = np.dot( (P**-0.5)*np.eye(len(P)), np.transpose(V) )
+    Rnul = U * E[0] * np.transpose(U)
+    Reen = U * E[1] * np.transpose(U)
 
     #step four Zt * R0 * Z = D
     D, Z = np.linalg.eig(Rnul)
@@ -97,16 +100,27 @@ def csp(features, labels):
     Z = Z[:,idx]
     D = D[idx]
     #put eigen values on diagonal
-    D = D * eye(len(D))
+    D = D * np.eye(len(D))
     
-
     #step five
     W = np.transpose(Z) * U
+    #print('Used filter coefs:', W)
 
     #apply filters
-    return W * features
+    features_CSP = []
+    for sample in samples:
+        features_CSP.append( np.dot(W, sample) )
+    features_CSP = np.array(features_CSP)
 
-def loadPerson(person, featureFunc=featureFunc, pad='../dataset'):
+    #apply csp
+    #keep only 2 outer channels as these contain the most information
+    X_only = np.zeros((videoCount,2,sampleLength))
+    X_only[:,0,:] = features_CSP[:,0,:]
+    X_only[:,1,:] = features_CSP[:,31,:]
+    
+    return np.array(X_only)
+
+def loadPerson(person, preprocessFunc=csp, featureFunc=featureFunc, pad='../dataset'):
     X, y = [], []
 
     fname = str(pad) + '/s'
@@ -131,24 +145,35 @@ def loadPerson(person, featureFunc=featureFunc, pad='../dataset'):
         y = valences
         y[ y <= median ] = 0
         y[ y >  median ] = 1
+        y = np.array(y, dtype='int')
+        
+        #preprocess data
+        samples = np.array(data['data'])[:,:32,:] #throw out non-EEG channels
+        X = preprocessFunc(samples=samples, labels=y)
 
         #extract features for each video
-        for video in range(len(data['data'])):
-            X.append( featureFunc(data['data'][video]) )
+        for video in range(len(X)):
+            X[video] = featureFunc(X[video])
         
-    return [np.array(X), np.array(y, dtype='int')]
+    return [np.array(X), y]
 
 if __name__ == "__main__":
     for person in range(1,33):
         #split using median, use all data
         X, y = loadPerson(person, featureFunc=featureFunc)
-        
-        #csp + lda
-        X_csp = csp(X, y)
+        #print(len(X), 'x', len(X[0]), 'x', len(X[0][0]))
+
+
+
+        #LDA
         lda = LinearDiscriminantAnalysis()
-        lda = lda.fit(X, y)
+        
+        print(X_only.shape)
+        print(y.shape)
+
+        lda = lda.fit(X_only, y)
         print(lda)
+        
         #accuracy
         #tptnfpfn
         #auc
-
