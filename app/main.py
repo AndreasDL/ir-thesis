@@ -7,7 +7,7 @@ import time
 from scipy.signal import butter, lfilter
 from sklearn.cross_validation import KFold
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-
+from sklearn.preprocessing import normalize
 
 #global const vars!
 '''
@@ -70,62 +70,79 @@ def featureFunc(samples):
     features = []
     features.append(left_avg )
     features.append(right_avg)
+    features.append( (left_avg - right_avg) / float(left_avg + right_avg) )
+
 
     return np.array(features)
 
-def csp(samples, labels):
-    #based on http://lib.ugent.be/fulltxt/RUG01/001/805/425/RUG01-001805425_2012_0001_AC.pdf    
-    videoCount = len(labels)
-    inputChannelCount = len(samples[0])
-    sampleLength = len(samples[0][0]) #should be 8064
+#http://lib.ugent.be/fulltxt/RUG01/001/805/425/RUG01-001805425_2012_0001_AC.pdf
+def own_csp(samples, labels):
+    #sampes[video][channel] = list<samples>
+    
+    #normalize input => avoid problems with **-.5 of P matrix
+    for i in range(32):
+        samples[:,i,:] -= normalize(samples[:,i,:])
 
     #divide in two classes
-    E = [np.zeros(( inputChannelCount,inputChannelCount ))] *2
+    cov0 = 0
+    cov1 = 0
     for klass, sample in zip(labels, samples):
         #each sample = 32 channels x 8064 samples
-        E[klass] += np.cov(sample)
+        #avg = nul?
+        E = sample
+        Et = np.transpose(sample)
+        
+        prod = np.dot(E, Et)
 
+        if klass == 0:
+            cov0 += prod/np.trace(prod)
+        else:
+            cov1 += prod/np.trace(prod)
+        
     #step one
-    E_combined = E[0] + E[1]
+    cov = cov0 + cov1
 
     #step two Vt * E * V = P
-    P, V = np.linalg.eig(E_combined)
-    P[ P<0 ] = 0.0000001 #fix problems with sqrt => Dirty fix TODO
-    #put eigen values on diagonal => after **-.5 in step three
-
+    P, V = np.linalg.eig(cov)
+    P = np.diag(P)
+    
     #step three whitening
-    U = np.dot( (P**-0.5)*np.eye(len(P)), np.transpose(V) )
-    Rnul = U * E[0] * np.transpose(U)
-    Reen = U * E[1] * np.transpose(U)
+    U = np.dot( np.sqrt(np.linalg.inv(P)), np.transpose(V) )
+    Rnul = np.dot( U, np.dot(cov0, np.transpose(U)) )
+    #Reen = np.dot( U, np.dot(cov1, np.transpose(U)) )
 
     #step four Zt * R0 * Z = D
     D, Z = np.linalg.eig(Rnul)
+    
     #sorteer eigenwaarden op diagonaal
-    idx = D.argsort()[::-1]   
+    idx = D.ravel().argsort()
     Z = Z[:,idx]
     D = D[idx]
     #put eigen values on diagonal
-    D = D * np.eye(len(D))
+    D = np.diag(D)
     
     #step five
-    W = np.transpose(Z) * U
-    #print('Used filter coefs:', W)
+    W = np.dot( np.transpose(Z), U)
+    #print(D)
+    #print(W)
 
     #apply filters
-    features_CSP = []
-    for sample in samples:
-        features_CSP.append( np.dot(W, sample) )
-    features_CSP = np.array(features_CSP)
+    #TODO speedup only calculate 2 outer stuffz
+    X_only = np.zeros((40,2,8064))
+    for i in range(len(samples)):
+        E = samples[i]
+        #apply csp
+        E_csp = np.dot(W, E)
 
-    #apply csp
-    #keep only 2 outer channels as these contain the most information
-    X_only = np.zeros((videoCount,2,sampleLength))
-    X_only[:,0,:] = features_CSP[:,0,:]
-    X_only[:,1,:] = features_CSP[:,31,:]
+        #keep only 2 outer channels as these contain the most information
+        X_only[i,0,:] = E_csp[0,:]
+        X_only[i,1,:] = E_csp[31,:]
     
-    return np.array(X_only)
+    return X_only
 
-def loadPerson(person, preprocessFunc=csp, featureFunc=featureFunc, pad='../dataset'):
+def loadPerson(person, preprocessFunc=own_csp, featureFunc=featureFunc, pad='../dataset'):
+    print('loadPerson')
+
     X, y = [], []
 
     fname = str(pad) + '/s'
@@ -156,7 +173,7 @@ def loadPerson(person, preprocessFunc=csp, featureFunc=featureFunc, pad='../data
         y = np.array(y, dtype='int')
 
         #preprocessing
-        X_prepped = preprocessFunc(samples=samples, labels=y)
+        X_prepped = preprocessFunc(samples=samples,labels=y)
 
         #extract features for each video
         for video in range(len(data['data'])):
@@ -177,9 +194,8 @@ if __name__ == "__main__":
         #split using median, use all data
         X, y = loadPerson(person, 
             featureFunc=featureFunc,
-            preprocessFunc=csp
+            preprocessFunc=own_csp
         )
-        print(np.shape(X))
 
         #LDA
         lda = LinearDiscriminantAnalysis()
@@ -190,12 +206,13 @@ if __name__ == "__main__":
 
             predictions = lda.predict(X[CV_index])
             #MSE train err
-            acc += UT.accuracy(predictions, y[CV_index])
             (ttp,ttn,tfp,tfn) = UT.tptnfpfn(predictions, y[CV_index])
-            tp += ttp
-            tn += ttn
-            fp += tfp
-            fn += tfn
+            tp  += ttp
+            tn  += ttn
+            fp  += tfp
+            fn  += tfn
+
+            acc += UT.accuracy(predictions, y[CV_index])
             auc += UT.auc(predictions, y[CV_index])
 
         #accuracy
@@ -222,7 +239,7 @@ if __name__ == "__main__":
         f.write(str(person) + ';' + str(acc) + ';' + 
             str(tp) + ';' + str(tn) + ';' +
             str(fp) + ';' + str(fn) + ';' +
-            str(auc)
+            str(auc) + '\n'
         )
 
     f.close()
