@@ -18,60 +18,104 @@ channelNames = {
 	'Plethysmograph' : 39,
 	'Temperature' : 40
 }
+all_left_channels  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1', 'P3', 'P7', 'PO3']
+all_right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6', 'CP2', 'P4', 'P8', 'PO4']
+
 #turn bands into frequency ranges
 startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
 stopFreq = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
 
-#all features to be used
-#samples =all channels of a single video
-def extract(samples):
-	return LMinRFraction(samples,2)
+def alphaPowers(samples):
+    #it says left & right, but this has no meaning after CSP
+    
+    Fs = 128 #samples have freq 128Hz
+    n = 8064 #number of samples
+    #turn bands into frequency ranges
+    startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
+    stopFreq = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
 
-#Power Density of one band
-def getBandPD(waveband, samplesAtChannel,offsetStartTime = 0,offsetStopTime = 63):
+    #bandpass filter to get waveband
+    nyq  = 0.5 * Fs
+    low  = startFreq['alpha'] / nyq
+    high = stopFreq['alpha']   / nyq
+    b, a = butter(6, [low, high], btype='band')
+    left_samples  = lfilter(b, a, samples[0])    
+    right_samples = lfilter(b, a, samples[1])
 
-	if not (waveband in startFreq and waveband in stopFreq):
-		print("Error Wrong waveband selection for frequencyPower. you selected:", waveband)	
-		exit(-1)
+    #hamming window to smoothen edges
+    ham = np.hamming(n)
+    left_samples  = np.multiply(left_samples , ham)
+    right_samples = np.multiply(right_samples, ham)
+
+    #fft => get power components
+    # fft computing and normalization
+    left_Y = np.fft.fft(left_samples)/n
+    left_Y = left_Y[range(round(n/2))]
+    right_Y = np.fft.fft(right_samples)/n
+    right_Y = right_Y[range(round(n/2))]
+
+    #average within one chunck
+    left_avg, right_avg = 0, 0
+    for left_val, right_val in zip(left_Y, right_Y):
+        left_avg  += abs(left_val) **2
+        right_avg += abs(right_val) **2
+
+    left_avg /= len(left_Y)
+    left_avg = np.sqrt(left_avg)
+    right_avg /= len(right_Y)
+    right_avg = np.sqrt(right_avg)
+
+    features = []
+    features.append(left_avg )
+    features.append(right_avg)
+    #features.append( (left_avg - right_avg) / float(left_avg + right_avg) )
+
+    return np.array(features)
+
+#OLD
+def getRelPower(samples):
 
 	Fs = 128 #samples have freq 128Hz
+	totalPower = 0
+	powerComponents = {'alpha': 0, 'beta':0, 'gamma':0, 'delta':0, 'theta':0}
 
-	#hamming window to smoothen edges
-	ham = np.hamming(len(samplesAtChannel))
-	samplesAtChannel = np.multiply(samplesAtChannel, ham)
+	for channel in range(32):
 
+		samplesAtChannel = samples[channel]
+		n = len(samplesAtChannel) #equal to intervalsize, except for last part
 
-	#select only certain time
-	offsetStartIndex = offsetStartTime * Fs       #fix offset
-	offestStopIndex = offsetStopTime * Fs
-	samplesAtOffset = samplesAtChannel[offsetStartIndex:offestStopIndex]
-	n = len(samplesAtOffset)
+		for waveband in startFreq:
+			#bandpass filter to get waveband
+			nyq = 0.5 * Fs
+			low = startFreq[waveband] / nyq
+			high = stopFreq[waveband] / nyq
+			b, a = butter(6, [low, high], btype='band')
+			filteredSamples = lfilter(b, a, samplesAtChannel)	
 
-	#bandpass filter to get waveband
-	nyq = 0.5 * Fs
-	low = startFreq[waveband] / nyq
-	high = stopFreq[waveband] / nyq
-	b, a = butter(6, [low, high], btype='band')
-	samplesAtBand = lfilter(b, a, samplesAtOffset)	
+			#hamming window to smoothen edges
+			ham = np.hamming(n)
+			hamSamples = np.multiply(filteredSamples, ham)
 
-	#fft => get components
-	Y = np.fft.fft(samplesAtBand)/n					# fft computing and normalization
-	Y = Y[range(round(n/2))]
+			#fft => get power components
+			# fft computing and normalization
+			Y = np.fft.fft(hamSamples)/n
+			Y = Y[range(round(n/2))]
 
-	#show result of bandpass filter
-	'''frq = np.arange(n)*Fs/n # two sides frequency range
-	freq = frq[range(round(n/2))]           # one side frequency range
-	plt.plot(freq, abs(Y), 'r-')
-	plt.xlabel('freq (Hz)')
-	plt.ylabel('|Y(freq)|')
-	plt.show()'''
+			#average within one chunck
+			avg = 0
+			for i in range(len(Y)):
+				avg += abs(Y[i]) **2
+			avg /= len(Y)
+			avg = np.sqrt(avg)
 
-	#Root Mean Square
-	value = 0
-	for i in range(len(Y)):
-		value += abs(Y[i]) **2
+			powerComponents[waveband] += avg
+			totalPower += avg
 
-	return np.sqrt( value / len(Y) )
+	retArr = []
+	for band in powerComponents:
+		retArr.append( powerComponents[band] / float(totalPower) )
+
+	return np.array(retArr)
 def getBandPDChunks(waveband, samplesAtChannel, intervalLength=2, overlap=0.75 ):
 	#splits the samlesAtChannel into chuncks of intervalLength size and calculates the frequency powers of a certain waveband using the fast fourier transform
 	if not (waveband in startFreq and waveband in stopFreq):
@@ -132,52 +176,6 @@ def getBandPDChunks(waveband, samplesAtChannel, intervalLength=2, overlap=0.75 )
 	'''
 
 	return retArr
-
-def getRelPower(samples):
-
-	Fs = 128 #samples have freq 128Hz
-	totalPower = 0
-	powerComponents = {'alpha': 0, 'beta':0, 'gamma':0, 'delta':0, 'theta':0}
-
-	for channel in range(32):
-
-		samplesAtChannel = samples[channel]
-		n = len(samplesAtChannel) #equal to intervalsize, except for last part
-
-		for waveband in startFreq:
-			#bandpass filter to get waveband
-			nyq = 0.5 * Fs
-			low = startFreq[waveband] / nyq
-			high = stopFreq[waveband] / nyq
-			b, a = butter(6, [low, high], btype='band')
-			filteredSamples = lfilter(b, a, samplesAtChannel)	
-
-			#hamming window to smoothen edges
-			ham = np.hamming(n)
-			hamSamples = np.multiply(filteredSamples, ham)
-
-			#fft => get power components
-			# fft computing and normalization
-			Y = np.fft.fft(hamSamples)/n
-			Y = Y[range(round(n/2))]
-
-			#average within one chunck
-			avg = 0
-			for i in range(len(Y)):
-				avg += abs(Y[i]) **2
-			avg /= len(Y)
-			avg = np.sqrt(avg)
-
-			powerComponents[waveband] += avg
-			totalPower += avg
-
-	retArr = []
-	for band in powerComponents:
-		retArr.append( powerComponents[band] / float(totalPower) )
-
-	return np.array(retArr)
-	
-#valence
 def LMinRFraction(samples,intervalLength=2, overlap=0.75, left_channel='F3', right_channel='F4'):
 	#structure of samples[channel, sample]
 	#return L-R / L+R, voor alpha components zie gegeven paper p6
@@ -185,7 +183,6 @@ def LMinRFraction(samples,intervalLength=2, overlap=0.75, left_channel='F3', rig
 	alpha_right = getBandPDChunks('alpha', samples[channelNames[right_channel]], intervalLength, overlap )
 
 	return np.divide( alpha_left-alpha_right, alpha_left+alpha_right )
-	
 def LogLMinRAlpha(samples,intervalLength=2, overlap=0.75, left_channel='F3', right_channel='F4'):
 	#log(left) - log(right)
 	alpha_left  = getBandPDChunks('alpha', samples[channelNames[left_channel]], intervalLength, overlap )
@@ -193,7 +190,6 @@ def LogLMinRAlpha(samples,intervalLength=2, overlap=0.75, left_channel='F3', rig
 
 	#log left - log right
 	return np.log(alpha_left) - np.log(alpha_right)
-
 def FrontlineMidlineThetaPower(samples, channels, intervalLength=2, overlap=0.75):
 	#frontal midline theta power is increase by positive emotion
 	#structure of samples[channel, sample]
