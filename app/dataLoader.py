@@ -6,8 +6,6 @@ from sklearn.cross_validation import train_test_split
 import random
 
 def loadPerson(person, preprocessFunc, featureFunc, pad='../dataset'):
-    print('loadPerson')
-
     X, y = [], []
 
     fname = str(pad) + '/s'
