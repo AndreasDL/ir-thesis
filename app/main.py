@@ -41,7 +41,7 @@ def featureFunc(samples):
     #bandpass filter to get waveband
     nyq  = 0.5 * Fs
     low  = startFreq['alpha'] / nyq
-    high = stopFreq['beta']   / nyq
+    high = stopFreq['alpha']   / nyq
     b, a = butter(6, [low, high], btype='band')
     left_samples  = lfilter(b, a, samples[0])    
     right_samples = lfilter(b, a, samples[1])
@@ -74,7 +74,6 @@ def featureFunc(samples):
     features.append(right_avg)
     #features.append( (left_avg - right_avg) / float(left_avg + right_avg) )
 
-
     return np.array(features)
 
 #http://lib.ugent.be/fulltxt/RUG01/001/805/425/RUG01-001805425_2012_0001_AC.pdf
@@ -83,7 +82,7 @@ def own_csp(samples, labels):
     
     #normalize input => avoid problems with **-.5 of P matrix
     for i in range(32):
-        samples[:,i,:] -= normalize(samples[:,i,:])
+        samples[:,i,:] = normalize(samples[:,i,:])
 
     #divide in two classes
     cov0 = 0
