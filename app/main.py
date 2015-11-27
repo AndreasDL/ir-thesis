@@ -9,13 +9,24 @@ from multiprocessing import Pool
 from sklearn.cross_validation import KFold
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
+def featureFunc(samples):
+    features = []
+    #features.extend(FE.alphaPowers(samples))
+    #features.extend(FE.betaPowers(samples))
+    #features.extend(FE.deltaPowers(samples))
+    #features.extend(FE.gammaPowers(samples))
+    features.extend(FE.thetaPowers(samples))
+
+
+    return np.array(features)
+
 def PersonWorker(person):
     print('starting on person: ', str(person))
     CVSets = float(4)
 
     #split using median, use all data
     X, y = DL.loadPerson(person=person, 
-        featureFunc=FE.alphaPowers,
+        featureFunc=featureFunc,
         preprocessFunc=UT.csp
     )
 
@@ -67,6 +78,8 @@ if __name__ == "__main__":
     pool.join()
 
     results = np.array(results)
+    print('avg acc:', np.average(results[:,0]), 'avg auc:', np.average(results[:,0]))
+
 
     #output    
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
@@ -82,15 +95,15 @@ if __name__ == "__main__":
             str(auc) + '\n'
         )
 
-    f.write('median: ')
+    f.write('\nmedian;')
     for column in range(len(results[0])):
         f.write(str(np.median(results[:,column])) + ';')
 
-    f.write('\navg: ')
+    f.write('\navg;')
     for column in range(len(results[0])):
         f.write(str(np.average(results[:,column])) + ';')
 
-    f.write('\nstd: ')
+    f.write('\nstd;')
     for column in range(len(results[0])):
         f.write(str(np.std(results[:,column])) + ';')
 
