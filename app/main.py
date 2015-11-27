@@ -30,6 +30,8 @@ all_right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6',
 '''
 
 def featureFunc(samples):
+    #it says left & right, but this has no meaning after CSP
+    
     Fs = 128 #samples have freq 128Hz
     n = 8064 #number of samples
     #turn bands into frequency ranges
@@ -70,7 +72,7 @@ def featureFunc(samples):
     features = []
     features.append(left_avg )
     features.append(right_avg)
-    features.append( (left_avg - right_avg) / float(left_avg + right_avg) )
+    #features.append( (left_avg - right_avg) / float(left_avg + right_avg) )
 
 
     return np.array(features)
