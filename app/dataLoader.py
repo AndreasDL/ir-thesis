@@ -5,7 +5,7 @@ import featureExtractor as FE
 from sklearn.cross_validation import train_test_split
 import random
 
-def loadPerson(person, preprocessFunc, featureFunc, pad='../dataset'):
+def loadPerson(person, preprocessFunc, featureFunc, pad='../dataset', use_median=True):
     X, y = [], []
 
     fname = str(pad) + '/s'
@@ -27,12 +27,16 @@ def loadPerson(person, preprocessFunc, featureFunc, pad='../dataset'):
         valences = np.array( data['labels'][:,0] ) #ATM only valence needed
         valences = (valences - 1) / 8 #1->9 to 0->8 to 0->1
         
-        #median
-        median = np.median(valences)
+        if use_median:
+            #median as border
+            border = np.median(valences)
+        else:
+            border = 0.5
+        
         #classes
         y = valences
-        y[ y <= median ] = 0
-        y[ y >  median ] = 1
+        y[ y <= border ] = 0
+        y[ y >  border ] = 1
         y = np.array(y, dtype='int')
 
         #preprocessing
@@ -160,7 +164,6 @@ def dump(X_train, y_train, X_test, y_test, name, path='../dumpedData'):
 	}
 	with open(fname, 'wb') as f:
 		pickle.dump( data, f )
-
 def load(name, path='../dumpedData'):
 	fname = path + '/' + name
 

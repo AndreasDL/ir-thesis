@@ -86,12 +86,13 @@ def tptnfpfn(predictions, truths):
                 tp += 1
             else:
                 tn += 1
+        
         else:
             if pred == 1:
                 fp += 1
             else:
                 fn += 1
-
+        
     return tp, tn, fp, fn
 
 def auc(predictions, truths):

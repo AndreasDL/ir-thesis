@@ -21,44 +21,54 @@ def featureFunc(samples):
 
 def PersonWorker(person):
     print('starting on person: ', str(person))
-    CVSets = float(4)
+    CVSets = 40 #leave one out validation
 
     #split using median, use all data
     X, y = DL.loadPerson(person=person, 
         featureFunc=featureFunc,
-        preprocessFunc=UT.csp
+        preprocessFunc=UT.csp,
+        use_median=False
     )
+    pos_count = np.sum(y)
+    neg_count = 40 - pos_count
+
 
     #LDA
-    lda = LinearDiscriminantAnalysis()
+    lda = LinearDiscriminantAnalysis(priors=[neg_count, pos_count])
+    
     K_CV = KFold(len(X), n_folds=CVSets, random_state=17, shuffle=True)
     acc, tp, tn , fp , fn , auc = 0, 0, 0, 0, 0, 0
+    #for auc
+    predictions, truths = [], []
     for train_index, CV_index in K_CV:
+        #train
         lda = lda.fit(X[train_index], y[train_index])
 
-        predictions = lda.predict(X[CV_index])
+        #predict
+        pred = lda.predict(X[CV_index])
+        #save for auc 
+        predictions.extend(pred)
+        truths.append(y[CV_index])
+        
         #MSE train err
-        (ttp,ttn,tfp,tfn) = UT.tptnfpfn(predictions, y[CV_index])
+        (ttp,ttn,tfp,tfn) = UT.tptnfpfn(pred, y[CV_index])
         tp  += ttp
         tn  += ttn
         fp  += tfp
         fn  += tfn
-
-        acc += UT.accuracy(predictions, y[CV_index])
-        auc += UT.auc(predictions, y[CV_index])
+        acc += UT.accuracy(pred, y[CV_index])
 
     #accuracy
-    acc /= CVSets
+    acc /= float(CVSets)
     
-    #tptnfpfn
-    #results for 4 x 10 videos in CV!
-    tp /= 40
-    tn /= 40
-    fp /= 40
-    fn /= 40
+    #tptnfpfn => to rates
+    tp /= pos_count
+    tn /= neg_count
+    fp /= pos_count
+    fn /= neg_count
 
     #auc
-    auc /= CVSets
+    auc = UT.auc(predictions, truths)
 
     print('person: ', person, 
         ' - acc: ', str(acc),
@@ -77,7 +87,7 @@ if __name__ == "__main__":
     pool.join()
 
     results = np.array(results)
-    print('avg acc:', np.average(results[:,0]), 'avg auc:', np.average(results[:,0]))
+    print('avg acc:', np.average(results[:,0]), 'avg auc:', np.average(results[:,5]))
 
 
     #output    
