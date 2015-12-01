@@ -67,7 +67,7 @@ def csp(samples, labels):
         X_only[i,0,:] = E_csp[0,:]
         X_only[i,1,:] = E_csp[31,:]
     
-    return X_only
+    return X_only, W
 
 def accuracy(predictions, truths):
     acc = 0

@@ -22,8 +22,8 @@ all_left_channels  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5',
 all_right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6', 'CP2', 'P4', 'P8', 'PO4']
 
 #turn bands into frequency ranges
-startFreq = {'alpha' : 8, 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
-stopFreq = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
+startFreq = {'alpha' : 8 , 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
+stopFreq  = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
 
 def powers(samples,waveband):
     if not (waveband in startFreq and waveband in stopFreq):
@@ -164,4 +164,4 @@ def FrontlineMidlineThetaPower(samples, channels, intervalLength=2, overlap=0.75
     for channel in channels[1:]:
         power += getBandPDChunks('theta', samples[channelNames[channel]], intervalLength, overlap)
 
-    return power
+    return powe

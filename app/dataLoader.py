@@ -36,7 +36,7 @@ def loadPerson(person, preprocessFunc, featureFunc, pad='../dataset'):
         y = np.array(y, dtype='int')
 
         #preprocessing
-        X_prepped = preprocessFunc(samples=samples,labels=y)
+        X_prepped, filters = preprocessFunc(samples=samples,labels=y)
 
         #extract features for each video
         for video in range(len(data['data'])):

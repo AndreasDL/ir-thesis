@@ -11,12 +11,11 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 def featureFunc(samples):
     features = []
-    #features.extend(FE.alphaPowers(samples))
+    features.extend(FE.alphaPowers(samples))
     #features.extend(FE.betaPowers(samples))
     #features.extend(FE.deltaPowers(samples))
     #features.extend(FE.gammaPowers(samples))
-    features.extend(FE.thetaPowers(samples))
-
+    #features.extend(FE.thetaPowers(samples))
 
     return np.array(features)
 
