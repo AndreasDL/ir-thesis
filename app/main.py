@@ -32,12 +32,12 @@ def PersonWorker(person):
     pos_count = np.sum(y)
     neg_count = 40 - pos_count
 
-
     #LDA
     lda = LinearDiscriminantAnalysis(priors=[neg_count, pos_count])
     
     K_CV = KFold(len(X), n_folds=CVSets, random_state=17, shuffle=True)
     acc, tp, tn , fp , fn , auc = 0, 0, 0, 0, 0, 0
+    
     #for auc
     predictions, truths = [], []
     for train_index, CV_index in K_CV:
@@ -81,7 +81,7 @@ def PersonWorker(person):
 
 if __name__ == "__main__":
     #multithreaded
-    pool = Pool(processes=8)
+    pool = Pool(processes=1)
     results = pool.map( PersonWorker, range(1,33) )
     pool.close()
     pool.join()

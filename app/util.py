@@ -3,7 +3,7 @@ from sklearn.metrics import roc_auc_score
 from sklearn.preprocessing import normalize
 
 
-def csp(samples, labels):
+def csp(samples, labels, channelPairs=1):
     #based on
     #http://lib.ugent.be/fulltxt/RUG01/001/805/425/RUG01-001805425_2012_0001_AC.pdf
     #sampes[video][channel] = list<samples>
@@ -38,7 +38,7 @@ def csp(samples, labels):
     #step three whitening
     U = np.dot( np.sqrt(np.linalg.inv(P)), np.transpose(V) )
     Rnul = np.dot( U, np.dot(cov0, np.transpose(U)) )
-    #Reen = np.dot( U, np.dot(cov1, np.transpose(U)) )
+    #Reen = np.dot( U, np.dot(cov1, np.transpose(U)) ) #is not used => don't calculate
 
     #step four Zt * R0 * Z = D
     D, Z = np.linalg.eig(Rnul)
@@ -56,17 +56,16 @@ def csp(samples, labels):
     #print(W)
 
     #apply filters
-    #TODO speedup only calculate 2 outer stuffz
-    X_only = np.zeros((40,2,8064))
-    for i in range(len(samples)):
-        E = samples[i]
-        #apply csp
-        E_csp = np.dot(W, E)
+    X_only = np.zeros((40,channelPairs * 2,8064))
 
-        #keep only 2 outer channels as these contain the most information
-        X_only[i,0,:] = E_csp[0,:]
-        X_only[i,1,:] = E_csp[31,:]
-    
+    top_offset = channelPairs * 2 - 1
+    for i, E in enumerate(samples):
+        #keep the needed channels
+        for j, k in zip(range(channelPairs), range(31,31-channelPairs,-1)):
+            #only calculated the needed channelpairs
+            X_only[i,j,:] = np.dot(W[j,:], E)
+            X_only[i,top_offset -j,:] = np.dot(W[k,:], E)            
+
     return X_only, W
 
 def accuracy(predictions, truths):
@@ -96,4 +95,5 @@ def tptnfpfn(predictions, truths):
     return tp, tn, fp, fn
 
 def auc(predictions, truths):
+
     return roc_auc_score(truths, predictions)

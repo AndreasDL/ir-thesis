@@ -48,7 +48,6 @@ if __name__ == '__main__':
 
                 v[i].extend(vals)
         
-        
         print(str(person), ';' , end='')
         for j in range(len(bins[0])):
             print( bins[0][j] , ';', end='' )
