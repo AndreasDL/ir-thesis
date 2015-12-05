@@ -75,10 +75,13 @@ def accuracy(predictions, truths):
 
     return acc / float(len(predictions))
 
-def tptnfpfn(predictions, truths):
+def tprtnrfprfnr(predictions, truths):
     tp, tn = 0, 0
     fp, fn = 0, 0
-
+    
+    pos_count = np.sum(truths)
+    neg_count = len(truths) - pos_count
+    
     for pred, truth in zip(predictions, truths):
         if pred == truth: #prediction is true
             if pred == 1:
@@ -92,7 +95,7 @@ def tptnfpfn(predictions, truths):
             else:
                 fn += 1
         
-    return tp, tn, fp, fn
+    return tp / float(pos_count), tn / float(neg_count), fp / float(pos_count), fn / float(neg_count)
 
 def auc(predictions, truths):
 

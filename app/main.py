@@ -29,16 +29,13 @@ def PersonWorker(person):
         preprocessFunc=UT.csp,
         use_median=False
     )
-    pos_count = np.sum(y)
-    neg_count = 40 - pos_count
-
+    pos_prior = np.sum(y)
+    neg_prior = 40 - pos_prior
+    
     #LDA
-    lda = LinearDiscriminantAnalysis(priors=[neg_count, pos_count])
-    
+    lda = LinearDiscriminantAnalysis(priors=[neg_prior/float(40), pos_prior/float(40)])
+
     K_CV = KFold(len(X), n_folds=CVSets, random_state=17, shuffle=True)
-    acc, tp, tn , fp , fn , auc = 0, 0, 0, 0, 0, 0
-    
-    #for auc
     predictions, truths = [], []
     for train_index, CV_index in K_CV:
         #train
@@ -46,42 +43,32 @@ def PersonWorker(person):
 
         #predict
         pred = lda.predict(X[CV_index])
-        #save for auc 
+
+        #save for metric calculations
         predictions.extend(pred)
-        truths.append(y[CV_index])
-        
-        #MSE train err
-        (ttp,ttn,tfp,tfn) = UT.tptnfpfn(pred, y[CV_index])
-        tp  += ttp
-        tn  += ttn
-        fp  += tfp
-        fn  += tfn
-        acc += UT.accuracy(pred, y[CV_index])
+        truths.extend(y[CV_index])
 
     #accuracy
-    acc /= float(CVSets)
+    acc = UT.accuracy(predictions, truths)
     
     #tptnfpfn => to rates
-    tp /= pos_count
-    tn /= neg_count
-    fp /= pos_count
-    fn /= neg_count
+    (tpr,tnr,fpr,fnr) = UT.tprtnrfprfnr(predictions, truths)
 
     #auc
     auc = UT.auc(predictions, truths)
 
     print('person: ', person, 
         ' - acc: ', str(acc),
-        ' - tp: ' , str(tp),
-        ' - tn: ' , str(tn),
+        ' - tpr: ' , str(tpr),
+        ' - tnr: ' , str(tnr),
         ' - auc: ', str(auc)
     )
 
-    return [acc,tp,tn,fp,fn,auc]
+    return [acc,tpr,tnr,fpr,fnr,auc]
 
 if __name__ == "__main__":
     #multithreaded
-    pool = Pool(processes=1)
+    pool = Pool(processes=8)
     results = pool.map( PersonWorker, range(1,33) )
     pool.close()
     pool.join()
@@ -89,18 +76,17 @@ if __name__ == "__main__":
     results = np.array(results)
     print('avg acc:', np.average(results[:,0]), 'avg auc:', np.average(results[:,5]))
 
-
     #output    
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
     f = open("output" + str(st) + ".txt", 'w')
-    f.write('person;acc;tp;tn;fp;fn;auc\n')
+    f.write('person;acc;tpr;tnr;fpr;fnr;auc\n')
 
     for person, result in enumerate(results):
-        (acc, tp, tn, fp, fn, auc) = result
+        (acc, tpr, tnr, fpr, fnr, auc) = result
 
         f.write(str(person+1) + ';' + str(acc) + ';' + 
-            str(tp) + ';' + str(tn) + ';' +
-            str(fp) + ';' + str(fn) + ';' +
+            str(tpr) + ';' + str(tnr) + ';' +
+            str(fpr) + ';' + str(fnr) + ';' +
             str(auc) + '\n'
         )
 
