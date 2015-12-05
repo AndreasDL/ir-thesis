@@ -5,7 +5,7 @@ import featureExtractor as FE
 from sklearn.cross_validation import train_test_split
 import random
 
-def loadPerson(person, preprocessFunc, featureFunc, pad='../dataset', use_median=True):
+def loadPerson(person, featureFunc, csp, use_median, pad='../dataset'):
     X, y = [], []
 
     fname = str(pad) + '/s'
@@ -40,8 +40,8 @@ def loadPerson(person, preprocessFunc, featureFunc, pad='../dataset', use_median
         y = np.array(y, dtype='int')
 
         #preprocessing
-        X_prepped, filters = preprocessFunc(samples=samples,labels=y)
-
+        X_prepped, filters = csp.csp(samples=samples,labels=y)
+        
         #extract features for each video
         for video in range(len(data['data'])):
             X.append( featureFunc(X_prepped[video]) )

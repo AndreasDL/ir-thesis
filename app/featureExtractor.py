@@ -33,41 +33,33 @@ def powers(samples,waveband):
     #it says left & right, but this has no meaning after CSP
     Fs = 128 #samples have freq 128Hz
     n = 8064 #number of samples
-
-    #bandpass filter to get waveband
-    nyq  = 0.5 * Fs 
-    low  = startFreq[waveband] / nyq
-    high = stopFreq[waveband]  / nyq
-    b, a = butter(6, [low, high], btype='band')
-    left_samples  = lfilter(b, a, samples[0])    
-    right_samples = lfilter(b, a, samples[1])
-
-    #hamming window to smoothen edges
-    ham = np.hamming(n)
-    left_samples  = np.multiply(left_samples , ham)
-    right_samples = np.multiply(right_samples, ham)
-
-    #fft => get power components
-    # fft computing and normalization
-    left_Y = np.fft.fft(left_samples)/n
-    left_Y = left_Y[range(round(n/2))]
-    right_Y = np.fft.fft(right_samples)/n
-    right_Y = right_Y[range(round(n/2))]
-
-    #average within one chunck
-    left_avg, right_avg = 0, 0
-    for left_val, right_val in zip(left_Y, right_Y):
-        left_avg  += abs(left_val) **2
-        right_avg += abs(right_val) **2
-
-    left_avg /= len(left_Y)
-    left_avg = np.sqrt(left_avg)
-    right_avg /= len(right_Y)
-    right_avg = np.sqrt(right_avg)
-
     features = []
-    features.append(left_avg )
-    features.append(right_avg)
+    for channel in samples:
+        #bandpass filter to get waveband
+        nyq  = 0.5 * Fs 
+        low  = startFreq[waveband] / nyq
+        high = stopFreq[waveband]  / nyq
+        b, a = butter(6, [low, high], btype='band')
+        sample = lfilter(b, a, channel)
+
+        #hamming window to smoothen edges
+        ham = np.hamming(n)
+        sample = np.multiply(sample , ham)
+
+        #fft => get power components
+        # fft computing and normalization
+        Y = np.fft.fft(sample)/n
+        Y = Y[range(round(n/2))]
+
+        #average within one chunck
+        avg = 0
+        for val in Y:
+            avg  += abs(val) **2
+
+        avg /= len(Y)
+        avg = np.sqrt(avg)
+
+        features.append(avg)
 
     return np.array(features)
 
