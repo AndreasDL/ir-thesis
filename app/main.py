@@ -19,22 +19,58 @@ def featureFunc(samples):
 def PersonWorker(person):
     print('starting on person: ', str(person))
 
-    for channelPairs in range(1,17): #1->16 pairs
+    #data = 40 videos x 32 alpha(csp channel)
+    data, y = DL.loadPerson(person=person,
+        featureFunc = featureFunc
+    )
+    #needed for prior probabilities
+    pos_prior = np.sum(y)
+    neg_prior = 40 - pos_prior
+    pos_prior /= float(40)
+    neg_prior /= float(40)
 
-        #split using median, use all data
-        X, y = DL.loadPerson(person=person, 
-            featureFunc=featureFunc,
-            csp=Csp(channelPairs),
-            use_median=False
-        )
-        
-        #needed for prior probabilities
-        pos_prior = np.sum(y)
-        neg_prior = 40 - pos_prior
-        
+    #academic loop start with 1 channelPair
+    channelPairs = 1
+
+    #filter out the channel pairs
+    X = np.zeros((40,channelPairs * 2,))
+    top_offset = channelPairs * 2 - 1
+    for j, k in zip(range(channelPairs), range(31,31-channelPairs,-1)):
+        X[:,j] = data[:,j]
+        X[:,top_offset -j] = data[:,k]
+
+    #LDA
+    lda = LinearDiscriminantAnalysis(priors=[neg_prior, pos_prior])
+    K_CV = KFold(n=len(X), n_folds=len(X), random_state=17, shuffle=True) #leave out one validation
+    predictions, truths = [], []
+    for train_index, CV_index in K_CV:
+        #train
+        lda = lda.fit(X[train_index], y[train_index])
+
+        #predict
+        pred = lda.predict(X[CV_index])
+
+        #save for metric calculations
+        predictions.extend(pred)
+        truths.extend(y[CV_index])
+
+    #optimization metric:
+    best_metric = UT.accuracy(predictions, truths)
+    best_channelPairs = channelPairs
+    best_predictions=predictions
+    best_truths = truths
+    
+    #try other channel pairs
+    for channelPairs in range(2,17):
+        #filter out the channel pairs
+        X = np.zeros((40,channelPairs * 2,))
+        top_offset = channelPairs * 2 - 1
+        for j, k in zip(range(channelPairs), range(31,31-channelPairs,-1)):
+            X[:,j] = data[:,j]
+            X[:,top_offset -j] = data[:,k]
+
         #LDA
-        lda = LinearDiscriminantAnalysis(priors=[neg_prior/float(40), pos_prior/float(40)])
-
+        lda = LinearDiscriminantAnalysis(priors=[neg_prior, pos_prior])
         K_CV = KFold(n=len(X), n_folds=len(X), random_state=17, shuffle=True) #leave out one validation
         predictions, truths = [], []
         for train_index, CV_index in K_CV:
@@ -48,44 +84,53 @@ def PersonWorker(person):
             predictions.extend(pred)
             truths.extend(y[CV_index])
 
-        #accuracy
-        acc = UT.accuracy(predictions, truths)
-        
-        #tptnfpfn => to rates
-        (tpr,tnr,fpr,fnr) = UT.tprtnrfprfnr(predictions, truths)
+        #optimization metric:
+        metric = UT.accuracy(predictions, truths)
+        if metric > best_metric:
+            best_metric = metric
+            best_channelPairs = channelPairs
+            best_predictions = predictions
+            best_truths = truths
 
-        #auc
-        auc = UT.auc(predictions, truths)
+    #channel pairs are now optimized, its value is stored in best_channelPairs
 
-        print('person: ', person, 
-            ' - channelPairs: ', str(channelPairs),
-            ' - acc: ', str(acc),
-            ' - tpr: ' , str(tpr),
-            ' - tnr: ' , str(tnr),
-            ' - auc: ', str(auc)
-        )
+    #calculate all performance metrics
+    acc  = UT.accuracy(best_predictions, best_truths)
+    (tpr,tnr,fpr,fnr) = UT.tprtnrfprfnr(best_predictions, best_truths)
+    auc = UT.auc(best_predictions, best_truths)
 
-    return [acc,tpr,tnr,fpr,fnr,auc]
+    print('person: ', person, 
+        ' - channelPairs: ', str(best_channelPairs),
+        ' - acc: ', str(acc),
+        ' - tpr: ' , str(tpr),
+        ' - tnr: ' , str(tnr),
+        ' - auc: ', str(auc)
+    )
+
+    return [best_channelPairs, acc,tpr,tnr,fpr,fnr,auc]
 
 if __name__ == "__main__":
     #multithreaded
-    pool = Pool(processes=1)
+    pool = Pool(processes=8)
     results = pool.map( PersonWorker, range(1,33) )
     pool.close()
     pool.join()
 
     results = np.array(results)
-    print('avg acc:', np.average(results[:,0]), 'avg auc:', np.average(results[:,5]))
+    #results = lest<[channelPairs, acc, tpr, tnr, fpr, fnr, auc]>
+    print('avg acc:', np.average(results[:,1]), 'avg auc:', np.average(results[:,6]))
 
     #output    
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
     f = open("output" + str(st) + ".txt", 'w')
-    f.write('person;acc;tpr;tnr;fpr;fnr;auc\n')
+    f.write('person;channel pairs;acc;tpr;tnr;fpr;fnr;auc\n')
 
     for person, result in enumerate(results):
-        (acc, tpr, tnr, fpr, fnr, auc) = result
+        (channelPairs, acc, tpr, tnr, fpr, fnr, auc) = result
 
-        f.write(str(person+1) + ';' + str(acc) + ';' + 
+        f.write(str(person+1) + ';' + 
+            str(channelPairs) + ';' +
+            str(acc) + ';' + 
             str(tpr) + ';' + str(tnr) + ';' +
             str(fpr) + ';' + str(fnr) + ';' +
             str(auc) + '\n'

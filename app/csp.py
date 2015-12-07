@@ -3,13 +3,9 @@ from sklearn.preprocessing import normalize
 
 #to preprocess data
 class Csp:
-    channelPairs = 0
-    filters = None
+    W = None
 
-    def __init__(self,channelPairs):
-        self.channelPairs = channelPairs
-
-    def csp(self, samples, labels):
+    def __init__(self, samples, labels):
         #based on
         #http://lib.ugent.be/fulltxt/RUG01/001/805/425/RUG01-001805425_2012_0001_AC.pdf
         #sampes[video][channel] = list<samples>
@@ -58,18 +54,24 @@ class Csp:
         
         #step five
         self.W = np.dot( np.transpose(Z), U)
-        #print(D)
-        #print(W)
 
+    def apply(samples, channelPairs):
         #apply filters
-        X_only = np.zeros((40,self.channelPairs * 2,8064))
+        X_only = np.zeros((40, channelPairs * 2,8064))
 
         top_offset = self.channelPairs * 2 - 1
         for i, E in enumerate(samples):
             #keep the needed channels
-            for j, k in zip(range(self.channelPairs), range(31,31-self.channelPairs,-1)):
+            for j, k in zip(range(channelPairs), range(31,31-channelPairs,-1)):
                 #only calculated the needed channelpairs
                 X_only[i,j,:] = np.dot(self.W[j,:], E)
                 X_only[i,top_offset -j,:] = np.dot(self.W[k,:], E)            
 
-        return X_only, self.W
+        return X_only
+        
+    def apply_all(self,samples):
+        X_csp = []
+        for i, E in enumerate(samples):
+            X_csp.append(np.dot(self.W,E))
+
+        return np.array(X_csp)
