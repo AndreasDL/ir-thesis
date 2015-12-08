@@ -55,6 +55,7 @@ class Csp:
         #step five
         self.W = np.dot( np.transpose(Z), U)
 
+
     def apply(samples, channelPairs):
         #apply filters
         X_only = np.zeros((40, channelPairs * 2,8064))

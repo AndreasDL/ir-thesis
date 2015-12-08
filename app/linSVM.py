@@ -2,17 +2,18 @@ import time
 import pickle
 import datetime
 import util as UT
-from csp import Csp
 import numpy as np
 import dataLoader as DL
 import featureExtractor as FE
 from multiprocessing import Pool
-from sklearn.cross_validation import KFold, StratifiedShuffleSplit
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.cross_validation import KFold,StratifiedShuffleSplit
+from sklearn.svm import LinearSVC
 
 def featureFunc(samples):
     features = []
-    features.extend(FE.alphaPowers(samples))
+    features.extend(FE.LMinRFraction(samples,intervalLength=63, overlap=0))
+    features.extend(FE.FrontlineMidlineThetaPower(samples, channels=['Cz','Fz'], intervalLength=63, overlap=0))
+
 
     return np.array(features)
 
@@ -22,102 +23,81 @@ def PersonWorker(person):
     #data = 40 videos x 32 alpha(csp channel)
     data, labels = DL.loadPerson(person=person,
         featureFunc = featureFunc,
-        use_median=True
+        use_csp=False,
+        use_median = False
     )
 
     #break off test set
     sss = StratifiedShuffleSplit(labels, n_iter=10, test_size=0.25, random_state=19)
     for train_set_index, test_set_index in sss:
-        X_train, y = data[train_set_index], labels[train_set_index]
+        X, y = data[train_set_index], labels[train_set_index]
         X_test, y_test  = data[test_set_index], labels[test_set_index]
         break;
 
-    #optimize channelPairs with leave-one out validation
-    #prior probabilities
-    pos_prior = np.sum(y)
-    neg_prior = 40 - pos_prior
-    pos_prior /= float(40)
-    neg_prior /= float(40)
-
-    #academic loop start with 1 channelPair
-    channelPairs = 1
-
-    #filter out the channel pairs
-    X = np.zeros((len(X_train),channelPairs * 2,))
-    top_offset = channelPairs * 2 - 1
-    for j, k in zip(range(channelPairs), range(31,31-channelPairs,-1)):
-        X[:,j] = X_train[:,j]
-        X[:,top_offset -j] = X_train[:,k]
-
-    #LDA
-    lda = LinearDiscriminantAnalysis(priors=[neg_prior, pos_prior])
+    
+    C = 1
+    clf = LinearSVC(C=C,random_state=40)
     K_CV = KFold(n=len(X), n_folds=len(X), random_state=17, shuffle=False) #leave out one validation
     predictions, truths = [], []
     for train_index, CV_index in K_CV:
         #train
-        lda = lda.fit(X[train_index], y[train_index])
+        clf.fit(X[train_index], y[train_index])
 
         #predict
-        pred = lda.predict(X[CV_index])
+        pred = clf.predict(X[CV_index])
 
         #save for metric calculations
         predictions.extend(pred)
         truths.extend(y[CV_index])
 
     #optimization metric:
-    best_metric = UT.accuracy(predictions, truths)
-    best_channelPairs = channelPairs
+    best_metric = UT.auc(predictions, truths)
+    best_C = C
     
     #try other channel pairs
-    for channelPairs in range(2,17):
-        #filter out the channel pairs
-        X = np.zeros((len(X_train),channelPairs * 2,))
-        top_offset = channelPairs * 2 - 1
-        for j, k in zip(range(channelPairs), range(31,31-channelPairs,-1)):
-            X[:,j] = X_train[:,j]
-            X[:,top_offset -j] = X_train[:,k]
+    for C in [0.01,0.03,0.1,0.3,3,10]:
+
 
         #LDA
-        lda = LinearDiscriminantAnalysis(priors=[neg_prior, pos_prior])
+        clf = LinearSVC(C=C,random_state=40)
         K_CV = KFold(n=len(X), n_folds=len(X), random_state=17, shuffle=True) #leave out one validation
         predictions, truths = [], []
         for train_index, CV_index in K_CV:
             #train
-            lda = lda.fit(X[train_index], y[train_index])
+            clf.fit(X[train_index], y[train_index])
 
             #predict
-            pred = lda.predict(X[CV_index])
+            pred = clf.predict(X[CV_index])
 
             #save for metric calculations
             predictions.extend(pred)
             truths.extend(y[CV_index])
 
         #optimization metric:
-        metric = UT.accuracy(predictions, truths)
+        metric = UT.auc(predictions, truths)
         if metric > best_metric:
             best_metric = metric
-            best_channelPairs = channelPairs
+            best_C = C
 
     #channel pairs are now optimized, its value is stored in best_channelPairs
 
     #calculate all performance metrics on testset, using the optimal classifier
-    lda = LinearDiscriminantAnalysis(priors=[neg_prior, pos_prior])
-    lda = lda.fit(X,y) #fit all training data
-    predictions = lda.predict(X_test)
+    clf = LinearSVC(C=C,random_state=40)
+    clf.fit(X,y) #fit all training data
+    predictions = clf.predict(X_test)
 
     acc  = UT.accuracy(predictions, y_test)
     (tpr,tnr,fpr,fnr) = UT.tprtnrfprfnr(predictions, y_test)
     auc = UT.auc(predictions, y_test)
 
     print('person: ', person, 
-        ' - channelPairs: ', str(best_channelPairs),
         ' - acc: ', str(acc),
         ' - tpr: ' , str(tpr),
         ' - tnr: ' , str(tnr),
         ' - auc: ', str(auc)
     )
 
-    return [best_channelPairs, acc,tpr,tnr,fpr,fnr,auc]
+    return [acc,tpr,tnr,fpr,fnr,auc]
 
 if __name__ == "__main__":
     #multithreaded
@@ -128,7 +108,7 @@ if __name__ == "__main__":
 
     results = np.array(results)
     #results = lest<[channelPairs, acc, tpr, tnr, fpr, fnr, auc]>
-    print('avg acc:', np.average(results[:,1]), 'avg auc:', np.average(results[:,6]))
+    print('avg acc:', np.average(results[:,0]), 'avg auc:', np.average(results[:,5]))
 
     #output    
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
@@ -136,10 +116,9 @@ if __name__ == "__main__":
     f.write('person;channel pairs;acc;tpr;tnr;fpr;fnr;auc\n')
 
     for person, result in enumerate(results):
-        (channelPairs, acc, tpr, tnr, fpr, fnr, auc) = result
+        (acc, tpr, tnr, fpr, fnr, auc) = result
 
         f.write(str(person+1) + ';' + 
-            str(channelPairs) + ';' +
             str(acc) + ';' + 
             str(tpr) + ';' + str(tnr) + ';' +
             str(fpr) + ';' + str(fnr) + ';' +

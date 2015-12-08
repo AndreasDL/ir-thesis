@@ -135,13 +135,19 @@ def getBandPDChunks(waveband, samplesAtChannel, intervalLength=2, overlap=0.75 )
     '''
 
     return retArr
-def LMinRFraction(samples,intervalLength=2, overlap=0.75, left_channel='F3', right_channel='F4'):
+def LMinRFraction(samples,intervalLength=2, overlap=0.75, 
+    left_channels=['Fp1', 'AF3', 'F3', 'F7'],
+    right_channels=['Fp2', 'AF4', 'F4', 'F8']
+    ):
+    
     #structure of samples[channel, sample]
     #return L-R / L+R, voor alpha components zie gegeven paper p6
-    alpha_left  = getBandPDChunks('alpha', samples[channelNames[left_channel]], intervalLength, overlap )
-    alpha_right = getBandPDChunks('alpha', samples[channelNames[right_channel]], intervalLength, overlap )
+    for left_channel, right_channel in zip(left_channels, right_channels):
+        alpha_left  = getBandPDChunks('alpha', samples[channelNames[left_channel]], intervalLength, overlap )
+        alpha_right = getBandPDChunks('alpha', samples[channelNames[right_channel]], intervalLength, overlap )
 
     return np.divide( alpha_left-alpha_right, alpha_left+alpha_right )
+
 def LogLMinRAlpha(samples,intervalLength=2, overlap=0.75, left_channel='F3', right_channel='F4'):
     #log(left) - log(right)
     alpha_left  = getBandPDChunks('alpha', samples[channelNames[left_channel]], intervalLength, overlap )
@@ -156,4 +162,4 @@ def FrontlineMidlineThetaPower(samples, channels, intervalLength=2, overlap=0.75
     for channel in channels[1:]:
         power += getBandPDChunks('theta', samples[channelNames[channel]], intervalLength, overlap)
 
-    return powe
+    return power

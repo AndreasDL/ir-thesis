@@ -6,7 +6,7 @@ from sklearn.cross_validation import train_test_split
 import random
 from csp import Csp
 
-def loadPerson(person, featureFunc, use_median=False, pad='../dataset'):
+def loadPerson(person, featureFunc, use_median=False, use_csp=True, pad='../dataset'):
     X, y = [], []
 
     fname = str(pad) + '/s'
@@ -41,9 +41,13 @@ def loadPerson(person, featureFunc, use_median=False, pad='../dataset'):
         y = np.array(y, dtype='int')
 
         #preprocessing CSP with 16 channelPairs
-        csp = Csp(samples=samples,labels=y)
-        X_prepped = csp.apply_all(samples)
-        
+        X_prepped = None
+        if use_csp:
+            csp = Csp(samples=samples,labels=y)
+            X_prepped = csp.apply_all(samples)
+        else:
+            X_prepped = samples
+
         #extract features for each video
         for video in range(len(data['data'])):
             X.append( featureFunc(X_prepped[video]) )
