@@ -20,17 +20,10 @@ def PersonWorker(person):
     print('starting on person: ', str(person))
 
     #data = 40 videos x 32 alpha(csp channel)
-    data, labels = DL.loadPerson(person=person,
+    X_train, y = DL.loadPerson(person=person,
         featureFunc = featureFunc,
-        use_median=False
+        use_median=True
     )
-
-    #break off test set
-    sss = StratifiedShuffleSplit(labels, n_iter=10, test_size=0.25, random_state=19)
-    for train_set_index, test_set_index in sss:
-        X_train, y = data[train_set_index], labels[train_set_index]
-        X_test, y_test  = data[test_set_index], labels[test_set_index]
-        break;
 
     #optimize channelPairs with leave-one out validation
     #prior probabilities
@@ -67,9 +60,12 @@ def PersonWorker(person):
     #optimization metric:
     best_metric = UT.accuracy(predictions, truths)
     best_channelPairs = channelPairs
+    best_predictions = predictions
+    best_truths = truths
+
     
     #try other channel pairs
-    for channelPairs in range(2,3):#17):
+    for channelPairs in range(2,17):
         #filter out the channel pairs
         X = np.zeros((len(X_train),channelPairs * 2,))
         top_offset = channelPairs * 2 - 1
@@ -97,17 +93,15 @@ def PersonWorker(person):
         if metric > best_metric:
             best_metric = metric
             best_channelPairs = channelPairs
+            best_predictions = predictions
+            best_truths = truths
 
     #channel pairs are now optimized, its value is stored in best_channelPairs
 
     #calculate all performance metrics on testset, using the optimal classifier
-    lda = LinearDiscriminantAnalysis(priors=[neg_prior, pos_prior])
-    lda = lda.fit(X,y) #fit all training data
-    predictions = lda.predict(X_test)
-
-    acc  = UT.accuracy(predictions, y_test)
-    (tpr,tnr,fpr,fnr) = UT.tprtnrfprfnr(predictions, y_test)
-    auc = UT.auc(predictions, y_test)
+    acc  = UT.accuracy(best_predictions, best_truths)
+    (tpr,tnr,fpr,fnr) = UT.tprtnrfprfnr(best_predictions, best_truths)
+    auc = UT.auc(best_predictions, best_truths)
 
     print('person: ', person, 
         ' - channelPairs: ', str(best_channelPairs),

@@ -22,7 +22,7 @@ def loadPerson(person, featureFunc, use_median=False, use_csp=True, pad='../data
         #data['data'][video][channel] = [samples * 8064]
 
         #only use EEG channels
-        samples = np.array(data['data'])[:,:32,:] #throw out non-EEG channels
+        samples = np.array(data['data'])[:,:32,:] #throw out non-EEG channels        
 
         #rescale
         valences = np.array( data['labels'][:,0] ) #ATM only valence needed

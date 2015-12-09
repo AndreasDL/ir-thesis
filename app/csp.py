@@ -11,7 +11,7 @@ class Csp:
         #sampes[video][channel] = list<samples>
         
         #normalize input => avoid problems with **-.5 of P matrix
-        for i in range(32):
+        for i in range(len(samples[0])):
             samples[:,i,:] = normalize(samples[:,i,:])
 
         #divide in two classes
@@ -54,6 +54,15 @@ class Csp:
         
         #step five
         self.W = np.dot( np.transpose(Z), U)
+
+        '''f = open("output filters.txt", 'w')
+        for line in self.W:
+            for column in line:
+                f.write(str(column) + ',')
+            f.write("\n")
+        f.close()
+        '''
+
 
 
     def apply(samples, channelPairs):
