@@ -43,7 +43,7 @@ def loadPerson(person, featureFunc, use_median=False, use_csp=True, pad='../data
         #preprocessing CSP with 16 channelPairs
         X_prepped = None
         if use_csp:
-            csp = Csp(samples=samples,labels=y)
+            csp = Csp(samples=samples,labels=y)            
             X_prepped = csp.apply_all(samples)
         else:
             X_prepped = samples

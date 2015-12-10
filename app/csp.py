@@ -61,7 +61,7 @@ class Csp:
                 f.write(str(column) + ',')
             f.write("\n")
         f.close()
-        '''
+        exit()'''
 
 
 

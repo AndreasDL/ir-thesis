@@ -13,6 +13,10 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 def featureFunc(samples):
     features = []
     features.extend(FE.alphaPowers(samples))
+    #features.extend(FE.betaPowers(samples))
+    #features.extend(FE.gammaPowers(samples))
+    #features.extend(FE.deltaPowers(samples))
+    #features.extend(FE.thetaPowers(samples))
 
     return np.array(features)
 
@@ -69,7 +73,7 @@ def PersonWorker(person):
     best_channelPairs = channelPairs
     
     #try other channel pairs
-    for channelPairs in range(2,3):#17):
+    for channelPairs in range(2,17):
         #filter out the channel pairs
         X = np.zeros((len(X_train),channelPairs * 2,))
         top_offset = channelPairs * 2 - 1

@@ -5,18 +5,18 @@ from scipy.signal import butter, lfilter
 
 #global const vars!
 channelNames = {
-    'Fp1' : 1 , 'AF3' : 2 , 'F3'  : 3 , 'F7'  : 4 , 'FC5' : 5 , 'FC1' : 6 , 'C3'  : 7 , 'T7'  : 8 , 'CP5' : 9 , 'CP1' : 10, 
-    'P3'  : 11, 'P7'  : 12, 'PO3' : 13, 'O1'  : 14, 'Oz'  : 15, 'Pz'  : 16, 'Fp2' : 17, 'AF4' : 18, 'Fz'  : 19, 'F4'  : 20,
-    'F8'  : 21, 'FC6' : 22, 'FC2' : 23, 'Cz'  : 24, 'C4'  : 25, 'T8'  : 26, 'CP6' : 27, 'CP2' : 28, 'P4'  : 29, 'P8'  : 30,
-    'PO4' : 31, 'O2'  : 32, 
-    'hEOG' : 33, #(horizontal EOG:  hEOG1 - hEOG2)    
-    'vEOG' : 34, #(vertical EOG:  vEOG1 - vEOG2)
-    'zEMG' : 35, #(Zygomaticus Major EMG:  zEMG1 - zEMG2)
-    'tEMG' : 36, #(Trapezius EMG:  tEMG1 - tEMG2)
-    'GSR'  : 37, #(values from Twente converted to Geneva format (Ohm))
-    'Respiration belt' : 38,
-    'Plethysmograph' : 39,
-    'Temperature' : 40
+    'Fp1' : 0 , 'AF3' : 1 , 'F3'  : 2 , 'F7'  : 3 , 'FC5' : 4 , 'FC1' : 5 , 'C3'  : 6 , 'T7'  : 7 , 'CP5' : 8 , 'CP1' : 9, 
+    'P3'  : 10, 'P7'  : 11, 'PO3' : 12, 'O1'  : 13, 'Oz'  : 14, 'Pz'  : 15, 'Fp2' : 16, 'AF4' : 17, 'Fz'  : 18, 'F4'  : 19,
+    'F8'  : 20, 'FC6' : 21, 'FC2' : 22, 'Cz'  : 23, 'C4'  : 24, 'T8'  : 25, 'CP6' : 26, 'CP2' : 27, 'P4'  : 28, 'P8'  : 29,
+    'PO4' : 30, 'O2'  : 31, 
+    'hEOG' : 32, #(horizontal EOG:  hEOG1 - hEOG2)    
+    'vEOG' : 33, #(vertical EOG:  vEOG1 - vEOG2)
+    'zEMG' : 34, #(Zygomaticus Major EMG:  zEMG1 - zEMG2)
+    'tEMG' : 35, #(Trapezius EMG:  tEMG1 - tEMG2)
+    'GSR'  : 36, #(values from Twente converted to Geneva format (Ohm))
+    'Respiration belt' : 37,
+    'Plethysmograph' : 38,
+    'Temperature' : 39
 }
 all_left_channels  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1', 'P3', 'P7', 'PO3']
 all_right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6', 'CP2', 'P4', 'P8', 'PO4']
