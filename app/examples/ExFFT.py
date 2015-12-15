@@ -14,8 +14,6 @@ freq = frq[range(round(n/2))]           # one side frequency range
 Y = np.fft.fft(y)/n              # fft computing and normalization
 Y = Y[range(round(n/2))]
 
-print(y)
-
 plt.plot(freq, abs(Y), 'r-')
 plt.xlabel('freq (Hz)')
 plt.ylabel('|Y(freq)|')

@@ -1,7 +1,9 @@
 import numpy as np
 from sklearn import preprocessing as PREP
 from scipy.signal import butter, lfilter
+
 #import matplotlib.pyplot as plt
+#import matplotlib
 
 #global const vars!
 channelNames = {
@@ -22,8 +24,8 @@ all_left_channels  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5',
 all_right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6', 'CP2', 'P4', 'P8', 'PO4']
 
 #turn bands into frequency ranges
-startFreq = {'alpha' : 8 , 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}
-stopFreq  = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}
+startFreq = {'alpha' : 8 , 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4, 'all' : 0}
+stopFreq  = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8, 'all' : 50}
 
 def powers(samples,waveband):
     if not (waveband in startFreq and waveband in stopFreq):
@@ -32,7 +34,7 @@ def powers(samples,waveband):
 
     #it says left & right, but this has no meaning after CSP
     Fs = 128 #samples have freq 128Hz
-    n = 8064 #number of samples
+    n = len(samples[0])#8064 #number of samples
     features = []
     for channel in samples:
         #bandpass filter to get waveband
@@ -89,6 +91,23 @@ def getBandPDChunks(waveband, samplesAtChannel, intervalLength=2, overlap=0.75 )
     intervalsize = intervalLength * Fs #size of one chunk
     retArr = np.empty(0)
 
+    #show the power spectrum
+    '''
+    font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 30}
+
+    matplotlib.rc('font', **font)
+    n = len(samplesAtChannel)
+    Y = np.fft.fft(samplesAtChannel)/n
+    Y = Y[range(round(n/2))]
+    frq = np.arange(n)*Fs/n # two sides frequency range
+    freq = frq[range(round(n/2))]           # one side frequency range
+    plt.plot(freq, abs(Y), 'r-')
+    plt.xlabel('freq (Hz)')
+    plt.ylabel('|Y(freq)|')
+    plt.show()'''
+
     #75% overlap => each chunck starts intervalsize/4 later
     for startIndex in range( 0, len(samplesAtChannel), round(intervalsize * (1-overlap)) ):
 
@@ -120,19 +139,7 @@ def getBandPDChunks(waveband, samplesAtChannel, intervalLength=2, overlap=0.75 )
         avg = np.sqrt(avg)
 
         #add to values
-        retArr = np.append(retArr, avg )
-
-    #show the power spectrum
-    '''
-    frq = np.arange(n)*Fs/n # two sides frequency range
-    freq = frq[range(round(n/2))]           # one side frequency range
-    plt.plot(freq, abs(Y), 'r-')
-    plt.xlabel('freq (Hz)')
-    plt.ylabel('|Y(freq)|')
-    plt.show()
-
-    exit()
-    '''
+        retArr = np.append(retArr, avg )    
 
     return retArr
 def LMinRFraction(samples,intervalLength=2, overlap=0.75, 

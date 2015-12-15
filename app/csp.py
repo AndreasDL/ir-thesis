@@ -55,13 +55,14 @@ class Csp:
         #step five
         self.W = np.dot( np.transpose(Z), U)
 
-        '''f = open("output filters.txt", 'w')
-        for line in self.W:
-            for column in line:
-                f.write(str(column) + ',')
-            f.write("\n")
-        f.close()
-        exit()'''
+
+        #output for plots
+        '''
+        f = open("output filters.txt", 'a')
+        for column in self.W[0]:        
+            f.write( str(column) + ',' )
+        f.write("\n")
+        f.close()'''
 
 
 

@@ -100,6 +100,10 @@ def PersonWorker(person):
     return [acc,tpr,tnr,fpr,fnr,auc]
 
 if __name__ == "__main__":
+    #PersonWorker(1)
+    #exit()
+
+
     #multithreaded
     pool = Pool(processes=8)
     results = pool.map( PersonWorker, range(1,33) )
