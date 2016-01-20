@@ -2,18 +2,20 @@
 {\samenvatting }
 
 \section{The DEAP dataset}
-This thesis uses the DEAP dataset\cite{DEAP}, a dataset for emotion analysis that is publicly available for academic research. This dataset contains EEG recordings of 32 participants, each watching 40 one minute excerpts of music videos. Each video was rated individually by each person on valence, arousal, dominance and liking. The first three ratings correspond to the valence, arousal and dominance space of an emotion. The liking component indicates how much the person liked the video excerpt and should not be confused with the valence component. The liking measure inquires about the participants' tastes and not their feelings, i.e. a person can like a video that triggers angry or sad emotions. The liking rates are neglected, since they are not part of the emotion space.
+This thesis uses the DEAP dataset\cite{DEAP}, a dataset for emotion analysis that is publicly available for academic research. This dataset contains EEG recordings of 32 participants, each watching 40 one minute excerpts of music videos. Each video was rated individually by each person on valence, arousal, dominance and liking. The first three ratings correspond to the valence, arousal and dominance space of an emotion \ref{valarrdomspace}. The liking component indicates how much the person liked the video excerpt and should not be confused with the valence component; it inquires information about the participants' tastes, not their feelings, i.e. a person can like a video that triggers angry or sad emotions. The liking rates are neglected, since they are not part of the emotion space.
 
 \npar
 
-For assessment of these scales, the self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins}, were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scale with pictures, each picture corresponds to a discrete value. The user can click between the different figures, which makes the scales continuous.All dimension are given by a float between 1 and 9. A preprocessing step scaled and translated these value to ensure they range between 0 and 1. Zero corresponds to the minimum of the scale and one corresponds or the maximum value of the scale.
+For assessment of these scales, the self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins}, were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scale with pictures, each picture corresponds to a discrete value. The user can click anywhere in between the different figures, which makes the scales continuous. All dimension are given by a float between 1 and 9, but for the context of this thesis, a preprocessing step scaled and translated these values to ensure they range between 0 and 1.
+
+\npar
 
 The used SAM figures are shown in Figure \ref{SAM}. The first row gives the valence scale, ranging from sad to happy. The second row shows the arousal scale, ranging from bored to excited. The last row represents the different dominance levels. The left figure represents a submissive emotion, while the right figure corresponds with a dominant feeling.
 
 \mijnfiguur{width=0.5\textwidth}{SAM}{The images used for the SAM\cite{DEAP}.}
 
 %verdeling waardes
-To further inspect the distribution of the user ratings and whether or not the data is balanced, the average for each emotion dimension (valence, arousal and dominance), was determined using all videos of all persons. These can be seen in Table \ref{avg-vals}. A uniform distribution would give a value of 0.5. The averages of the DEAP are a little above 0.5, which gives a first indication that the data is balanced.
+To further inspect the distribution of the user ratings and whether or not the data is balanced, the average for each emotion dimension (valence, arousal and dominance), was determined using all videos of all persons. These can be seen in Table \ref{avg-vals}. A uniform distribution, which is the ideal case for machine learning, should give a value of 0.5. The averages of the different dimensions are a just a little above 0.5, which gives a first indication that the data is only slightly unbalanced.
 
 \begin{table}[H]
 \centering
@@ -24,42 +26,10 @@ To further inspect the distribution of the user ratings and whether or not the d
 \caption{The average value of each component.\label{avg-vals}}
 \end{table}
 
-To further inspect the data, each component was divided in 8 ranges or bins. Next all user ratings are placed in their corresponding bin. Then the percentage of movies for each bin was calculated. This shown in Figure \ref{valence}, \ref{arousal} and \ref{dominance} for valence, arousal and dominance respectively. It is clear that even though all components have most of their weight in the higher bins, the data is more or less balanced. Therefor no further measurements to balance the data, e.g. extra penalty for one class, was taken.
+To further inspect the data, each component was divided in 8 ranges or bins. Next all user ratings are placed in their corresponding bin. Then the percentage of movies for each bin was calculated. This shown in Figure \ref{valence}, \ref{arousal} and \ref{dominance} for valence, arousal and dominance respectively. It is clear that even though all components have most of their weight in the higher bins, the data overall is more or less balanced.   
 
 \mijnfiguur{width=0.7\textwidth}{valence}{The distribution of the valence values.}
 \mijnfiguur{width=0.7\textwidth}{arousal}{The distribution of the arousal values.}
 \mijnfiguur{width=0.7\textwidth}{dominance}{The distribution of the dominance values.}
 
-\section{Feature selection}
-
-The first step in this thesis is to recognize emotion of a single person. To do this, good features are needed. These features are evaluated using a features selection procedure consisting of the following steps:
-\begin{enumerate}
-\item For each person the data is split in a train and test set, with ratio: 0.75 / 0.25.
-\item A linear SVM is trained using the train set and the result is evaluated using the test set. 
-\item The previous step is repeated for each of the 32 persons in the DEAP set.
-\item The average over all results is calculated. Averaging over all persons limits the influence person specific effects on the feature selection, while still using person specific classifiers.
-\end{enumerate}
-
-\subsection{Valence}
-As discussed in \ref{DetValence}, the most used feature to determine valence is the alpha asymmetry, which is given for L and R being the Left and Right alpha powers as:\\
-\begin{center}
-$Asymmetry = \frac{L-R}{L+R}$
-\end{center}
-A first attempt will classify valence in two classes: low valence (sad) and high valance (happy). The valences are therefor thresholded at 0.5 everything below is the first class, all valence values above are part of the second class. Valence values close to the threshold are removed as they can potentially confuse the classifier during training. To determine which channels are useful, each left channel is first grouped with its corresponding right channel. For each channel pair the asymmetry is determined and the feature selection procedure described above is executed. The result is a test value averaged over all persons, which is shown in Table \ref{channelSelection}.
-
-\begin{table}[H]
-\centering
-\begin{tabular}{ll|ll}
-\textbf{Channel Group} & \textbf{Avg Test Accuracy} & \textbf{Channel Group} & \textbf{Avg Test Accuracy} \\ \hline
-\textbf{Fp1 - Fp2}     & 38.461                     & \textbf{T7 - T8}       & 70                         \\
-\textbf{AF3 - AF4}     & 71.428                     & \textbf{CP5 -CP6}      & 50                         \\
-\textbf{F3 - F4}       & 44.444                     & \textbf{CP1 - CP2}     & 55.556                     \\
-\textbf{F7 - F8}       & 61.538                     & \textbf{P3 - P4}       & 53.846                     \\
-\textbf{FC5 - FC6}     & 42.857                     & \textbf{P7 - P8}       & 50                         \\
-\textbf{FC1 - FC2}     & 44.444                     & \textbf{PO3 - PO4}     & 75                         \\
-\textbf{C3 - C4}       & 37.5                       &                        &                           
-\end{tabular}
-\caption{Average Test values for each channel pair\label{channelSelection}}
-\end{table}
-
-Looking at the results, it is clear that the most promising channels are: AF3-AF4, F7-F8, T7-T8, PO3-PO4. Note that not all channels are located in the frontal regions of the cortex, which is different from what some papers report. %TODO \cite{}
+\section{a }

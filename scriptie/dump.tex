@@ -1,0 +1,34 @@
+
+\section{Feature selection}
+
+The first step in this thesis is to recognize emotion of a single person. To do this, good features are needed. These features are evaluated using a features selection procedure consisting of the following steps:
+\begin{enumerate}
+\item For each person the data is split in a train and test set, with ratio: 0.75 / 0.25.
+\item A linear SVM is trained using the train set and the result is evaluated using the test set. 
+\item The previous step is repeated for each of the 32 persons in the DEAP set.
+\item The average over all results is calculated. Averaging over all persons limits the influence person specific effects on the feature selection, while still using person specific classifiers.
+\end{enumerate}
+
+\subsection{Valence}
+As discussed in \ref{DetValence}, the most used feature to determine valence is the alpha asymmetry, which is given for L and R being the Left and Right alpha powers as:\\
+\begin{center}
+$Asymmetry = \frac{L-R}{L+R}$
+\end{center}
+A first attempt will classify valence in two classes: low valence (sad) and high valance (happy). The valences are therefor thresholded at 0.5 everything below is the first class, all valence values above are part of the second class. Valence values close to the threshold are removed as they can potentially confuse the classifier during training. To determine which channels are useful, each left channel is first grouped with its corresponding right channel. For each channel pair the asymmetry is determined and the feature selection procedure described above is executed. The result is a test value averaged over all persons, which is shown in Table \ref{channelSelection}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll|ll}
+\textbf{Channel Group} & \textbf{Avg Test Accuracy} & \textbf{Channel Group} & \textbf{Avg Test Accuracy} \\ \hline
+\textbf{Fp1 - Fp2}     & 38.461                     & \textbf{T7 - T8}       & 70                         \\
+\textbf{AF3 - AF4}     & 71.428                     & \textbf{CP5 -CP6}      & 50                         \\
+\textbf{F3 - F4}       & 44.444                     & \textbf{CP1 - CP2}     & 55.556                     \\
+\textbf{F7 - F8}       & 61.538                     & \textbf{P3 - P4}       & 53.846                     \\
+\textbf{FC5 - FC6}     & 42.857                     & \textbf{P7 - P8}       & 50                         \\
+\textbf{FC1 - FC2}     & 44.444                     & \textbf{PO3 - PO4}     & 75                         \\
+\textbf{C3 - C4}       & 37.5                       &                        &                           
+\end{tabular}
+\caption{Average Test values for each channel pair\label{channelSelection}}
+\end{table}
+
+Looking at the results, it is clear that the most promising channels are: AF3-AF4, F7-F8, T7-T8, PO3-PO4. Note that not all channels are located in the frontal regions of the cortex, which is different from what some papers report. %TODO \cite{}
