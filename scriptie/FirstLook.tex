@@ -15,7 +15,7 @@ The used SAM figures are shown in Figure \ref{SAM}. The first row gives the vale
 \mijnfiguur{width=0.5\textwidth}{SAM}{The images used for the SAM\cite{DEAP}.}
 
 %verdeling waardes
-To further inspect the distribution of the user ratings and whether or not the data is balanced, the average for each emotion dimension (valence, arousal and dominance), was determined using all videos of all persons. These can be seen in Table \ref{avg-vals}. A uniform distribution, which is the ideal case for machine learning, should give a value of 0.5. The averages of the different dimensions are a just a little above 0.5, which gives a first indication that the data is only slightly unbalanced.
+To further inspect the distribution of the user ratings and whether or not the data is balanced, the average for each emotion dimension (valence, arousal and dominance), was determined using all videos of all persons. These can be seen in Table \ref{avg-vals}. A uniform distribution, which is the ideal case for machine learning, should give a value of 0.5. The averages of the different dimensions are a just a little above 0.5, which gives a first indication that overall, the data is only slightly unbalanced.
 
 \begin{table}[H]
 \centering
@@ -26,10 +26,51 @@ To further inspect the distribution of the user ratings and whether or not the d
 \caption{The average value of each component.\label{avg-vals}}
 \end{table}
 
-To further inspect the data, each component was divided in 8 ranges or bins. Next all user ratings are placed in their corresponding bin. Then the percentage of movies for each bin was calculated. This shown in Figure \ref{valence}, \ref{arousal} and \ref{dominance} for valence, arousal and dominance respectively. It is clear that even though all components have most of their weight in the higher bins, the data overall is more or less balanced.   
 
-\mijnfiguur{width=0.7\textwidth}{valence}{The distribution of the valence values.}
-\mijnfiguur{width=0.7\textwidth}{arousal}{The distribution of the arousal values.}
-\mijnfiguur{width=0.7\textwidth}{dominance}{The distribution of the dominance values.}
 
-\section{a }
+\section{A first model to classify the valence}
+
+The first model in this thesis recognizes the valence of a single person. This was done with an SVM classifier in a first attempt, since SVMs are able to handle limited datasets well. In this attempt 2 features were compared, the usage of the frontal alpha asymmetry and the frontal theta power. Both feature are in literature frequently reported as being correlated to the valence. A third feature set used a combination of both these features. 
+
+\npar
+
+The first classifier labels the valence values into two classes: low valence (unpleasant feelings) and high valence (pleasant feelings). This also meant that labels needed to be assigned to the dataset. This can be done in different ways. 
+
+The first and most straightforward method simply splits the valence range in half, all values positioned in the first and second half of the valence region were assigned to the low and high valences classes respectively. Note that even though the data set is overall quite balanced, the situation becomes quite different in case of a person specific classifier. Looking at Figure \ref{unbalancedPersons}, it is clear that for some persons the data is quite unbalanced, for examples the unbalance is quite high for person 6. There are only 10 examples assigned to the low valance class, while 30 examples are assigned to the high valence class. Having an unbalance in training examples leads to less accurate classifiers.
+
+\mijnfiguur{width=0.9\textwidth}{unbalancedPersons}{This graph show the assignment of the data set in to two classes: high and low valence. Each bar on the X axis represents a person, while the Y axis represents the number of low and high valence values.}
+
+The unbalance and especially the difference between unbalances for different persons is actually quite remarkable, given that each persons watched the same set of videos. Even taking into account personal differences, the different is high. One explanation for this might be that each persons rated movies differently; some persons are prone to giving higher values than other which results in an higher average valence value for some persons. To solve this problem one could simply order all the rating in ascending or descending order and assign the lower and higher half to the lower and higher valence class respectively. Using the median of the ratings as a second assignment method will do just that and as a result the classes will always be balanced. Both assignment methods are visually compared in Figure \ref{medvsavg} below.
+
+\mijnfiguur{width=0.7\textwidth}{medvsavg}{Assignments of different values to the two classes using two methods.}
+
+\clearpage
+
+The results of different runs are obtained with leave-one-out validation where each of the 40 samples is predicted once, using the remaining 39 samples as training data. The 40 predictions' accuracies are then averaged which gave the following results:
+
+\mijnfiguur{width=0.9\textwidth}{firstres}{A comparison of the first results.}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\textbf{Features} & \textbf{Median Method} & \textbf{split in half Method} \\
+\textbf{Alpha}             & $0.55 \pm 0.26$   & $0.64 \pm 0.37$     \\
+\textbf{FM}                & $0.38 \pm 0.25$   & $0.68 \pm 0.41$    \\
+\textbf{Alpha + FM}        & $0.56 \pm 0.28$   & $0.64 \pm 0.35$   
+\end{tabular}
+\caption{Different accuracy values for the features sets and assignment methods (avg accuracy $\pm$ standard deviation).}
+\label{firstrestable}
+\end{table}
+
+%results => svm te complex
+Looking at the results it becomes clear that the average accuracy of the split in half method is higher than the median method. This is a result of assigning the classes with the median. For example with persons 6, some of the examples might end up in the low valence class even though person 6 might be feeling quite pleasant feelings during these EEG recordings, which confuses the model. 
+%todo this is unclear why
+Note that the standard deviation for the median method is lower than the split in half method, so in this perspective it is still possible that the results for the median method might be better. 
+
+\section{CSP + LDA}
+Overall the results of the SVM explained above are reasonable for a first model, but higher accuracy is desired. Even though SVMs are capable of dealing with small datasets, it may not have been the best model to start with, given its complexity. A frequently used model in the context of Brain Computer Interfaces is a combination of Common Spatial Patterns (CSP)\nomenclature{CSP}{Common Spatial Patterns} and Linear Discriminant analysis (LDA) \nomenclature{LDA}{Linear Discriminant Analysis} \cite{}%een van de drie gegeven voorbeeld thesissen
+
+
+
+
+
