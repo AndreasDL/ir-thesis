@@ -30,7 +30,7 @@ To further inspect the distribution of the user ratings and whether or not the d
 
 \section{A first model to classify the valence}
 
-The first model in this thesis recognizes the valence of a single person. This was done with a linear SVM classifier in a first attempt, since SVMs are able to handle limited datasets well. In this attempt 2 features were compared, the usage of the frontal alpha asymmetry and the frontal theta power. Both feature are in literature frequently reported as being correlated to the valence. A third feature set used a combination of both these features. 
+The first model in this thesis recognizes the valence of a single person. This was done with a linear SVM classifier in a first attempt, since SVMs were used in a lot of the covered literature. SVMs have the advantage that they are able to handle limited datasets well, because they only look at points close to the separation boundary. In this attempt 2 features were compared, the usage of the frontal alpha asymmetry and the frontal theta power. Both feature are in literature frequently reported as being correlated to the valence. A third feature set used a combination of both these features. 
 
 \npar
 
@@ -40,7 +40,7 @@ The first and most straightforward method simply splits the valence range in hal
 
 \mijnfiguur{width=0.9\textwidth}{unbalancedPersons}{This graph show the assignment of the data set in to two classes: high and low valence. Each bar on the X axis represents a person, while the Y axis represents the number of low and high valence values.}
 
-The unbalance and especially the difference between unbalances for different persons is actually quite remarkable, given that each persons watched the same set of videos. Even taking into account personal differences, the different is high. One explanation for this might be that each persons rated movies differently; some persons are prone to giving higher values than other which results in an higher average valence value for some persons. To solve this problem one could simply order all the rating in ascending or descending order and assign the lower and higher half to the lower and higher valence class respectively. Using the median of the ratings as a second assignment method will do just that and as a result the classes will always be balanced. Both assignment methods are visually compared in Figure \ref{medvsavg} below.
+The unbalance and especially the difference between unbalances for different persons is actually quite remarkable, given that each persons watched the same set of videos. Even taking into account personal differences, the different is high. One explanation for this might be that each persons rated movies differently; some persons are prone to giving higher values than other which results in an higher average valence value for some persons. To solve this problem one could simply order all the rating in ascending or descending order and assign the lower and higher half to the lower and higher valence class respectively. Using the median of the ratings as a second assignment method will do just that and as a result the classes will always be balanced. Both assignment methods are visually compared in Figure \ref{medvsavg} and Table \ref{firstrestable} below.
 
 \mijnfiguur{width=0.7\textwidth}{medvsavg}{Assignments of different values to the two classes using two methods.}
 
@@ -67,10 +67,42 @@ Looking at the results it becomes clear that the average accuracy of the split i
 %todo this is unclear why
 Note that the standard deviation for the median method is lower than the split in half method, so in this perspective it is still possible that the results for the median method might be better. 
 
+\clearpage
+
 \section{CSP + LDA}
-Overall the results of the SVM explained above are reasonable for a first model, but higher accuracy is desired. Even though SVMs are capable of dealing with small datasets, it may not have been the best model to start with, given its complexity. A frequently used model in the context of Brain Computer Interfaces is a combination of Common Spatial Patterns (CSP)\nomenclature{CSP}{Common Spatial Patterns} and Linear Discriminant analysis (LDA) \nomenclature{LDA}{Linear Discriminant Analysis} \cite{}%een van de drie gegeven voorbeeld thesissen
 
+Overall the results of the SVM explained above are reasonable for a first model, but higher accuracy is desired. Even though SVMs are capable of dealing with small datasets, it does not always provide the best results\cite{svmldacomp}. A frequently used model in the context of Brain Computer Interfaces is a combination of Common Spatial Patterns (CSP)\nomenclature{CSP}{Common Spatial Patterns} and Linear Discriminant analysis (LDA) \nomenclature{LDA}{Linear Discriminant Analysis} \cite{ErrorPotentials,svmldacomp,currTrends}. 
 
+\npar
 
+CSP is a spatial filtering technique that was originally designed to optimize the performance of motor imagery BCIs. CSP does so by creating linear combinations of the original EEG channels that maximize the variance for one class while simultaneously minimizing the variance of the other class \cite{ErrorPotentials}. One disadvantage of using CSP is that the default version can only distinguish between 2 classes, though one can easily aggregate multiple CSP models to create one-vs-one and one-vs-all models, similarly to the one-vs-one and one-vs-all SVMs.
+%TODO beetje meer uitleg
 
+\npar 
 
+LDA, on the other hand tries to find a projection of the data where the data is linearly separable.
+%TODO beetje meer uitleg
+\mijnfiguur{width=0.7\textwidth}{lda}{LDA finds a projection of the data where the separation of the data is clear.}
+
+%TODO results
+%leave one out validation 
+%optimization of channel pairs
+%results
+\mijnfiguur{width=0.9\textwidth}{cspldares}{Accuracies for different persons, the highest (green) and lowest (red) accuracy are obtained by person 14 (90\%) and 21 (30\%) respectively.}
+
+%TODO beste en slechtste
+%verdrling van data
+
+\mijnfiguur{width=0.9\textwidth}{valdistr}{}
+
+%TODO csp results
+Since CSP is applied it is also possible to look at the generated filter pairs to improve the understanding of the CSP algorithm. Figure \ref{cspres} shows generated plots of the CSP values. The black dots represent given weights at the electrode locations the plot is then generated by interpolating the absolute weights of these points for the whole image. Blue colors correspond too less importance and red colors are the most important. Looking at the generated plots it become quite clear that the generated CSP filter is very person specific, CSP filter pairs of different persons look quite different. 
+
+\npar
+
+Generally speaking, you would expect something similar to person 2 where the algorithm measures power components in the right and left parts of the scalp. This is somewhat the case for person 21, where the CSP gives high weights to different electrode locations. For person 14 however, the result is somewhat less desirable. Even though person 14 had the highest accuracy of 90\%, the entire classification is based on a single electrode, which is an indication that the CSP is overfitting. This means that the performance might be great for the given test set, but its performance is likely to diminish quickly if one were to redo the experiment with the same classifier and a different set of samples. 
+\mijnfiguur{width=0.9\textwidth}{cspres}{CSP filters for different persons}
+
+%solutions
+%first filter out alpha signal
+%limited set of channels
