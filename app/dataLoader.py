@@ -24,8 +24,6 @@ channelNames = {
 }
 
 def loadPerson(person, featureFunc, use_median=False, use_csp=True, pad='../dataset'):
-    X, y = [], []
-
     fname = str(pad) + '/s'
     if person < 10:
         fname += '0'
@@ -44,32 +42,47 @@ def loadPerson(person, featureFunc, use_median=False, use_csp=True, pad='../data
         #rescale
         valences = np.array( data['labels'][:,0] ) #ATM only valence needed
         valences = (valences - 1) / 8 #1->9 to 0->8 to 0->1
-        
+
+        #determine border
         if use_median:
             #median as border
             border = np.median(valences)
         else:
             border = 0.5
         
-        #classes
+        #assign classes
         y = valences
         y[ y <= border ] = 0
         y[ y >  border ] = 1
         y = np.array(y, dtype='int')
 
-        #preprocessing CSP with 16 channelPairs
-        X_prepped = None
+        #break off test set
+        sss = StratifiedShuffleSplit(y, n_iter=10, test_size=0.25, random_state=19)
+        for train_set_index, test_set_index in sss:
+            X_train, y_train = samples[train_set_index], y[train_set_index]
+            X_test , y_test  = samples[test_set_index] , y[test_set_index]
+            break;  #abuse the shuffle split, we want a static break, not a crossvalidation
+
+        #preprocessing with CSP (16 channelPairs)
+        csp=None
         if use_csp:
-            csp = Csp(samples=samples,labels=y)            
-            X_prepped = csp.apply_all(samples)
-        else:
-            X_prepped = samples
+            #fit csp to train set
+            csp = Csp(samples=X_train,labels=y_train)
 
-        #extract features for each video
-        for video in range(len(data['data'])):
-            X.append( featureFunc(X_prepped[video]) )
+            #transform train and testset
+            X_train = csp.apply_all(X_train)
+            X_test  = csp.apply_all(X_test)
 
-    return [np.array(X), y]
+        #extract features
+        feat_X_train = []
+        feat_X_test  = []
+        for i in range(len(X_train)):
+            feat_X_train.append( featureFunc(X_train[i]) )
+        
+        for i in range(len(X_test)):
+            feat_X_test.append(  featureFunc(X_test[i] ) )
+
+    return [np.array(feat_X_train), np.array(y_train), np.array(feat_X_test), np.array(y_test), csp]
 
 def loadPersonEpochDimRedu(person, featureFunc, pad='../dataset'):
     X, y = [], []
