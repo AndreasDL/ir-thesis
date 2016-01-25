@@ -19,7 +19,6 @@ class Csp:
         cov1 = 0
         for klass, sample in zip(labels, samples):
             #each sample = 32 channels x 8064 samples
-            #avg = nul?
             E = sample
             Et = np.transpose(sample)
             
@@ -48,9 +47,9 @@ class Csp:
         #sorteer eigenwaarden op diagonaal
         idx = D.ravel().argsort()
         Z = Z[:,idx]
-        D = D[idx]
+        #D = D[idx]
         #put eigen values on diagonal
-        D = np.diag(D)
+        #D = np.diag(D)
         
         #step five
         self.W = np.dot( np.transpose(Z), U)
@@ -77,7 +76,7 @@ class Csp:
 
         return np.array(X_csp)
 
-    def write_filters(csp_channel=0):
+    def write_filters(self, csp_channel=0):
         f = open("output filters.txt", 'a')
         for column in self.W[csp_channel]:        
             f.write( str(column) + ',' )

@@ -32,6 +32,9 @@ def PersonWorker(person):
         prefilter=False
     )
 
+    #store weights of upper CSP channel for topoplots
+    csp.write_filters()
+
     #optimize channelPairs with leave-one out validation
     #prior probabilities
     pos_prior = np.sum(y_train)
