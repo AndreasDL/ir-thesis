@@ -7,6 +7,7 @@ import random
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.cross_validation import StratifiedShuffleSplit
 from csp import Csp
+import featureExtractor as FE
 
 channelNames = {
     'Fp1' : 0 , 'AF3' : 1 , 'F3'  : 2 , 'F7'  : 3 , 'FC5' : 4 , 'FC1' : 5 , 'C3'  : 6 , 'T7'  : 7 , 'CP5' : 8 , 'CP1' : 9, 
@@ -23,7 +24,7 @@ channelNames = {
     'Temperature' : 39
 }
 
-def loadPerson(person, featureFunc, use_median=False, use_csp=True, pad='../dataset'):
+def loadPerson(person, featureFunc, prefilter=False, use_median=False, use_csp=True, pad='../dataset'):
     fname = str(pad) + '/s'
     if person < 10:
         fname += '0'
@@ -37,7 +38,11 @@ def loadPerson(person, featureFunc, use_median=False, use_csp=True, pad='../data
         #data['data'][video][channel] = [samples * 8064]
 
         #only use EEG channels
-        samples = np.array(data['data'])[:,:32,:] #throw out non-EEG channels        
+        samples = np.array(data['data'])[:,:32,:] #throw out non-EEG channels
+
+        if prefilter:
+            #get alpha power only, before applying CSP
+            samples = FE.filterBand(samples, 'alpha')
 
         #rescale
         valences = np.array( data['labels'][:,0] ) #ATM only valence needed

@@ -56,16 +56,6 @@ class Csp:
         self.W = np.dot( np.transpose(Z), U)
 
 
-        #output for plots
-        '''
-        f = open("output filters.txt", 'a')
-        for column in self.W[0]:        
-            f.write( str(column) + ',' )
-        f.write("\n")
-        f.close()'''
-
-
-
     def apply(samples, channelPairs):
         #apply filters
         X_only = np.zeros((40, channelPairs * 2,8064))
@@ -86,3 +76,10 @@ class Csp:
             X_csp.append(np.dot(self.W,E))
 
         return np.array(X_csp)
+
+    def write_filters(csp_channel=0):
+        f = open("output filters.txt", 'a')
+        for column in self.W[csp_channel]:        
+            f.write( str(column) + ',' )
+        f.write("\n")
+        f.close()

@@ -76,6 +76,33 @@ def deltaPowers(samples):
 def thetaPowers(samples):
     return powers(samples,'theta')
 
+def filterBand(samples, waveband):
+    if not (waveband in startFreq and waveband in stopFreq):
+        print("Error Wrong waveband selection for frequencyPower. you selected:", waveband)    
+        exit(-1)
+    
+    Fs = 128 #samples have freq 128Hz
+    n = len(samples[0])#8064 #number of samples
+    features = []
+
+    for i in range(len(samples)): #all video samples
+        sample_list = []
+        for channel in samples[i]: #all EEG channels
+
+            #bandpass filter to get waveband
+            nyq  = 0.5 * Fs 
+            low  = startFreq[waveband] / nyq
+            high = stopFreq[waveband]  / nyq
+            b, a = butter(6, [low, high], btype='band')
+            sample = lfilter(b, a, channel)
+
+            sample_list.append(sample)
+            
+        features.append(sample_list)
+
+    return np.array(features)
+
+
 #old
 def getBandPDChunks(waveband, samplesAtChannel, intervalLength=2, overlap=0.75 ):
     #splits the samlesAtChannel into chuncks of intervalLength size and calculates the frequency powers of a certain waveband using the fast fourier transform

@@ -22,34 +22,26 @@ def PersonWorker(person):
     print('starting on person: ', str(person))
 
     #data = 40 videos x 32 alpha(csp channel)
-    data, labels = DL.loadPerson(person=person,
+    X_train, y_train, X_test, y_test, csp = DL.loadPerson(person=person,
         featureFunc = featureFunc,
         use_csp=False,
         use_median = False
     )
-
-    #break off test set
-    sss = StratifiedShuffleSplit(labels, n_iter=10, test_size=0.25, random_state=19)
-    for train_set_index, test_set_index in sss:
-        X, y = data[train_set_index], labels[train_set_index]
-        X_test, y_test  = data[test_set_index], labels[test_set_index]
-        break;
-
     
     C = 1
     clf = LinearSVC(C=C,random_state=40)
-    K_CV = KFold(n=len(X), n_folds=len(X), random_state=17, shuffle=False) #leave out one validation
+    K_CV = KFold(n=len(X_train), n_folds=len(X_train), random_state=17, shuffle=False) #leave out one validation
     predictions, truths = [], []
     for train_index, CV_index in K_CV:
         #train
-        clf.fit(X[train_index], y[train_index])
+        clf.fit(X_train[train_index], y_train[train_index])
 
         #predict
-        pred = clf.predict(X[CV_index])
+        pred = clf.predict(X_train[CV_index])
 
         #save for metric calculations
         predictions.extend(pred)
-        truths.extend(y[CV_index])
+        truths.extend(y_train[CV_index])
 
     #optimization metric:
     best_metric = UT.auc(predictions, truths)
@@ -58,18 +50,18 @@ def PersonWorker(person):
     #try other C values
     for C in [0.01,0.03,0.1,0.3,3,10]:
         clf = LinearSVC(C=C,random_state=40)
-        K_CV = KFold(n=len(X), n_folds=len(X), random_state=17, shuffle=True) #leave out one validation
+        K_CV = KFold(n=len(X_train), n_folds=len(X_train), random_state=17, shuffle=True) #leave out one validation
         predictions, truths = [], []
         for train_index, CV_index in K_CV:
             #train
-            clf.fit(X[train_index], y[train_index])
+            clf.fit(X_train[train_index], y_train[train_index])
 
             #predict
-            pred = clf.predict(X[CV_index])
+            pred = clf.predict(X_train[CV_index])
 
             #save for metric calculations
             predictions.extend(pred)
-            truths.extend(y[CV_index])
+            truths.extend(y_train[CV_index])
 
         #optimization metric:
         metric = UT.auc(predictions, truths)
@@ -81,8 +73,8 @@ def PersonWorker(person):
 
     #calculate all performance metrics on testset, using the optimal classifier
     clf = LinearSVC(C=C,random_state=40)
-    clf.fit(X,y) #fit all training data
-    print("coef ", clf.coef_)
+    clf.fit(X_train,y_train) #fit all training data
+    #print("coef ", clf.coef_)
     predictions = clf.predict(X_test)
 
     acc  = UT.accuracy(predictions, y_test)

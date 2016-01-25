@@ -28,7 +28,8 @@ def PersonWorker(person):
     X_train, y_train, X_test, y_test, csp = DL.loadPerson(person=person,
         featureFunc = featureFunc,
         use_median=False,
-        use_csp=True
+        use_csp=True,
+        prefilter=False
     )
 
     #optimize channelPairs with leave-one out validation
