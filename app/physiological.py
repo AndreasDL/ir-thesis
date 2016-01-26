@@ -3,6 +3,7 @@ import pickle
 import numpy as np
 from scipy.signal import butter, lfilter
 from sklearn.preprocessing import normalize
+from sklearn.cross_validation import StratifiedShuffleSplit
 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -138,12 +139,16 @@ def loadPerson(person, classFunc, featureFunc, pad='../dataset'):
         #data['labels'][video] = [valence, arousal, dominance, liking]
         #data['data'][video][channel] = [samples * 8064]
 
-        y = classFunc(data)
-
         X = featureFunc(data)
+        y = classFunc(data)
         
         #split train / test 
-
+        #n_iter = 1 => abuse the shuffle split, to obtain a static break, instead of crossvalidation
+        sss = StratifiedShuffleSplit(y, n_iter=1, test_size=0.25, random_state=19)
+        for train_set_index, test_set_index in sss:
+            X_train, y_train = X[train_set_index], y[train_set_index]
+            X_test , y_test  = X[test_set_index] , y[test_set_index]
+        
         #anova => feature selection
 
         #model
