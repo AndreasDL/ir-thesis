@@ -32,12 +32,13 @@ def plot(data, descr="value"):
 
 
 def heartStuffz(plethysmoData):
-    #Plethysmograph => heart rate, inter beat times, heart rate variability
+    #Plethysmograph => heart rate, heart rate variability
     #this requires sufficient smoothing !!
+    #heart rate is visible with local optima, therefore we need to search the optima first
 
     #stolen with pride from http://stackoverflow.com/questions/4624970/finding-local-maxima-minima-with-numpy-in-a-1d-numpy-array
     diffs = np.diff(np.sign(np.diff(plethysmoData)))
-    extrema =  diffs.nonzero()[0] + 1 # local min+max
+    #extrema =  diffs.nonzero()[0] + 1 # local min+max
     #minima  = (diffs > 0).nonzero()[0] + 1 # local min
     maxima  = (diffs < 0).nonzero()[0] + 1 # local max
 
@@ -48,7 +49,7 @@ def heartStuffz(plethysmoData):
     #plt.legend()
     #plt.show()
 
-    avg_rate = len(extrema) / 2
+    avg_rate = len(maxima)
 
     interbeats = np.diff(maxima) / Fs #time in between beats => correlated to hreat rate!
     std_interbeats = np.var(interbeats) #std of beats => gives an estimations as to how much the heart rate varies
@@ -151,7 +152,9 @@ def loadPerson(person, classFunc, featureFunc, pad='../dataset'):
         
         #anova => feature selection
 
+
         #model
+
 
 
 if __name__ == '__main__':
