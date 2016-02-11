@@ -8,6 +8,7 @@ from sklearn.feature_selection import SelectKBest, f_regression
 from sklearn.pipeline import Pipeline
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 import util as UT
+import featureExtractor as FE
 
 from multiprocessing import Pool
 
@@ -19,22 +20,32 @@ font = {'family' : 'normal',
 matplotlib.rc('font', **font)
 
 
+#global const vars!
 channelNames = {
-#after removing EEG channels
-    'GSR'  : 0, #(values from Twente converted to Geneva format (Ohm))
-    'Respiration belt' : 1,
-    'Plethysmograph' : 2,
-    'Temperature' : 3
+    'Fp1' : 0 , 'AF3' : 1 , 'F3'  : 2 , 'F7'  : 3 , 'FC5' : 4 , 'FC1' : 5 , 'C3'  : 6 , 'T7'  : 7 , 'CP5' : 8 , 'CP1' : 9,
+    'P3'  : 10, 'P7'  : 11, 'PO3' : 12, 'O1'  : 13, 'Oz'  : 14, 'Pz'  : 15, 'Fp2' : 16, 'AF4' : 17, 'Fz'  : 18, 'F4'  : 19,
+    'F8'  : 20, 'FC6' : 21, 'FC2' : 22, 'Cz'  : 23, 'C4'  : 24, 'T8'  : 25, 'CP6' : 26, 'CP2' : 27, 'P4'  : 28, 'P8'  : 29,
+    'PO4' : 30, 'O2'  : 31,
+    'hEOG' : 32, #(horizontal EOG:  hEOG1 - hEOG2)
+    'vEOG' : 33, #(vertical EOG:  vEOG1 - vEOG2)
+    'zEMG' : 34, #(Zygomaticus Major EMG:  zEMG1 - zEMG2)
+    'tEMG' : 35, #(Trapezius EMG:  tEMG1 - tEMG2)
+    'GSR'  : 36, #(values from Twente converted to Geneva format (Ohm))
+    'Respiration belt' : 37,
+    'Plethysmograph' : 38,
+    'Temperature' : 39
 }
+all_left_channels  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1', 'P3', 'P7', 'PO3']
+all_right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6', 'CP2', 'P4', 'P8', 'PO4']
+
+#turn bands into frequency ranges
+startFreq = {'alpha' : 8 , 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4, 'all' : 0}
+stopFreq  = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8, 'all' : 50}
+
 Fs = 128 #samples have freq 128Hz
+nyq  = 0.5 * Fs
 
 
-def plot(data, descr="value"):
-    n = len(data)
-    plt.plot(np.arange(n)/128, data, 'r-')
-    plt.xlabel('time (s)')
-    plt.ylabel(descr)
-    plt.show()
 def heartStuffz(plethysmoData):
     #Plethysmograph => heart rate, heart rate variability
     #this requires sufficient smoothing !!
@@ -82,48 +93,89 @@ def classFunc(data):
         y[i] = arr #(val * 2) + arr
 
     return y
-def featureFunc(data):
+
+def physiologicalFeatures(video):
+
     #filter out right channels
-    samples = np.array(data['data'])[:,36:,:] #throw out EEG channels & eye and muscle movement
-    
+    samples = np.array(video)[36:,:] #throw out EEG channels & eye and muscle movement
+
+    #physiological features
     #lowpass filter => sufficient smoothing is needed to extract heart rate from plethysmograph
-    Fs = 128 #samples have freq 128Hz
-    n = len(samples[0])#8064 #number of samples
-    nyq  = 0.5 * Fs 
     low  = 3 / nyq #lower values => smoother
     b, a = butter(6, low, btype='low')
-    for video in range(len(samples)):
-        for channel in range(len(samples[video])):
-            samples[video][channel] = lfilter(b, a, samples[video][channel])
+    for channel in range(len(samples)):
+        samples[channel] = lfilter(b, a, samples[channel])
 
     #extract features
     features = []
-    for video in samples:
-        video_features = []
+    for channel in samples:
 
-        for channel in video:
-            #minVal = np.min( channel )
-            #maxVal = np.max( channel )
+        features.append( np.mean(  channel) )
+        features.append( np.std(   channel) )
+        #video_features.append( np.median(channel) )
+        #video_features.append( minVal )
+        #video_features.append( maxVal )
+        #video_features.append( maxVal - minVal )
 
-            video_features.append( np.mean(  channel) )
-            video_features.append( np.std(   channel) )
-            #video_features.append( np.median(channel) )
-            #video_features.append( minVal )
-            #video_features.append( maxVal )
-            #video_features.append( maxVal - minVal )
-        
-        video_features.extend(
-            heartStuffz(
-                video[channelNames['Plethysmograph']]
-            )
+    features.extend(
+        heartStuffz(
+            video[channelNames['Plethysmograph']]
         )
+    )
+
+    #features look like this (person specific)
+    #list = | avg_GSR | std_GSR | avg_rb  | std_rb  |
+    #       | avg_ply | std_ply | avg_tem | std_tem |
+    #       | avg_hr  | var_interbeats |
+
+    return features
+
+def eegFeatures(video):
+    #EEG features
+    features = []
+
+    #alpha beta
+    alpha_total = np.sum(FE.powers(video, 'alpha'))
+    beta_total  = np.sum(FE.powers(video, 'beta' ))
+    features.append(alpha_total / beta_total)
+
+    #l-R / L+R
+    left_alpha = 0
+    right_alpha = 0
+    for ch_left, ch_right in zip(all_left_channels, all_right_channels):
+        left = []
+        left.append( video[channelNames[ch_left],:] )
+        left_alpha  += FE.powers(np.array(left) , 'alpha')[0]
+
+        right = []
+        right.append(video[channelNames[ch_right],:])
+        right_alpha += FE.powers(np.array(right), 'alpha')[0]
+
+    features.append( (left_alpha - right_alpha)/(left_alpha + right_alpha) )
+
+    #FM
+    frontal = []
+    frontal.append(video[channelNames['Fz']])
+    frontalMidlinePower = FE.powers( np.array(frontal),'theta')[0]
+    features.append(frontalMidlinePower)
+
+    #features look like this (person specific)
+    #list = | alpha/beta | L-R/L+R | FM |
+
+    return features
+
+def featureFunc(data):
+    samples = np.array(data['data'])
+
+    features = []
+    for video in samples:
+        video_features = physiologicalFeatures(video)
+        video_features.extend( eegFeatures(video) )
 
         features.append(video_features)
-    #features look like this (person specific)
-    #list[video] = | avg_GSR | std_GSR | avg_rb  | std_rb  |
-    #              | avg_ply | std_ply | avg_tem | std_tem |
-    #              | avg_hr  | var_interbeats |
+
     return np.array(features)
+
 def loadPerson(person, classFunc, featureFunc, pad='../dataset'):
     fname = str(pad) + '/s'
     if person < 10:
@@ -163,9 +215,6 @@ def PersonWorker(person):
             classFunc = classFunc,
             featureFunc = featureFunc
     )
-
-    print(X_train)
-    exit;
         
     #init academic loop to optimize k param
     k = 1
@@ -267,8 +316,8 @@ def PersonWorker(person):
 
 if __name__ == '__main__':
     #multithreaded
-    pool = Pool(processes=1)
-    results = pool.map( PersonWorker, range(1,2) )
+    pool = Pool(processes=8)
+    results = pool.map( PersonWorker, range(1,33) )
     pool.close()
     pool.join()
 

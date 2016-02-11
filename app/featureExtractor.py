@@ -169,7 +169,7 @@ def getBandPDChunks(waveband, samplesAtChannel, intervalLength=2, overlap=0.75 )
         retArr = np.append(retArr, avg )    
 
     return retArr
-def LMinRFraction(samples,intervalLength=2, overlap=0.75, 
+def LMinRFraction(samples,intervalLength=2, overlap=0.75,
     left_channels=['Fp1', 'AF3', 'F3', 'F7'],
     right_channels=['Fp2', 'AF4', 'F4', 'F8']
     ):

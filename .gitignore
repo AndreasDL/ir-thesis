@@ -94,3 +94,5 @@ dataset/
 dumpedData/
 *.dat
 .fuse_hidden*
+
+.idea/
