@@ -9,15 +9,16 @@ from sklearn.pipeline import Pipeline
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 import util as UT
 import featureExtractor as FE
+import datetime
+import time
 
 from multiprocessing import Pool
-
 import matplotlib.pyplot as plt
 import matplotlib
-font = {'family' : 'normal',
-            'weight' : 'bold',
-            'size'   : 30}
-matplotlib.rc('font', **font)
+#font = {'family' : 'normal',
+#            'weight' : 'bold',
+#            'size'   : 30}
+#matplotlib.rc('font', **font)
 
 
 #global const vars!
@@ -45,6 +46,84 @@ stopFreq  = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8,
 Fs = 128 #samples have freq 128Hz
 nyq  = 0.5 * Fs
 
+featureNames = [
+        #physiological
+        'avg_GSR', 'std_GSR', 'avg_rb', 'std_rb',
+        'avg_ply', 'std_ply', 'avg_tem', 'std_tem',
+        'avg_hr',  'var_interbeats',
+        #EEG
+        'alpha/beta', 'L-R/L+R', 'FM'
+]
+
+def fourClassFunc(data):
+
+    #labels
+    valences = np.array( data['labels'][:,0] ) #ATM only valence needed
+    #valences = (valences - 1) / 8 #1->9 to 0->8 to 0->1
+    valences[ valences <= 5 ] = 0
+    valences[ valences >  5 ] = 1
+
+    arousals = np.array( data['labels'][:,1] )
+    #arousals = (arousals - 1) / 8 #1->9 to 0->8 to 0->1
+    arousals[ arousals <= 5 ] = 0
+    arousals[ arousals >  5 ] = 1
+
+    #assign classes
+    #              | low valence | high valence |
+    #low  arrousal |      0      |       2      |
+    #high arrousal |      1      |       3      |
+    y = np.zeros(len(valences))
+    for i, (val, arr) in enumerate(zip(valences, arousals)):
+        y[i] = (val * 2) + arr
+    #TODO: probs with stratisfied shuffle split
+
+    return y
+def arrClassFunc(data):
+
+    #labels
+    arousals = np.array( data['labels'][:,1] )
+    #arousals = (arousals - 1) / 8 #1->9 to 0->8 to 0->1
+    arousals[ arousals <= 5 ] = 0
+    arousals[ arousals >  5 ] = 1
+
+    #assign classes
+    #low  arrousal |      0      |
+    #high arrousal |      1      |
+    y = np.zeros(len(arousals))
+    for i, arr in enumerate(arousals):
+        y[i] = arr
+
+    return y
+def valClassFunc(data):
+
+    #labels
+    valences = np.array( data['labels'][:,0] ) #ATM only valence needed
+    #valences = (valences - 1) / 8 #1->9 to 0->8 to 0->1
+    valences[ valences <= 5 ] = 0
+    valences[ valences >  5 ] = 1
+
+    #assign classes
+    #low valence | high valence |
+    #     0      |       1      |
+
+    y = np.zeros(len(valences))
+    for i, val in enumerate(valences):
+        y[i] = val
+
+    return y
+
+def plotClass(data, person):
+    plt.plot(
+        data['labels'][:,0] - 5,
+        data['labels'][:,1] - 5,
+        'ro'
+    )
+    plt.title('person: ' + str(person))
+    plt.axis([-5,5,-5,5])
+    plt.xlabel('valence')
+    plt.ylabel('arousal')
+    plt.savefig('../results/plots/person' + str(person) + '.png')
+    #plt.show()
 
 def heartStuffz(plethysmoData):
     #Plethysmograph => heart rate, heart rate variability
@@ -68,32 +147,9 @@ def heartStuffz(plethysmoData):
 
     interbeats = np.diff(maxima) / Fs #time in between beats => correlated to hreat rate!
     std_interbeats = np.var(interbeats) #std of beats => gives an estimations as to how much the heart rate varies
-    
+
 
     return avg_rate, std_interbeats
-def classFunc(data):
-
-    #labels
-    valences = np.array( data['labels'][:,0] ) #ATM only valence needed
-    #valences = (valences - 1) / 8 #1->9 to 0->8 to 0->1
-    valences[ valences <= 5 ] = 0
-    valences[ valences >  5 ] = 1
-
-    arousals = np.array( data['labels'][:,1] )
-    #arousals = (arousals - 1) / 8 #1->9 to 0->8 to 0->1
-    arousals[ arousals <= 5 ] = 0
-    arousals[ arousals >  5 ] = 1
-
-    #assign classes
-    #              | low valence | high valence |
-    #low  arrousal |      0      |       2      |
-    #high arrousal |      1      |       3      |
-    y = np.zeros(len(valences))
-    for i, (val, arr) in enumerate(zip(valences, arousals)):
-        y[i] = arr #(val * 2) + arr
-
-    return y
-
 def physiologicalFeatures(video):
 
     #filter out right channels
@@ -129,7 +185,6 @@ def physiologicalFeatures(video):
     #       | avg_hr  | var_interbeats |
 
     return features
-
 def eegFeatures(video):
     #EEG features
     features = []
@@ -163,7 +218,6 @@ def eegFeatures(video):
     #list = | alpha/beta | L-R/L+R | FM |
 
     return features
-
 def featureFunc(data):
     samples = np.array(data['data'])
 
@@ -176,7 +230,7 @@ def featureFunc(data):
 
     return np.array(features)
 
-def loadPerson(person, classFunc, featureFunc, pad='../dataset'):
+def loadPerson(person, classFunc, featureFunc, plots=False, pad='../dataset'):
     fname = str(pad) + '/s'
     if person < 10:
         fname += '0'
@@ -186,13 +240,16 @@ def loadPerson(person, classFunc, featureFunc, pad='../dataset'):
         p.encoding= ('latin1')
         data = p.load()
 
+        if plots:
+            plotClass(data, person)
+
         #structure of data element:
         #data['labels'][video] = [valence, arousal, dominance, liking]
         #data['data'][video][channel] = [samples * 8064]
 
         X = featureFunc(data)
         y = classFunc(data)
-        
+
         #split train / test 
         #n_iter = 1 => abuse the shuffle split, to obtain a static break, instead of crossvalidation
         sss = StratifiedShuffleSplit(y, n_iter=1, test_size=0.25, random_state=19)
@@ -207,13 +264,15 @@ def loadPerson(person, classFunc, featureFunc, pad='../dataset'):
         #X_test  = normer.transform(X_test, copy=False)
 
         return X_train, y_train, X_test, y_test
-
 def PersonWorker(person):
+    max_k = 4#len(X_train[0])
+
     #load data
     X_train, y_train, X_test, y_test = loadPerson(
             person = person,
-            classFunc = classFunc,
-            featureFunc = featureFunc
+            classFunc = arrClassFunc,
+            featureFunc = featureFunc,
+            plots = True
     )
         
     #init academic loop to optimize k param
@@ -249,7 +308,7 @@ def PersonWorker(person):
     best_k   = k
     
     #now try different k values
-    for k in range(2,len(X_train[0])):
+    for k in range(2,max_k):
         anova_filter = SelectKBest(f_regression)
         lda          = LinearDiscriminantAnalysis()
         anova_lda    = Pipeline([
@@ -303,7 +362,7 @@ def PersonWorker(person):
     (tpr,tnr,fpr,fnr) = UT.tprtnrfprfnr(predictions, y_test)
     auc = UT.auc(predictions, y_test)
 
-    print('person: ', person, 
+    print('person: ', person,
         ' - k: '  , str(best_k),
         ' - acc: ', str(acc),
         ' - tpr: ' , str(tpr),
@@ -311,7 +370,87 @@ def PersonWorker(person):
         ' - auc: ', str(auc),
         'used features', anova_lda.named_steps['anova'].get_support()
     )
-    return [best_k, acc,tpr,tnr,fpr,fnr,auc]
+    retArr = [best_k, acc,tpr,tnr,fpr,fnr,auc]
+    retArr.extend(anova_lda.named_steps['anova'].get_support())
+
+    '''
+    print('person: ', person,
+        ' - k: '  , str(best_k),
+        ' - acc: ', str(acc),
+        'used features', getUsedFeatures(anova_lda.named_steps['anova'].get_support())
+        #anova_lda.named_steps['anova'].get_support()
+    )
+
+    classCorr = UT.classCorrect(predictions, y_test)
+    dimCorr = UT.dimCorrect(predictions, y_test)
+
+    returnArr = [best_k, acc ]
+    returnArr.extend(classCorr)
+    returnArr.extend(dimCorr)
+    returnArr.extend(anova_lda.named_steps['anova'].get_support())
+    return returnArr
+    '''
+
+    return retArr
+
+
+def getUsedFeatures(anova_output):
+    if len(anova_output) != len(featureNames):
+        print('features name not set correctly aborting')
+        exit -1;
+
+    s = ''
+    for bool, featureName in zip(anova_output, featureNames):
+        if bool:
+            s += featureName + ' '
+
+    return s
+def writeOutput(results,filePad="../results/"):
+    #output
+    st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
+    f = open(filePad + "output" + str(st) + ".txt", 'w')
+    f.write('person;best_k;acc;tpr,tnr,fpr,fnr,auc\n')
+
+    perf_results = []
+    for person, result in enumerate(results):
+        (best_k, acc, tpr, tnr, fpr, fnr, auc) = result[0:7]
+        perf_results.append(result[0:7])
+
+        s = str(person+1) + ';' +\
+            str(best_k) + ';' +\
+            str(acc) + ';' +\
+            str(tpr) + ';' + str(tnr) + ';' +\
+            str(fpr) + ';' + str(fnr) + ';' +\
+            str(auc)
+
+        for bool in result[8:]:
+            if bool:
+                s += 'X'
+            s+= ';'
+
+        f.write(s)
+        f.write('\n')
+
+
+    perf_results = np.array(perf_results)
+
+    f.write('\nmedian;')
+    for column in range(len(perf_results[0])):
+        f.write(str(np.median(perf_results[:,column])) + ';')
+
+    f.write('\navg;')
+    for column in range(len(perf_results[0])):
+        f.write(str(np.average(perf_results[:,column])) + ';')
+
+    f.write('\nstd;')
+    for column in range(len(perf_results[0])):
+        f.write(str(np.std(perf_results[:,column])) + ';')
+
+
+    f.close()
+
+    return np.average(perf_results[:,1]) , np.average(perf_results[:,6])
+
 
 
 if __name__ == '__main__':
@@ -321,9 +460,11 @@ if __name__ == '__main__':
     pool.close()
     pool.join()
 
+    #results = lest<[best_k, acc, tpr, tnr, fpr, fnr, auc, anova_output]>
     results = np.array(results)
-    #results = lest<[best_k, acc, tpr, tnr, fpr, fnr, auc]>
+    avg_acc , avg_auc = writeOutput(results)
+
     print(
-        'avg acc', np.average(results[:,1]),
-        'avg auc', np.average(results[:,6])
+        'avg acc', str(avg_acc),
+        'avg auc', str(avg_auc)
     )
