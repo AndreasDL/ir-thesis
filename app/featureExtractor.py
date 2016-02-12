@@ -31,7 +31,7 @@ class AFeatureExtractor:
     def __init__(self, featName):
         self.featureName = featName
 
-    def extract(self, samples):
+    def extract(self, video):
         '''This function should extract the features from the data
             Person & video specific; return features for each video
             so you get one pari of list<video> = [features]
@@ -57,9 +57,9 @@ class PowerExtractor(AFeatureExtractor):
             exit(-1)
         self.usedFeqBand = freqBand
 
-    def extract(self,samples):
+    def extract(self, video):
 
-        n = len(samples[0])#8064 #number of samples
+        n = len(video[0])#8064 #number of samples
         features = []
         for channel in self.usedChannelIndexes:
             #bandpass filter to get waveband
@@ -93,12 +93,12 @@ class AlphaBetaExtractor(AFeatureExtractor):
         AFeatureExtractor.__init__(self,featName)
         self.usedChannelIndexes = channels
 
-    def extract(self, samples):
+    def extract(self, video):
         alphaExtr = PowerExtractor(self.usedChannelIndexes, 'alpha')
         betaExtr  = PowerExtractor(self.usedChannelIndexes, 'beta')
 
-        alpha_power = alphaExtr.extract(samples)
-        beta_power  = betaExtr.extract(samples)
+        alpha_power = alphaExtr.extract(video)
+        beta_power  = betaExtr.extract(video)
 
         return alpha_power / beta_power
 class LMinRLPlusRExtractor(AFeatureExtractor):
@@ -110,12 +110,12 @@ class LMinRLPlusRExtractor(AFeatureExtractor):
         if len(left_channels) != len(right_channels):
             print('WARN left and right channels not of equal length')
 
-    def extract(self,samples):
+    def extract(self, video):
         leftExtr = PowerExtractor(self.left_channels,'alpha')
         rightExtr = PowerExtractor(self.right_channels, 'alpha')
 
-        left_power = leftExtr.extract(samples)
-        right_power = rightExtr.extract(samples)
+        left_power = leftExtr.extract(video)
+        right_power = rightExtr.extract(video)
 
         return (left_power - right_power) / (left_power + right_power)
 class FrontalMidlinePower(PowerExtractor):
@@ -131,8 +131,8 @@ class AvgExtractor(AFeatureExtractor):
         AFeatureExtractor.__init__(self,featName)
         self.usedChannelIndex = channel
 
-    def extract(self,samples):
-        return np.average(samples[self.usedChannelIndex])
+    def extract(self, video):
+        return np.average(video[self.usedChannelIndex])
 class STDExtractor(AFeatureExtractor):
     def __init__(self,channel,featName):
         if featName == ''
@@ -141,27 +141,27 @@ class STDExtractor(AFeatureExtractor):
         AFeatureExtractor.__init__(self,featName)
         self.usedChannelIndex = channel
 
-    def extract(self,samples):
-        return np.std(samples[self.usedChannelIndex])
+    def extract(self, video):
+        return np.std(video[self.usedChannelIndex])
 #get Heart Rate from plethysmograph
 class AVGHeartRateExtractor(AFeatureExtractor):
     def __init__(self,featName='avg HR'):
         AFeatureExtractor.__init__(self,featName)
         self.channel = channelNames['Plethysmograph']
 
-    def extract(self,samples):
+    def extract(self, video):
         #lowpass filter => sufficient smoothing is needed to extract heart rate from plethysmograph
         low  = 3 / nyq #lower values => smoother
         b, a = butter(6, low, btype='low')
-        for channel in range(len(samples)):
-            samples[channel] = lfilter(b, a, samples[channel])
+        for channel in range(len(video)):
+            video[channel] = lfilter(b, a, video[channel])
 
         #Plethysmograph => heart rate, heart rate variability
         #this requires sufficient smoothing !!
         #heart rate is visible with local optima, therefore we need to search the optima first
 
         #stolen with pride from http://stackoverflow.com/questions/4624970/finding-local-maxima-minima-with-numpy-in-a-1d-numpy-array
-        diffs = np.diff(np.sign(np.diff(samples[self.channel])))
+        diffs = np.diff(np.sign(np.diff(video[self.channel])))
         #extrema =  diffs.nonzero()[0] + 1 # local min+max
         #minima  = (diffs > 0).nonzero()[0] + 1 # local min
         maxima  = (diffs < 0).nonzero()[0] + 1 # local max
@@ -181,19 +181,19 @@ class STDInterBeatExtractor(AFeatureExtractor):
         AFeatureExtractor.__init__(self,featName)
         self.channel = channelNames['Plethysmograph']
 
-    def extract(self,samples):
+    def extract(self, video):
         #lowpass filter => sufficient smoothing is needed to extract heart rate from plethysmograph
         low  = 3 / nyq #lower values => smoother
         b, a = butter(6, low, btype='low')
-        for channel in range(len(samples)):
-            samples[channel] = lfilter(b, a, samples[channel])
+        for channel in range(len(video)):
+            video[channel] = lfilter(b, a, video[channel])
 
         #Plethysmograph => heart rate, heart rate variability
         #this requires sufficient smoothing !!
         #heart rate is visible with local optima, therefore we need to search the optima first
 
         #stolen with pride from http://stackoverflow.com/questions/4624970/finding-local-maxima-minima-with-numpy-in-a-1d-numpy-array
-        diffs = np.diff(np.sign(np.diff(samples[self.channel])))
+        diffs = np.diff(np.sign(np.diff(video[self.channel])))
         #extrema =  diffs.nonzero()[0] + 1 # local min+max
         #minima  = (diffs > 0).nonzero()[0] + 1 # local min
         maxima  = (diffs < 0).nonzero()[0] + 1 # local max
@@ -212,6 +212,7 @@ class STDInterBeatExtractor(AFeatureExtractor):
 
         return std_interbeats
 
+#!! only one that can handle a list of videos!
 class MultiFeatureExtractor(AFeatureExtractor):
     def __init__(self):
         self.featureExtrs = []
@@ -219,13 +220,16 @@ class MultiFeatureExtractor(AFeatureExtractor):
     def addFE(self,featureExtractor):
         self.featureExtrs.append(featureExtractor)
 
-    def extract(self,samples):
-        features = []
+    def extract(self, video):
+        retFeat = []
+        for single_video in video:
+            features = []
+            for FE in self.featureExtrs:
+                features.append(FE.extract(single_video))
 
-        for FE in self.featureExtrs:
-            features.append(FE.extract(samples))
+            retFeat.append(features)
 
-        return np.array(features)
+        return np.array(retFeat)
 
     def getFeatureNames(self):
         names = []
