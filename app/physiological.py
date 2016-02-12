@@ -270,9 +270,9 @@ def PersonWorker(person):
     #load data
     X_train, y_train, X_test, y_test = loadPerson(
             person = person,
-            classFunc = arrClassFunc,
+            classFunc = valClassFunc,
             featureFunc = featureFunc,
-            plots = True
+            plots = False
     )
         
     #init academic loop to optimize k param
@@ -423,14 +423,13 @@ def writeOutput(results,filePad="../results/"):
             str(fpr) + ';' + str(fnr) + ';' +\
             str(auc)
 
-        for bool in result[8:]:
+        for bool in result[7:]:
             if bool:
                 s += 'X'
             s+= ';'
 
         f.write(s)
         f.write('\n')
-
 
     perf_results = np.array(perf_results)
 
