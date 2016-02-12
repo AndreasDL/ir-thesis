@@ -5,7 +5,7 @@ from multiprocessing import Pool
 import models
 import numpy as np
 
-import dataLoader as DL
+import personLoader as DL
 from archive import featureExtractor as FE
 
 all_left_channels  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1', 'P3', 'P7', 'PO3']

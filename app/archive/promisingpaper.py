@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.preprocessing import label_binarize
 from sklearn.svm import LinearSVC
 
-import dataLoader as DL
+import personLoader as DL
 import util as UT
 from archive import featureExtractor as FE
 
