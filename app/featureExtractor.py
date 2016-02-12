@@ -2,16 +2,13 @@ import numpy as np
 from sklearn import preprocessing as PREP
 from scipy.signal import butter, lfilter
 
-#import matplotlib.pyplot as plt
-#import matplotlib
-
 #global const vars!
 channelNames = {
-    'Fp1' : 0 , 'AF3' : 1 , 'F3'  : 2 , 'F7'  : 3 , 'FC5' : 4 , 'FC1' : 5 , 'C3'  : 6 , 'T7'  : 7 , 'CP5' : 8 , 'CP1' : 9, 
+    'Fp1' : 0 , 'AF3' : 1 , 'F3'  : 2 , 'F7'  : 3 , 'FC5' : 4 , 'FC1' : 5 , 'C3'  : 6 , 'T7'  : 7 , 'CP5' : 8 , 'CP1' : 9,
     'P3'  : 10, 'P7'  : 11, 'PO3' : 12, 'O1'  : 13, 'Oz'  : 14, 'Pz'  : 15, 'Fp2' : 16, 'AF4' : 17, 'Fz'  : 18, 'F4'  : 19,
     'F8'  : 20, 'FC6' : 21, 'FC2' : 22, 'Cz'  : 23, 'C4'  : 24, 'T8'  : 25, 'CP6' : 26, 'CP2' : 27, 'P4'  : 28, 'P8'  : 29,
-    'PO4' : 30, 'O2'  : 31, 
-    'hEOG' : 32, #(horizontal EOG:  hEOG1 - hEOG2)    
+    'PO4' : 30, 'O2'  : 31,
+    'hEOG' : 32, #(horizontal EOG:  hEOG1 - hEOG2)
     'vEOG' : 33, #(vertical EOG:  vEOG1 - vEOG2)
     'zEMG' : 34, #(Zygomaticus Major EMG:  zEMG1 - zEMG2)
     'tEMG' : 35, #(Trapezius EMG:  tEMG1 - tEMG2)
@@ -27,173 +24,212 @@ all_right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6',
 startFreq = {'alpha' : 8 , 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4, 'all' : 0}
 stopFreq  = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8, 'all' : 50}
 
-def powers(samples,waveband):
-    if not (waveband in startFreq and waveband in stopFreq):
-        print("Error Wrong waveband selection for frequencyPower. you selected:", waveband)    
-        exit(-1)
+Fs = 128 #global const frequency of the brain signals
+nyq  = 0.5 * Fs
 
-    #it says left & right, but this has no meaning after CSP
-    Fs = 128 #samples have freq 128Hz
-    n = len(samples[0])#8064 #number of samples
-    features = []
-    for channel in samples:
-        #bandpass filter to get waveband
-        nyq  = 0.5 * Fs 
-        low  = startFreq[waveband] / nyq
-        high = stopFreq[waveband]  / nyq
-        b, a = butter(6, [low, high], btype='band')
-        sample = lfilter(b, a, channel)
+class AFeatureExtractor:
+    def __init__(self, featName):
+        self.featureName = featName
 
-        #hamming window to smoothen edges
-        ham = np.hamming(n)
-        sample = np.multiply(sample , ham)
+    def extract(self, samples):
+        '''This function should extract the features from the data
+            Person & video specific; return features for each video
+            so you get one pari of list<video> = [features]
+        '''
+        return []
+    def getFeatureNames(self):
+        '''This function should return the names of the features in the order that they occur
+            Person specific; list<video> = [featurenames]
+            this is need to find out which features were used
+        '''
+        return self.featureName
 
-        #fft => get power components
-        # fft computing and normalization
-        Y = np.fft.fft(sample)/n
-        Y = Y[range(round(n/2))]
+#EEG features
+class PowerExtractor(AFeatureExtractor):
+    '''this FE will axtract alpha and beta power from the brain and reports it ratio'''
+    def __init__(self,,channels,freqBand, featName='Power'):
+        AFeatureExtractor.__init__(self,featName)
 
-        #average within one chunck
-        avg = 0
-        for val in Y:
-            avg  += abs(val) **2
+        self.usedChannelIndexes = channels #list of channel indexes to use
 
-        avg /= len(Y)
-        avg = np.sqrt(avg)
+        if not (freqBand in startFreq and freqBand in stopFreq):
+            print("Error Wrong waveband selection for frequencyPower. you selected:", freqBand)
+            exit(-1)
+        self.usedFeqBand = freqBand
 
-        features.append(avg)
+    def extract(self,samples):
 
-    return np.array(features)
-
-def alphaPowers(samples):
-    return powers(samples,'alpha')
-def betaPowers(samples):
-    return powers(samples,'beta')
-def gammaPowers(samples):
-    return powers(samples,'gamma')
-def deltaPowers(samples):
-    return powers(samples,'delta')
-def thetaPowers(samples):
-    return powers(samples,'theta')
-
-def filterBand(samples, waveband):
-    if not (waveband in startFreq and waveband in stopFreq):
-        print("Error Wrong waveband selection for frequencyPower. you selected:", waveband)    
-        exit(-1)
-    
-    Fs = 128 #samples have freq 128Hz
-    n = len(samples[0])#8064 #number of samples
-    features = []
-
-    for i in range(len(samples)): #all video samples
-        sample_list = []
-        for channel in samples[i]: #all EEG channels
-
+        n = len(samples[0])#8064 #number of samples
+        features = []
+        for channel in self.usedChannelIndexes:
             #bandpass filter to get waveband
-            nyq  = 0.5 * Fs 
-            low  = startFreq[waveband] / nyq
-            high = stopFreq[waveband]  / nyq
+            low  = startFreq[self.usedFeqBand] / nyq
+            high = stopFreq[ self.usedFeqBand] / nyq
             b, a = butter(6, [low, high], btype='band')
             sample = lfilter(b, a, channel)
 
-            sample_list.append(sample)
-            
-        features.append(sample_list)
+            #hamming window to smoothen edges
+            ham = np.hamming(n)
+            sample = np.multiply(sample , ham)
 
-    return np.array(features)
+            #fft => get power components
+            # fft computing and normalization
+            Y = np.fft.fft(sample)/n
+            Y = Y[range(round(n/2))]
+
+            #average
+            avg = 0
+            for val in Y:
+                avg  += abs(val) **2
+
+            avg /= len(Y)
+            avg = np.sqrt(avg)
+
+            features.append(avg)
+
+        return np.array(features)
+class AlphaBetaExtractor(AFeatureExtractor):
+    def __init__(self,channels,featName='AlphaBeta'):
+        AFeatureExtractor.__init__(self,featName)
+        self.usedChannelIndexes = channels
+
+    def extract(self, samples):
+        alphaExtr = PowerExtractor(self.usedChannelIndexes, 'alpha')
+        betaExtr  = PowerExtractor(self.usedChannelIndexes, 'beta')
+
+        alpha_power = alphaExtr.extract(samples)
+        beta_power  = betaExtr.extract(samples)
+
+        return alpha_power / beta_power
+class LMinRLPlusRExtractor(AFeatureExtractor):
+    def __init__(self,left_channels, right_channels,featName='L-R/L+R'):
+        AFeatureExtractor.__init__(self,featName)
+        self.left_channels = left_channels
+        self.right_channels = right_channels
+
+        if len(left_channels) != len(right_channels):
+            print('WARN left and right channels not of equal length')
+
+    def extract(self,samples):
+        leftExtr = PowerExtractor(self.left_channels,'alpha')
+        rightExtr = PowerExtractor(self.right_channels, 'alpha')
+
+        left_power = leftExtr.extract(samples)
+        right_power = rightExtr.extract(samples)
+
+        return (left_power - right_power) / (left_power + right_power)
+class FrontalMidlinePower(PowerExtractor):
+    def __init__(self,channels,featName='FM'):
+        PowerExtractor.__init__(self,channels,'theta','FM')
+
+#physiological features
+class AvgExtractor(AFeatureExtractor):
+    def __init__(self,channel,featName):
+        if featName == ''
+            featName = 'avg ' + channelNames(channel)
+
+        AFeatureExtractor.__init__(self,featName)
+        self.usedChannelIndex = channel
+
+    def extract(self,samples):
+        return np.average(samples[self.usedChannelIndex])
+class STDExtractor(AFeatureExtractor):
+    def __init__(self,channel,featName):
+        if featName == ''
+            featName = 'std ' + channelNames(channel)
+
+        AFeatureExtractor.__init__(self,featName)
+        self.usedChannelIndex = channel
+
+    def extract(self,samples):
+        return np.std(samples[self.usedChannelIndex])
+#get Heart Rate from plethysmograph
+class AVGHeartRateExtractor(AFeatureExtractor):
+    def __init__(self,featName='avg HR'):
+        AFeatureExtractor.__init__(self,featName)
+        self.channel = channelNames['Plethysmograph']
+
+    def extract(self,samples):
+        #lowpass filter => sufficient smoothing is needed to extract heart rate from plethysmograph
+        low  = 3 / nyq #lower values => smoother
+        b, a = butter(6, low, btype='low')
+        for channel in range(len(samples)):
+            samples[channel] = lfilter(b, a, samples[channel])
+
+        #Plethysmograph => heart rate, heart rate variability
+        #this requires sufficient smoothing !!
+        #heart rate is visible with local optima, therefore we need to search the optima first
+
+        #stolen with pride from http://stackoverflow.com/questions/4624970/finding-local-maxima-minima-with-numpy-in-a-1d-numpy-array
+        diffs = np.diff(np.sign(np.diff(samples[self.channel])))
+        #extrema =  diffs.nonzero()[0] + 1 # local min+max
+        #minima  = (diffs > 0).nonzero()[0] + 1 # local min
+        maxima  = (diffs < 0).nonzero()[0] + 1 # local max
+
+        # graphical output...
+        #plt.plot(np.arange(len(data)),data, 'r-')
+        #plt.plot(b, data[b], "o", label="min")
+        #plt.plot(c, data[c], "o", label="max")
+        #plt.legend()
+        #plt.show()
+
+        avg_rate = len(maxima)
+
+        return avg_rate
+class STDInterBeatExtractor(AFeatureExtractor):
+    def __init__(self,featName='avg HR'):
+        AFeatureExtractor.__init__(self,featName)
+        self.channel = channelNames['Plethysmograph']
+
+    def extract(self,samples):
+        #lowpass filter => sufficient smoothing is needed to extract heart rate from plethysmograph
+        low  = 3 / nyq #lower values => smoother
+        b, a = butter(6, low, btype='low')
+        for channel in range(len(samples)):
+            samples[channel] = lfilter(b, a, samples[channel])
+
+        #Plethysmograph => heart rate, heart rate variability
+        #this requires sufficient smoothing !!
+        #heart rate is visible with local optima, therefore we need to search the optima first
+
+        #stolen with pride from http://stackoverflow.com/questions/4624970/finding-local-maxima-minima-with-numpy-in-a-1d-numpy-array
+        diffs = np.diff(np.sign(np.diff(samples[self.channel])))
+        #extrema =  diffs.nonzero()[0] + 1 # local min+max
+        #minima  = (diffs > 0).nonzero()[0] + 1 # local min
+        maxima  = (diffs < 0).nonzero()[0] + 1 # local max
+
+        # graphical output...
+        #plt.plot(np.arange(len(data)),data, 'r-')
+        #plt.plot(b, data[b], "o", label="min")
+        #plt.plot(c, data[c], "o", label="max")
+        #plt.legend()
+        #plt.show()
 
 
-#old
-def getBandPDChunks(waveband, samplesAtChannel, intervalLength=2, overlap=0.75 ):
-    #splits the samlesAtChannel into chuncks of intervalLength size and calculates the frequency powers of a certain waveband using the fast fourier transform
-    if not (waveband in startFreq and waveband in stopFreq):
-        print("Error Wrong waveband selection for frequencyPower. you selected:", waveband)    
-        exit(-1)
+        interbeats = np.diff(maxima) / Fs #time in between beats => correlated to hreat rate!
+        std_interbeats = np.var(interbeats) #std of beats => gives an estimations as to how much the heart rate varies
 
-    if overlap > 1:
-        print("Error: the overlap cannot be greater than 100 percent!")
-        exit(-1)
 
-    Fs = 128 #samples have freq 128Hz
-    intervalsize = intervalLength * Fs #size of one chunk
-    retArr = np.empty(0)
+        return std_interbeats
 
-    #show the power spectrum
-    '''
-    font = {'family' : 'normal',
-        'weight' : 'bold',
-        'size'   : 30}
+class MultiFeatureExtractor(AFeatureExtractor):
+    def __init__(self):
+        self.featureExtrs = []
 
-    matplotlib.rc('font', **font)
-    n = len(samplesAtChannel)
-    Y = np.fft.fft(samplesAtChannel)/n
-    Y = Y[range(round(n/2))]
-    frq = np.arange(n)*Fs/n # two sides frequency range
-    freq = frq[range(round(n/2))]           # one side frequency range
-    plt.plot(freq, abs(Y), 'r-')
-    plt.xlabel('freq (Hz)')
-    plt.ylabel('|Y(freq)|')
-    plt.show()'''
+    def addFE(self,featureExtractor):
+        self.featureExtrs.append(featureExtractor)
 
-    #75% overlap => each chunck starts intervalsize/4 later
-    for startIndex in range( 0, len(samplesAtChannel), round(intervalsize * (1-overlap)) ):
+    def extract(self,samples):
+        features = []
 
-        stopIndex = startIndex + intervalsize
-        samples = samplesAtChannel[startIndex:stopIndex]
-        n = len(samples) #equal to intervalsize, except for last part
-        
-        #bandpass filter to get waveband
-        nyq = 0.5 * Fs
-        low = startFreq[waveband] / nyq
-        high = stopFreq[waveband] / nyq
-        b, a = butter(6, [low, high], btype='band')
-        samples = lfilter(b, a, samples)    
+        for FE in self.featureExtrs:
+            features.append(FE.extract(samples))
 
-        #hamming window to smoothen edges
-        ham = np.hamming(n)
-        samples = np.multiply(samples, ham)
+        return np.array(features)
 
-        #fft => get power components
-        # fft computing and normalization
-        Y = np.fft.fft(samples)/n
-        Y = Y[range(round(n/2))]
+    def getFeatureNames(self):
+        names = []
+        for FE in self.featureExtrs:
+            names.append(FE.getFeatureNames())
 
-        #average within one chunck
-        avg = 0
-        for i in range(len(Y)):
-            avg += abs(Y[i]) **2
-        avg /= len(Y)
-        avg = np.sqrt(avg)
-
-        #add to values
-        retArr = np.append(retArr, avg )    
-
-    return retArr
-def LMinRFraction(samples,intervalLength=2, overlap=0.75,
-    left_channels=['Fp1', 'AF3', 'F3', 'F7'],
-    right_channels=['Fp2', 'AF4', 'F4', 'F8']
-    ):
-    
-    #structure of samples[channel, sample]
-    #return L-R / L+R, voor alpha components zie gegeven paper p6
-    for left_channel, right_channel in zip(left_channels, right_channels):
-        alpha_left  = getBandPDChunks('alpha', samples[channelNames[left_channel]], intervalLength, overlap )
-        alpha_right = getBandPDChunks('alpha', samples[channelNames[right_channel]], intervalLength, overlap )
-
-    return np.divide( alpha_left-alpha_right, alpha_left+alpha_right )
-
-def LogLMinRAlpha(samples,intervalLength=2, overlap=0.75, left_channel='F3', right_channel='F4'):
-    #log(left) - log(right)
-    alpha_left  = getBandPDChunks('alpha', samples[channelNames[left_channel]], intervalLength, overlap )
-    alpha_right = getBandPDChunks('alpha', samples[channelNames[right_channel]], intervalLength, overlap )
-
-    #log left - log right
-    return np.log(alpha_left) - np.log(alpha_right)
-def FrontlineMidlineThetaPower(samples, channels, intervalLength=2, overlap=0.75):
-    #frontal midline theta power is increase by positive emotion
-    #structure of samples[channel, sample]
-    power = getBandPDChunks('theta', samples[channelNames[channels[0]]], intervalLength, overlap)
-    for channel in channels[1:]:
-        power += getBandPDChunks('theta', samples[channelNames[channel]], intervalLength, overlap)
-
-    return power
+        return names

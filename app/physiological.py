@@ -1,20 +1,19 @@
-import os
+import datetime
 import pickle
+import time
+from multiprocessing import Pool
+
+import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import butter, lfilter
-from sklearn.preprocessing import Normalizer
 from sklearn.cross_validation import StratifiedShuffleSplit, KFold
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.feature_selection import SelectKBest, f_regression
 from sklearn.pipeline import Pipeline
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-import util as UT
-import featureExtractor as FE
-import datetime
-import time
 
-from multiprocessing import Pool
-import matplotlib.pyplot as plt
-import matplotlib
+import util as UT
+from archive import featureExtractor as FE
+
 #font = {'family' : 'normal',
 #            'weight' : 'bold',
 #            'size'   : 30}
@@ -455,7 +454,7 @@ def writeOutput(results,filePad="../results/"):
 if __name__ == '__main__':
     #multithreaded
     pool = Pool(processes=8)
-    results = pool.map( PersonWorker, range(1,33) )
+    results = pool.map( PersonWorker, range(1,2) )
     pool.close()
     pool.join()
 

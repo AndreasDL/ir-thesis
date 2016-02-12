@@ -1,10 +1,9 @@
-import dataLoader as DL
-import featureExtractor as FE
-import models
-import plotters
-import util
-import numpy as np
 import pickle
+
+import models
+import numpy as np
+
+from archive import featureExtractor as FE
 
 if __name__ == "__main__":
     trainVideoCount = 32
