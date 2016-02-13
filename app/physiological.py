@@ -1,20 +1,19 @@
-import os
+import datetime
 import pickle
+import time
+from multiprocessing import Pool
+
+import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import butter, lfilter
-from sklearn.preprocessing import Normalizer
 from sklearn.cross_validation import StratifiedShuffleSplit, KFold
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.feature_selection import SelectKBest, f_regression
 from sklearn.pipeline import Pipeline
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-import util as UT
-import featureExtractor as FE
-import datetime
-import time
 
-from multiprocessing import Pool
-import matplotlib.pyplot as plt
-import matplotlib
+import archive.util as UT
+from archive import featureExtractor as FE
+
 #font = {'family' : 'normal',
 #            'weight' : 'bold',
 #            'size'   : 30}
@@ -294,6 +293,8 @@ def PersonWorker(person):
     predictions, truths = [], []
     for train_index, CV_index in K_CV: #train index here is a part of the train set
         #train
+        x_temp = X_train[train_index]
+        y_temp = y_train[train_index]
         anova_lda.fit(X_train[train_index], y_train[train_index])
 
         #predict
@@ -455,7 +456,7 @@ def writeOutput(results,filePad="../results/"):
 if __name__ == '__main__':
     #multithreaded
     pool = Pool(processes=8)
-    results = pool.map( PersonWorker, range(1,33) )
+    results = pool.map( PersonWorker, range(1,2) )
     pool.close()
     pool.join()
 

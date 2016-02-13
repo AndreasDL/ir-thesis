@@ -1,13 +1,13 @@
-import os
 import pickle
-import numpy as np
-import featureExtractor as FE
-from sklearn.cross_validation import train_test_split
 import random
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
+import numpy as np
 from sklearn.cross_validation import StratifiedShuffleSplit
-from csp import Csp
-import featureExtractor as FE
+from sklearn.cross_validation import train_test_split
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
+from archive import featureExtractor as FE
+from archive.csp import Csp
 
 channelNames = {
     'Fp1' : 0 , 'AF3' : 1 , 'F3'  : 2 , 'F7'  : 3 , 'FC5' : 4 , 'FC1' : 5 , 'C3'  : 6 , 'T7'  : 7 , 'CP5' : 8 , 'CP1' : 9, 

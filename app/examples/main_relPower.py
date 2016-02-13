@@ -1,12 +1,12 @@
-import dataLoader as DL
-import featureExtractor as FE
-import util as UT
-import models
-import numpy as np
-from multiprocessing import Pool
-
 import datetime
 import time
+from multiprocessing import Pool
+
+import models
+import numpy as np
+
+import personLoader as DL
+from archive import featureExtractor as FE
 
 all_left_channels  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1', 'P3', 'P7', 'PO3']
 all_right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6', 'CP2', 'P4', 'P8', 'PO4']

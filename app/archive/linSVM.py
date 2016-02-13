@@ -1,13 +1,15 @@
-import time
-import pickle
 import datetime
-import util as UT
-import numpy as np
-import dataLoader as DL
-import featureExtractor as FE
+import time
 from multiprocessing import Pool
-from sklearn.cross_validation import KFold,StratifiedShuffleSplit
+
+import numpy as np
+from sklearn.cross_validation import KFold
 from sklearn.svm import LinearSVC
+
+import archive.util as UT
+import personLoader as DL
+from archive import featureExtractor as FE
+
 
 def featureFunc(samples):
     features = []
