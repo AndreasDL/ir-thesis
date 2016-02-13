@@ -7,18 +7,28 @@ from sklearn.cross_validation import StratifiedShuffleSplit, KFold
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 class AModel:
-    def __init__(self,personLoader,reporter):
+    def __init__(self,personLoader):
         self.personLoader = personLoader
-        self.reporter = reporter
 
     def run(self):
         return None;
 
+    def optMetric(self,predictions, truths):
+        return 0
+
 class StdModel(AModel):
 
-    def __init__(self,personLoader, reporter,max_k):
-        AModel.__init__(self,personLoader,reporter)
+    def __init__(self,personLoader, max_k):
+        AModel.__init__(self,personLoader)
         self.max_k = max_k
+
+    def optMetric(self,predictions, truths):
+        #==accuracy
+        acc = 0
+        for pred, truth in zip(predictions, truths):
+            acc += (pred == truth)
+
+        return acc / float(len(predictions))
 
     def run(self,person):
         #load data
@@ -55,7 +65,7 @@ class StdModel(AModel):
             truths.extend(y_train[CV_index])
 
         #optimization metric:
-        best_acc = self.reporter.optMetric(predictions,truths)
+        best_acc = self.optMetric(predictions,truths)
         best_k   = k
 
         #now try different k values
@@ -89,7 +99,7 @@ class StdModel(AModel):
                 truths.extend(y_train[CV_index])
 
             #optimization metric:
-            curr_acc = self.reporter.optMetric(predictions, truths)
+            curr_acc = self.optMetric(predictions, truths)
             if curr_acc > best_acc:
                 best_acc = curr_acc
                 best_k   = k
@@ -109,6 +119,11 @@ class StdModel(AModel):
 
         predictions = anova_lda.predict(X_test)
 
-        self.reporter.genReport(person,predictions,y_test,anova_lda)
+        #self.reporter.genReport(person,predictions,y_test,anova_lda)
 
-        return 0 #nothing really
+        return {
+            'predictions' : predictions,
+            'truths'      : y_test,
+            'feat_list'   : anova_lda.named_steps['anova'].get_support(),
+            'feat_names'  : self.personLoader.featureExtractor.getFeatureNames()
+        }

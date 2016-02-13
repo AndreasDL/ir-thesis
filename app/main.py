@@ -27,14 +27,15 @@ def valenceAnovaWorker(person):
     #create personloader
     personLdr = personLoader.PersonLoader(classificator,featExtr)
 
-    #create reporter
-    reprtr = reporters.CSVReporter(featExtr)
-
     #put in model
-    model = models.StdModel(personLdr,reprtr,4)
+    model = models.StdModel(personLdr,4)
 
     #run model
-    return model.run(person)
+    results = model.run(person)
+
+    print('person: ' + str(person) + ' completed')
+    return results
+
 
 
 if __name__ == '__main__':
@@ -44,3 +45,7 @@ if __name__ == '__main__':
     results = pool.map( valenceAnovaWorker, range(1,33) )
     pool.close()
     pool.join()
+
+
+    reporter = reporters.CSVReporter()
+    reporter.genReport(results)

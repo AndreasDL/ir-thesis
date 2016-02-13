@@ -4,64 +4,68 @@ import datetime
 import time
 
 class AReporter:
-    def __init__(self,featureExtractor):
-        self.featExtr = featureExtractor #needed to get the feature names
 
-    def optMetric(self,predictions,truths):
-        return None
 
     def genReport(self,person,predictions,truths,fpad='../results/'):
         return None
 
 
 class CSVReporter(AReporter):
-    def __init__(self,featureExtractor):
-        AReporter.__init__(self,featureExtractor)
 
-    def optMetric(self,predictions,truths):
-        return self.accuracy(predictions,truths)
-
-    def genReport(self,person,predictions,truths,anova_out,fpad='../results/'):
-        acc  = self.accuracy(predictions, truths)
-        (tpr,tnr,fpr,fnr) = self.tprtnrfprfnr(predictions, truths)
-        auc = self.auc(predictions, truths)
-
-        used_features = anova_out.named_steps['anova'].get_support()
-
-        best_k = 0
-        for bool in used_features:
-            if bool:
-                best_k += 1
-
-        #print to console
-        print('person: ', person,
-            ' - k: '  , str(best_k),
-            ' - acc: ', str(acc),
-            ' - tpr: ' , str(tpr),
-            ' - tnr: ' , str(tnr),
-            ' - auc: ', str(auc),
-            'used features', anova_out.named_steps['anova'].get_support()
-        )
-
+    def genReport(self,results,fpad='../results/'):
         #output to file
         st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
         f = open(fpad + "output" + str(st) + ".txt", 'w')
-        f.write('person;best_k;acc;tpr,tnr,fpr,fnr,auc\n')
+        f.write('person;best_k;acc;tpr;tnr;fpr;fnr;auc;')
 
-        s = str(person+1) + ';' +\
-            str(best_k) + ';' +\
-            str(acc) + ';' +\
-            str(tpr) + ';' + str(tnr) + ';' +\
-            str(fpr) + ';' + str(fnr) + ';' +\
-            str(auc) + ';'
-
-        for bool in used_features:
-            if bool:
-                s += 'X'
-            s+= ';'
-
-        f.write(s)
+        feat_names  = results[0]['feat_names']
+        for feat_name in feat_names:
+            f.write(feat_name)
+            f.write(';')
         f.write('\n')
+
+
+        for person, result in enumerate(results):
+            predictions = result['predictions']
+            truths      = result['truths']
+            feat_list   = result['feat_list']
+
+            acc  = self.accuracy(predictions, truths)
+            (tpr,tnr,fpr,fnr) = self.tprtnrfprfnr(predictions, truths)
+            auc = self.auc(predictions, truths)
+
+            best_k = 0
+            for bool in feat_list:
+                if bool:
+                    best_k += 1
+
+            #print to console
+            print('person: ', person,
+                ' - k: '  , str(best_k),
+                ' - acc: ', str(acc),
+                ' - tpr: ' , str(tpr),
+                ' - tnr: ' , str(tnr),
+                ' - auc: ', str(auc),
+                #'used features', feat_list()
+            )
+
+
+
+
+            s = str(person+1) + ';' +\
+                str(best_k) + ';' +\
+                str(acc) + ';' +\
+                str(tpr) + ';' + str(tnr) + ';' +\
+                str(fpr) + ';' + str(fnr) + ';' +\
+                str(auc) + ';'
+
+            for bool in feat_list:
+                if bool:
+                    s += 'X'
+                s+= ';'
+
+            f.write(s)
+            f.write('\n')
         f.close()
 
     def accuracy(self,predictions, truths):
