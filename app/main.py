@@ -34,9 +34,11 @@ def valenceAnovaWorker(person):
     model = models.StdModel(personLdr,reprtr,4)
 
     #run model
-    model.run(person)
+    return model.run(person)
+
 
 if __name__ == '__main__':
+
     #multithreaded
     pool = Pool(processes=POOL_SIZE)
     results = pool.map( valenceAnovaWorker, range(1,33) )

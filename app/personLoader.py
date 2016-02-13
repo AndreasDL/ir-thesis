@@ -27,7 +27,7 @@ class PersonLoader(APersonLoader):
         APersonLoader.__init__(self, classificator, featExtractor, name, path='../dataset')
 
     def load(self,person):
-        fname = str(self.pad) + '/s'
+        fname = str(self.path) + '/s'
         if person < 10:
             fname += '0'
         fname += str(person) + '.dat'
@@ -41,8 +41,8 @@ class PersonLoader(APersonLoader):
             #data['data'][video][channel] = [samples * 8064]
 
 
-            X = self.featureExtractor(data['data'])
-            y = self.classFunc(data['labels'])
+            X = self.featureExtractor.extract(data['data'])
+            y = self.classificator.classify(data['labels'])
 
             #split train / test
             #n_iter = 1 => abuse the shuffle split, to obtain a static break, instead of crossvalidation
@@ -57,7 +57,7 @@ class PersonLoader(APersonLoader):
             #X_train = normer.transform(X_train, y_train, copy=False)
             #X_test  = normer.transform(X_test, copy=False)
 
-            return X_train, y_train, X_test, y_test
+            return np.array(X_train), np.array(y_train), np.array(X_test), np.array(y_test)
 
 def dump(X_train, y_train, X_test, y_test, name, path='../dumpedData'):
 	fname = path + '/' + name

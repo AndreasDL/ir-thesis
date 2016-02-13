@@ -16,7 +16,7 @@ class AReporter:
 
 class CSVReporter(AReporter):
     def __init__(self,featureExtractor):
-        AReporter(self,featureExtractor)
+        AReporter.__init__(self,featureExtractor)
 
     def optMetric(self,predictions,truths):
         return self.accuracy(predictions,truths)
@@ -30,7 +30,7 @@ class CSVReporter(AReporter):
 
         best_k = 0
         for bool in used_features:
-            if bool
+            if bool:
                 best_k += 1
 
         #print to console
@@ -62,21 +62,6 @@ class CSVReporter(AReporter):
 
         f.write(s)
         f.write('\n')
-
-
-        f.write('\nmedian;')
-        for column in range(len(perf_results[0])):
-            f.write(str(np.median(perf_results[:,column])) + ';')
-
-        f.write('\navg;')
-        for column in range(len(perf_results[0])):
-            f.write(str(np.average(perf_results[:,column])) + ';')
-
-        f.write('\nstd;')
-        for column in range(len(perf_results[0])):
-            f.write(str(np.std(perf_results[:,column])) + ';')
-
-
         f.close()
 
     def accuracy(self,predictions, truths):
@@ -153,4 +138,4 @@ class CSVReporter(AReporter):
                 else:
                     predCount[3] += 1
 
-        return np.array(predCount) / np.array(dimCount)µ
+        return np.array(predCount) / np.array(dimCount)

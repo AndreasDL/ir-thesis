@@ -1,0 +1,2 @@
+person;best_k;acc;tpr,tnr,fpr,fnr,auc
+11;3;0.9;0.8;1.0;0.0;0.2;0.9;X;;;;;;;;;;X;;X;

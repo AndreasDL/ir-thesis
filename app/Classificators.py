@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class AClassificator:
     def __init__(self,name, classNames):
         self.name = name
@@ -17,28 +20,28 @@ class FourClassificator(AClassificator):
         AClassificator.__init__(self,name,classNames)
 
     def classify(self,labels):
-    #labels
-    valences = np.array(labels[:,0]) #ATM only valence needed
-    #valences = (valences - 1) / 8 #1->9 to 0->8 to 0->1
-    valences[ valences <= 5 ] = 0
-    valences[ valences >  5 ] = 1
+        #labels
+        valences = np.array(labels[:,0]) #ATM only valence needed
+        #valences = (valences - 1) / 8 #1->9 to 0->8 to 0->1
+        valences[ valences <= 5 ] = 0
+        valences[ valences >  5 ] = 1
 
-    arousals = np.array(labels[:,1])
-    #arousals = (arousals - 1) / 8 #1->9 to 0->8 to 0->1
-    arousals[ arousals <= 5 ] = 0
-    arousals[ arousals >  5 ] = 1
+        arousals = np.array(labels[:,1])
+        #arousals = (arousals - 1) / 8 #1->9 to 0->8 to 0->1
+        arousals[ arousals <= 5 ] = 0
+        arousals[ arousals >  5 ] = 1
 
-    #assign classes
-    #              | low valence | high valence |
-    #low  arrousal |      0      |       2      |
-    #high arrousal |      1      |       3      |
+        #assign classes
+        #              | low valence | high valence |
+        #low  arrousal |      0      |       2      |
+        #high arrousal |      1      |       3      |
 
-    y = np.zeros(len(valences))
-    for i, (val, arr) in enumerate(zip(valences, arousals)):
-        y[i] = (val * 2) + arr
-    #TODO: probs with stratisfied shuffle split
+        y = np.zeros(len(valences))
+        for i, (val, arr) in enumerate(zip(valences, arousals)):
+            y[i] = (val * 2) + arr
+        #TODO: probs with stratisfied shuffle split
 
-    return y
+        return y
 class ValenceClassificator(AClassificator):
     def __init__(self,classNames=['LV','HV'],name='valenceClasses'):
         AClassificator.__init__(self,name,classNames)

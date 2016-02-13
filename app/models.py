@@ -43,6 +43,8 @@ class StdModel(AModel):
         predictions, truths = [], []
         for train_index, CV_index in K_CV: #train index here is a part of the train set
             #train
+            x_temp = X_train[train_index]
+            y_temp = y_train[train_index]
             anova_lda.fit(X_train[train_index], y_train[train_index])
 
             #predict
@@ -107,4 +109,6 @@ class StdModel(AModel):
 
         predictions = anova_lda.predict(X_test)
 
-        self.reporter.genReport(person,predictions,truths,anova_lda)
+        self.reporter.genReport(person,predictions,y_test,anova_lda)
+
+        return 0 #nothing really

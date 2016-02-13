@@ -17,12 +17,27 @@ channelNames = {
     'Plethysmograph' : 38,
     'Temperature' : 39
 }
-all_left_channels  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1', 'P3', 'P7', 'PO3']
-all_right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6', 'CP2', 'P4', 'P8', 'PO4']
+all_left_channel_names  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1', 'P3', 'P7', 'PO3']
+all_left_channels  = list(range(13))
+all_right_channel_names = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6', 'CP2', 'P4', 'P8', 'PO4']
+all_right_channels = [16,17,19,20,21,22,24,25,26,27,28,29,30]
 all_EEG_channels   = list(range(32))
 all_phy_channels   = list(range(36,40))
 all_FM_channels    = [18]
-
+all_channels = [#global const vars!
+    'Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1',
+    'P3', 'P7' , 'PO3','O1', 'Oz', 'Pz', 'Fp2','AF4','Fz', 'F4',
+    'F8', 'FC6','FC2','Cz' , 'C4', 'T8', 'CP6','CP2','P4', 'P8',
+    'PO4','O2',
+    'hEOG', #(horizontal EOG:  hEOG1 - hEOG2)
+    'vEOG', #(vertical EOG:  vEOG1 - vEOG2)
+    'zEMG', #(Zygomaticus Major EMG:  zEMG1 - zEMG2)
+    'tEMG', #(Trapezius EMG:  tEMG1 - tEMG2)
+    'GSR', #(values from Twente converted to Geneva format (Ohm))
+    'Respiration belt',
+    'Plethysmograph',
+    'Temperature'
+]
 
 #turn bands into frequency ranges
 startFreq = {'alpha' : 8 , 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4, 'all' : 0}
@@ -51,7 +66,7 @@ class AFeatureExtractor:
 #EEG features
 class PowerExtractor(AFeatureExtractor):
     '''this FE will axtract alpha and beta power from the brain and reports it ratio'''
-    def __init__(self,,channels,freqBand, featName='Power'):
+    def __init__(self,channels,freqBand, featName='Power'):
         AFeatureExtractor.__init__(self,featName)
 
         self.usedChannelIndexes = channels #list of channel indexes to use
@@ -65,7 +80,10 @@ class PowerExtractor(AFeatureExtractor):
 
         n = len(video[0])#8064 #number of samples
         features = []
-        for channel in self.usedChannelIndexes:
+        for channelIndex in self.usedChannelIndexes:
+            #get channel out the video data
+            channel = video[channelIndex]
+
             #bandpass filter to get waveband
             low  = startFreq[self.usedFeqBand] / nyq
             high = stopFreq[ self.usedFeqBand] / nyq
@@ -101,8 +119,8 @@ class AlphaBetaExtractor(AFeatureExtractor):
         alphaExtr = PowerExtractor(self.usedChannelIndexes, 'alpha')
         betaExtr  = PowerExtractor(self.usedChannelIndexes, 'beta')
 
-        alpha_power = alphaExtr.extract(video)
-        beta_power  = betaExtr.extract(video)
+        alpha_power = np.sum(alphaExtr.extract(video))
+        beta_power  = np.sum(betaExtr.extract(video))
 
         return alpha_power / beta_power
 class LMinRLPlusRExtractor(AFeatureExtractor):
@@ -115,11 +133,11 @@ class LMinRLPlusRExtractor(AFeatureExtractor):
             print('WARN left and right channels not of equal length')
 
     def extract(self, video):
-        leftExtr = PowerExtractor(self.left_channels,'alpha')
+        leftExtr  = PowerExtractor(self.left_channels,'alpha')
         rightExtr = PowerExtractor(self.right_channels, 'alpha')
 
-        left_power = leftExtr.extract(video)
-        right_power = rightExtr.extract(video)
+        left_power  = np.sum(leftExtr.extract(video))
+        right_power = np.sum(rightExtr.extract(video))
 
         return (left_power - right_power) / (left_power + right_power)
 class FrontalMidlinePower(PowerExtractor):
@@ -129,8 +147,8 @@ class FrontalMidlinePower(PowerExtractor):
 #physiological features
 class AvgExtractor(AFeatureExtractor):
     def __init__(self,channel,featName):
-        if featName == ''
-            featName = 'avg ' + channelNames(channel)
+        if featName == '':
+            featName = 'avg ' + all_channels[channel]
 
         AFeatureExtractor.__init__(self,featName)
         self.usedChannelIndex = channel
@@ -139,8 +157,8 @@ class AvgExtractor(AFeatureExtractor):
         return np.average(video[self.usedChannelIndex])
 class STDExtractor(AFeatureExtractor):
     def __init__(self,channel,featName):
-        if featName == ''
-            featName = 'std ' + channelNames(channel)
+        if featName == '':
+            featName = 'std ' + all_channels[channel]
 
         AFeatureExtractor.__init__(self,featName)
         self.usedChannelIndex = channel
