@@ -6,8 +6,8 @@ import numpy as np
 from sklearn.preprocessing import label_binarize
 from sklearn.svm import LinearSVC
 
+import archive.util as UT
 import personLoader as DL
-import util as UT
 from archive import featureExtractor as FE
 
 

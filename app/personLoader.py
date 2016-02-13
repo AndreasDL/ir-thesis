@@ -10,20 +10,21 @@ from archive import featureExtractor as FE
 from archive.csp import Csp
 
 class APersonLoader:
-    def __init__(self, classFunc, featFunc, name, path='../dataset'):
+    def __init__(self, classificator, featExtractor, name, path='../dataset'):
         self.name = name
         self.path = path
 
-        self.classFunc = classFunc
-        self.featFunc  = featFunc
+
+        self.classificator = classificator
+        self.featureExtractor  = featExtractor
 
     def load(self,person):
         #return X_train, y_train, x_test, y_test
         return [], [], [], []
 
 class PersonLoader(APersonLoader):
-    def __init__(self, classFunc, featFunc, name='normal', path='../dataset' ):
-        APersonLoader.__init__(self, name, classFunc, featFunc, path='../dataset')
+    def __init__(self, classificator, featExtractor, name='normal', path='../dataset' ):
+        APersonLoader.__init__(self, classificator, featExtractor, name, path='../dataset')
 
     def load(self,person):
         fname = str(self.pad) + '/s'
@@ -35,16 +36,13 @@ class PersonLoader(APersonLoader):
             p.encoding= ('latin1')
             data = p.load()
 
-            '''if plots:
-                plotClass(data, person)
-            '''
-
             #structure of data element:
             #data['labels'][video] = [valence, arousal, dominance, liking]
             #data['data'][video][channel] = [samples * 8064]
 
-            X = self.featFunc(data)
-            y = self.classFunc(data)
+
+            X = self.featureExtractor(data['data'])
+            y = self.classFunc(data['labels'])
 
             #split train / test
             #n_iter = 1 => abuse the shuffle split, to obtain a static break, instead of crossvalidation

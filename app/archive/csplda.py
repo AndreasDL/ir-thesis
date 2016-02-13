@@ -6,8 +6,8 @@ import numpy as np
 from sklearn.cross_validation import KFold
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
+import archive.util as UT
 import personLoader as DL
-import util as UT
 from archive import featureExtractor as FE
 
 

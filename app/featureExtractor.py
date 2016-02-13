@@ -19,6 +19,10 @@ channelNames = {
 }
 all_left_channels  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1', 'P3', 'P7', 'PO3']
 all_right_channels = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6', 'CP2', 'P4', 'P8', 'PO4']
+all_EEG_channels   = list(range(32))
+all_phy_channels   = list(range(36,40))
+all_FM_channels    = [18]
+
 
 #turn bands into frequency ranges
 startFreq = {'alpha' : 8 , 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4, 'all' : 0}

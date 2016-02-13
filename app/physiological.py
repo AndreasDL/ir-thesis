@@ -11,7 +11,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.feature_selection import SelectKBest, f_regression
 from sklearn.pipeline import Pipeline
 
-import util as UT
+import archive.util as UT
 from archive import featureExtractor as FE
 
 #font = {'family' : 'normal',

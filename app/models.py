@@ -14,7 +14,7 @@ class AModel:
     def run(self):
         return None;
 
-class stdModel(AModel):
+class StdModel(AModel):
 
     def __init__(self,personLoader, reporter,max_k):
         AModel.__init__(self,personLoader,reporter)
