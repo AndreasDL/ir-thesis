@@ -82,6 +82,16 @@ class ArousalClassificator(AClassificator):
 
         return y
 
+class ContArousalClassificator(AClassificator):
+    def __init__(self,name='ContArousalClasses'):
+        AClassificator.__init__(self,name,[])
 
+    def classify(self,labels):
+        return np.array(labels[:,1])
+class ContValenceClassificator(AClassificator):
+    def __init__(self,name='ContValenceClasses'):
+        AClassificator.__init__(self,name,[])
 
-
+    def classify(self,labels):
+        #labels
+        return np.array(labels[:,0]) #valences

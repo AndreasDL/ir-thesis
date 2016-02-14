@@ -293,8 +293,6 @@ def PersonWorker(person):
     predictions, truths = [], []
     for train_index, CV_index in K_CV: #train index here is a part of the train set
         #train
-        x_temp = X_train[train_index]
-        y_temp = y_train[train_index]
         anova_lda.fit(X_train[train_index], y_train[train_index])
 
         #predict

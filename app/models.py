@@ -1,26 +1,16 @@
-import personLoader
-import featureExtractor
-import classificators
 from sklearn.feature_selection import SelectKBest, f_regression
 from sklearn.pipeline import Pipeline
 from sklearn.cross_validation import StratifiedShuffleSplit, KFold
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
+from scipy.stats import pearsonr
+
 class AModel:
     def __init__(self,personLoader):
         self.personLoader = personLoader
 
-    def run(self):
+    def run(self,person):
         return None;
-
-    def optMetric(self,predictions, truths):
-        return 0
-
-class StdModel(AModel):
-
-    def __init__(self,personLoader, max_k):
-        AModel.__init__(self,personLoader)
-        self.max_k = max_k
 
     def optMetric(self,predictions, truths):
         #==accuracy
@@ -29,6 +19,12 @@ class StdModel(AModel):
             acc += (pred == truth)
 
         return acc / float(len(predictions))
+
+class StdModel(AModel):
+
+    def __init__(self,personLoader, max_k):
+        AModel.__init__(self,personLoader)
+        self.max_k = max_k
 
     def run(self,person):
         #load data
@@ -53,8 +49,6 @@ class StdModel(AModel):
         predictions, truths = [], []
         for train_index, CV_index in K_CV: #train index here is a part of the train set
             #train
-            x_temp = X_train[train_index]
-            y_temp = y_train[train_index]
             anova_lda.fit(X_train[train_index], y_train[train_index])
 
             #predict
@@ -126,4 +120,62 @@ class StdModel(AModel):
             'truths'      : y_test,
             'feat_list'   : anova_lda.named_steps['anova'].get_support(),
             'feat_names'  : self.personLoader.featureExtractor.getFeatureNames()
+        }
+
+class CorrelationsSelectionModel(AModel):
+    def __init__(self, personLoader):
+        AModel.__init__(self,personLoader)
+
+    def optMetric(self,predictions, truths):
+        return None
+
+    def run(self,person):
+
+        #load all features & keep them in memory
+        X_train, y_train, X_test, y_test = self.personLoader.load(person)
+
+        #each feature separately
+        featNames = self.personLoader.featureExtractor.getFeatureNames()
+        lda = LinearDiscriminantAnalysis()
+        featCorrelations = []
+        featAccuracies   = []
+
+        s = 'person: ' + str(person) + ' - '
+        for index, feat in enumerate(featNames):
+            corr = pearsonr(X_train[:, index], y_train)
+            featCorrelations.append(corr)
+
+            s += feat + ': ' + str(corr) + ' | '
+
+            #lda predictions with each feature
+            K_CV = KFold(n=len(X_train),
+                n_folds=len(X_train),
+                random_state=17, #fixed randomseed ensure that the sets are always the same
+                shuffle=False
+            ) #leave out one validation
+
+            '''predictions, truths = [], []
+            for train_index, CV_index in K_CV: #train index here is a part of the train set
+                #train
+                lda.fit(X_train[train_index, index], y_train[train_index])
+
+                #predict
+                pred = lda.predict(X_train[CV_index, index])
+
+                #save for metric calculations
+                predictions.extend(pred)
+                truths.extend(y_train[CV_index])
+
+            #optimization metric:
+            featAccuracies.append(self.optMetric(predictions,truths))
+            '''
+        print(s)
+
+        return {
+            'feat_corr'         : featCorrelations,
+            'feat_names'        : featNames,
+            'feat_acc'          : featAccuracies,
+            #'feat_values'       : X_train,
+            'labels'            : y_train,
+            'classificatorName' : self.personLoader.classificator.name
         }

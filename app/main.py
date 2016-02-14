@@ -7,6 +7,7 @@ import reporters
 from multiprocessing import Pool
 POOL_SIZE = 8
 
+#use with CSV reporter
 def valenceAnovaWorker(person):
     #create the features
     featExtr = FE.MultiFeatureExtractor()
@@ -35,17 +36,100 @@ def valenceAnovaWorker(person):
 
     print('person: ' + str(person) + ' completed')
     return results
+def arousalAnovaWorker(person):
+    #create the features
+    featExtr = FE.MultiFeatureExtractor()
+    featExtr.addFE(FE.AlphaBetaExtractor(FE.all_EEG_channels))
+    featExtr.addFE(FE.LMinRLPlusRExtractor(FE.all_left_channels,FE.all_right_channels))
+    featExtr.addFE(FE.FrontalMidlinePower(FE.all_FM_channels))
+
+    for channel in FE.all_phy_channels:
+        featExtr.addFE(FE.AvgExtractor(channel,''))
+        featExtr.addFE(FE.STDExtractor(channel,''))
+
+    featExtr.addFE(FE.AVGHeartRateExtractor())
+    featExtr.addFE(FE.STDInterBeatExtractor())
+
+    #create classificator
+    classificator = classificators.ArousalClassificator()
+
+    #create personloader
+    personLdr = personLoader.PersonLoader(classificator,featExtr)
+
+    #put in model
+    model = models.StdModel(personLdr,4)
+
+    #run model
+    results = model.run(person)
+
+    print('person: ' + str(person) + ' completed')
+    return results
+
+#use with analytics reporter
+def valenceCorrelationWorker(person):
+    #create the features
+    featExtr = FE.MultiFeatureExtractor()
+    featExtr.addFE(FE.AlphaBetaExtractor(FE.all_EEG_channels))
+    featExtr.addFE(FE.LMinRLPlusRExtractor(FE.all_left_channels,FE.all_right_channels))
+    featExtr.addFE(FE.FrontalMidlinePower(FE.all_FM_channels))
+
+    for channel in FE.all_phy_channels:
+        featExtr.addFE(FE.AvgExtractor(channel,''))
+        featExtr.addFE(FE.STDExtractor(channel,''))
+
+    featExtr.addFE(FE.AVGHeartRateExtractor())
+    featExtr.addFE(FE.STDInterBeatExtractor())
+
+    #create classificator
+    classificator = classificators.ContValenceClassificator()
+
+    #create personloader
+    personLdr = personLoader.NoTestsetLoader(classificator,featExtr)
+
+    #put in model
+    model = models.CorrelationsSelectionModel(personLdr)
+
+    #run model
+    results = model.run(person)
+
+    return results
+def arousalCorrelationWorker(person):
+    #create the features
+    featExtr = FE.MultiFeatureExtractor()
+    featExtr.addFE(FE.AlphaBetaExtractor(FE.all_EEG_channels))
+    featExtr.addFE(FE.LMinRLPlusRExtractor(FE.all_left_channels,FE.all_right_channels))
+    featExtr.addFE(FE.FrontalMidlinePower(FE.all_FM_channels))
+
+    for channel in FE.all_phy_channels:
+        featExtr.addFE(FE.AvgExtractor(channel,''))
+        featExtr.addFE(FE.STDExtractor(channel,''))
+
+    featExtr.addFE(FE.AVGHeartRateExtractor())
+    featExtr.addFE(FE.STDInterBeatExtractor())
+
+    #create classificator
+    classificator = classificators.ContArousalClassificator()
+
+    #create personloader
+    personLdr = personLoader.NoTestsetLoader(classificator,featExtr)
+
+    #put in model
+    model = models.CorrelationsSelectionModel(personLdr)
+
+    #run model
+    results = model.run(person)
+
+    return results
 
 
 
 if __name__ == '__main__':
+    reporter = reporters.AnalyticsReporter()
 
     #multithreaded
     pool = Pool(processes=POOL_SIZE)
-    results = pool.map( valenceAnovaWorker, range(1,33) )
+    results = pool.map( valenceCorrelationWorker, range(1,3) )
     pool.close()
     pool.join()
 
-
-    reporter = reporters.CSVReporter()
     reporter.genReport(results)

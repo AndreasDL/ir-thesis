@@ -4,9 +4,7 @@ import datetime
 import time
 
 class AReporter:
-
-
-    def genReport(self,person,predictions,truths,fpad='../results/'):
+    def genReport(self,results,fpad='../results/'):
         return None
 
 
@@ -143,3 +141,93 @@ class CSVReporter(AReporter):
                     predCount[3] += 1
 
         return np.array(predCount) / np.array(dimCount)
+
+class AnalyticsReporter(AReporter):
+    def getColor(self, value):
+        #color list stolen with pride from http://www.w3schools.com/colors/colors_picker.asp
+        colorList = [
+            '#ff0000', '#ff4000', '#ff8000', '#ffbf00', '#ffff00',
+            '#bfff00', '#80ff00', '#40ff00', '#00ff00', '#00ff40',
+        ]
+        index = int(value * len(colorList))
+        return colorList[index]
+
+    def genReport(self,results,fpad='../results/'):
+
+        #gen file
+        st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
+        f = open(fpad + "Analytics" + str(results[0]['classificatorName']) + str(st) + ".html", 'w')
+
+        #write tags
+        f.write("""<html>
+            <head>
+                <title>' + str(results[0]['classificatorName'] + ' analytics</title>
+            </head>
+        <body>\n""")
+
+        #meta table
+        f.write("""<h1>Meta Data</h1>
+        <table>
+            <tr>
+                <td>Classificator Used:</td>
+                <td>""" + str(results[0]['classificatorName']) + """</td>
+            </tr>
+            <tr>
+                <td>Created on</td>
+                <td>""" + str(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:M:S')) + """</td>
+            <tr>
+            <tr>
+                <td>Person Count</td>
+                <td>""" + str(len(results)) + """</td>
+            </tr>
+        </table>
+        """)
+
+        f.write('</br></br></br>')
+
+
+        #correlation table:
+        #|         | feat 1 | feeat 2 | ....
+        #|person 1 | ....
+        #|person 2 | ...
+        corr_table = """
+        <h1> Correlations </h1>
+        <table>
+            <tr>
+                <td>Person</td>
+        """
+        for featName in results[0]['feat_names']:
+            corr_table += '<td>' + str(featName) + '</td>'
+        corr_table += '</tr>'
+
+        #person specific table
+        pers_tables = """
+        <h1> Person Specific </h1>
+        """
+
+        for person, result in enumerate(results):
+            #correlation table
+            corr_table += "<tr>\n<td>" + str(person) + "</td>"
+            for r in result['feat_corr']:
+                corr = abs(r[0]) #-1 ; +1 => we are only interested in the amount of correlation; whether it is positive or negative is something we don't care about
+                pval =r[1]
+                corr_table += "<td bgcolor=" + str(self.getColor(corr)) + ">" + str(round(corr,3)) + ' (' + str(round(pval,3)) + ") </td>\n"
+            corr_table += "</tr>\n"
+
+            #person specific table
+            pers_tables += "<h2> Person " + str(person) + " </h2>\n<table><tr><td>Feat</td><td>Accuracy</td></tr>\n"
+            for acc, featName in zip(results[person]['feat_acc'], results[person]['feat_names']):
+                pers_tables += "<tr><td>featName</td><td bgcolor=" + str(self.getColor(acc)) + ">" + str(round(acc,3)) + "</td></tr>"
+            pers_tables += "</table></br></br>"
+
+        corr_table += "</table>\n"
+
+        #write to output
+        f.write(corr_table)
+        f.write('</br></br></br>')
+        f.write(pers_tables)
+
+        #close tags
+        f.write("</body></html>")
+        #close file
+        f.close()

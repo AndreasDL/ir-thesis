@@ -199,7 +199,7 @@ class AVGHeartRateExtractor(AFeatureExtractor):
 
         return avg_rate
 class STDInterBeatExtractor(AFeatureExtractor):
-    def __init__(self,featName='avg HR'):
+    def __init__(self,featName='std HR'):
         AFeatureExtractor.__init__(self,featName)
         self.channel = channelNames['Plethysmograph']
 

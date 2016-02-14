@@ -59,6 +59,31 @@ class PersonLoader(APersonLoader):
 
             return np.array(X_train), np.array(y_train), np.array(X_test), np.array(y_test)
 
+class NoTestsetLoader(APersonLoader):
+    def __init__(self, classificator, featExtractor, name='noTestset', path='../dataset' ):
+        APersonLoader.__init__(self, classificator, featExtractor, name, path='../dataset')
+
+    def load(self,person):
+        fname = str(self.path) + '/s'
+        if person < 10:
+            fname += '0'
+        fname += str(person) + '.dat'
+        with open(fname,'rb') as f:
+            p = pickle._Unpickler(f)
+            p.encoding= ('latin1')
+            data = p.load()
+
+            #structure of data element:
+            #data['labels'][video] = [valence, arousal, dominance, liking]
+            #data['data'][video][channel] = [samples * 8064]
+
+
+            X = self.featureExtractor.extract(data['data'])
+            y = self.classificator.classify(data['labels'])
+
+            return np.array(X), np.array(y), np.array([]), np.array([])
+
+
 def dump(X_train, y_train, X_test, y_test, name, path='../dumpedData'):
 	fname = path + '/' + name
 	data = { 'X_train': X_train, 
