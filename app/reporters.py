@@ -152,6 +152,7 @@ class AnalyticsReporter(AReporter):
         index = int(value * len(colorList))
         return colorList[index]
 
+
     def genReport(self,results,fpad='../results/'):
 
         #gen file
@@ -161,7 +162,7 @@ class AnalyticsReporter(AReporter):
         #write tags
         f.write("""<html>
             <head>
-                <title>' + str(results[0]['classificatorName'] + ' analytics</title>
+                <title>""" + str(results[0]['classificatorName']) + """ analytics</title>
             </head>
         <body>\n""")
 
@@ -201,9 +202,11 @@ class AnalyticsReporter(AReporter):
         corr_table += '</tr>'
 
         #person specific table
+        '''
         pers_tables = """
         <h1> Person Specific </h1>
         """
+        '''
 
         for person, result in enumerate(results):
             #correlation table
@@ -215,17 +218,19 @@ class AnalyticsReporter(AReporter):
             corr_table += "</tr>\n"
 
             #person specific table
+            '''
             pers_tables += "<h2> Person " + str(person) + " </h2>\n<table><tr><td>Feat</td><td>Accuracy</td></tr>\n"
             for acc, featName in zip(results[person]['feat_acc'], results[person]['feat_names']):
                 pers_tables += "<tr><td>featName</td><td bgcolor=" + str(self.getColor(acc)) + ">" + str(round(acc,3)) + "</td></tr>"
             pers_tables += "</table></br></br>"
+            '''
 
         corr_table += "</table>\n"
 
         #write to output
         f.write(corr_table)
         f.write('</br></br></br>')
-        f.write(pers_tables)
+        #f.write(pers_tables)
 
         #close tags
         f.write("</body></html>")

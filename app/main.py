@@ -128,8 +128,15 @@ if __name__ == '__main__':
 
     #multithreaded
     pool = Pool(processes=POOL_SIZE)
-    results = pool.map( valenceCorrelationWorker, range(1,3) )
+    results = pool.map( valenceCorrelationWorker, range(1,33) )
     pool.close()
     pool.join()
 
+    reporter.genReport(results)
+
+    #multithreaded
+    pool = Pool(processes=POOL_SIZE)
+    results = pool.map( arousalCorrelationWorker, range(1,33) )
+    pool.close()
+    pool.join()
     reporter.genReport(results)
