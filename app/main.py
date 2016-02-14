@@ -69,9 +69,29 @@ def arousalAnovaWorker(person):
 def valenceCorrelationWorker(person):
     #create the features
     featExtr = FE.MultiFeatureExtractor()
-    featExtr.addFE(FE.AlphaBetaExtractor(FE.all_EEG_channels))
-    featExtr.addFE(FE.LMinRLPlusRExtractor(FE.all_left_channels,FE.all_right_channels))
-    featExtr.addFE(FE.FrontalMidlinePower(FE.all_FM_channels))
+    for channel in FE.all_EEG_channels:
+        featExtr.addFE(
+            FE.AlphaBetaExtractor(
+                channels=[channel],
+                featName='A/B ' + FE.all_channels[channel]
+            )
+        )
+    for left, right in zip(FE.all_left_channels, FE.all_right_channels):
+        featExtr.addFE(
+            FE.LMinRLPlusRExtractor(
+                left_channels=[left],
+                right_channels=[right],
+                featName='L-R/L+R ' + FE.all_channels[left] + ',' + FE.all_channels[right]
+            )
+        )
+
+    for channel in FE.all_EEG_channels:
+        featExtr.addFE(
+            FE.FrontalMidlinePower(
+                channels=[channel],
+                featName="FM " + FE.all_channels[channel]
+            )
+        )
 
     for channel in FE.all_phy_channels:
         featExtr.addFE(FE.AvgExtractor(channel,''))
@@ -96,9 +116,29 @@ def valenceCorrelationWorker(person):
 def arousalCorrelationWorker(person):
     #create the features
     featExtr = FE.MultiFeatureExtractor()
-    featExtr.addFE(FE.AlphaBetaExtractor(FE.all_EEG_channels))
-    featExtr.addFE(FE.LMinRLPlusRExtractor(FE.all_left_channels,FE.all_right_channels))
-    featExtr.addFE(FE.FrontalMidlinePower(FE.all_FM_channels))
+    for channel in FE.all_EEG_channels:
+        featExtr.addFE(
+            FE.AlphaBetaExtractor(
+                channels=[channel],
+                featName='A/B ' + FE.all_channels[channel]
+            )
+        )
+    for left, right in zip(FE.all_left_channels, FE.all_right_channels):
+        featExtr.addFE(
+            FE.LMinRLPlusRExtractor(
+                left_channels=[left],
+                right_channels=[right],
+                featName='L-R/L+R ' + FE.all_channels[left] + ',' + FE.all_channels[right]
+            )
+        )
+
+    for channel in FE.all_EEG_channels:
+        featExtr.addFE(
+            FE.FrontalMidlinePower(
+                channels=[channel],
+                featName="FM " + FE.all_channels[channel]
+            )
+        )
 
     for channel in FE.all_phy_channels:
         featExtr.addFE(FE.AvgExtractor(channel,''))
@@ -120,7 +160,6 @@ def arousalCorrelationWorker(person):
     results = model.run(person)
 
     return results
-
 
 
 if __name__ == '__main__':
