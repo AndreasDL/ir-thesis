@@ -142,7 +142,7 @@ class LMinRLPlusRExtractor(AFeatureExtractor):
         return (left_power - right_power) / (left_power + right_power)
 class FrontalMidlinePower(PowerExtractor):
     def __init__(self,channels,featName='FM'):
-        PowerExtractor.__init__(self,channels,'theta','FM')
+        PowerExtractor.__init__(self,channels,'theta',featName)
 
 #physiological features
 class AvgExtractor(AFeatureExtractor):

@@ -4,6 +4,9 @@ import featureExtractor as FE
 import models
 import reporters
 
+import time
+
+
 from multiprocessing import Pool
 POOL_SIZE = 8
 
@@ -81,7 +84,7 @@ def valenceCorrelationWorker(person):
             FE.LMinRLPlusRExtractor(
                 left_channels=[left],
                 right_channels=[right],
-                featName='L-R/L+R ' + FE.all_channels[left] + ',' + FE.all_channels[right]
+                featName='LR ' + FE.all_channels[left] + ',' + FE.all_channels[right]
             )
         )
 
@@ -128,7 +131,7 @@ def arousalCorrelationWorker(person):
             FE.LMinRLPlusRExtractor(
                 left_channels=[left],
                 right_channels=[right],
-                featName='L-R/L+R ' + FE.all_channels[left] + ',' + FE.all_channels[right]
+                featName='LR ' + FE.all_channels[left] + ',' + FE.all_channels[right]
             )
         )
 
@@ -163,6 +166,10 @@ def arousalCorrelationWorker(person):
 
 
 if __name__ == '__main__':
+
+
+    t0 = time.time()
+
     reporter = reporters.AnalyticsReporter()
 
     #multithreaded
@@ -170,8 +177,10 @@ if __name__ == '__main__':
     results = pool.map( valenceCorrelationWorker, range(1,33) )
     pool.close()
     pool.join()
-
     reporter.genReport(results)
+
+    t1 = time.time()
+    print("valence complete, time spend: " + str(t1-t0))
 
     #multithreaded
     pool = Pool(processes=POOL_SIZE)
@@ -179,3 +188,8 @@ if __name__ == '__main__':
     pool.close()
     pool.join()
     reporter.genReport(results)
+
+    t2 = time.time()
+    print("arousal complete, time spend: " + str(t2-t1))
+
+    print("total time spend: " + str(t2-t0))
