@@ -166,8 +166,6 @@ def arousalCorrelationWorker(person):
 
 
 if __name__ == '__main__':
-
-
     t0 = time.time()
 
     reporter = reporters.AnalyticsReporter()

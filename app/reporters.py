@@ -176,7 +176,7 @@ class AnalyticsReporter(AReporter):
             </tr>
             <tr>
                 <td>Created on</td>
-                <td>""" + str(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:M:S')) + """</td>
+                <td>""" + str(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')) + """</td>
             <tr>
             <tr>
                 <td>Person Count</td>
@@ -204,6 +204,7 @@ class AnalyticsReporter(AReporter):
         f.write('</br></br></br>')
 
         #color codes:
+        f.write("Color codes and their corresponding correlation</br>")
         f.write("<table><tr>")
         for index, color in enumerate(self.colorList):
             startVal = round( index / len(self.colorList), 3)
@@ -221,27 +222,111 @@ class AnalyticsReporter(AReporter):
         <h1> Correlations </h1>
         <table>
             <tr>
-                <td>Person</td>
+                <td><b>Person/b></td>
         """
         for featName in results[0]['feat_names']:
             fname=featName.replace(" ", "</br>")
-            corr_table += '<td>' + str(fname) + '</td>'
+            corr_table += '<td><b>' + str(fname) + '</b></td>'
         corr_table += '</tr>'
+
+        person_sections = "<h1>Person specific</h1>"
 
         for person, result in enumerate(results):
             #correlation table
-            corr_table += "<tr>\n<td>" + str(person) + "</td>"
-            for r in result['feat_corr']:
+            corr_table += "<tr>\n<td><b>" + str(person) + "</b></td>"
+
+            #init arrays array = list<(corr, pval, name)> => | highest, lower, lower , lower, lowest |
+            overallTop = [(0,0,0)] * 5
+            eegTop = [(0,0,0)] * 5
+            phyTop = [(0,0,0)] * 5
+
+            #loop through results
+            for r, featName in zip(result['feat_corr'], result['feat_names']):
                 corr = abs(r[0]) #-1 ; +1 => we are only interested in the amount of correlation; whether it is positive or negative is something we don't care about
                 pval =r[1]
-                corr_table += "<td bgcolor=" + str(self.getColor(corr)) + ">" + str(round(corr,3)) + ' (' + str(round(pval,3)) + ") </td>\n"
-            corr_table += "</tr>\n"
 
+                #fix correlation table
+                corr_table += "<td bgcolor=" + str(self.getColor(corr)) + ">" + str(round(corr,3)) + ' (' + str(round(pval,3)) + ") </td>\n"
+
+                #find
+                #top 5 features
+                i = 4
+                while i > 0 and overallTop[i][0] < corr:
+                    #move features back
+                    overallTop[i] = overallTop[i-1]
+                    #next iter
+                    i -= 1
+                test = featName[0:2]
+                overallTop[i] = (corr, pval, featName)
+
+                if (featName[0:2] == 'A/' or featName[0:2] == 'LR' or featName[0:2] == 'FM'):
+                    #top 5 EEG features
+                    i = 4
+                    while i > 0 and eegTop[i][0] < corr:
+                        #move features back
+                        eegTop[i] = eegTop[i-1]
+                        #next iter
+                        i -= 1
+                    eegTop[i] = (corr, pval, featName)
+                else:
+                    #top 5 phy features
+                    i = 4
+                    while i > 0 and phyTop[i][0] < corr:
+                        #move features back
+                        phyTop[i] = phyTop[i-1]
+                        #next iter
+                        i -= 1
+                    phyTop[i] = (corr, pval, featName)
+
+            person_sections += "<h2>Person " + str(person) + "</h2>"
+            person_sections += """
+            <h3>overal top 5 </h3>
+            <table>
+                <tr>
+                    <td><b>featname</b></td>
+                    <td><b>correlation</b></td>
+                    <td><b>pval</b<</td>
+                </tr>
+            """
+            for winner in overallTop:
+                person_sections += "<tr><td><b>" + str(winner[2]) + "</b></td><td bgcolor=" + self.getColor(winner[0]) + ">" + str(winner[0]) + "</td><td>" + str(winner[1]) + "</td></tr>"
+            person_sections += "</table></br></br>"
+
+            person_sections += """
+            <h3>eeg top 5 </h3>
+            <table>
+                <tr>
+                    <td><b>featname</b></td>
+                    <td><b>correlation</b></td>
+                    <td><b>pval</b<</td>
+                </tr>
+            """
+            for winner in eegTop:
+                person_sections += "<tr><td><b>" + str(winner[2]) + "</b></td><td bgcolor=" + self.getColor(winner[0]) + ">" + str(winner[0]) + "</td><td>" + str(winner[1]) + "</td></tr>"
+            person_sections += "</table></br></br>"
+
+            person_sections += """
+            <h3>phy top 5 </h3>
+            <table>
+                <tr>
+                    <td><b>featname</b></td>
+                    <td><b>correlation</b></td>
+                    <td><b>pval</b<</td>
+                </tr>
+            """
+            for winner in phyTop:
+                person_sections += "<tr><td><b>" + str(winner[2]) + "</b></td><td bgcolor=" + self.getColor(winner[0]) + ">" + str(winner[0]) + "</td><td>" + str(winner[1]) + "</td></tr>"
+            person_sections += "</table></br>/<br>"
+
+
+            corr_table += "</tr>\n"
         corr_table += "</table>\n"
 
         #write to output
         f.write(corr_table)
         f.write('</br></br></br>')
+
+        f.write(person_sections)
 
         #close tags
         f.write("</body></html>")
