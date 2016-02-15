@@ -166,6 +166,13 @@ def arousalCorrelationWorker(person):
 
 
 if __name__ == '__main__':
+
+    '''
+    reporter = reporters.AnalyticsReporter()
+    reporter.genReport( [valenceCorrelationWorker(1)] )
+    exit()
+    '''
+
     t0 = time.time()
 
     reporter = reporters.AnalyticsReporter()

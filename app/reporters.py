@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.metrics import roc_auc_score
 import datetime
 import time
+import operator
 
 class AReporter:
     def genReport(self,results,fpad='../results/'):
@@ -224,9 +225,13 @@ class AnalyticsReporter(AReporter):
             <tr>
                 <td><b>Person/b></td>
         """
+
+        overallFeatCount = dict()
         for featName in results[0]['feat_names']:
             fname=featName.replace(" ", "</br>")
             corr_table += '<td><b>' + str(fname) + '</b></td>'
+            overallFeatCount[str(featName)] = 0
+
         corr_table += '</tr>'
 
         person_sections = "<h1>Person specific</h1>"
@@ -290,6 +295,7 @@ class AnalyticsReporter(AReporter):
             """
             for winner in overallTop:
                 person_sections += "<tr><td><b>" + str(winner[2]) + "</b></td><td bgcolor=" + self.getColor(winner[0]) + ">" + str(winner[0]) + "</td><td>" + str(winner[1]) + "</td></tr>"
+                overallFeatCount[winner[2]] += 1
             person_sections += "</table></br></br>"
 
             person_sections += """
@@ -326,6 +332,15 @@ class AnalyticsReporter(AReporter):
         f.write(corr_table)
         f.write('</br></br></br>')
 
+        #featCount
+        f.write("<h1>Feature Occurence in top 5</h1></br><table><tr><td>Feature</td><td>number of occurences in overall top 5</td></tr>")
+        for key,value in sorted(overallFeatCount.items(), key=lambda x: x[1], reverse=True):
+            if value == 0:
+                break
+            f.write("<tr><td>" + str(key) + "</td><td>" + str(value) + "</td></tr>")
+        f.write("</table></br></br>/br>")
+
+        #person specific top 5 features
         f.write(person_sections)
 
         #close tags
