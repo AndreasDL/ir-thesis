@@ -223,7 +223,7 @@ class AnalyticsReporter(AReporter):
         <h1> Correlations </h1>
         <table>
             <tr>
-                <td><b>Person/b></td>
+                <td><b>Person</b></td>
         """
 
         overallFeatCount = dict()
@@ -338,7 +338,7 @@ class AnalyticsReporter(AReporter):
             if value == 0:
                 break
             f.write("<tr><td>" + str(key) + "</td><td>" + str(value) + "</td></tr>")
-        f.write("</table></br></br>/br>")
+        f.write("</table></br></br></br>")
 
         #person specific top 5 features
         f.write(person_sections)
