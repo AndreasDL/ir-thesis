@@ -168,7 +168,7 @@ def valenceCorrelationWorker(person):
     personLdr = personLoader.NoTestsetLoader(classificator,featExtr)
 
     #put in model
-    model = models.CorrelationsAnalyticsSelectionModel(personLdr)
+    model = models.CorrelationsSelectionModel(personLdr)
 
     #run model
     results = model.run(person)
@@ -215,7 +215,7 @@ def arousalCorrelationWorker(person):
     personLdr = personLoader.NoTestsetLoader(classificator,featExtr)
 
     #put in model
-    model = models.CorrelationsAnalyticsSelectionModel(personLdr)
+    model = models.CorrelationsSelectionModel(personLdr)
 
     #run model
     results = model.run(person)
@@ -223,12 +223,11 @@ def arousalCorrelationWorker(person):
     return results
 
 def getCorrelationAcc():
-
-    reporter = reporters.AnalyticsReporter()
+    '''
+    reporter = reporters.CSVCorrReporter()
     results = valenceCorrelationWorker(1)
     reporter.genReport( [results] )
-
-    exit()
+    exit()'''
 
 
     t0 = time.time()

@@ -123,7 +123,7 @@ class StdModel(AModel):
             'feat_names'  : self.personLoader.featureExtractor.getFeatureNames()
         }
 
-class CorrelationsAnalyticsSelectionModel(AModel):
+class CorrelationsAnalyticsModel(AModel):
     def __init__(self, personLoader):
         AModel.__init__(self,personLoader)
 
@@ -192,7 +192,8 @@ class CorrelationsSelectionModel(AModel):
 
             featCorrelations.append( {
                 'feat_index' : index,
-                'feat_corr'  : corr[0]
+                'feat_corr'  : corr[0],
+                'feat_name'  : featNames[index]
             })
 
         #sort correlations
@@ -297,11 +298,11 @@ class CorrelationsSelectionModel(AModel):
 
         return {
             'feat_corr'         : featCorrelations,
-            'feat_names'        : featNames,
             'feat_acc'          : featAccuracies,
             'test_acc'          : test_acc,
             'train_acc'         : best_acc,
             'best_k'            : best_k,
-            'classificatorName' : self.personLoader.classificator.name
+            'feat_names'        : featNames,
+            'max_k'             : self.max_k
         }
 

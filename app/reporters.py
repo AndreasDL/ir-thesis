@@ -347,3 +347,55 @@ class AnalyticsReporter(AReporter):
         f.write("</body></html>")
         #close file
         f.close()
+
+class CSVCorrReporter(CSVReporter):
+    def genReport(self,results,fpad='../results/'):
+        #input:
+        '''{
+            'feat_corr'         : featCorrelations,
+            'feat_acc'          : featAccuracies,
+            'test_acc'          : test_acc,
+            'train_acc'         : best_acc,
+            'best_k'            : best_k,
+            'feat_names'        : featNames,
+            'max_k'             : self.max_k
+        }'''
+
+        #output to file
+        st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
+        f = open(fpad + "output" + str(st) + ".txt", 'w')
+        f.write('person;best_k;train_acc;test_acc;')
+
+        for k in range(2,results[0]['max_k']):
+            f.write('k=' + str(k) + ';')
+
+        for i in range(results[0]['max_k']):
+            f.write('#' + str(i) + ';')
+
+        for name in results[0]['feat_names']:
+            f.write(name + ';')
+        f.write('\n')
+
+
+        for person, result in enumerate(results):
+            f.write(str(person) + ';' + str(result['best_k']) + ';' + str(result['train_acc']) + ';' + str(result['test_acc']) + ';')
+
+            #results for different k values
+            for acc in result['feat_acc']:
+                f.write(str(round(acc,3)) + ';')
+
+            #top max_k features
+            for i in range(result['max_k']):
+                map = result['feat_corr'][i]
+                f.write(map['feat_name'] + '(' + str(map['feat_corr']) + ')' + ';')
+
+            #sort feat_corr
+            result['feat_corr'].sort(key=lambda tup: tup['feat_index'], reverse = True) #sort on index so featnames match
+
+            #print all correlations
+            for map in result['feat_corr']:
+                f.write(str(map['feat_corr']) + ';')
+
+            f.write('\n')
+
+        f.close()
