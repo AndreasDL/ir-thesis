@@ -232,11 +232,11 @@ def getCorrelationAcc():
 
     t0 = time.time()
 
-    reporter = reporters.AnalyticsReporter()
+    reporter = reporters.CSVCorrReporter()
 
     #multithreaded
     pool = Pool(processes=POOL_SIZE)
-    results = pool.map( valenceCorrelationWorker, range(1,33) )
+    results = pool.map( valenceCorrAccWorker, range(1,33) )
     pool.close()
     pool.join()
     reporter.genReport(results)
@@ -246,7 +246,7 @@ def getCorrelationAcc():
 
     #multithreaded
     pool = Pool(processes=POOL_SIZE)
-    results = pool.map( arousalCorrelationWorker, range(1,33) )
+    results = pool.map( arousalCorrAccWorker, range(1,33) )
     pool.close()
     pool.join()
     reporter.genReport(results)

@@ -303,6 +303,6 @@ class CorrelationsSelectionModel(AModel):
             'train_acc'         : best_acc,
             'best_k'            : best_k,
             'feat_names'        : featNames,
-            'max_k'             : self.max_k
+            'max_k'             : self.max_k,
         }
 
