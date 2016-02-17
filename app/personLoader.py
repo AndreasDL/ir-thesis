@@ -84,7 +84,7 @@ class NoTestsetLoader(APersonLoader):
             X = self.featureExtractor.extract(data['data'])
             y = self.classificator.classify(data['labels'])
 
-            return np.array(X), np.array(y), np.array([]), np.array([])
+            return np.array(X), np.array(y)
 
 
 def dump(X_train, y_train, X_test, y_test, name, path='../dumpedData'):

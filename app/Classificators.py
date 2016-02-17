@@ -57,11 +57,11 @@ class ValenceClassificator(AClassificator):
         #low valence | high valence |
         #     0      |       1      |
 
-        y = np.zeros(len(valences))
+        '''y = np.zeros(len(valences))
         for i, val in enumerate(valences):
             y[i] = val
-
-        return y
+        '''
+        return valences
 class ArousalClassificator(AClassificator):
     def __init__(self,classNames=['LA','HA'],name='arousalClasses'):
         AClassificator.__init__(self,name,classNames)
@@ -73,14 +73,16 @@ class ArousalClassificator(AClassificator):
         arousals[ arousals <= 5 ] = 0
         arousals[ arousals >  5 ] = 1
 
+        '''
         #assign classes
         #low  arrousal |      0      |
         #high arrousal |      1      |
         y = np.zeros(len(arousals))
         for i, arr in enumerate(arousals):
             y[i] = arr
+        '''
 
-        return y
+        return arousals
 
 class ContArousalClassificator(AClassificator):
     def __init__(self,name='ContArousalClasses'):
