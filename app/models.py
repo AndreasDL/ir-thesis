@@ -186,7 +186,7 @@ class CorrelationsSelectionModel(AModel):
 
 
         #get correlations
-        featCorrelations = [] #list[person] = {feat_index => , feat_corr => }
+        featCorrelations = [] #list[person] = {feat_index => , feat_corr => , feat_name => }
         for index, feat in enumerate(featNames):
             corr = pearsonr(X_train[:, index], y_train_cont)
 
@@ -250,7 +250,7 @@ class CorrelationsSelectionModel(AModel):
         #try to improve the results with additional metrics
         k += 1
 
-        while ( k < self.max_k ):
+        while ( k <= self.max_k ):
             lda = LinearDiscriminantAnalysis()
 
             #leave out one validation
@@ -304,5 +304,6 @@ class CorrelationsSelectionModel(AModel):
             'best_k'            : best_k,
             'feat_names'        : featNames,
             'max_k'             : self.max_k,
+            'classificatorName'  : self.personLoader.classificator.name
         }
 

@@ -8,7 +8,7 @@ import time
 
 
 from multiprocessing import Pool
-POOL_SIZE = 8
+POOL_SIZE = 6
 
 #use with CSV reporter
 def getAnova():
@@ -105,7 +105,7 @@ def getAnalytics():
 
     t0 = time.time()
 
-    reporter = reporters.AnalyticsReporter()
+    reporter = reporters.HTMLAnalyticsReporter()
 
     #multithreaded
     pool = Pool(processes=POOL_SIZE)
@@ -223,17 +223,18 @@ def arousalCorrelationWorker(person):
 
     return results
 
+
 def getCorrelationAcc():
     '''
-    reporter = reporters.CSVCorrReporter()
-    results = valenceCorrelationWorker(1)
+    reporter = reporters.HTMLCorrReporter()
+    results = valenceCorrAccWorker(1)
     reporter.genReport( [results] )
     exit()'''
 
 
     t0 = time.time()
 
-    reporter = reporters.CSVCorrReporter()
+    reporter = reporters.HTMLCorrReporter()
 
     #multithreaded
     pool = Pool(processes=POOL_SIZE)
@@ -353,6 +354,6 @@ def arousalCorrAccWorker(person):
 
 if __name__ == '__main__':
 
-    getAnalytics()
+    #getAnalytics()
 
     getCorrelationAcc()

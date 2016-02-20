@@ -8,6 +8,16 @@ class AReporter:
     def genReport(self,results,fpad='../results/'):
         return None
 
+    colorList = [
+        '#ff0000', '#ff4000', '#ff8000', '#ffbf00', '#ffff00',
+        '#bfff00', '#80ff00', '#40ff00', '#00ff00', '#00ff40',
+    ]
+    def getColor(self, value):
+        #color list stolen with pride from http://www.w3schools.com/colors/colors_picker.asp
+
+        index = int(value * len(self.colorList))
+        return self.colorList[index]
+
 
 class CSVReporter(AReporter):
 
@@ -143,17 +153,7 @@ class CSVReporter(AReporter):
 
         return np.array(predCount) / np.array(dimCount)
 
-class AnalyticsReporter(AReporter):
-    colorList = [
-        '#ff0000', '#ff4000', '#ff8000', '#ffbf00', '#ffff00',
-        '#bfff00', '#80ff00', '#40ff00', '#00ff00', '#00ff40',
-    ]
-    def getColor(self, value):
-        #color list stolen with pride from http://www.w3schools.com/colors/colors_picker.asp
-
-        index = int(value * len(self.colorList))
-        return self.colorList[index]
-
+class HTMLAnalyticsReporter(AReporter):
 
     def genReport(self,results,fpad='../results/'):
 
@@ -398,3 +398,108 @@ class CSVCorrReporter(CSVReporter):
             f.write('\n')
 
         f.close()
+
+class HTMLCorrReporter(CSVReporter):
+    colorList = [
+    '#ff0000', '#ff4000', '#ff8000', '#ffbf00', '#ffff00',
+    '#bfff00', '#80ff00', '#40ff00', '#00ff00', '#00ff40',
+    ]
+    def getColor(self, value):
+        #color list stolen with pride from http://www.w3schools.com/colors/colors_picker.asp
+
+        index = int(value * len(self.colorList))
+
+        return self.colorList[index]
+
+    def genReport(self,results,fpad='../results/'):
+        #input:
+        '''{
+            'feat_corr'         : featCorrelations,
+            'feat_acc'          : featAccuracies,
+            'test_acc'          : test_acc,
+            'train_acc'         : best_acc,
+            'best_k'            : best_k,
+            'feat_names'        : featNames,
+            'max_k'             : self.max_k
+        }'''
+
+        #output to file
+        st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
+        f = open(fpad + "output" + str(st) + ".html", 'w')
+
+                #write tags
+        f.write("""<html>
+            <head>
+                <title>""" + str(results[0]['classificatorName']) + """ analytics</title>
+            </head>
+        <body>\n""")
+
+        #overview table
+        f.write("""<h1>overview</h1>
+        <table>
+            <tr>
+                <td><b>Person</b></td>""")
+        for k in range(2,results[0]['max_k'] + 1):
+            f.write("<td><b>k=" + str(k)+"</b></td>")
+        f.write("</td>")
+
+        for person, result in enumerate(results):
+            featAcc = result['feat_acc']
+            max_k = result['max_k']
+            #featCorr = result['feat_corr'][0:max_k]
+
+            f.write('<tr><td><b>Person ' + str(person + 1) + '</b></td>')
+            for k, acc in zip(range(2,max_k+1),featAcc):
+                f.write('<td bgcolor=' + str(self.getColor(acc)) + ">" + str(acc) + "</td>")
+            f.write("</tr>")
+
+        f.write("</table></br></br></br>")
+
+        f.write("<h1>Person Specific</h1>")
+        for  person,result in enumerate(results):
+            featAcc = result['feat_acc']
+            max_k = result['max_k']
+            featCorr = result['feat_corr'][0:max_k]
+
+            f.write("<h2>Person" + str(person + 1) + '</h2><table><tr><td>')
+            f.write("<img src=\"plots/person" + str(person+1) + ".png\" style=\"width:400px;height:300px;\" ></td><td>")
+
+            f.write("""<table><tr>
+                <td><b>what</b></td>""")
+            for k in range(1,max_k+1):
+                f.write('<td><b>k=' + str(k) + '</b></td>')
+
+            f.write('</tr><tr><td><b>Accuracy</b></td><td></td>')
+
+            for k, acc in zip(range(2,max_k+1),featAcc):
+                f.write('<td bgcolor=' + str(self.getColor(acc)) + ">" + str(acc) + "</td>")
+
+            f.write("</tr><tr><td><b>featNames</b></td>")
+
+            for corr in featCorr: #featCorr sorted on correlation
+                ''' corr = {
+                    'feat_index' : index,
+                    'feat_corr'  : corr[0],
+                    'feat_name'  : featNames[index]
+                    }'''
+
+                f.write('<td>' + corr['feat_name'] + '</td>')
+
+            f.write("</tr><tr><td><b>featCorr</b></td>")
+
+            for corr in featCorr: #featCorr sorted on correlation
+                ''' corr = {
+                    'feat_index' : index,
+                    'feat_corr'  : corr[0],
+                    'feat_name'  : featNames[index]
+                    }'''
+
+                f.write('<td bgcolor=' + self.getColor(corr['feat_corr']) + '>' + str(corr['feat_corr']) + '</td>')
+            f.write('</tr></table></td></table>')
+
+
+
+
+
+
+        f.write("</html>")
