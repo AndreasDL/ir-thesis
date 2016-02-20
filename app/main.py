@@ -96,10 +96,11 @@ def arousalAnovaWorker(person):
 
 #use with analytics reporter
 def getAnalytics():
-
+    '''
     reporter = reporters.AnalyticsReporter()
     reporter.genReport( [valenceCorrelationWorker(1)] )
     exit()
+    '''
 
 
     t0 = time.time()
@@ -354,4 +355,4 @@ if __name__ == '__main__':
 
     getAnalytics()
 
-    #getCorrelationAcc()
+    getCorrelationAcc()
