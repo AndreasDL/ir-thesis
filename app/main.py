@@ -96,11 +96,11 @@ def arousalAnovaWorker(person):
 
 #use with analytics reporter
 def getAnalytics():
-    '''
+
     reporter = reporters.AnalyticsReporter()
     reporter.genReport( [valenceCorrelationWorker(1)] )
     exit()
-    '''
+
 
     t0 = time.time()
 
@@ -168,7 +168,7 @@ def valenceCorrelationWorker(person):
     personLdr = personLoader.NoTestsetLoader(classificator,featExtr)
 
     #put in model
-    model = models.CorrelationsSelectionModel(personLdr)
+    model = models.CorrelationsAnalyticsModel(personLdr)
 
     #run model
     results = model.run(person)
@@ -215,7 +215,7 @@ def arousalCorrelationWorker(person):
     personLdr = personLoader.NoTestsetLoader(classificator,featExtr)
 
     #put in model
-    model = models.CorrelationsSelectionModel(personLdr)
+    model = models.CorrelationsAnalyticsModel(personLdr)
 
     #run model
     results = model.run(person)
@@ -351,4 +351,7 @@ def arousalCorrAccWorker(person):
     return results
 
 if __name__ == '__main__':
-    getCorrelationAcc()
+
+    getAnalytics()
+
+    #getCorrelationAcc()

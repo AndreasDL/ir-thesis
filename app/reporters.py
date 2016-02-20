@@ -241,7 +241,7 @@ class AnalyticsReporter(AReporter):
             corr_table += "<tr>\n<td><b>" + str(person) + "</b></td>"
 
             #init arrays array = list<(corr, pval, name)> => | highest, lower, lower , lower, lowest |
-            overallTop = [(0,0,0)] * 5
+            overallTop = [(0,0,0)] * 6
             eegTop = [(0,0,0)] * 5
             phyTop = [(0,0,0)] * 5
 
@@ -258,10 +258,9 @@ class AnalyticsReporter(AReporter):
                 i = 4
                 while i > 0 and overallTop[i][0] < corr:
                     #move features back
-                    overallTop[i] = overallTop[i-1]
+                    overallTop[i+1] = overallTop[i]
                     #next iter
                     i -= 1
-                test = featName[0:2]
                 overallTop[i] = (corr, pval, featName)
 
                 if (featName[0:2] == 'A/' or featName[0:2] == 'LR' or featName[0:2] == 'FM'):

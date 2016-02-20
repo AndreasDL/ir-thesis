@@ -133,7 +133,7 @@ class CorrelationsAnalyticsModel(AModel):
     def run(self,person):
 
         #load all features & keep them in memory
-        X_train, y_train, X_test, y_test = self.personLoader.load(person)
+        X_train, y_train = self.personLoader.load(person)
 
         #each feature separately
         featNames = self.personLoader.featureExtractor.getFeatureNames()
