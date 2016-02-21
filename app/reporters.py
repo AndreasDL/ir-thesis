@@ -449,7 +449,7 @@ class HTMLCorrReporter(CSVReporter):
 
         #output to file
         st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
-        f = open(fpad + "output" + str(st) + ".html", 'w')
+        f = open(fpad +  str(results[0]['classificatorName']) + "output" + str(st) + ".html", 'w')
 
                 #write tags
         f.write("""<html>

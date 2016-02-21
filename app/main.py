@@ -355,6 +355,6 @@ def arousalCorrAccWorker(person):
 
 if __name__ == '__main__':
 
-    #getAnalytics()
+    getAnalytics()
 
     getCorrelationAcc()
