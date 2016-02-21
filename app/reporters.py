@@ -6,6 +6,8 @@ import personLoader
 import classificators
 import featureExtractor
 import matplotlib.pyplot as plt
+import os.path
+
 
 
 
@@ -418,16 +420,19 @@ class HTMLCorrReporter(CSVReporter):
 
     def genPlot(self,person,fpad="../results/plots/"):
         person += 1
-        #mutlidinges en dan een Afeat insteken
-        x, valences = personLoader.NoTestsetLoader(classificators.ContValenceClassificator(),featureExtractor.AFeatureExtractor("hoi")).load(person)
-        x, arousals = personLoader.NoTestsetLoader(classificators.ContArousalClassificator(),featureExtractor.AFeatureExtractor("hoi")).load(person)
+        fname = fpad + 'person'+str(person)+'.png'
 
-        plt.plot(valences, arousals, 'or')
-        plt.title("Valence - Arousal space for person " + str(person))
-        plt.xlabel("valence")
-        plt.ylabel("arousal")
-        plt.savefig(fpad + 'person'+str(person)+'.png')
-        plt.clf()
+        if not os.path.isfile(fname):
+            #only create figure if it doesn't exist
+            x, valences = personLoader.NoTestsetLoader(classificators.ContValenceClassificator(),featureExtractor.AFeatureExtractor("hoi")).load(person)
+            x, arousals = personLoader.NoTestsetLoader(classificators.ContArousalClassificator(),featureExtractor.AFeatureExtractor("hoi")).load(person)
+
+            plt.plot(valences, arousals, 'or')
+            plt.title("Valence - Arousal space for person " + str(person))
+            plt.xlabel("valence")
+            plt.ylabel("arousal")
+            plt.savefig(fname)
+            plt.clf()
 
 
     def genReport(self,results,fpad='../results/'):
