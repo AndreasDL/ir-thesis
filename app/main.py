@@ -230,7 +230,7 @@ def getCorrelationAcc():
     results = valenceCorrAccWorker(1)
     reporter.genReport( [results] )
     exit()
-    '''
+    #'''
 
 
     t0 = time.time()
@@ -355,6 +355,6 @@ def arousalCorrAccWorker(person):
 
 if __name__ == '__main__':
 
-    getAnalytics()
+    #getAnalytics()
 
     getCorrelationAcc()

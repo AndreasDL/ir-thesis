@@ -427,10 +427,15 @@ class HTMLCorrReporter(CSVReporter):
             x, valences = personLoader.NoTestsetLoader(classificators.ContValenceClassificator(),featureExtractor.AFeatureExtractor("hoi")).load(person)
             x, arousals = personLoader.NoTestsetLoader(classificators.ContArousalClassificator(),featureExtractor.AFeatureExtractor("hoi")).load(person)
 
+            valences -= 5
+            arousals -= 5
+
             plt.plot(valences, arousals, 'or')
             plt.title("Valence - Arousal space for person " + str(person))
             plt.xlabel("valence")
             plt.ylabel("arousal")
+            plt.ylim([-4,4])
+            plt.xlim([-4,4])
             plt.savefig(fname)
             plt.clf()
 

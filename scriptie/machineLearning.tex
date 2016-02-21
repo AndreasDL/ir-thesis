@@ -3,16 +3,29 @@
 
 
 \section{What is machine learning?}
+Since machine learning is a very broad domain, this discussion will be limited to the application of machine learning and machine learning techniques as this is the most relevant part. Machine learning is the science of getting computers to act without being explicitly programmed. Machine learning uses pattern recognition to find patterns or structure in the data. When applied correctly, machine learning algorithms can recognize objects in images, e.g. Optical Character Recognition (OCR)\nomenclature{OCR}{Optical Character Recognition}.
+
+\npar
+
+Quite vague explanation so far, let's illustrate this with a small example. Suppose one has a price list of house that are for sale combined with their total area. Now since it is easy to see that a bigger house will have a higher asking price than a smaller house, one says that the area of the house is correlated with the asking price. Suppose you want to predict how much a certain home is worth, based on their area. This is possible with machine learning, you first learn/teach or train your machine learning algorithm with the aforementioned list. Once this is done you can predict prices of new houses based on the corresponding area. The area of the house is only one property or feature for the algorithm. So far the algorithm can only look at one property and thus is not likely to achieve good results. Looking with more detail at the data, i.e. adding additional features will often improve the performance of an algorithm. For example, a house with 5 bedrooms is more expensive than a house with only 3 bedrooms.
+
+\npar
+
+Machine learning algorithms are responsible for the relation between features and the predicted value. One way to group this algorithms is to look at their produced output. In the asking price examples above, the output is a price, which is a continuous value. When one tries to recognize characters in a picture, the problem becomes a classification problem, as there are only 26 distinct characters. 
+
+\npar
+
+Another way to group the algorithms is based on their training data. In the asking price examples above one gets labelled results; the asking price is given for each area, this is referred to as supervised machine learning. The other possibility is unsupervised machine learning, which often results in finding groups of similar data points (clustering). Not that the combination of supervised and unsupervised data is also possible. Support you have a dataset with 5000 webpages and you want to categorise them in 10 distinct categories, e.g. science, nature, cooking, ... , but you only have the labels for 100 of the 5000 pages. Then you could first cluster the pages in similar groups. As soon as a group contains one labelled page, you can label all the pages in the group as they are similar. This technique is known as semi supervised learning and has the advantage that one does  not need to label all the data, which is usually a difficult and time consuming process, if you had a fast and easy way to label the data then you wouldn't be needing machine learning.
+
+\section{over and underfitting and the relation with balanced datasets}
 
 
-\section{train, test, validation error}
+\section{Support Vector Machines (SVM)}
 
-\section{svm}
+\section{Linear Discriminant analysis (LDA)}
 
-\section{lda}
+\section{Common Spatial Patterns (CSP)}
 
-\section{CSP}
-
-\section{ANOVA}
+\section{Analysis of Variance (ANOVA)}
 
 \section{Pearson correlation}
