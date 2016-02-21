@@ -2,7 +2,12 @@ import numpy as np
 from sklearn.metrics import roc_auc_score
 import datetime
 import time
-import operator
+import personLoader
+import classificators
+import featureExtractor
+import matplotlib.pyplot as plt
+
+
 
 class AReporter:
     def genReport(self,results,fpad='../results/'):
@@ -411,6 +416,20 @@ class HTMLCorrReporter(CSVReporter):
 
         return self.colorList[index]
 
+    def genPlot(self,person,fpad="../results/plots/"):
+        person += 1
+        #mutlidinges en dan een Afeat insteken
+        x, valences = personLoader.NoTestsetLoader(classificators.ContValenceClassificator(),featureExtractor.AFeatureExtractor("hoi")).load(person)
+        x, arousals = personLoader.NoTestsetLoader(classificators.ContArousalClassificator(),featureExtractor.AFeatureExtractor("hoi")).load(person)
+
+        plt.plot(valences, arousals, 'or')
+        plt.title("Valence - Arousal space for person " + str(person))
+        plt.xlabel("valence")
+        plt.ylabel("arousal")
+        plt.savefig(fpad + 'person'+str(person)+'.png')
+        plt.clf()
+
+
     def genReport(self,results,fpad='../results/'):
         #input:
         '''{
@@ -457,6 +476,7 @@ class HTMLCorrReporter(CSVReporter):
 
         f.write("<h1>Person Specific</h1>")
         for  person,result in enumerate(results):
+            self.genPlot(person)
             featAcc = result['feat_acc']
             max_k = result['max_k']
             featCorr = result['feat_corr'][0:max_k]

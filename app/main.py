@@ -229,7 +229,8 @@ def getCorrelationAcc():
     reporter = reporters.HTMLCorrReporter()
     results = valenceCorrAccWorker(1)
     reporter.genReport( [results] )
-    exit()'''
+    exit()
+    '''
 
 
     t0 = time.time()

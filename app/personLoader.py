@@ -9,7 +9,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from archive import featureExtractor as FE
 from archive.csp import Csp
 
-DATASET_LOCATION = "C:/dataset/"
+DATASET_LOCATION = "C:/dataset"
 
 
 class APersonLoader:
@@ -64,7 +64,7 @@ class PersonLoader(APersonLoader):
 
 class NoTestsetLoader(APersonLoader):
     def __init__(self, classificator, featExtractor, name='noTestset', path=DATASET_LOCATION ):
-        APersonLoader.__init__(self, classificator, featExtractor, name, path='../dataset')
+        APersonLoader.__init__(self, classificator, featExtractor, name, path=path)
 
     def load(self,person):
         fname = str(self.path) + '/s'
