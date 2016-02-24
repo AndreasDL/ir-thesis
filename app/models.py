@@ -6,6 +6,10 @@ import numpy as np
 
 from scipy.stats import pearsonr
 
+
+
+
+
 class AModel:
     def __init__(self,personLoader):
         self.personLoader = personLoader
@@ -153,8 +157,33 @@ class CorrelationsAnalyticsModel(AModel):
             'feat_names'        : featNames,
             #'feat_values'       : X_train,
             'labels'            : y_train,
-            'classificatorName' : self.personLoader.classificator.name
+            'classificatorName' : self.personLoader.classificator.name,
         }
+
+class CorrelationsClusteringsModel(AModel):
+    def __init__(self, personLoader):
+        AModel.__init__(self,personLoader)
+
+    def optMetric(self,predictions, truths):
+        return None
+
+    def run(self):
+        feat_corr = []
+        for person in range(1,33):
+            print('getting correlations for person' + str(person))
+            #load all features & keep them in memory
+            X_train, y_train = self.personLoader.load(person)
+
+            featNames = self.personLoader.featureExtractor.getFeatureNames()
+
+            persCorr = []
+            for index, feat in enumerate(featNames):
+                corr = pearsonr(X_train[:, index], y_train)
+                persCorr.append(corr[0])
+
+            feat_corr.append(persCorr)
+
+        return feat_corr
 
 class CorrelationsSelectionModel(AModel):
     def __init__(self, cont_personLoader):

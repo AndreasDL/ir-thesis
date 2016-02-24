@@ -87,25 +87,19 @@ class NoTestsetLoader(APersonLoader):
             return np.array(X), np.array(y)
 
 
-def dump(X_train, y_train, X_test, y_test, name, path='../dumpedData'):
-	fname = path + '/' + name
-	data = { 'X_train': X_train, 
-		'y_train': y_train,
-		'X_test': X_test,
-		'y_test': y_test 
-	}
-	with open(fname, 'wb') as f:
-		pickle.dump( data, f )
-def load(name, path='../dumpedData'):
-	fname = path + '/' + name
+def dump(X, name, path='../../dumpedData'):
+    fname = path + '/' + name
+    with open(fname, 'wb') as f:
+        pickle.dump( X, f )
 
-	data = None
-	with open(fname,'rb') as f:
-		p = pickle._Unpickler(f)
-		p.encoding= ('latin1')
-		data = p.load()
-	if data == None:
-		print('data loading failed for file:', fname)
-		exit(-1)
 
-	return data['X_train'], data['y_train'], data['X_test'], data['y_test']
+def load(name, path='../../dumpedData'):
+    fname = path + '/' + name
+
+    data = None
+    with open(fname,'rb') as f:
+        p = pickle._Unpickler(f)
+        p.encoding= ('latin1')
+        data = p.load()
+
+    return data
