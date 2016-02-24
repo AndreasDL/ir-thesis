@@ -27,7 +27,7 @@ class APersonLoader:
 
 class PersonLoader(APersonLoader):
     def __init__(self, classificator, featExtractor, name='normal', path=DATASET_LOCATION ):
-        APersonLoader.__init__(self, classificator, featExtractor, name, path='../dataset')
+        APersonLoader.__init__(self, classificator, featExtractor, name, path=DATASET_LOCATION)
 
     def load(self,person):
         fname = str(self.path) + '/s'

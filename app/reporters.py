@@ -12,7 +12,7 @@ import os.path
 
 
 class AReporter:
-    def genReport(self,results,fpad='../results/'):
+    def genReport(self,results,fpad='../../results/'):
         return None
 
     colorList = [
@@ -28,7 +28,7 @@ class AReporter:
 
 class CSVReporter(AReporter):
 
-    def genReport(self,results,fpad='../results/'):
+    def genReport(self,results,fpad='../../results/'):
         #output to file
         st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
         f = open(fpad + "output" + str(st) + ".txt", 'w')
@@ -162,7 +162,7 @@ class CSVReporter(AReporter):
 
 class HTMLAnalyticsReporter(AReporter):
 
-    def genReport(self,results,fpad='../results/'):
+    def genReport(self,results,fpad='../../results/'):
 
         #gen file
         st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
@@ -245,7 +245,7 @@ class HTMLAnalyticsReporter(AReporter):
 
         for person, result in enumerate(results):
             #correlation table
-            corr_table += "<tr>\n<td><b>" + str(person) + "</b></td>"
+            corr_table += "<tr>\n<td><b>" + str(person+1) + "</b></td>"
 
             #init arrays array = list<(corr, pval, name)> => | highest, lower, lower , lower, lowest |
             overallTop = [(0,0,0)] * 5
@@ -355,7 +355,7 @@ class HTMLAnalyticsReporter(AReporter):
         f.close()
 
 class CSVCorrReporter(CSVReporter):
-    def genReport(self,results,fpad='../results/'):
+    def genReport(self,results,fpad='../../results/'):
         #input:
         '''{
             'feat_corr'         : featCorrelations,
@@ -418,7 +418,7 @@ class HTMLCorrReporter(CSVReporter):
 
         return self.colorList[index]
 
-    def genPlot(self,person,fpad="../results/plots/"):
+    def genPersonPlot(self, person, fpad="../../results/plots/"):
         person += 1
         fname = fpad + 'person'+str(person)+'.png'
 
@@ -440,7 +440,7 @@ class HTMLCorrReporter(CSVReporter):
             plt.clf()
 
 
-    def genReport(self,results,fpad='../results/'):
+    def genReport(self,results,fpad='../../results/'):
         #input:
         '''{
             'feat_corr'         : featCorrelations,
@@ -465,9 +465,9 @@ class HTMLCorrReporter(CSVReporter):
 
         #overview table
         f.write("""<h1>overview</h1>
-        <table>
+        <table border=1>
             <tr>
-                <td><b>Person</b></td>""")
+                <td><b>Person</b></td><td><b>best_k</b></td><td><b>test_acc</b></td>""")
         for k in range(2,results[0]['max_k'] + 1):
             f.write("<td><b>k=" + str(k)+"</b></td>")
         f.write("</td>")
@@ -475,9 +475,11 @@ class HTMLCorrReporter(CSVReporter):
         for person, result in enumerate(results):
             featAcc = result['feat_acc']
             max_k = result['max_k']
+
             #featCorr = result['feat_corr'][0:max_k]
 
-            f.write('<tr><td><b>Person ' + str(person + 1) + '</b></td>')
+            f.write('<tr><td><b>Person ' + str(person + 1) + '</b></td><td>' + str(result['best_k']) + '</td><td bgcolor=' + self.getColor(result['test_acc']) + '><b>' + str(result['test_acc']) + '</b></td>')
+
             for k, acc in zip(range(2,max_k+1),featAcc):
                 f.write('<td bgcolor=' + str(self.getColor(acc)) + ">" + str(acc) + "</td>")
             f.write("</tr>")
@@ -486,7 +488,7 @@ class HTMLCorrReporter(CSVReporter):
 
         f.write("<h1>Person Specific</h1>")
         for  person,result in enumerate(results):
-            self.genPlot(person)
+            self.genPersonPlot(person)
             featAcc = result['feat_acc']
             max_k = result['max_k']
             featCorr = result['feat_corr'][0:max_k]
@@ -525,6 +527,11 @@ class HTMLCorrReporter(CSVReporter):
                     }'''
 
                 f.write('<td bgcolor=' + self.getColor(corr['feat_corr']) + '>' + str(corr['feat_corr']) + '</td>')
+            best_k = result['best_k']
+            test_acc = result['test_acc']
+
+            f.write('</tr><td><b>Best_k</b></td><td>' + str(best_k) + '</td></tr><tr>')
+            f.write('<td><b>test_acc</b></td><td bgcolor=' + self.getColor(test_acc) + '>' + str(test_acc) + '</td></tr>')
             f.write('</tr></table></td></table>')
 
 
