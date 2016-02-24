@@ -16,10 +16,10 @@ import os.path
 def getAnalytics():
     t0 = time.time()
 
-    feat_corr = load('valence_feat_corr')
+    feat_corr = load('valence_feat_pval')
     if feat_corr == None:
         feat_corr = valenceCorrelationWorker()
-        dump(feat_corr,'valence_feat_corr')
+        dump(feat_corr,'valence_feat_pval')
 
     #here feat_corr has a list of correlations of each feature for each person => dim reduc & 3D plot
     X_3D = PCA(n_components=3).fit_transform(feat_corr)
@@ -38,10 +38,10 @@ def getAnalytics():
     t1 = time.time()
     print("valence complete, time spend: " + str(t1-t0))
 
-    feat_corr = load('arousal_feat_corr')
+    feat_corr = load('arousal_feat_pval')
     if feat_corr == None:
         feat_corr = arousalCorrelationWorker()
-        dump(feat_corr,'arousal_feat_corr')
+        dump(feat_corr,'arousal_feat_pval')
 
     #here feat_corr has a list of correlations of each feature for each person => dim reduc & 3D plot
     X_3D = PCA(n_components=3).fit_transform(feat_corr)

@@ -1,13 +1,7 @@
 import pickle
-import random
-
 import numpy as np
+import os.path
 from sklearn.cross_validation import StratifiedShuffleSplit
-from sklearn.cross_validation import train_test_split
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-
-from archive import featureExtractor as FE
-from archive.csp import Csp
 
 DATASET_LOCATION = "C:/dataset"
 
@@ -97,9 +91,10 @@ def load(name, path='../../dumpedData'):
     fname = path + '/' + name
 
     data = None
-    with open(fname,'rb') as f:
-        p = pickle._Unpickler(f)
-        p.encoding= ('latin1')
-        data = p.load()
+    if os.path.isfile(fname):
+        with open(fname,'rb') as f:
+            p = pickle._Unpickler(f)
+            p.encoding= ('latin1')
+            data = p.load()
 
     return data

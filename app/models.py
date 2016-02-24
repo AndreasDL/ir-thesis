@@ -179,7 +179,7 @@ class CorrelationsClusteringsModel(AModel):
             persCorr = []
             for index, feat in enumerate(featNames):
                 corr = pearsonr(X_train[:, index], y_train)
-                persCorr.append(corr[0])
+                persCorr.append(corr[1])
 
             feat_corr.append(persCorr)
 
