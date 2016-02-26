@@ -29,10 +29,12 @@ def getAnalytics():
     plt.clf()
     ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
     ax.scatter(X_3D[:, 0], X_3D[:, 1], X_3D[:, 2])
+    plt.title("valence correlations for different persons 3D")
     plt.show()
 
     plt.clf()
     plt.scatter(X_2D[:, 0], X_2D[:, 1])
+    plt.title("valence correlations for different persons 2D")
     plt.show()
 
     t1 = time.time()
@@ -51,10 +53,12 @@ def getAnalytics():
     plt.clf()
     ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
     ax.scatter(X_3D[:, 0], X_3D[:, 1], X_3D[:, 2])
+    plt.title("arousal correlations for different persons 3D")
     plt.show()
 
     plt.clf()
     plt.scatter(X_2D[:, 0], X_2D[:, 1])
+    plt.title("arousal correlations for different persons 2D")
     plt.show()
 
     t2 = time.time()
