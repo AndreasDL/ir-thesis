@@ -72,13 +72,13 @@ def valenceCorrelationWorker(person):
     featExtr.addFE(FE.STDInterBeatExtractor())
 
     #create classificator
-    classificator = classificators.ContValenceClassificator()
+    classificator = classificators.ValenceClassificator()
 
     #create personloader
     personLdr = personLoader.NoTestsetLoader(classificator,featExtr)
 
     #put in model
-    model = models.CorrelationsAnalyticsModel(personLdr)
+    model = models.RFAnalyticsModel(personLdr)
 
     #run model
     results = model.run(person)
@@ -119,13 +119,13 @@ def arousalCorrelationWorker(person):
     featExtr.addFE(FE.STDInterBeatExtractor())
 
     #create classificator
-    classificator = classificators.ContArousalClassificator()
+    classificator = classificators.ArousalClassificator()
 
     #create personloader
     personLdr = personLoader.NoTestsetLoader(classificator,featExtr)
 
     #put in model
-    model = models.CorrelationsAnalyticsModel(personLdr)
+    model = models.RFAnalyticsModel(personLdr)
 
     #run model
     results = model.run(person)

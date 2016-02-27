@@ -2,6 +2,8 @@ from sklearn.feature_selection import SelectKBest, f_regression
 from sklearn.pipeline import Pipeline
 from sklearn.cross_validation import StratifiedShuffleSplit, KFold
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.ensemble import ExtraTreesClassifier
+import matplotlib.pyplot as plt
 import numpy as np
 
 from scipy.stats import pearsonr
@@ -24,7 +26,6 @@ class AModel:
             acc += (pred == truth)
 
         return acc / float(len(predictions))
-
 class StdModel(AModel):
 
     def __init__(self,personLoader, max_k):
@@ -127,6 +128,7 @@ class StdModel(AModel):
             'feat_names'  : self.personLoader.featureExtractor.getFeatureNames()
         }
 
+#correlation not good enough
 class CorrelationsAnalyticsModel(AModel):
     def __init__(self, personLoader):
         AModel.__init__(self,personLoader)
@@ -159,7 +161,6 @@ class CorrelationsAnalyticsModel(AModel):
             'labels'            : y_train,
             'classificatorName' : self.personLoader.classificator.name,
         }
-
 class CorrelationsClusteringsModel(AModel):
     def __init__(self, personLoader):
         AModel.__init__(self,personLoader)
@@ -184,7 +185,6 @@ class CorrelationsClusteringsModel(AModel):
             feat_corr.append(persCorr)
 
         return feat_corr
-
 class CorrelationsSelectionModel(AModel):
     def __init__(self, cont_personLoader):
         AModel.__init__(self,cont_personLoader)
@@ -336,3 +336,50 @@ class CorrelationsSelectionModel(AModel):
             'classificatorName'  : self.personLoader.classificator.name
         }
 
+#random forest more reliable
+class RFAnalyticsModel(AModel):
+    def __init__(self, personLoader):
+        AModel.__init__(self,personLoader)
+
+    def optMetric(self,predictions, truths):
+        return None
+
+    def run(self,person):
+        #http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
+
+        #load all features & keep them in memory
+        X, y = self.personLoader.load(person)
+
+        featNames = self.personLoader.featureExtractor.getFeatureNames()
+        featCount = len(featNames)
+
+        #grow forest
+        forest = ExtraTreesClassifier(
+            n_estimators=1000, #no of trees should be sufficiently large
+            max_features='auto', #sqrt of features
+            criterion='entropy', #entropy vs gini => last one is known to be unfair for multiple categories
+            random_state=0,
+            n_jobs=-1
+        )
+        #fit forest
+        forest.fit(X,y)
+
+        #get importances
+        importances = forest.feature_importances_
+        std = np.std([tree.feature_importances_ for tree in forest.estimators_],
+                     axis = 0)
+        indices = np.argsort(importances)[::-1]
+
+        print('Feature Ranking')
+
+        for f in range(X.shape[1]):
+            print("%d. feature %d (%f)" % (f + 1, indices[f], importances[indices[f]]))
+
+        # Plot the feature importances of the forest
+        plt.figure()
+        plt.title("Feature importances")
+        plt.bar(range(X.shape[1]), importances[indices],
+               color="r", yerr=std[indices], align="center")
+        plt.xticks(range(X.shape[1]), indices)
+        plt.xlim([-1, X.shape[1]])
+        plt.show()
