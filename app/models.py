@@ -343,15 +343,17 @@ class RFAnalyticsModel(AModel):
 
     def run(self):
         #http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
+        classificatorName = str(self.personLoader.classificator.name)
 
         #load all features & keep them in memory
-        X = load('feat_X_allpersons')
-        if X == None:
+        y = load('y_allpersons' + classificatorName)
+        if y == None:
+            print('[Warn] Rebuilding cache')
             X, y = self.personLoader.load()
-            dump(X,'feat_X_allpersons')
-            dump(y,'y_allpersons')
+            dump(X,'X_allpersons')
+            dump(y,'y_allpersons' + classificatorName)
         else:
-            y = load('y_allpersons')
+            X = load('X_allpersons')
 
         #grow forest
         forest = ExtraTreesClassifier(
@@ -367,21 +369,29 @@ class RFAnalyticsModel(AModel):
 
         #get importances
         importances = forest.feature_importances_
-        std = np.std([tree.feature_importances_ for tree in forest.estimators_],
-                     axis = 0)
+        std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis = 0)
         indices = np.argsort(importances)[::-1]
 
         print('Feature Ranking')
-
+        featNames = self.personLoader.featureExtractor.getFeatureNames()
+        featScores = []
         for f in range(X.shape[1]):
-            print("%d. feature %d (%f)" % (f + 1, indices[f], importances[indices[f]]))
+            print( f+1, '. feature ', indices[f], ' (', featNames[indices[f]], ') [', importances[indices[f]], ']')
+
+        featScores.append(indices[f], featNames[indices[f]], importances[indices[f]])
+        #featScores = list( feat_index, feat_name, feat_importance )
+
+        return featScores
 
         # Plot the feature importances of the forest
         plt.figure()
-        plt.title("Feature importances")
+        plt.title("Feature importances " + classificatorName)
         plt.bar(range(X.shape[1]), importances[indices],
                color="r", yerr=std[indices], align="center")
         plt.xticks(range(X.shape[1]), indices)
         plt.xlim([-1, X.shape[1]])
-        plt.imsave('featImportances' + str(self.personLoader.classificator.name))
+
+        fname = "../../results/plots/featImportances" + classificatorName + '.png'
+        plt.savefig(fname)
         plt.show()
+        plt.clf()

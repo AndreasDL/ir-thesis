@@ -2,41 +2,7 @@ import personLoader
 import classificators
 import featureExtractor as FE
 import models
-import reporters
 
-import time
-
-
-from multiprocessing import Pool
-POOL_SIZE = 6
-
-#use with analytics reporter
-def getAnalytics():
-    t0 = time.time()
-
-    reporter = reporters.HTMLAnalyticsReporter()
-
-    #multithreaded
-    pool = Pool(processes=POOL_SIZE)
-    results = pool.map( valenceCorrelationWorker, range(1,33) )
-    pool.close()
-    pool.join()
-    reporter.genReport(results)
-
-    t1 = time.time()
-    print("valence complete, time spend: " + str(t1-t0))
-
-    #multithreaded
-    pool = Pool(processes=POOL_SIZE)
-    results = pool.map( arousalCorrelationWorker, range(1,33) )
-    pool.close()
-    pool.join()
-    reporter.genReport(results)
-
-    t2 = time.time()
-    print("arousal complete, time spend: " + str(t2-t1))
-
-    print("total time spend: " + str(t2-t0))
 def valenceCorrelationWorker():
     #create the features
     featExtr = FE.MultiFeatureExtractor()
@@ -133,4 +99,5 @@ def arousalCorrelationWorker():
     return results
 
 if __name__ == '__main__':
-    getAnalytics()
+    valenceCorrelationWorker()
+    arousalCorrelationWorker()

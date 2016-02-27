@@ -353,7 +353,6 @@ class HTMLAnalyticsReporter(AReporter):
         f.write("</body></html>")
         #close file
         f.close()
-
 class CSVCorrReporter(CSVReporter):
     def genReport(self,results,fpad='../../results/'):
         #input:
@@ -405,7 +404,6 @@ class CSVCorrReporter(CSVReporter):
             f.write('\n')
 
         f.close()
-
 class HTMLCorrReporter(CSVReporter):
     colorList = [
     '#ff0000', '#ff4000', '#ff8000', '#ffbf00', '#ffff00',
