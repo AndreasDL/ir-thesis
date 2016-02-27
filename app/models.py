@@ -370,17 +370,17 @@ class GlobalRFAnalyticsModel(AModel):
         #get importances
         importances = forest.feature_importances_
         std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis = 0)
-        indices = np.argsort(importances)[::-1]
 
         print('Feature Ranking')
+        indices = np.argsort(importances)[::-1]
         featNames = self.personLoader.featureExtractor.getFeatureNames()
         for f in range(X.shape[1]):
             print( f+1, '. feature ', indices[f], ' (', featNames[indices[f]], ') [', importances[indices[f]], ']')
 
         return {
-                'classificatorName' : classificatorName,
-                'featNames'         : featNames,
-                'importances'       : importances,
-                'std'               : std,
-                'indices'           : indices
+                'classificatorName'  : classificatorName,
+                'featNames'          : featNames,
+                'global_importances' : importances,
+                'global_std'         : std,
+                'global_indices'     : indices[::-1]
                 }

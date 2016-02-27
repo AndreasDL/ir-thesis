@@ -541,7 +541,7 @@ class HTMLCorrReporter(CSVReporter):
 
 class HTMLRFAnalyticsReporter(AReporter):
 
-    def genPlot(self,classificatorName, importances, indices, std, fname='globalPlot', fpad="../../results/plots/"):
+    def genPlot(self,classificatorName, importances, std, fname='globalPlot', fpad="../../results/plots/"):
         fname = fpad + fname + classificatorName + '.png'
 
         if not os.path.isfile(fname):
@@ -550,13 +550,13 @@ class HTMLRFAnalyticsReporter(AReporter):
             plt.title("Feature importances " + classificatorName)
             plt.bar(
                 range(len(importances)),
-                importances[indices],
+                importances,
                 color="r",
-                yerr=std[indices],
+                yerr=std,
                 align="center"
             )
-            plt.xticks(range(len(indices)), indices)
-            plt.xlim([-1, len(indices)])
+            plt.xticks(range(0,len(importances),5))
+            plt.xlim([-1, len(importances)])
             plt.savefig(fname)
             plt.clf()
 
@@ -584,24 +584,31 @@ class HTMLRFAnalyticsReporter(AReporter):
                 'featNames'         : featNames,
                 'importances'       : importances,
                 'std'               : std,
-                'indices'           : indices
                 }
         '''
 
-        self.genPlot(result['classificatorName'], np.array(result['importances']), result['indices'], result['std'])
+        self.genPlot(classificatorName=result['classificatorName'], importances=np.array(result['global_importances']), std=result['global_std'])
         f.write('<img src="plots/globalPlot' + result['classificatorName'] + '.png" ></br></br>')
 
 
-        f.write('<h1>Importance Scores</h1></br><table><tr><td><b>what</b></td>')
+        f.write('<h1>Importance Scores</h1></br><table><tr><td><b>Index</b></td>')
+        for i in range(len(result['global_importances'])):
+            f.write('<td>' + str(i) + '</td>')
+
+        f.write("</tr><tr><td><b>Rank</b></td>")
+        for i in result['global_indices']:
+            f.write('<td>' + str(i+1) + '</td>')
+
+        f.write('</tr><tr><td><b>featName</b></td>')
         for name in result['featNames']:
             f.write('<td><b>' + str(name) + '</b></td>')
+
         f.write('</tr><tr><td><b>Importance Scores</b></td>')
-
-        for feat in result['importances']:
+        for feat in result['global_importances']:
             f.write('<td>' + str(feat) + '</td>')
-        f.write('</tr><tr><td><b>std</b></td>')
 
-        for std in result['std']:
+        f.write('</tr><tr><td><b>std</b></td>')
+        for std in result['global_std']:
             f.write('<td>' + str(std) + '</td>')
         f.write('</tr>')
 
