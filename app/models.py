@@ -337,7 +337,7 @@ class CorrelationsSelectionModel(AModel):
         }
 
 #random forest more reliable
-class RFAnalyticsModel(AModel):
+class GlobalRFAnalyticsModel(AModel):
     def __init__(self, personCombiner):
         AModel.__init__(self,personCombiner)
 
@@ -346,14 +346,14 @@ class RFAnalyticsModel(AModel):
         classificatorName = str(self.personLoader.classificator.name)
 
         #load all features & keep them in memory
-        y = load('y_allpersons' + classificatorName)
+        y = load('global_y_allpersons' + classificatorName)
         if y == None:
             print('[Warn] Rebuilding cache')
             X, y = self.personLoader.load()
-            dump(X,'X_allpersons')
-            dump(y,'y_allpersons' + classificatorName)
+            dump(X,'global_X_allpersons')
+            dump(y,'global_y_allpersons' + classificatorName)
         else:
-            X = load('X_allpersons')
+            X = load('global_X_allpersons')
 
         #grow forest
         forest = ExtraTreesClassifier(
@@ -374,24 +374,13 @@ class RFAnalyticsModel(AModel):
 
         print('Feature Ranking')
         featNames = self.personLoader.featureExtractor.getFeatureNames()
-        featScores = []
         for f in range(X.shape[1]):
             print( f+1, '. feature ', indices[f], ' (', featNames[indices[f]], ') [', importances[indices[f]], ']')
 
-        featScores.append(indices[f], featNames[indices[f]], importances[indices[f]])
-        #featScores = list( feat_index, feat_name, feat_importance )
-
-        return featScores
-
-        # Plot the feature importances of the forest
-        plt.figure()
-        plt.title("Feature importances " + classificatorName)
-        plt.bar(range(X.shape[1]), importances[indices],
-               color="r", yerr=std[indices], align="center")
-        plt.xticks(range(X.shape[1]), indices)
-        plt.xlim([-1, X.shape[1]])
-
-        fname = "../../results/plots/featImportances" + classificatorName + '.png'
-        plt.savefig(fname)
-        plt.show()
-        plt.clf()
+        return {
+                'classificatorName' : classificatorName,
+                'featNames'         : featNames,
+                'importances'       : importances,
+                'std'               : std,
+                'indices'           : indices
+                }

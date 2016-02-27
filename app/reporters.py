@@ -538,3 +538,71 @@ class HTMLCorrReporter(CSVReporter):
 
 
         f.write("</html>")
+
+class HTMLRFAnalyticsReporter(AReporter):
+
+    def genPlot(self,classificatorName, importances, indices, std, fname='globalPlot', fpad="../../results/plots/"):
+        fname = fpad + fname + classificatorName + '.png'
+
+        if not os.path.isfile(fname):
+            # Plot the feature importances of the forest
+            plt.figure()
+            plt.title("Feature importances " + classificatorName)
+            plt.bar(
+                range(len(importances)),
+                importances[indices],
+                color="r",
+                yerr=std[indices],
+                align="center"
+            )
+            plt.xticks(range(len(indices)), indices)
+            plt.xlim([-1, len(indices)])
+            plt.savefig(fname)
+            plt.clf()
+
+    def genReport(self,result,fpad='../../results/'):
+        st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
+        f = open(fpad + "GlobalRF" + str(result['classificatorName']) + str(st) + ".html", 'w')
+
+        f.write("<html><head><title>" + str(result['classificatorName']) + '</title></head><body>')
+
+        #meta table
+        f.write("""<h1>Meta Data</h1>
+        <table>
+        <tr>
+            <td><b>Classificator Used:</b></td>
+            <td>""" + str(result['classificatorName']) + """</td>
+        </tr>
+        <tr>
+            <td><b>Created on</b></td>
+            <td>""" + str(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')) + """</td>
+        <tr></table></br></br></br>""")
+
+        '''FYI
+        result = list of {
+                'classificatorName' : classificatorName,
+                'featNames'         : featNames,
+                'importances'       : importances,
+                'std'               : std,
+                'indices'           : indices
+                }
+        '''
+
+        self.genPlot(result['classificatorName'], np.array(result['importances']), result['indices'], result['std'])
+        f.write('<img src="plots/globalPlot' + result['classificatorName'] + '.png" ></br></br>')
+
+
+        f.write('<h1>Importance Scores</h1></br><table><tr><td><b>what</b></td>')
+        for name in result['featNames']:
+            f.write('<td><b>' + str(name) + '</b></td>')
+        f.write('</tr><tr><td><b>Importance Scores</b></td>')
+
+        for feat in result['importances']:
+            f.write('<td>' + str(feat) + '</td>')
+        f.write('</tr><tr><td><b>std</b></td>')
+
+        for std in result['std']:
+            f.write('<td>' + str(std) + '</td>')
+        f.write('</tr>')
+
+        f.write('</table></body></html>')

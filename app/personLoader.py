@@ -81,7 +81,7 @@ class NoTestsetLoader(APersonLoader):
 
 class PersonCombiner(APersonLoader):
     def __init__(self, classificator, featExtractor, name='normal', path=DATASET_LOCATION ):
-            APersonLoader.__init__(self, classificator, featExtractor, name, path=DATASET_LOCATION)
+        APersonLoader.__init__(self, classificator, featExtractor, name, path=DATASET_LOCATION)
 
     def load(self):
         X, y = [], []

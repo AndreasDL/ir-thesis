@@ -2,6 +2,7 @@ import personLoader
 import classificators
 import featureExtractor as FE
 import models
+import reporters
 
 def valenceCorrelationWorker():
     #create the features
@@ -44,7 +45,7 @@ def valenceCorrelationWorker():
     personLdr = personLoader.PersonCombiner(classificator,featExtr)
 
     #put in model
-    model = models.RFAnalyticsModel(personLdr)
+    model = models.GlobalRFAnalyticsModel(personLdr)
 
     #run model
     results = model.run()
@@ -91,7 +92,7 @@ def arousalCorrelationWorker():
     personLdr = personLoader.PersonCombiner(classificator,featExtr)
 
     #put in model
-    model = models.RFAnalyticsModel(personLdr)
+    model = models.GlobalRFAnalyticsModel(personLdr)
 
     #run model
     results = model.run()
@@ -99,5 +100,9 @@ def arousalCorrelationWorker():
     return results
 
 if __name__ == '__main__':
-    valenceCorrelationWorker()
-    arousalCorrelationWorker()
+    reporter = reporters.HTMLRFAnalyticsReporter()
+    results = valenceCorrelationWorker()
+    reporter.genReport(results)
+
+    results = arousalCorrelationWorker()
+    reporter.genReport(results)
