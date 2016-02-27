@@ -37,7 +37,7 @@ def getAnalytics():
     print("arousal complete, time spend: " + str(t2-t1))
 
     print("total time spend: " + str(t2-t0))
-def valenceCorrelationWorker(person):
+def valenceCorrelationWorker():
     #create the features
     featExtr = FE.MultiFeatureExtractor()
     for channel in FE.all_EEG_channels:
@@ -75,16 +75,16 @@ def valenceCorrelationWorker(person):
     classificator = classificators.ValenceClassificator()
 
     #create personloader
-    personLdr = personLoader.NoTestsetLoader(classificator,featExtr)
+    personLdr = personLoader.PersonCombiner(classificator,featExtr)
 
     #put in model
     model = models.RFAnalyticsModel(personLdr)
 
     #run model
-    results = model.run(person)
+    results = model.run()
 
     return results
-def arousalCorrelationWorker(person):
+def arousalCorrelationWorker():
     #create the features
     featExtr = FE.MultiFeatureExtractor()
     for channel in FE.all_EEG_channels:
@@ -122,13 +122,13 @@ def arousalCorrelationWorker(person):
     classificator = classificators.ArousalClassificator()
 
     #create personloader
-    personLdr = personLoader.NoTestsetLoader(classificator,featExtr)
+    personLdr = personLoader.PersonCombiner(classificator,featExtr)
 
     #put in model
     model = models.RFAnalyticsModel(personLdr)
 
     #run model
-    results = model.run(person)
+    results = model.run()
 
     return results
 

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from scipy.stats import pearsonr
-
+from personLoader import dump,load
 
 
 
@@ -338,29 +338,30 @@ class CorrelationsSelectionModel(AModel):
 
 #random forest more reliable
 class RFAnalyticsModel(AModel):
-    def __init__(self, personLoader):
-        AModel.__init__(self,personLoader)
+    def __init__(self, personCombiner):
+        AModel.__init__(self,personCombiner)
 
-    def optMetric(self,predictions, truths):
-        return None
-
-    def run(self,person):
+    def run(self):
         #http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
 
         #load all features & keep them in memory
-        X, y = self.personLoader.load(person)
-
-        featNames = self.personLoader.featureExtractor.getFeatureNames()
-        featCount = len(featNames)
+        X = load('feat_X_allpersons')
+        if X == None:
+            X, y = self.personLoader.load()
+            dump(X,'feat_X_allpersons')
+            dump(y,'y_allpersons')
+        else:
+            y = load('y_allpersons')
 
         #grow forest
         forest = ExtraTreesClassifier(
-            n_estimators=1000, #no of trees should be sufficiently large
+            n_estimators=5000, #no of trees should be sufficiently large
             max_features='auto', #sqrt of features
             criterion='entropy', #entropy vs gini => last one is known to be unfair for multiple categories
             random_state=0,
             n_jobs=-1
         )
+
         #fit forest
         forest.fit(X,y)
 
@@ -382,4 +383,5 @@ class RFAnalyticsModel(AModel):
                color="r", yerr=std[indices], align="center")
         plt.xticks(range(X.shape[1]), indices)
         plt.xlim([-1, X.shape[1]])
+        plt.imsave('featImportances' + str(self.personLoader.classificator.name))
         plt.show()

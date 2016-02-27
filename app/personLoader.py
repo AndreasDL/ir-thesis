@@ -55,7 +55,6 @@ class PersonLoader(APersonLoader):
             #X_test  = normer.transform(X_test, copy=False)
 
             return np.array(X_train), np.array(y_train), np.array(X_test), np.array(y_test)
-
 class NoTestsetLoader(APersonLoader):
     def __init__(self, classificator, featExtractor, name='noTestset', path=DATASET_LOCATION ):
         APersonLoader.__init__(self, classificator, featExtractor, name, path=path)
@@ -80,13 +79,37 @@ class NoTestsetLoader(APersonLoader):
 
             return np.array(X), np.array(y)
 
+class PersonCombiner(APersonLoader):
+    def __init__(self, classificator, featExtractor, name='normal', path=DATASET_LOCATION ):
+            APersonLoader.__init__(self, classificator, featExtractor, name, path=DATASET_LOCATION)
+
+    def load(self):
+        X, y = [], []
+
+        for person in range(1,33):
+            print('loading person ' + str(person))
+            fname = str(self.path) + '/s'
+            if person < 10:
+                fname += '0'
+            fname += str(person) + '.dat'
+            with open(fname,'rb') as f:
+                p = pickle._Unpickler(f)
+                p.encoding= ('latin1')
+                data = p.load()
+
+                #structure of data element:
+                #data['labels'][video] = [valence, arousal, dominance, liking]
+                #data['data'][video][channel] = [samples * 8064]
+
+                X.extend(self.featureExtractor.extract(data['data']))
+                y.extend(self.classificator.classify(data['labels']))
+
+        return np.array(X), np.array(y)
 
 def dump(X, name, path='../../dumpedData'):
     fname = path + '/' + name
     with open(fname, 'wb') as f:
         pickle.dump( X, f )
-
-
 def load(name, path='../../dumpedData'):
     fname = path + '/' + name
 
