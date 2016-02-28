@@ -15,17 +15,35 @@ Machine learning algorithms are responsible for the relation between features an
 
 \npar
 
-Another way to group the algorithms is based on their training data. In the asking price examples above one gets labelled results; the asking price is given for each area, this is referred to as supervised machine learning. The other possibility is unsupervised machine learning, which often results in finding groups of similar data points (clustering). Not that the combination of supervised and unsupervised data is also possible. Support you have a dataset with 5000 webpages and you want to categorise them in 10 distinct categories, e.g. science, nature, cooking, ... , but you only have the labels for 100 of the 5000 pages. Then you could first cluster the pages in similar groups. As soon as a group contains one labelled page, you can label all the pages in the group as they are similar. This technique is known as semi supervised learning and has the advantage that one does  not need to label all the data, which is usually a difficult and time consuming process, if you had a fast and easy way to label the data then you wouldn't be needing machine learning.
+Another way to group the algorithms is based on their training data. In the asking price examples above one gets labelled results; the asking price is given for each area, this is referred to as supervised machine learning. The other possibility is unsupervised machine learning, which often results in finding groups of similar data points (clustering). Not that the combination of supervised and unsupervised data is also possible. Support you have a dataset with 5000 webpages and you want to categorise them in 10 distinct categories, e.g. science, nature, cooking, ... , but you only have the labels for 100 of the 5000 pages. Then you could first cluster the pages in similar groups. As soon as a group contains one labelled page, you can label all the pages in the group as they are similar. This technique is known as semi supervised learning and has the advantage that one can also use unlabelled data. Note that labelled data is usually quite rare; if you had a fast and easy way to label the data then you wouldn't be needing machine learning.
 
-\section{over and underfitting and the relation with balanced datasets}
+\section{over and underfitting a.k.a. high bias and high variance}
+%train and test error
 
+
+\mijnfiguur{width=0.9\textwidth}{overunderfitting}{Overfitting versus underfitting\cite{overunderfitting}.}
+
+Suppose the example in Figure \ref{overunderfitting}, where one tries to find a good function to fit the given data points. Looking at the three proposed functions, one can easily see that the middle figure is the most likely generator function of the red points. 
+
+The figure on the left corresponds to an underfit, where the proposed function is not able to capture sufficient detail of the points. The function is not complex enough to approach the generator function, which is known as high bias. A high bias problem has a high training error, as the function is not able to fit the points correctly, this is visible in Figure \ref{highbias}
+
+\mijnfiguur{width=0.9\textwidth}{highbias}{A high bias function is not complex enough to approach the generator function closely.}
+
+The function on the rights The function on the right corresponds to an overfit; the function 'goes through' each point exactly, but one can see that in between data points the behaviour of the hypothesis function is not logical. This problem is known as a high variance problem, where the train error is close to zero, but the test error is quite dramatic. 
+
+\mijnfiguur{width=0.9\textwidth}{highvariance}{A High variance function is too complex and fits the data point too closely.}
+
+Another way of looking at bias variance, is to look at the bias as the difference between the generator function and the closest possible fit that your machine learning algorithm can give you. Variance on the other hand is the distance between the closest possible fit and your best fit. Your best fit will not be as close, as you are limited in data and time.
 
 \section{Support Vector Machines (SVM)}
 
+
 \section{Linear Discriminant analysis (LDA)}
+
 
 \section{Common Spatial Patterns (CSP)}
 
-\section{Analysis of Variance (ANOVA)}
+
+\section{Random Forests (RF)}
 
 \section{Pearson correlation}
