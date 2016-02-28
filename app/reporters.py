@@ -541,13 +541,13 @@ class HTMLCorrReporter(CSVReporter):
 
 class HTMLRFAnalyticsReporter(AReporter):
 
-    def genPlot(self,classificatorName, importances, std, fname='globalPlot', fpad="../../results/plots/"):
-        fname = fpad + fname + classificatorName + '.png'
+    def genPlot(self,classificatorName, importances, std, criterion, fname='globalPlot', fpad="../../results/plots/"):
+        fname = fpad + fname + classificatorName + '_' + criterion + '.png'
 
         if not os.path.isfile(fname):
             # Plot the feature importances of the forest
             plt.figure()
-            plt.title("Feature importances " + classificatorName)
+            plt.title("Feature importances " + classificatorName + ' [' + criterion + ']')
             plt.bar(
                 range(len(importances)),
                 importances,
@@ -561,8 +561,19 @@ class HTMLRFAnalyticsReporter(AReporter):
             plt.clf()
 
     def genReport(self,result,fpad='../../results/'):
+        '''FYI
+        result = list of {
+                'classificatorName'  : classificatorName,
+                'featNames'          : featNames,
+                'global_importances' : importances,
+                'global_std'         : std,
+                'global_indices'     : indices[::-1],
+                'criterion'          : criterion
+                }
+        '''
+
         st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
-        f = open(fpad + "GlobalRF" + str(result['classificatorName']) + str(st) + ".html", 'w')
+        f = open(fpad + "GlobalRF" + str(result['classificatorName']) + '_' + result['criterion'] + str(st) + ".html", 'w')
 
         f.write("<html><head><title>" + str(result['classificatorName']) + '</title></head><body>')
 
@@ -578,17 +589,15 @@ class HTMLRFAnalyticsReporter(AReporter):
             <td>""" + str(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')) + """</td>
         <tr></table></br></br></br>""")
 
-        '''FYI
-        result = list of {
-                'classificatorName' : classificatorName,
-                'featNames'         : featNames,
-                'importances'       : importances,
-                'std'               : std,
-                }
-        '''
 
-        self.genPlot(classificatorName=result['classificatorName'], importances=np.array(result['global_importances']), std=result['global_std'])
-        f.write('<img src="plots/globalPlot' + result['classificatorName'] + '.png" ></br></br>')
+
+        self.genPlot(
+            classificatorName=result['classificatorName'],
+            importances=np.array(result['global_importances']),
+            std=result['global_std'],
+            criterion=result['criterion']
+        )
+        f.write('<img src="plots/globalPlot' + result['classificatorName'] + "_" + result['criterion'] + '.png" ></br></br>')
 
 
         f.write('<h1>Importance Scores</h1></br><table><tr><td><b>Index</b></td>')
@@ -613,3 +622,4 @@ class HTMLRFAnalyticsReporter(AReporter):
         f.write('</tr>')
 
         f.write('</table></body></html>')
+        f.close()

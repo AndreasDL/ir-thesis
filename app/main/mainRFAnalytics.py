@@ -4,7 +4,7 @@ import featureExtractor as FE
 import models
 import reporters
 
-def valenceCorrelationWorker():
+def valenceCorrelationWorker(criterion):
     #create the features
     featExtr = FE.MultiFeatureExtractor()
     for channel in FE.all_EEG_channels:
@@ -48,10 +48,10 @@ def valenceCorrelationWorker():
     model = models.GlobalRFAnalyticsModel(personLdr)
 
     #run model
-    results = model.run()
+    results = model.run(criterion=criterion)
 
     return results
-def arousalCorrelationWorker():
+def arousalCorrelationWorker(criterion):
     #create the features
     featExtr = FE.MultiFeatureExtractor()
     for channel in FE.all_EEG_channels:
@@ -95,14 +95,19 @@ def arousalCorrelationWorker():
     model = models.GlobalRFAnalyticsModel(personLdr)
 
     #run model
-    results = model.run()
+    results = model.run(criterion=criterion)
 
     return results
 
 if __name__ == '__main__':
     reporter = reporters.HTMLRFAnalyticsReporter()
-    results = valenceCorrelationWorker()
+
+    results = valenceCorrelationWorker('gini')
+    reporter.genReport(results)
+    results = valenceCorrelationWorker('entropy')
     reporter.genReport(results)
 
-    results = arousalCorrelationWorker()
+    results = arousalCorrelationWorker('gini')
+    reporter.genReport(results)
+    results = arousalCorrelationWorker('entropy')
     reporter.genReport(results)

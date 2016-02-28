@@ -341,7 +341,7 @@ class GlobalRFAnalyticsModel(AModel):
     def __init__(self, personCombiner):
         AModel.__init__(self,personCombiner)
 
-    def run(self):
+    def run(self,criterion):
         #http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
         classificatorName = str(self.personLoader.classificator.name)
 
@@ -359,7 +359,7 @@ class GlobalRFAnalyticsModel(AModel):
         forest = ExtraTreesClassifier(
             n_estimators=5000, #no of trees should be sufficiently large
             max_features='auto', #sqrt of features
-            criterion='entropy', #entropy vs gini => last one is known to be unfair for multiple categories
+            criterion=criterion, #entropy vs gini => last one is known to be unfair for multiple categories
             random_state=0,
             n_jobs=-1
         )
@@ -382,5 +382,6 @@ class GlobalRFAnalyticsModel(AModel):
                 'featNames'          : featNames,
                 'global_importances' : importances,
                 'global_std'         : std,
-                'global_indices'     : indices[::-1]
+                'global_indices'     : indices[::-1],
+                'criterion'          : criterion
                 }
