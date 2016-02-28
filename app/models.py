@@ -385,3 +385,93 @@ class GlobalRFAnalyticsModel(AModel):
                 'global_indices'     : indices, #[ index of first, index of second] ...
                 'criterion'          : criterion
                 }
+class GlobalRFSelectionModel(AModel):
+    def __init__(self, personCombiner):
+        AModel.__init__(self,personCombiner)
+
+    def getIntermediateResult(self,criterion,X,y, descr):
+        predictions, truths = [], []
+        forest = ExtraTreesClassifier(
+            n_estimators=5000, #no of trees should be sufficiently large
+            max_features='auto', #sqrt of features
+            criterion=criterion, #entropy vs gini => last one is known to be unfair for multiple categories
+            random_state=0,
+            n_jobs=-1
+        )
+        for train_index, CV_index in KFold(n=len(X), n_folds=10, random_state=17, shuffle=False): #train index here is a part of the train set
+            #train
+            forest.fit(X[train_index], y[train_index])
+
+            #predict
+            pred = forest.predict(X[CV_index])
+
+            #save for metric calculations
+            predictions.extend(pred)
+            truths.extend(y[CV_index])
+
+            result = self.optMetric(predictions=predictions, truths=truths)
+
+        print(descr, ' ', result)
+
+        return result
+
+    def step1(self,criterion,X,y):
+        #step 1 rank features
+        print('Feature Ranking')
+        forest = ExtraTreesClassifier(
+            n_estimators=5000, #no of trees should be sufficiently large
+            max_features='auto', #sqrt of features
+            criterion=criterion, #entropy vs gini => last one is known to be unfair for multiple categories
+            random_state=0,
+            n_jobs=-1
+        )
+        forest.fit(X,y)
+        importances = forest.feature_importances_
+        std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis = 0)
+        indices = np.array(np.argsort(importances)[::-1])
+
+        return importances, std, indices
+
+    def step2(self,indices,X,featNames):
+        #step 2 eliminate lowest 20%
+        print("elimination")
+        new_indices = np.array(indices[:int(0.8*len(indices))])
+        X_new = X[:,new_indices]
+        new_featNames = np.array(featNames[new_indices])
+
+        return new_indices, X_new, new_featNames
+
+    def run(self,criterion):
+        #http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
+        classificatorName = str(self.personLoader.classificator.name)
+        featNames = np.array(self.personLoader.featureExtractor.getFeatureNames())
+
+        #load all features & keep them in memory
+        y = load('global_y_allpersons' + classificatorName)
+        if y == None:
+            print('[Warn] Rebuilding cache')
+            X, y = self.personLoader.load()
+            dump(X,'global_X_allpersons')
+            dump(y,'global_y_allpersons' + classificatorName)
+        else:
+            X = load('global_X_allpersons')
+
+        self.getIntermediateResult(criterion,X,y,'all features')
+
+        #step1
+        importances, std, indices = self.step1(criterion,X,y)
+        #step2
+        indices, X, featNames = self.step2(indices, X, featNames)
+        self.getIntermediateResult(criterion,X,y,'80%')
+
+
+
+
+        return {
+                'classificatorName'  : classificatorName,
+                'featNames'          : self.personLoader.featureExtractor.getFeatureNames(),
+                'global_importances' : importances,
+                'global_std'         : std,
+                'global_indices'     : indices, #[ index of first, index of second] ...
+                'criterion'          : criterion
+                }
