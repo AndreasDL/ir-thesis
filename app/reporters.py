@@ -567,10 +567,11 @@ class HTMLRFAnalyticsReporter(AReporter):
                 'featNames'          : featNames,
                 'global_importances' : importances,
                 'global_std'         : std,
-                'global_indices'     : indices[::-1],
+                'global_indices'     : indices,
                 'criterion'          : criterion
                 }
         '''
+
 
         st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
         f = open(fpad + "GlobalRF" + str(result['classificatorName']) + '_' + result['criterion'] + str(st) + ".html", 'w')
@@ -599,13 +600,19 @@ class HTMLRFAnalyticsReporter(AReporter):
         )
         f.write('<img src="plots/globalPlot' + result['classificatorName'] + "_" + result['criterion'] + '.png" ></br></br>')
 
+        f.write('<h1>Top 10 most important features</h1></br><table><tr><td><b>rank</b></td><td><b>featName (featIndex)</b></td><td><b>ImportanceScore</b></td></tr>')
+        for rank, featIndex in enumerate(result['global_indices'][:10]):
+            f.write('<tr><td>' + str(rank+1) + '</td><td>' + str(result['featNames'][featIndex]) + '(' + str(featIndex) + ')</td><td>' + str(result['global_importances'][featIndex]) + '</td></tr>')
+        f.write('</table></br></br></br>')
 
-        f.write('<h1>Importance Scores</h1></br><table><tr><td><b>Index</b></td>')
+        f.write('<h1>Detailed Importance Scores</h1></br><table><tr><td><b>Index</b></td>')
         for i in range(len(result['global_importances'])):
             f.write('<td>' + str(i) + '</td>')
 
         f.write("</tr><tr><td><b>Rank</b></td>")
-        for i in result['global_indices']:
+
+        ranks = result['global_indices'].argsort() #ordering => ranking
+        for i in ranks:
             f.write('<td>' + str(i+1) + '</td>')
 
         f.write('</tr><tr><td><b>featName</b></td>')

@@ -382,6 +382,6 @@ class GlobalRFAnalyticsModel(AModel):
                 'featNames'          : featNames,
                 'global_importances' : importances,
                 'global_std'         : std,
-                'global_indices'     : indices[::-1],
+                'global_indices'     : indices, #[ index of first, index of second] ...
                 'criterion'          : criterion
                 }
