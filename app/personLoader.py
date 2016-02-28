@@ -83,10 +83,10 @@ class PersonCombiner(APersonLoader):
     def __init__(self, classificator, featExtractor, name='normal', path=DATASET_LOCATION ):
         APersonLoader.__init__(self, classificator, featExtractor, name, path=DATASET_LOCATION)
 
-    def load(self):
+    def load(self, personList=range(1,2)):
         X, y = [], []
 
-        for person in range(1,33):
+        for person in personList:
             print('loading person ' + str(person))
             fname = str(self.path) + '/s'
             if person < 10:

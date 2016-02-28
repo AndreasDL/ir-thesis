@@ -419,7 +419,7 @@ class GlobalRFSelectionModel(AModel):
         #step 1 rank features
         print('Feature Ranking')
         forest = ExtraTreesClassifier(
-            n_estimators=5000, #no of trees should be sufficiently large
+            n_estimators=2000, #no of trees should be sufficiently large
             max_features='auto', #sqrt of features
             criterion=criterion, #entropy vs gini => last one is known to be unfair for multiple categories
             random_state=0,
@@ -431,15 +431,53 @@ class GlobalRFSelectionModel(AModel):
         indices = np.array(np.argsort(importances)[::-1])
 
         return importances, std, indices
-
-    def step2(self,indices,X,featNames):
+    def step2(self,indices):
         #step 2 eliminate lowest 20%
         print("elimination")
         new_indices = np.array(indices[:int(0.8*len(indices))])
-        X_new = X[:,new_indices]
-        new_featNames = np.array(featNames[new_indices])
 
-        return new_indices, X_new, new_featNames
+        return new_indices
+
+    def step3(self, criterion, indices, X, y, max_count, feat_names):
+        print("building")
+        acc_list      = []
+
+        forest = ExtraTreesClassifier(
+            n_estimators=2000, #no of trees should be sufficiently large
+            max_features='auto', #sqrt of features
+            criterion=criterion, #entropy vs gini => last one is known to be unfair for multiple categories
+            random_state=0,
+            n_jobs=-1,
+            oob_score=True,
+            bootstrap=True
+        )
+
+        forest.fit(X[:,indices[0:2]],y)
+        best_metric = forest.oob_score_
+        acc_list.append(best_metric)
+        best_count  = 2
+        print("acc with 2 features " , best_metric)
+
+        curr_count = 3
+        while curr_count < max_count: #for curr_count in range(2,max_feat):
+            forest.fit(X[:,indices[0:curr_count]],y)
+
+            curr_metric = forest.oob_score_
+            acc_list.append(curr_metric)
+
+            print("acc with ", curr_count, " : " , curr_metric)
+
+            if curr_metric <= best_metric:
+                best_metric = curr_metric
+                best_count  = curr_count
+            #else: break
+
+            curr_count += 1
+
+        return acc_list, best_count, best_metric
+
+
+
 
     def run(self,criterion):
         #http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
@@ -461,9 +499,11 @@ class GlobalRFSelectionModel(AModel):
         #step1
         importances, std, indices = self.step1(criterion,X,y)
         #step2
-        indices, X, featNames = self.step2(indices, X, featNames)
-        self.getIntermediateResult(criterion,X,y,'80%')
+        indices = self.step2(indices)
+        self.getIntermediateResult(criterion,X[:,indices],y,'80%')
 
+        #step 3 add features one by one
+        acc_list, best_count, best_metric = self.step3(criterion,indices,X,y,10,featNames)
 
 
 
