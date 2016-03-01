@@ -437,7 +437,6 @@ class GlobalRFSelectionModel(AModel):
         new_indices = np.array(indices[:int(0.8*len(indices))])
 
         return new_indices
-
     def step3(self, criterion, indices, X, y, max_count, feat_names):
         print("building")
         acc_list      = []
@@ -476,9 +475,6 @@ class GlobalRFSelectionModel(AModel):
 
         return acc_list, best_count, best_metric
 
-
-
-
     def run(self,criterion):
         #http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
         classificatorName = str(self.personLoader.classificator.name)
@@ -513,5 +509,46 @@ class GlobalRFSelectionModel(AModel):
                 'global_importances' : importances,
                 'global_std'         : std,
                 'global_indices'     : indices, #[ index of first, index of second] ...
+                'criterion'          : criterion
+                }
+class RFClusterModel(AModel):
+    def __init__(self, personLoader):
+        AModel.__init__(self,personLoader)
+
+    def run(self,person, criterion):
+        #http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
+        classificatorName = str(self.personLoader.classificator.name)
+
+
+        X, y = self.personLoader.load(person)
+
+        #grow forest
+        forest = ExtraTreesClassifier(
+            n_estimators=5000, #no of trees should be sufficiently large
+            max_features='auto', #sqrt of features
+            criterion=criterion, #entropy vs gini => last one is known to be unfair for multiple categories
+            random_state=0,
+            n_jobs=-1
+        )
+
+        #fit forest
+        forest.fit(X,y)
+
+        #get importances
+        importances = forest.feature_importances_
+        std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis = 0)
+
+        print('Feature Ranking')
+        indices = np.argsort(importances)[::-1]
+        featNames = self.personLoader.featureExtractor.getFeatureNames()
+        for f in range(X.shape[1]):
+            print( f+1, '. feature ', indices[f], ' (', featNames[indices[f]], ') [', importances[indices[f]], ']')
+
+        return {
+                'classificatorName'  : classificatorName,
+                'featNames'          : featNames,
+                'importances'        : importances,
+                'std'                : std,
+                'indices'            : indices, #[ index of first, index of second] ...
                 'criterion'          : criterion
                 }

@@ -562,7 +562,7 @@ class HTMLRFAnalyticsReporter(AReporter):
 
     def genReport(self,result,fpad='../../results/'):
         '''FYI
-        result = list of {
+        result = dict {
                 'classificatorName'  : classificatorName,
                 'featNames'          : featNames,
                 'global_importances' : importances,
@@ -629,4 +629,105 @@ class HTMLRFAnalyticsReporter(AReporter):
         f.write('</tr>')
 
         f.write('</table></body></html>')
+        f.close()
+class HTMLRFClusteringReporter(AReporter):
+    def genPlot(self,classificatorName, importances, std, criterion, fname='globalPlot', fpad="../../results/plots/"):
+        fname = fpad + fname + classificatorName + '_' + criterion + '.png'
+
+        if not os.path.isfile(fname):
+            # Plot the feature importances of the forest
+            plt.figure()
+            plt.title("Feature importances " + classificatorName + ' [' + criterion + ']')
+            plt.bar(
+                range(len(importances)),
+                importances,
+                color="r",
+                yerr=std,
+                align="center"
+            )
+            plt.xticks(range(0,len(importances),5))
+            plt.xlim([-1, len(importances)])
+            plt.savefig(fname)
+            plt.clf()
+
+    def genReport(self, results, fpad='../../results/'):
+        '''FYI
+        result = list of {
+                'classificatorName'  : classificatorName,
+                'featNames'          : featNames,
+                'importances'        : importances,
+                'std'                : std,
+                'indices'            : indices,
+                'criterion'          : criterion
+                }
+        '''
+
+
+        st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
+        f = open(fpad + "GlobalRF" + str(results[0]['classificatorName']) + '_' + results[0]['criterion'] + str(st) + ".html", 'w')
+
+        f.write("<html><head><title>" + str(results[0]['classificatorName']) + '</title></head><body>')
+
+        #meta table
+        f.write("""<h1>Meta Data</h1>
+        <table>
+        <tr>
+            <td><b>Classificator Used:</b></td>
+            <td>""" + str(results[0]['classificatorName']) + """</td>
+        </tr>
+        <tr>
+            <td><b>Created on</b></td>
+            <td>""" + str(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')) + """</td>
+        <tr></table></br></br></br>""")
+
+        #overall plot => generator before
+        f.write("<h1> overall importances </h1>")
+        f.write('<img src="plots/globalPlot' + results[0]['classificatorName'] + "_" + results[0]['criterion'] + '.png" ></br></br>')
+
+        #init importance table
+        #|         | feat 1 | feeat 2 | ....
+        #|person 1 | ....
+        #|person 2 | ...
+        oview_table = """
+        <h1>Importances for all persons</h1>
+        <table>
+            <tr>
+                <td><b>Person</b></td>
+        """
+        for featName in results[0]['featNames']:
+            fname=featName.replace(" ", "</br>")
+            oview_table += '<td><b>' + str(fname) + '</b></td>'
+        oview_table += '</tr><tr><td><b>index</b></td>'
+        for i in range(len(results[0]['featNames'])):
+            oview_table += '<td><b>' + str(i + 1) + '</b></td>'
+        oview_table += '</tr>'
+
+        #init person sections
+        person_sections = "<h1>Person specific</h1></br>"
+
+        for person, result in enumerate(results):
+            oview_table += "<tr>\n<td><b>Person " + str(person+1) + "</b></td>"
+            #loop through results
+            for imp in result['importances']:
+                oview_table += "<td>" + str(round(imp,5)) +"</td>\n"
+
+            oview_table += '</tr>'
+
+            #create pers specific plot
+            self.genPlot(
+                classificatorName=result['classificatorName'],
+                importances=np.array(result['importances']),
+                std=result['std'],
+                criterion=result['criterion'],
+                fname='person' + str(person+1)
+            )
+            person_sections += '<h2> Person' + str(person+1) + '</h2></br>'
+            person_sections += '<img src="plots/person' + str(person+1) + result['classificatorName'] + "_" + result['criterion'] + '.png" ></br></br>'
+
+        oview_table += "</table>"
+
+        f.write(oview_table)
+        f.write(person_sections)
+
+        f.write("</body></html>")
         f.close()
