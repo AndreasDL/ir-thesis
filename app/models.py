@@ -357,6 +357,8 @@ class GlobalRFAnalyticsModel(AModel):
         else:
             X = load('global_X_allpersons')
 
+        normalize(X,copy=False)
+
         #grow forest
         forest = ExtraTreesClassifier(
             n_estimators=5000, #no of trees should be sufficiently large
