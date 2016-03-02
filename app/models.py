@@ -8,6 +8,8 @@ import numpy as np
 
 from scipy.stats import pearsonr
 from personLoader import dump,load
+from sklearn.preprocessing import normalize
+
 
 
 
@@ -530,6 +532,8 @@ class RFClusterModel(AModel):
             random_state=0,
             n_jobs=-1
         )
+
+        normalize(X,copy=False)
 
         #fit forest
         forest.fit(X,y)
