@@ -26,11 +26,11 @@ all_EEG_channels   = list(range(32))
 all_phy_channels   = list(range(36,40))
 all_FM_channels    = [18]
 
-all_frontal_channel_names   = []
-all_frontal_channels        = []
-all_posterior_channel_names = []
-all_posterior_channels      = []
+all_frontal_channel_names   = ['FC5', 'FC1','FC2', 'FC6', 'F7', 'F3', 'Fz', 'F4', 'F8', 'Fp1','Fp2']
+all_frontal_channels        = [channelNames[name] for name in all_frontal_channel_names]
 
+all_posterior_channel_names = ['CP5','CP1','CP2','CP6','P7','P3','Pz','P4','P8','O1','O2']
+all_posterior_channels      = [channelNames[name] for name in all_posterior_channel_names]
 
 all_channels = [#global const vars!
     'Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1',
@@ -118,6 +118,69 @@ class PSDExtractor(AFeatureExtractor):
             features.append(avg)
 
         return np.array(features)
+class DEExtractor(PSDExtractor):
+    #Power spectral density of a channel
+    def __init__(self,channels,freqBand, featName='Power'):
+        PSDExtractor.__init__(self,channels,freqBand,featName)
+
+    def extract(self, video):
+        return np.log(super(DEExtractor,self).extract(video))
+
+class DASMExtractor(AFeatureExtractor):
+    #DE left - DE right
+    def __init__(self,left_channels, right_channels,freqBand,featName='AlphaBeta'):
+        AFeatureExtractor.__init__(self,featName)
+
+        self.leftDEExtractor = DEExtractor(left_channels,freqBand,featName)
+        self.rightDEExtractor = DEExtractor(right_channels,freqBand,featName)
+
+    def extract(self,video):
+        leftDE  = self.leftDEExtractor.extract(video)
+        rightDE = self.rightDEExtractor.extract(video)
+
+        return leftDE - rightDE
+class RASMExtractor(AFeatureExtractor):
+    #DE left / DE right
+    def __init__(self,left_channels, right_channels,freqBand,featName='AlphaBeta'):
+        AFeatureExtractor.__init__(self,featName)
+
+        self.leftDEExtractor = DEExtractor(left_channels,freqBand,featName)
+        self.rightDEExtractor = DEExtractor(right_channels,freqBand,featName)
+
+    def extract(self,video):
+        leftDE  = self.leftDEExtractor.extract(video)
+        rightDE = self.rightDEExtractor.extract(video)
+
+        return float(leftDE) / float(rightDE)
+
+class DCAUExtractor(AFeatureExtractor):
+    #DE front -  DE posterior
+    def __init__(self,frontal_channels, posterior_channels,freqBand,featName='AlphaBeta'):
+        AFeatureExtractor.__init__(self,featName)
+
+        self.frontalDEExtractor = DEExtractor(frontal_channels,freqBand,featName)
+        self.posteriorDEExtractor = DEExtractor(posterior_channels,freqBand,featName)
+
+    def extract(self,video):
+        frontalDE  = self.frontalDEExtractor.extract(video)
+        posteriorDE = self.posteriorDEExtractor.extract(video)
+
+        return frontalDE - posteriorDE
+class RCAUExtractor(AFeatureExtractor):
+    #DE front -  DE posterior
+    def __init__(self,frontal_channels, posterior_channels,freqBand,featName='AlphaBeta'):
+        AFeatureExtractor.__init__(self,featName)
+
+        self.frontalDEExtractor = DEExtractor(frontal_channels,freqBand,featName)
+        self.posteriorDEExtractor = DEExtractor(posterior_channels,freqBand,featName)
+
+    def extract(self,video):
+        frontalDE  = self.frontalDEExtractor.extract(video)
+        posteriorDE = self.posteriorDEExtractor.extract(video)
+
+        return frontalDE / posteriorDE
+
+#more traditional
 class AlphaBetaExtractor(AFeatureExtractor):
     def __init__(self,channels,featName='AlphaBeta'):
         AFeatureExtractor.__init__(self,featName)

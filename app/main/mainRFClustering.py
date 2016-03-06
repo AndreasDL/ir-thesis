@@ -9,10 +9,8 @@ POOL_SIZE = 6
 
 from personLoader import dump,load
 
-
-
-def valenceCorrelationWorker(person,criterion='entropy'):
-    #create the features
+def getFeatures():
+    # create the features
     featExtr = FE.MultiFeatureExtractor()
     for channel in FE.all_EEG_channels:
         featExtr.addFE(
@@ -21,6 +19,31 @@ def valenceCorrelationWorker(person,criterion='entropy'):
                 featName='A/B ' + FE.all_channels[channel]
             )
         )
+
+        featExtr.addFE(
+            FE.FrontalMidlinePower(
+                channels=[channel],
+                featName="FM " + FE.all_channels[channel]
+            )
+        )
+
+        for freqband in FE.startFreq:
+            featExtr.addFE(
+                FE.DEExtractor(
+                    channels=[channel],
+                    freqBand=freqband,
+                    featName='DE ' + FE.all_channels[channel] + '(' + freqband + ')'
+                )
+            )
+
+            featExtr.addFE(
+                FE.PSDExtractor(
+                    channels=[channel],
+                    freqBand=freqband,
+                    featName='PSD ' + FE.all_channels[channel] + '(' + freqband + ')'
+                )
+            )
+
     for left, right in zip(FE.all_left_channels, FE.all_right_channels):
         featExtr.addFE(
             FE.LMinRLPlusRExtractor(
@@ -30,20 +53,58 @@ def valenceCorrelationWorker(person,criterion='entropy'):
             )
         )
 
-    for channel in FE.all_EEG_channels:
-        featExtr.addFE(
-            FE.FrontalMidlinePower(
-                channels=[channel],
-                featName="FM " + FE.all_channels[channel]
+        for freqband in FE.startFreq:
+            featExtr.addFE(
+                FE.DASMExtractor(
+                    left_channels=[left],
+                    right_channels=[right],
+                    freqBand=freqband,
+                    featName='DASM ' + FE.all_channels[left] + ',' + FE.all_channels[right]
+                )
             )
-        )
+
+            featExtr.addFE(
+                FE.RASMExtractor(
+                    left_channels=[left],
+                    right_channels=[right],
+                    freqBand=freqband,
+                    featName='RASM ' + FE.all_channels[left] + ',' + FE.all_channels[right]
+                )
+            )
+
+    for front, post in zip(FE.all_frontal_channels, FE.all_frontal_channels):
+        for freqband in FE.startFreq:
+            featExtr.addFE(
+                FE.DCAUExtractor(
+                    frontal_channels=[front],
+                    posterior_channels=[post],
+                    freqBand=freqband,
+                    featName='DCAU ' + FE.all_channels[front] + ',' + FE.all_channels[post]
+                )
+            )
+
+            featExtr.addFE(
+                FE.RCAUExtractor(
+                    frontal_channels=[front],
+                    posterior_channels=[post],
+                    freqBand=freqband,
+                    featName='RCAU ' + FE.all_channels[front] + ',' + FE.all_channels[post]
+                )
+            )
 
     for channel in FE.all_phy_channels:
-        featExtr.addFE(FE.AvgExtractor(channel,''))
-        featExtr.addFE(FE.STDExtractor(channel,''))
+        featExtr.addFE(FE.AvgExtractor(channel, ''))
+        featExtr.addFE(FE.STDExtractor(channel, ''))
 
     featExtr.addFE(FE.AVGHeartRateExtractor())
     featExtr.addFE(FE.STDInterBeatExtractor())
+
+    return featExtr
+
+
+def valenceWorker(person, criterion='entropy'):
+    #create the features
+    featExtr = getFeatures()
 
     #create classificator
     classificator = classificators.ValenceClassificator()
@@ -58,7 +119,7 @@ def valenceCorrelationWorker(person,criterion='entropy'):
     results = model.run(person=person,criterion=criterion)
 
     return results
-def arousalCorrelationWorker(person,criterion='entropy'):
+def arousalWorker(person, criterion='entropy'):
     #create the features
     featExtr = FE.MultiFeatureExtractor()
     for channel in FE.all_EEG_channels:
@@ -117,7 +178,7 @@ if __name__ == '__main__':
     if results == None:
         print("[warn] rebuilding cache")
         pool = Pool(processes=POOL_SIZE)
-        results = pool.map( valenceCorrelationWorker, range(1,33) )
+        results = pool.map(valenceWorker, range(1, 33))
         pool.close()
         pool.join()
         dump(results,'valence_importances_entropy_per_person')
@@ -132,7 +193,7 @@ if __name__ == '__main__':
     if results == None:
         print("[warn] rebuilding cache")
         pool = Pool(processes=POOL_SIZE)
-        results = pool.map( arousalCorrelationWorker, range(1,33) )
+        results = pool.map(arousalWorker, range(1, 33))
         pool.close()
         pool.join()
         dump(results,'arousal_importances_entropy_per_person')

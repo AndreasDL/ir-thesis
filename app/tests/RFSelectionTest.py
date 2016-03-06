@@ -1,6 +1,6 @@
 import reporters
-from main.mainRFSelection import valenceCorrelationWorker
+from main.mainRFSelection import valenceWorker
 
 #reporter = reporters.HTMLAnalyticsReporter()
-results = valenceCorrelationWorker('gini')
+results = valenceWorker('gini')
 #reporter.genReport( [results] )
