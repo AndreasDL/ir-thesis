@@ -1,5 +1,5 @@
 import personLoader
-import classificators
+import Classificators
 import featureExtractor as FE
 import models
 import reporters
@@ -72,7 +72,7 @@ def valenceCorrelationWorker(person):
     featExtr.addFE(FE.STDInterBeatExtractor())
 
     #create classificator
-    classificator = classificators.ContValenceClassificator()
+    classificator = Classificators.ContValenceClassificator()
 
     #create personloader
     personLdr = personLoader.NoTestsetLoader(classificator,featExtr)

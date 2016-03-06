@@ -1,5 +1,5 @@
 import personLoader
-import classificators
+import Classificators
 import featureExtractor as FE
 import models
 import reporters
@@ -74,7 +74,7 @@ def valenceCorrAccWorker(person):
     featExtr.addFE(FE.STDInterBeatExtractor())
 
     #create classificator
-    cont_classificator = classificators.ContValenceClassificator()
+    cont_classificator = Classificators.ContValenceClassificator()
 
     #create personloaders
     cont_personLdr = personLoader.NoTestsetLoader(cont_classificator,featExtr)

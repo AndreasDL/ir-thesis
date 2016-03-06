@@ -3,7 +3,7 @@ from sklearn.metrics import roc_auc_score
 import datetime
 import time
 import personLoader
-import classificators
+import Classificators
 import featureExtractor
 import matplotlib.pyplot as plt
 import os.path

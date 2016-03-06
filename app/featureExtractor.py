@@ -21,9 +21,17 @@ all_left_channel_names  = ['Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', '
 all_left_channels  = list(range(13))
 all_right_channel_names = ['Fp2', 'AF4', 'F4', 'F8', 'FC6', 'FC2', 'C4', 'T8', 'CP6', 'CP2', 'P4', 'P8', 'PO4']
 all_right_channels = [16,17,19,20,21,22,24,25,26,27,28,29,30]
+
 all_EEG_channels   = list(range(32))
 all_phy_channels   = list(range(36,40))
 all_FM_channels    = [18]
+
+all_frontal_channel_names   = []
+all_frontal_channels        = []
+all_posterior_channel_names = []
+all_posterior_channels      = []
+
+
 all_channels = [#global const vars!
     'Fp1', 'AF3', 'F3', 'F7', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 'CP1',
     'P3', 'P7' , 'PO3','O1', 'Oz', 'Pz', 'Fp2','AF4','Fz', 'F4',
@@ -64,8 +72,8 @@ class AFeatureExtractor:
         return self.featureName
 
 #EEG features
-class PowerExtractor(AFeatureExtractor):
-    '''this FE will axtract alpha and beta power from the brain and reports it ratio'''
+class PSDExtractor(AFeatureExtractor):
+    #Power spectral density of a channel
     def __init__(self,channels,freqBand, featName='Power'):
         AFeatureExtractor.__init__(self,featName)
 
@@ -116,8 +124,8 @@ class AlphaBetaExtractor(AFeatureExtractor):
         self.usedChannelIndexes = channels
 
     def extract(self, video):
-        alphaExtr = PowerExtractor(self.usedChannelIndexes, 'alpha')
-        betaExtr  = PowerExtractor(self.usedChannelIndexes, 'beta')
+        alphaExtr = PSDExtractor(self.usedChannelIndexes, 'alpha')
+        betaExtr  = PSDExtractor(self.usedChannelIndexes, 'beta')
 
         alpha_power = np.sum(alphaExtr.extract(video))
         beta_power  = np.sum(betaExtr.extract(video))
@@ -133,16 +141,16 @@ class LMinRLPlusRExtractor(AFeatureExtractor):
             print('WARN left and right channels not of equal length')
 
     def extract(self, video):
-        leftExtr  = PowerExtractor(self.left_channels,'alpha')
-        rightExtr = PowerExtractor(self.right_channels, 'alpha')
+        leftExtr  = PSDExtractor(self.left_channels, 'alpha')
+        rightExtr = PSDExtractor(self.right_channels, 'alpha')
 
         left_power  = np.sum(leftExtr.extract(video))
         right_power = np.sum(rightExtr.extract(video))
 
         return (left_power - right_power) / (left_power + right_power)
-class FrontalMidlinePower(PowerExtractor):
+class FrontalMidlinePower(PSDExtractor):
     def __init__(self,channels,featName='FM'):
-        PowerExtractor.__init__(self,channels,'theta',featName)
+        PSDExtractor.__init__(self, channels, 'theta', featName)
 
 #physiological features
 class AvgExtractor(AFeatureExtractor):

@@ -1,5 +1,5 @@
 import personLoader
-import classificators
+import Classificators
 import featureExtractor as FE
 import models
 import reporters
@@ -39,7 +39,7 @@ def valenceCorrelationWorker(criterion):
     featExtr.addFE(FE.STDInterBeatExtractor())
 
     #create classificator
-    classificator = classificators.ValenceClassificator()
+    classificator = Classificators.ValenceClassificator()
 
     #create personloader
     personLdr = personLoader.PersonCombiner(classificator,featExtr)
@@ -86,7 +86,7 @@ def arousalCorrelationWorker(criterion):
     featExtr.addFE(FE.STDInterBeatExtractor())
 
     #create classificator
-    classificator = classificators.ArousalClassificator()
+    classificator = Classificators.ArousalClassificator()
 
     #create personloader
     personLdr = personLoader.PersonCombiner(classificator,featExtr)
