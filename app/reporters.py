@@ -544,21 +544,20 @@ class HTMLRFAnalyticsReporter(AReporter):
     def genPlot(self,classificatorName, importances, std, criterion, fname='globalPlot', fpad="../../results/plots/"):
         fname = fpad + fname + classificatorName + '_' + criterion + '.png'
 
-        if not os.path.isfile(fname):
-            # Plot the feature importances of the forest
-            plt.figure()
-            plt.title("Feature importances " + classificatorName + ' [' + criterion + ']')
-            plt.bar(
-                range(len(importances)),
-                importances,
-                color="r",
-                yerr=std,
-                align="center"
-            )
-            plt.xticks(range(0,len(importances),5))
-            plt.xlim([-1, len(importances)])
-            plt.savefig(fname)
-            plt.clf()
+        # Plot the feature importances of the forest
+        plt.figure()
+        plt.title("Feature importances " + classificatorName + ' [' + criterion + ']')
+        plt.bar(
+            range(len(importances)),
+            importances,
+            color="r",
+            yerr=std,
+            align="center"
+        )
+        plt.xticks(range(0,len(importances),50))
+        plt.xlim([-1, len(importances)])
+        plt.savefig(fname)
+        plt.clf()
 
     def genReport(self,result,fpad='../../results/'):
         '''FYI
@@ -634,7 +633,6 @@ class HTMLRFClusteringReporter(AReporter):
     def genPlot(self,classificatorName, importances, std, criterion, fname='globalPlot', fpad="../../results/plots/"):
         fname = fpad + fname + classificatorName + '_' + criterion + '.png'
 
-        #if not os.path.isfile(fname):
         # Plot the feature importances of the forest
         plt.figure()
         plt.title("Feature importances " + classificatorName + ' [' + criterion + ']')
@@ -645,7 +643,7 @@ class HTMLRFClusteringReporter(AReporter):
             yerr=std,
             align="center"
         )
-        plt.xticks(range(0,len(importances),5))
+        plt.xticks(range(0,len(importances),50))
         plt.xlim([-1, len(importances)])
         plt.savefig(fname)
         plt.clf()
