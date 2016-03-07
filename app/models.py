@@ -11,9 +11,6 @@ from personLoader import dump,load
 from sklearn.preprocessing import normalize
 
 
-
-
-
 class AModel:
     def __init__(self,personLoader):
         self.personLoader = personLoader
@@ -604,15 +601,35 @@ class RFSinglePersonModel(AModel):
 
         #returns list of <featExtr, importance, std>
         return zipper(self.personLoader.featureExtractor.featureExtrs,importances,std)
-    
     def filterFeatures(self,to_keep):
         self.X = self.X[:,to_keep]
+    def getOOBErrors(self,feat_indices):
+         #grow forest
+        forest = ExtraTreesClassifier(
+            n_estimators=self.treeCount, #no of trees should be sufficiently large
+            max_features='auto', #sqrt of features
+            criterion=self.criterion, #entropy vs gini => last one is known to be unfair for multiple categories
+            random_state=0,
+            n_jobs=-1,
+            oob_score=True,
+            bootstrap=True
+        )
 
-        return
+        oobErrors = []
+        for feat in range(len(self.X[0])):
+            score = 0
+            if feat not in feat_indices:
+                feats = feat_indices
+                feats.append(feat)
 
-    def getOOBErrors(self):
+                #fit forest
+                temp = self.X[:,feats]
+                forest.fit(self.X[:,feats],self.y)
+                score = forest.oob_score_
 
+            oobErrors.append(score)
 
+        return oobErrors
 
 class RFModel(AModel):
     def __init__(self, personLoader, criterion, treeCount,threshold):
@@ -627,21 +644,36 @@ class RFModel(AModel):
 
         #create 32 classifiers
         print('initialising the 32 classifiers ...')
-        for person in range(1,5):
+        for person in range(1,2):
             self.classifiers.append(
                 RFSinglePersonModel(self.personLoader,person,self.criterion,self.treeCount)
             )
 
         #get all importances of the different features
+        print('getting importances')
         importances = np.array([ c.getImportances() for c in self.classifiers])
-
 
         #average of each importance
         avg_importances = np.average(importances[:,:,1],axis=0)
 
         #remove everything below threshold, a.k.a. keep everything about the threshold
+        print('filtering features')
         to_keep = [i for i, val in enumerate(avg_importances) if val > self.threshold]
         for c in self.classifiers: c.filterFeatures(to_keep)
 
+        print('building tree')
+        used_features = []
+        for i in range(len(to_keep)):
+            #get avg oobErrors
+            oob_errors = np.array([ c.getOOBErrors(used_features) for c in self.classifiers ])
+            avg_oob    = np.average(oob_errors)
+            print('avg_oob: ', avg_oob)
 
-        return importances
+            #add features with lowest avg_oob
+            indices = np.array(np.argsort(avg_oob))
+            for index in indices:
+                if index not in used_features:
+                    used_features.append(index)
+                    break
+
+        #prune tree
