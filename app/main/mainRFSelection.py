@@ -115,37 +115,7 @@ def valenceWorker(criterion):
     return results
 def arousalWorker(criterion):
     #create the features
-    featExtr = FE.MultiFeatureExtractor()
-    for channel in FE.all_EEG_channels:
-        featExtr.addFE(
-            FE.AlphaBetaExtractor(
-                channels=[channel],
-                featName='A/B ' + FE.all_channels[channel]
-            )
-        )
-    for left, right in zip(FE.all_left_channels, FE.all_right_channels):
-        featExtr.addFE(
-            FE.LMinRLPlusRExtractor(
-                left_channels=[left],
-                right_channels=[right],
-                featName='LR ' + FE.all_channels[left] + ',' + FE.all_channels[right]
-            )
-        )
-
-    for channel in FE.all_EEG_channels:
-        featExtr.addFE(
-            FE.FrontalMidlinePower(
-                channels=[channel],
-                featName="FM " + FE.all_channels[channel]
-            )
-        )
-
-    for channel in FE.all_phy_channels:
-        featExtr.addFE(FE.AvgExtractor(channel,''))
-        featExtr.addFE(FE.STDExtractor(channel,''))
-
-    featExtr.addFE(FE.AVGHeartRateExtractor())
-    featExtr.addFE(FE.STDInterBeatExtractor())
+    featExtr = getFeatures()
 
     #create classificator
     classificator = Classificators.ArousalClassificator()

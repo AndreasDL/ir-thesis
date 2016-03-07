@@ -361,7 +361,7 @@ class GlobalRFAnalyticsModel(AModel):
 
         #grow forest
         forest = ExtraTreesClassifier(
-            n_estimators=5000, #no of trees should be sufficiently large
+            n_estimators=2000, #no of trees should be sufficiently large
             max_features='auto', #sqrt of features
             criterion=criterion, #entropy vs gini => last one is known to be unfair for multiple categories
             random_state=0,
@@ -393,7 +393,7 @@ class GlobalRFSelectionModel(AModel):
     def getIntermediateResult(self,criterion,X,y, descr):
         predictions, truths = [], []
         forest = ExtraTreesClassifier(
-            n_estimators=5000, #no of trees should be sufficiently large
+            n_estimators=2000, #no of trees should be sufficiently large
             max_features='auto', #sqrt of features
             criterion=criterion, #entropy vs gini => last one is known to be unfair for multiple categories
             random_state=0,
