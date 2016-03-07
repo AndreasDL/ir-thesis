@@ -520,7 +520,6 @@ class RFClusterModel(AModel):
         #http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
         classificatorName = str(self.personLoader.classificator.name)
 
-        #X, y = self.personLoader.load(person)
         #load all features & keep them in memory
         y = load('global_y_per_person' + classificatorName +'_p' + str(person))
         if y == None:
@@ -560,3 +559,89 @@ class RFClusterModel(AModel):
                 'indices'            : indices, #[ index of first, index of second] ...
                 'criterion'          : criterion
                 }
+
+class RFSinglePersonModel(AModel):
+    def __init__(self, personLoader,person,criterion, treeCount):
+        AModel.__init__(self,personLoader)
+
+        classificatorName = str(self.personLoader.classificator.name)
+
+        #load all features & keep them in memory
+        self.y = load('global_y_per_person' + classificatorName +'_p' + str(person))
+        if self.y == None:
+            print('[Warn] Rebuilding cache')
+            self.X, self.y = self.personLoader.load(person)
+            dump(self.X,'global_X_per_person_p' + str(person))
+            dump(self.y,'global_y_per_person' + classificatorName + '_p' + str(person))
+        else:
+            self.X = load('global_X_per_person_p' +str(person))
+
+        normalize(self.X,copy=False)
+
+        self.treeCount = treeCount
+        self.criterion = criterion
+
+    def getImportances(self):
+
+
+        #grow forest
+        forest = ExtraTreesClassifier(
+            n_estimators=self.treeCount, #no of trees should be sufficiently large
+            max_features='auto', #sqrt of features
+            criterion=self.criterion, #entropy vs gini => last one is known to be unfair for multiple categories
+            random_state=0,
+            n_jobs=-1
+        )
+
+        #fit forest
+        forest.fit(self.X,self.y)
+
+        #get importances
+        importances = forest.feature_importances_
+        std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis = 0)
+
+        zipper = lambda feat,imp,std: [list(a) for a in zip(feat,imp,std)]
+
+        #returns list of <featExtr, importance, std>
+        return zipper(self.personLoader.featureExtractor.featureExtrs,importances,std)
+    
+    def filterFeatures(self,to_keep):
+        self.X = self.X[:,to_keep]
+
+        return
+
+    def getOOBErrors(self):
+
+
+
+class RFModel(AModel):
+    def __init__(self, personLoader, criterion, treeCount,threshold):
+        AModel.__init__(self,personLoader)
+        self.criterion = criterion
+        self.treeCount = treeCount
+        self.threshold = threshold
+
+        self.classifiers = []
+
+    def run(self):
+
+        #create 32 classifiers
+        print('initialising the 32 classifiers ...')
+        for person in range(1,5):
+            self.classifiers.append(
+                RFSinglePersonModel(self.personLoader,person,self.criterion,self.treeCount)
+            )
+
+        #get all importances of the different features
+        importances = np.array([ c.getImportances() for c in self.classifiers])
+
+
+        #average of each importance
+        avg_importances = np.average(importances[:,:,1],axis=0)
+
+        #remove everything below threshold, a.k.a. keep everything about the threshold
+        to_keep = [i for i, val in enumerate(avg_importances) if val > self.threshold]
+        for c in self.classifiers: c.filterFeatures(to_keep)
+
+
+        return importances
