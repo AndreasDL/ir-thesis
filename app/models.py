@@ -520,16 +520,16 @@ class RFClusterModel(AModel):
         #http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
         classificatorName = str(self.personLoader.classificator.name)
 
-        X, y = self.personLoader.load(person)
+        #X, y = self.personLoader.load(person)
         #load all features & keep them in memory
-        y = load('global_y_per_person' + classificatorName)
+        y = load('global_y_per_person' + classificatorName +'_p' + str(person))
         if y == None:
             print('[Warn] Rebuilding cache')
-            X, y = self.personLoader.load()
-            dump(X,'global_X_per_person')
-            dump(y,'global_y_per_person' + classificatorName)
+            X, y = self.personLoader.load(person)
+            dump(X,'global_X_per_person_p' + str(person))
+            dump(y,'global_y_per_person' + classificatorName + '_p' + str(person))
         else:
-            X = load('global_X_per_person')
+            X = load('global_X_per_person_p' +str(person))
 
         #grow forest
         forest = ExtraTreesClassifier(

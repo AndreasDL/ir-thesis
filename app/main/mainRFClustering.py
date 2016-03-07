@@ -103,6 +103,7 @@ def getFeatures():
 
 
 def valenceWorker(person, criterion='entropy'):
+    print('valence ' , person)
     #create the features
     featExtr = getFeatures()
 
@@ -120,6 +121,7 @@ def valenceWorker(person, criterion='entropy'):
 
     return results
 def arousalWorker(person, criterion='entropy'):
+    print('arousal ' , person)
     #create the features
     featExtr = getFeatures()
 
