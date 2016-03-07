@@ -112,7 +112,7 @@ class PSDExtractor(AFeatureExtractor):
             for val in Y:
                 avg  += abs(val) **2
 
-            avg /= len(Y)
+            avg /= float(len(Y))
             avg = np.sqrt(avg)
 
             features.append(avg)
@@ -124,7 +124,8 @@ class DEExtractor(PSDExtractor):
         PSDExtractor.__init__(self,channels,freqBand,featName)
 
     def extract(self, video):
-        return np.log(super(DEExtractor,self).extract(video))
+        psd = super(DEExtractor,self).extract(video)
+        return np.log(psd)
 
 class DASMExtractor(AFeatureExtractor):
     #DE left - DE right
@@ -178,7 +179,7 @@ class RCAUExtractor(AFeatureExtractor):
         frontalDE  = self.frontalDEExtractor.extract(video)
         posteriorDE = self.posteriorDEExtractor.extract(video)
 
-        return frontalDE / posteriorDE
+        return float(frontalDE) / float(posteriorDE)
 
 #more traditional
 class AlphaBetaExtractor(AFeatureExtractor):
@@ -193,7 +194,7 @@ class AlphaBetaExtractor(AFeatureExtractor):
         alpha_power = np.sum(alphaExtr.extract(video))
         beta_power  = np.sum(betaExtr.extract(video))
 
-        return alpha_power / beta_power
+        return alpha_power / float(beta_power)
 class LMinRLPlusRExtractor(AFeatureExtractor):
     def __init__(self,left_channels, right_channels,featName='L-R/L+R'):
         AFeatureExtractor.__init__(self,featName)
@@ -210,7 +211,7 @@ class LMinRLPlusRExtractor(AFeatureExtractor):
         left_power  = np.sum(leftExtr.extract(video))
         right_power = np.sum(rightExtr.extract(video))
 
-        return (left_power - right_power) / (left_power + right_power)
+        return (left_power - right_power) / float(left_power + right_power)
 class FrontalMidlinePower(PSDExtractor):
     def __init__(self,channels,featName='FM'):
         PSDExtractor.__init__(self, channels, 'theta', featName)
@@ -299,7 +300,7 @@ class STDInterBeatExtractor(AFeatureExtractor):
         #plt.show()
 
 
-        interbeats = np.diff(maxima) / Fs #time in between beats => correlated to hreat rate!
+        interbeats = np.diff(maxima) / float(Fs) #time in between beats => correlated to hreat rate!
         std_interbeats = np.var(interbeats) #std of beats => gives an estimations as to how much the heart rate varies
 
 
