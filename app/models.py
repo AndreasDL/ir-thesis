@@ -2,7 +2,7 @@ from sklearn.feature_selection import SelectKBest, f_regression
 from sklearn.pipeline import Pipeline
 from sklearn.cross_validation import StratifiedShuffleSplit, KFold
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -357,12 +357,12 @@ class GlobalRFAnalyticsModel(AModel):
         normalize(X,copy=False)
 
         #grow forest
-        forest = ExtraTreesClassifier(
-            n_estimators=2000, #no of trees should be sufficiently large
-            max_features='auto', #sqrt of features
-            criterion=criterion, #entropy vs gini => last one is known to be unfair for multiple categories
-            random_state=0,
-            n_jobs=-1
+        forest = RandomForestClassifier(
+            n_estimators=5000,
+            max_features='auto',
+            criterion=criterion,
+            n_jobs=-1,
+            random_state=0
         )
 
         #fit forest
@@ -389,12 +389,12 @@ class GlobalRFSelectionModel(AModel):
 
     def getIntermediateResult(self,criterion,X,y, descr):
         predictions, truths = [], []
-        forest = ExtraTreesClassifier(
-            n_estimators=2000, #no of trees should be sufficiently large
-            max_features='auto', #sqrt of features
-            criterion=criterion, #entropy vs gini => last one is known to be unfair for multiple categories
-            random_state=0,
-            n_jobs=-1
+        forest = RandomForestClassifier(
+            n_estimators=5000,
+            max_features='auto',
+            criterion=criterion,
+            n_jobs=-1,
+            random_state=0
         )
         for train_index, CV_index in KFold(n=len(X), n_folds=10, random_state=17, shuffle=False): #train index here is a part of the train set
             #train
@@ -416,12 +416,12 @@ class GlobalRFSelectionModel(AModel):
     def step1(self,criterion,X,y):
         #step 1 rank features
         print('Feature Ranking')
-        forest = ExtraTreesClassifier(
-            n_estimators=2000, #no of trees should be sufficiently large
-            max_features='auto', #sqrt of features
-            criterion=criterion, #entropy vs gini => last one is known to be unfair for multiple categories
-            random_state=0,
-            n_jobs=-1
+        forest = RandomForestClassifier(
+            n_estimators=5000,
+            max_features='auto',
+            criterion=criterion,
+            n_jobs=-1,
+            random_state=0
         )
         forest.fit(X,y)
         importances = forest.feature_importances_
@@ -439,14 +439,14 @@ class GlobalRFSelectionModel(AModel):
         print("building")
         acc_list      = []
 
-        forest = ExtraTreesClassifier(
-            n_estimators=2000, #no of trees should be sufficiently large
-            max_features='auto', #sqrt of features
-            criterion=criterion, #entropy vs gini => last one is known to be unfair for multiple categories
-            random_state=0,
+        forest = RandomForestClassifier(
+            n_estimators=5000,
+            max_features='auto',
+            criterion=criterion,
             n_jobs=-1,
-            oob_score=True,
-            bootstrap=True
+            random_state=0,
+            bootstrap=True,
+            oob_score=True
         )
 
         forest.fit(X[:,indices[0:2]],y)
@@ -528,12 +528,12 @@ class RFClusterModel(AModel):
             X = load('global_X_per_person_p' +str(person))
 
         #grow forest
-        forest = ExtraTreesClassifier(
-            n_estimators=5000, #no of trees should be sufficiently large
-            max_features='auto', #sqrt of features
-            criterion=criterion, #entropy vs gini => last one is known to be unfair for multiple categories
-            random_state=0,
-            n_jobs=-1
+        forest = RandomForestClassifier(
+            n_estimators=5000,
+            max_features='auto',
+            criterion=criterion,
+            n_jobs=-1,
+            random_state=0
         )
 
         normalize(X,copy=False)
@@ -582,12 +582,12 @@ class RFSinglePersonModel(AModel):
 
 
         #grow forest
-        forest = ExtraTreesClassifier(
-            n_estimators=self.treeCount, #no of trees should be sufficiently large
-            max_features='auto', #sqrt of features
-            criterion=self.criterion, #entropy vs gini => last one is known to be unfair for multiple categories
-            random_state=0,
-            n_jobs=-1
+        forest = RandomForestClassifier(
+            n_estimators=5000,
+            max_features='auto',
+            criterion=self.criterion,
+            n_jobs=-1,
+            random_state=0
         )
 
         #fit forest
@@ -605,12 +605,12 @@ class RFSinglePersonModel(AModel):
         self.X = self.X[:,to_keep]
     def getOOBErrors(self,feat_indices):
          #grow forest
-        forest = ExtraTreesClassifier(
-            n_estimators=self.treeCount, #no of trees should be sufficiently large
-            max_features='auto', #sqrt of features
-            criterion=self.criterion, #entropy vs gini => last one is known to be unfair for multiple categories
-            random_state=0,
+        forest = RandomForestClassifier(
+            n_estimators=5000,
+            max_features='auto',
+            criterion=self.criterion,
             n_jobs=-1,
+            random_state=0,
             oob_score=True,
             bootstrap=True
         )
@@ -630,7 +630,6 @@ class RFSinglePersonModel(AModel):
             oobErrors.append(score)
 
         return oobErrors
-
 class RFModel(AModel):
     def __init__(self, personLoader, criterion, treeCount,threshold):
         AModel.__init__(self,personLoader)

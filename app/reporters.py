@@ -6,7 +6,6 @@ import personLoader
 import Classificators
 import featureExtractor
 import matplotlib.pyplot as plt
-import os.path
 
 
 
