@@ -603,10 +603,10 @@ class RFSinglePersonModel(AModel):
         return zipper(self.personLoader.featureExtractor.featureExtrs,importances,std)
     def filterFeatures(self,to_keep):
         self.X = self.X[:,to_keep]
-    def getOOBErrors(self,feat_indices):
+    def getOOBErrors(self,block_count,used_blocks):
          #grow forest
         forest = RandomForestClassifier(
-            n_estimators=5000,
+            n_estimators=2000,
             max_features='auto',
             criterion=self.criterion,
             n_jobs=-1,
@@ -615,21 +615,48 @@ class RFSinglePersonModel(AModel):
             bootstrap=True
         )
 
+        block_feats = []
+        block_size = int(len(self.X[0]) / block_count)
+
+        for block in used_blocks:
+            #add current candidate
+            start_feat = block * block_size
+            stop_feat  =  start_feat + block_size
+            if len(block_feats) == 0:
+                block_feats.extend(self.X[:,start_feat:stop_feat])
+            else:
+                for i in range(len(self.X)):
+                    block_feats[i] = np.append(block_feats[i], self.X[:,start_feat:stop_feat])
+
+
         oobErrors = []
-        for feat in range(len(self.X[0])):
+        for block in range(block_count):
             score = 0
-            if feat not in feat_indices:
-                feats = feat_indices
-                feats.append(feat)
+            if block not in used_blocks:
+
+                #get previously selected block features
+                feats = list(block_feats) #list to ensure deep copy
+
+                #add current candidate
+                start_feat = block * block_size
+                stop_feat  =  start_feat + block_size
+                if len(feats) == 0:
+                    feats.extend(self.X[:,start_feat:stop_feat])
+                    feats = np.array(feats)
+                else:
+                    for i in range(len(self.X)):
+                        feats[i] = np.append(feats[i], self.X[i,start_feat:stop_feat])
+
+
 
                 #fit forest
-                temp = self.X[:,feats]
-                forest.fit(self.X[:,feats],self.y)
-                score = forest.oob_score_
+                forest.fit(feats,self.y)
+                score = np.average( forest.oob_score_ )
 
             oobErrors.append(score)
 
         return oobErrors
+
 class RFModel(AModel):
     def __init__(self, personLoader, criterion, treeCount,threshold):
         AModel.__init__(self,personLoader)
@@ -643,7 +670,7 @@ class RFModel(AModel):
 
         #create 32 classifiers
         print('initialising the 32 classifiers ...')
-        for person in range(1,2):
+        for person in range(1,3):
             self.classifiers.append(
                 RFSinglePersonModel(self.personLoader,person,self.criterion,self.treeCount)
             )
@@ -655,24 +682,33 @@ class RFModel(AModel):
         #average of each importance
         avg_importances = np.average(importances[:,:,1],axis=0)
 
-        #remove everything below threshold, a.k.a. keep everything about the threshold
-        print('filtering features')
+        #remove everything below threshold, a.k.a. keep everything above the threshold
+        print('filtering features -  threshold')
         to_keep = [i for i, val in enumerate(avg_importances) if val > self.threshold]
         for c in self.classifiers: c.filterFeatures(to_keep)
+        avg_importances = avg_importances[to_keep]
+
+        #remove lowest 20% of features
+        print("filtering features - lowest 20%")
+        indices = np.array(np.argsort(avg_importances)[::-1])
+        new_indices = np.array(indices[:int(0.8*len(indices))])
+        for c in self.classifiers: c.filterFeatures(new_indices)
 
         print('building tree')
-        used_features = []
-        for i in range(len(to_keep)):
-            #get avg oobErrors
-            oob_errors = np.array([ c.getOOBErrors(used_features) for c in self.classifiers ])
-            avg_oob    = np.average(oob_errors)
-            print('avg_oob: ', avg_oob)
+        block_count = 10
+        used_blocks = []
+        for i in range(block_count):
 
-            #add features with lowest avg_oob
-            indices = np.array(np.argsort(avg_oob))
+            oob_errors = np.array([ c.getOOBErrors(block_count,used_blocks) for c in self.classifiers ]) #give errors for current block and previously selected blocks
+            avg_oob = np.average(oob_errors, axis=0)
+
+            #add block with lowest avg_oob
+            indices = np.array(np.argsort(avg_oob))[::-1]
             for index in indices:
-                if index not in used_features:
-                    used_features.append(index)
+                if index not in used_blocks:
+                    print("block ", index , " wins! (error: ", avg_oob[index], ")")
+
+                    used_blocks.append(index)
                     break
 
         #prune tree

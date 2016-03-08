@@ -134,11 +134,12 @@ def arousalWorker(criterion,treecount,threshold):
 
 if __name__ == '__main__':
     treeCount = 2000
-    threshold = 0.01
+    threshold = 0.00001
 
     #reporter = reporters.HTMLRFAnalyticsReporter()
 
     results = valenceWorker('gini',treeCount,threshold)
+    '''
     #reporter.genReport(results)
     results = valenceWorker('entropy',treeCount,threshold)
     #reporter.genReport(results)
@@ -147,3 +148,4 @@ if __name__ == '__main__':
     #reporter.genReport(results)
     results = arousalWorker('entropy',treeCount,threshold)
     #reporter.genReport(results)
+    '''
