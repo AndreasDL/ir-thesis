@@ -48,8 +48,8 @@ all_channels = [#global const vars!
 ]
 
 #turn bands into frequency ranges
-startFreq = {'alpha' : 8 , 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4, 'all' : 0}
-stopFreq  = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8, 'all' : 50}
+startFreq = {'alpha' : 8 , 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}#, 'all' : 0}
+stopFreq  = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}#, 'all' : 50}
 
 Fs = 128 #global const frequency of the brain signals
 nyq  = 0.5 * Fs
@@ -99,18 +99,18 @@ class PSDExtractor(AFeatureExtractor):
             sample = lfilter(b, a, channel)
 
             #hamming window to smoothen edges
-            ham = np.hamming(n)
-            sample = np.multiply(sample , ham)
+            #ham = np.hamming(n)
+            #sample = np.multiply(sample , ham)
 
             #fft => get power components
             # fft computing and normalization
             Y = np.fft.fft(sample)/n
-            Y = Y[range(round(n/2))]
+            Y = Y[:round(n/2)]
 
             #average
             avg = 0
             for val in Y:
-                avg  += abs(val) **2
+                avg += abs(val)**2
 
             avg /= float(len(Y))
             avg = np.sqrt(avg)
@@ -118,14 +118,43 @@ class PSDExtractor(AFeatureExtractor):
             features.append(avg)
 
         return np.array(features)
-class DEExtractor(PSDExtractor):
+class DEExtractor(AFeatureExtractor):
     #Power spectral density of a channel
     def __init__(self,channels,freqBand, featName='Power'):
-        PSDExtractor.__init__(self,channels,freqBand,featName)
+        AFeatureExtractor.__init__(self,featName)
+        self.usedChannelIndexes = channels #list of channel indexes to use
+
+        if not (freqBand in startFreq and freqBand in stopFreq):
+            print("Error Wrong waveband selection for frequencyPower. you selected:", freqBand)
+            exit(-1)
+        self.usedFeqBand = freqBand
+
+
 
     def extract(self, video):
-        psd = super(DEExtractor,self).extract(video)
-        return np.log(psd)
+        n = len(video[0])#8064 #number of samples
+        features = []
+        for channelIndex in self.usedChannelIndexes:
+            #get channel out the video data
+            channel = video[channelIndex]
+
+            #bandpass filter to get waveband
+            low  = startFreq[self.usedFeqBand] / nyq
+            high = stopFreq[ self.usedFeqBand] / nyq
+            b, a = butter(6, [low, high], btype='band')
+            sample = lfilter(b, a, channel)
+
+            #average Energy spectrum
+            avg = 0
+            for val in sample:
+                avg += abs(val)**2
+
+            avg /= float(len(sample))
+            avg = np.sqrt(avg)
+
+            features.append(avg)
+
+        return np.log(features)
 
 class DASMExtractor(AFeatureExtractor):
     #DE left - DE right

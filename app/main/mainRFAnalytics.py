@@ -24,6 +24,7 @@ def getFeatures():
         )
 
         for freqband in FE.startFreq:
+
             featExtr.addFE(
                 FE.DEExtractor(
                     channels=[channel],
@@ -32,6 +33,7 @@ def getFeatures():
                 )
             )
 
+            '''
             featExtr.addFE(
                 FE.PSDExtractor(
                     channels=[channel],
@@ -39,6 +41,8 @@ def getFeatures():
                     featName='PSD ' + FE.all_channels[channel] + '(' + freqband + ')'
                 )
             )
+            '''
+
 
     for left, right in zip(FE.all_left_channels, FE.all_right_channels):
         featExtr.addFE(
@@ -108,7 +112,10 @@ def valenceWorker(criterion):
     personLdr = personLoader.PersonCombiner(classificator, featExtr)
 
     # put in model
-    model = models.GlobalRFAnalyticsModel(personLdr)
+    model = models.GlobalRFAnalyticsModel(
+        personCombiner=personLdr,
+        personList=range(1,33)
+    )
 
     # run model
     results = model.run(criterion=criterion)
@@ -137,6 +144,8 @@ if __name__ == '__main__':
 
     results = valenceWorker('gini')
     reporter.genReport(results)
+
+    '''
     results = valenceWorker('entropy')
     reporter.genReport(results)
 
@@ -144,3 +153,4 @@ if __name__ == '__main__':
     reporter.genReport(results)
     results = arousalWorker('entropy')
     reporter.genReport(results)
+    '''

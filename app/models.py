@@ -337,8 +337,10 @@ class CorrelationsSelectionModel(AModel):
 
 #random forest more reliable
 class GlobalRFAnalyticsModel(AModel):
-    def __init__(self, personCombiner):
+    def __init__(self, personCombiner,personList):
         AModel.__init__(self,personCombiner)
+        self.personList = personList
+
 
     def run(self,criterion):
         #http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
@@ -348,7 +350,7 @@ class GlobalRFAnalyticsModel(AModel):
         y = load('global_y_allpersons' + classificatorName)
         if y == None:
             print('[Warn] Rebuilding cache')
-            X, y = self.personLoader.load()
+            X, y = self.personLoader.load(personList=self.personList)
             dump(X,'global_X_allpersons')
             dump(y,'global_y_allpersons' + classificatorName)
         else:
@@ -579,8 +581,6 @@ class RFSinglePersonModel(AModel):
         self.criterion = criterion
 
     def getImportances(self):
-
-
         #grow forest
         forest = RandomForestClassifier(
             n_estimators=5000,

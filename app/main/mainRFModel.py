@@ -30,7 +30,7 @@ def getFeatures():
                     featName='DE ' + FE.all_channels[channel] + '(' + freqband + ')'
                 )
             )
-
+            '''
             featExtr.addFE(
                 FE.PSDExtractor(
                     channels=[channel],
@@ -38,6 +38,7 @@ def getFeatures():
                     featName='PSD ' + FE.all_channels[channel] + '(' + freqband + ')'
                 )
             )
+            '''
 
     for left, right in zip(FE.all_left_channels, FE.all_right_channels):
         featExtr.addFE(
@@ -104,7 +105,7 @@ def valenceWorker(criterion,treecount,threshold):
     classificator = Classificators.ValenceClassificator()
 
     # create personloader
-    personLdr = personLoader.PersonCombiner(classificator, featExtr)
+    personLdr = personLoader.NoTestsetLoader(classificator, featExtr)
 
     # put in model
     model = models.RFModel(personLoader=personLdr,criterion=criterion,treeCount=treecount,threshold=threshold)
@@ -120,7 +121,7 @@ def arousalWorker(criterion,treecount,threshold):
     classificator = Classificators.ArousalClassificator()
 
     # create personloader
-    personLdr = personLoader.PersonCombiner(classificator, featExtr)
+    personLdr = personLoader.NoTestsetLoader(classificator, featExtr)
 
     # put in model
     model = models.RFModel(personLdr)
