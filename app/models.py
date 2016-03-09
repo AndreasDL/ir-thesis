@@ -12,6 +12,8 @@ from sklearn.preprocessing import normalize
 
 from multiprocessing import Pool
 POOL_SIZE = 6
+import datetime
+import time
 
 class AModel:
     def __init__(self,personLoader):
@@ -619,7 +621,7 @@ class RFSinglePersonModel(AModel):
 
 
         #fit forest
-        forest.fit(self.X[:count],self.y)
+        forest.fit(self.X[:,:count],self.y)
         oob_score = np.average( forest.oob_score_ )
 
         return oob_score
@@ -649,22 +651,38 @@ class RFModel(AModel):
         #create 32 classifiers
         print('initialising the 32 classifiers ...')
         stop_person = 33
+
         for person in range(1,stop_person):
             self.classifiers.append(
                 RFSinglePersonModel(self.personLoader,person,self.criterion,self.treeCount)
             )
 
+
+        st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
+        fpad='../../results/'
+        f = open(fpad + "RFModel" + self.personLoader.classificator.name + self.criterion + str(st) + ".txt", 'w')
+
         #step 1: variable ranking: get all importances of the different features
-        print('getting importances')
+        print('step 1: getting importances')
         pool = Pool(processes=POOL_SIZE)
         importances = np.array( pool.map( self.getImportance, range(1,stop_person) ))
         pool.close()
         pool.join()
+
         avg_importances = np.average(importances[:,:,1],axis=0) #average of each importance
 
+        f.write("avg_importances")
+        for feat, importance in zip( self.classifiers[0].personLoader.featureExtractor.featureExtrs, avg_importances):
+            f.write(feat.featureName + " - " + str(importance) + "\n")
+
         #step 2: elimintaion: remove everything below threshold, a.k.a. keep everything above the threshold
-        print('filtering features -  threshold')
+        print('step 2: filtering features -  threshold')
         to_keep = [i for i, val in enumerate(avg_importances) if val > self.threshold]
+
+        f.write("keeping features" + str(to_keep))
+        for feat in np.array(self.classifiers[0].personLoader.featureExtractor.featureExtrs)[to_keep]:
+            f.write(feat.featureName + "\n")
+
         for c in self.classifiers: c.filterFeatures(to_keep)
         avg_importances = avg_importances[to_keep]
 
@@ -672,11 +690,15 @@ class RFModel(AModel):
         indices = np.array(np.argsort(avg_importances)[::-1])
         for c in self.classifiers: c.filterFeatures(indices)
 
+        f.write("ordering features")
+        for feat, importance in zip( self.classifiers[0].personLoader.featureExtractor.featureExtrs, avg_importances[indices]):
+            f.write(feat.featureName + " - " + str(importance)+ "\n")
+
         #add features one by one and select smallest, lowest oob model
         print('building tree')
         lowest_error = 1
-        lowest_index = 0
-        for i in range(len(indices)):
+        lowest_index = 1
+        for i in range(1,len(indices)):
             self.count = i
 
             pool = Pool(processes=POOL_SIZE)
@@ -686,6 +708,7 @@ class RFModel(AModel):
             avg_oob = np.average(oob_errors, axis=0)
 
             print("feat Count: " + str(i) + " - error: " + str(avg_oob))
+            f.write('feat_count: ' + str(i) + " - error: " + str(avg_oob) + "\n")
 
             if avg_oob < lowest_error:
                 #TODO std
@@ -694,12 +717,13 @@ class RFModel(AModel):
 
         #select smalest tree with lowest error => lowest index & lowest error
         for c in self.classifiers: c.filterFeatures( [c for c in range(lowest_index)] )
+        f.write("selected tree: size: " + str(lowest_index) + " - err: " + str(lowest_error) + "\n")
 
         print('final building phase')
         #restart with an empty tree and add features one by one, only keep features that decrease the error with a certain threshold
         prev_oob = 1
         used_features = []
-        for i in range(len(lowest_index)):
+        for i in range(1,lowest_index):
             self.count = i
 
             pool = Pool(processes=POOL_SIZE)
@@ -709,7 +733,13 @@ class RFModel(AModel):
 
             avg_oob = np.average(oob_errors, axis=0)
             print("feat Count: " + str(i) + " - error: " + str(avg_oob))
+            f.write("feat Count: " + str(i) + " - error: " + str(avg_oob) + "\n")
 
             if avg_oob + self.threshold < prev_oob:
                 prev_oob = avg_oob
                 used_features.append(i)
+
+        f.write("final features: ")
+        for feat in used_features:
+            f.write(str(feat))
+        f.close()
