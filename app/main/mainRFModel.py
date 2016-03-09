@@ -7,6 +7,16 @@ import Classificators
 def getFeatures():
     # create the features
     featExtr = FE.MultiFeatureExtractor()
+
+    #physiological signals
+    for channel in FE.all_phy_channels:
+        featExtr.addFE(FE.AvgExtractor(channel, ''))
+        featExtr.addFE(FE.STDExtractor(channel, ''))
+
+    featExtr.addFE(FE.AVGHeartRateExtractor())
+    featExtr.addFE(FE.STDInterBeatExtractor())
+
+    #EEG
     for channel in FE.all_EEG_channels:
         featExtr.addFE(
             FE.AlphaBetaExtractor(
@@ -87,13 +97,6 @@ def getFeatures():
                     featName='RCAU ' + FE.all_channels[front] + ',' + FE.all_channels[post]
                 )
             )
-
-    for channel in FE.all_phy_channels:
-        featExtr.addFE(FE.AvgExtractor(channel, ''))
-        featExtr.addFE(FE.STDExtractor(channel, ''))
-
-    featExtr.addFE(FE.AVGHeartRateExtractor())
-    featExtr.addFE(FE.STDInterBeatExtractor())
 
     return featExtr
 

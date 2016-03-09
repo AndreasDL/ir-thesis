@@ -121,7 +121,7 @@ def arousalCorrAccWorker(person):
     featExtr.addFE(FE.STDInterBeatExtractor())
 
     #create classificator
-    cont_classificator = classificators.ContArousalClassificator()
+    cont_classificator = Classificators.ContArousalClassificator()
 
     #create personloaders
     cont_personLdr = personLoader.NoTestsetLoader(cont_classificator,featExtr)
