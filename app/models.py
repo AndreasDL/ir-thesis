@@ -657,7 +657,6 @@ class RFModel(AModel):
                 RFSinglePersonModel(self.personLoader,person,self.criterion,self.treeCount)
             )
 
-
         st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
         fpad='../../results/'
         f = open(fpad + "RFModel" + self.personLoader.classificator.name + self.criterion + str(st) + ".txt", 'w')
@@ -696,8 +695,8 @@ class RFModel(AModel):
 
         #add features one by one and select smallest, lowest oob model
         print('building tree')
-        lowest_error = 1
-        lowest_index = 1
+        highest_oob_score = 1
+        highest_index = 1
         for i in range(1,len(indices)):
             self.count = i
 
@@ -710,20 +709,22 @@ class RFModel(AModel):
             print("feat Count: " + str(i) + " - error: " + str(avg_oob))
             f.write('feat_count: ' + str(i) + " - error: " + str(avg_oob) + "\n")
 
-            if avg_oob < lowest_error:
+            if avg_oob > highest_oob_score:
                 #TODO std
-                lowest_error = avg_oob
-                lowest_index = i
+                highest_oob_score = avg_oob
+                highest_index = i
 
         #select smalest tree with lowest error => lowest index & lowest error
-        for c in self.classifiers: c.filterFeatures( [c for c in range(lowest_index)] )
-        f.write("selected tree: size: " + str(lowest_index) + " - err: " + str(lowest_error) + "\n")
+        for c in self.classifiers: c.filterFeatures( [c for c in range(highest_index)] )
+        f.write("selected tree: size: " + str(highest_index) + " - err: " + str(highest_oob_score) + "\n")
 
         print('final building phase')
         #restart with an empty tree and add features one by one, only keep features that decrease the error with a certain threshold
         prev_oob = 1
         used_features = []
-        for i in range(1,lowest_index):
+        used_accs = []
+
+        for i in range(1,highest_index):
             self.count = i
 
             pool = Pool(processes=POOL_SIZE)
@@ -735,11 +736,16 @@ class RFModel(AModel):
             print("feat Count: " + str(i) + " - error: " + str(avg_oob))
             f.write("feat Count: " + str(i) + " - error: " + str(avg_oob) + "\n")
 
-            if avg_oob + self.threshold < prev_oob:
+            if avg_oob - self.threshold > prev_oob:
                 prev_oob = avg_oob
                 used_features.append(i)
+                used_accs = oob_errors
 
         f.write("final features: ")
         for feat in used_features:
             f.write(str(feat))
+
+        f.write("final accuracies for each person")
+        for person, acc in enumerate(used_accs):
+            f.write(str(person) + " - " + str(acc) + "\n")
         f.close()

@@ -137,7 +137,7 @@ def arousalWorker(criterion,treecount,threshold):
 
 if __name__ == '__main__':
     treeCount = 2000
-    threshold = 0.00001
+    threshold = 0.0001
 
     #reporter = reporters.HTMLRFAnalyticsReporter()
 
