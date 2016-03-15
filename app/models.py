@@ -583,15 +583,15 @@ class RFSinglePersonModel(AModel):
 
         self.treeCount = treeCount
         self.criterion = criterion
+        self.person = person
 
     def getImportances(self):
         #grow forest
         forest = RandomForestClassifier(
-            n_estimators=5000,
+            n_estimators=2000,
             max_features='auto',
             criterion=self.criterion,
             n_jobs=-1,
-            random_state=0
         )
 
         #fit forest
@@ -600,6 +600,8 @@ class RFSinglePersonModel(AModel):
         #get importances
         importances = forest.feature_importances_
         std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis = 0)
+
+        self.genPlot(importances,std)
 
         zipper = lambda feat,imp,std: [list(a) for a in zip(feat,imp,std)]
 
@@ -614,7 +616,6 @@ class RFSinglePersonModel(AModel):
             max_features='auto',
             criterion=self.criterion,
             n_jobs=-1,
-            random_state=0,
             oob_score=True,
             bootstrap=True
         )
@@ -628,6 +629,24 @@ class RFSinglePersonModel(AModel):
 
     def sortFeatures(self,indices):
         self.X = self.X[indices]
+
+    def genPlot(self, importances, std, fpad="../../results/plots/"):
+        fname = fpad + 'person' + str(self.person) + '.png'
+
+        # Plot the feature importances of the forest
+        plt.figure()
+        plt.title("Feature importances ")
+        plt.bar(
+            range(len(importances)),
+            importances,
+            color="r",
+            yerr=std,
+            align="center"
+        )
+        plt.xticks(range(0,len(importances),50))
+        plt.xlim([-1, len(importances)])
+        plt.savefig(fname)
+        plt.clf()
 
 class RFModel(AModel):
     def __init__(self, personLoader, criterion, treeCount,threshold):
@@ -646,6 +665,24 @@ class RFModel(AModel):
          #oob_errors = np.array([ c.getOOBErrors(self.block_count,self.used_blocks) for c in self.classifiers ]) #give errors for current block and previously selected blocks
         return self.classifiers[person-1].getOOBErrors(self.count)
 
+    def genPlot(self, importances, std, fname='globalPlot', fpad="../../results/plots/"):
+        fname = fpad + fname + '.png'
+
+        # Plot the feature importances of the forest
+        plt.figure()
+        plt.title("Feature importances ")
+        plt.bar(
+            range(len(importances)),
+            importances,
+            color="r",
+            yerr=std,
+            align="center"
+        )
+        plt.xticks(range(0,len(importances),50))
+        plt.xlim([-1, len(importances)])
+        plt.savefig(fname)
+        plt.clf()
+
     def run(self):
 
         #create 32 classifiers
@@ -663,12 +700,19 @@ class RFModel(AModel):
 
         #step 1: variable ranking: get all importances of the different features
         print('step 1: getting importances')
+        '''
         pool = Pool(processes=POOL_SIZE)
         importances = np.array( pool.map( self.getImportance, range(1,stop_person) ))
         pool.close()
         pool.join()
+        dump(importances, 'importances_once')
+        '''
+        importances = load('importances_once')
+        temp = importances[:,0,1]
+        avg_importances = np.average(importances[:,:,1], axis=0)
+        std_importances = [ np.std(importances[:,i,1]) for i in range(len(importances[0]))]
+        self.genPlot(avg_importances,std_importances,'global')
 
-        avg_importances = np.average(importances[:,:,1],axis=0) #average of each importance
 
         f.write("avg_importances")
         for feat, importance in zip( self.classifiers[0].personLoader.featureExtractor.featureExtrs, avg_importances):
@@ -695,7 +739,7 @@ class RFModel(AModel):
 
         #add features one by one and select smallest, lowest oob model
         print('building tree')
-        highest_oob_score = 1
+        highest_oob_score = 0
         highest_index = 1
         for i in range(1,len(indices)):
             self.count = i
@@ -720,7 +764,7 @@ class RFModel(AModel):
 
         print('final building phase')
         #restart with an empty tree and add features one by one, only keep features that decrease the error with a certain threshold
-        prev_oob = 1
+        prev_oob = 0
         used_features = []
         used_accs = []
 
