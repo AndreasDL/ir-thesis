@@ -579,7 +579,12 @@ class RFSinglePersonModel(AModel):
         else:
             self.X = load('global_X_per_person_p' +str(person))
 
-        normalize(self.X,copy=False)
+        self.X = np.array(self.X)
+        self.y = np.array(self.y)
+
+        #manual Feature standardization
+        self.X = self.X - np.average(self.X,axis=0)
+        self.X = self.X / np.std(self.X,axis=0)
 
         self.treeCount = treeCount
         self.criterion = criterion
@@ -687,7 +692,7 @@ class RFModel(AModel):
 
         #create 32 classifiers
         print('initialising the 32 classifiers ...')
-        stop_person = 33
+        stop_person = 3
 
         for person in range(1,stop_person):
             self.classifiers.append(
@@ -708,7 +713,6 @@ class RFModel(AModel):
         dump(importances, 'importances_once')
         '''
         importances = load('importances_once')
-        temp = importances[:,0,1]
         avg_importances = np.average(importances[:,:,1], axis=0)
         std_importances = [ np.std(importances[:,i,1]) for i in range(len(importances[0]))]
         self.genPlot(avg_importances,std_importances,'global')
