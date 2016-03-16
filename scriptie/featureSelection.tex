@@ -3,15 +3,40 @@
 
 
 \section{The need for feature selection}
+The need for feature selection is twofold: first by reducing the number of features, you can improve the accuracy, certainly when the training dataset is limited and there is a severe risk of overfitting. Second, reducing the number of features can increase performance. Additionally, in the context of research and this thesis, looking at which features are importance gives insight in the problem. For thesis it is important to find out which features are useful in the prediction of emotion.
 
 \section{Different methods}
+There are several methods for the feature selection available, the following section will give a list of the most common used methods and their advantages / disadvantages.
 
-\subsection{Naive / Brute force}
+\subsection{Removing features with low variance}
+This method simple removes all feature whose variance doesn't meet some threshold. Feature with have a low variance are less likely to be relevant, as there is very little variation in their value.
 
-\subsection{Wrapper methods}
+\subsection{Univariate Feature Selection}
+The basic idea is to perform a statistical test to each feature individually. This is very simple, but will fail to recognise 'pairs' of important features; one feature may not be important on its own, but might be a very good feature when combined with other features. Suppose the following example in Table \ref{featPair}:
 
-\subsection{filter methods}
+\begin{table}[]
+\centering
+\label{featPair}
+\begin{tabular}{lll}
+\textbf{label} & \textbf{feature A} & \textbf{feature B} \\
+\textbf{Happy} & +                  & +                  \\
+\textbf{Happy} & -                  & -                  \\
+\textbf{Sad}   & -                  & +                  \\
+\textbf{Sad}   & +                  & -                 
+\end{tabular}
+\caption{Some feature are not significant on its own, but a might be part of a combination of features.}
+\end{table}
 
-\subsection{Embedded methods}
+It is clear that feature A and B are very important when it comes to predicting whether or not a person is happy or sad. When both features have the same sign, the person is happy, otherwise he is not. This problem occurs in many simple selection methods.
 
-\subsection{Step wise regression}
+\subsection{Recursive feature elimination}
+In this method you start by training a classifier with all the features and measuring the performance on a separate validation set. Once trained you look at the different coefficients that are assigned to each feature. Features with low coefficients are less important than features with high coefficient, so they can be removed. This process is repeated multiple times and every time a certain percentage of the lowest features is dropped until the validation score decreases significantly. This is done in L1 regression, you also have a less aggressive method , the L2 regression that lowers penalises the influence of features, but doesn't remove them, which strengthens its resistance against highly correlated features. 
+
+\subsection{Randomized Sparse models}
+The main limitation of the above methods is that they will only select one feature out of a group of correlated features. A solution to solve this problem is to use randomization techniques, which randomly select features and look at the performance. combinations of features that give a high performance are then selected as being relevant. However this only works when the ground solution is sparse, meaning that only a small fraction of the features is relevant.
+%http://scikit-learn.org/stable/modules/feature_selection.html
+
+A sub group of randomized sparse models are the tree based estimators. For example, in a random forest features are randomly combined multiple times. The result is that each feature has an importance value, that indicates how important a certain feature is. Using the importance values, it is easy to remove certain features.
+
+\subsection{Coordinate Research}
+On coordinate descent the feature selection is formulated as a optimization problem and gradient ascent/descent is applied.
