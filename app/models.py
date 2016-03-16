@@ -11,7 +11,7 @@ from personLoader import dump,load
 from sklearn.preprocessing import normalize
 
 from multiprocessing import Pool
-POOL_SIZE = 6
+POOL_SIZE = 4
 import datetime
 import time
 
@@ -565,6 +565,7 @@ class RFClusterModel(AModel):
 
 class RFSinglePersonModel(AModel):
     def __init__(self, personLoader,person,criterion, treeCount):
+        print("loading person ",person)
         AModel.__init__(self,personLoader)
 
         classificatorName = str(self.personLoader.classificator.name)
@@ -582,9 +583,13 @@ class RFSinglePersonModel(AModel):
         self.X = np.array(self.X)
         self.y = np.array(self.y)
 
+        for index,val in enumerate(np.std(self.X,axis=0)):
+            if val == 0:
+                print('warning zero std for feature index: ', index, ' (', personLoader.featureExtractor.getFeatureNames()[index])
+
         #manual Feature standardization
         self.X = self.X - np.average(self.X,axis=0)
-        self.X = self.X / np.std(self.X,axis=0)
+        self.X = np.true_divide( self.X, np.std(self.X,axis=0) )
 
         self.treeCount = treeCount
         self.criterion = criterion
@@ -612,8 +617,9 @@ class RFSinglePersonModel(AModel):
 
         #returns list of <featExtr, importance, std>
         return zipper(self.personLoader.featureExtractor.featureExtrs,importances,std)
-    def filterFeatures(self,to_keep):
-        self.X = self.X[:,to_keep]
+    def filterFeatures(self,indices):
+        self.X = self.X[:,indices]
+        self.personLoader.featureExtractor.featureExtrs = np.array(self.personLoader.featureExtractor.featureExtrs)[indices]
     def getOOBErrors(self,count):
          #grow forest
         forest = RandomForestClassifier(
@@ -631,12 +637,10 @@ class RFSinglePersonModel(AModel):
         oob_score = np.average( forest.oob_score_ )
 
         return oob_score
-
-    def sortFeatures(self,indices):
-        self.X = self.X[indices]
-
     def genPlot(self, importances, std, fpad="../../results/plots/"):
-        fname = fpad + 'person' + str(self.person) + '.png'
+
+        st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
+        fname = fpad + 'person' + str(self.person) + '_' + str(st) + '.png'
 
         # Plot the feature importances of the forest
         plt.figure()
@@ -666,85 +670,71 @@ class RFModel(AModel):
     def getImportance(self,person):
         #importances = np.array([ c.getImportances() for c in self.classifiers])
         return self.classifiers[person-1].getImportances()
+
     def getOOBErrors(self,person):
          #oob_errors = np.array([ c.getOOBErrors(self.block_count,self.used_blocks) for c in self.classifiers ]) #give errors for current block and previously selected blocks
         return self.classifiers[person-1].getOOBErrors(self.count)
 
-    def genPlot(self, importances, std, fname='globalPlot', fpad="../../results/plots/"):
-        fname = fpad + fname + '.png'
-
-        # Plot the feature importances of the forest
-        plt.figure()
-        plt.title("Feature importances ")
-        plt.bar(
-            range(len(importances)),
-            importances,
-            color="r",
-            yerr=std,
-            align="center"
-        )
-        plt.xticks(range(0,len(importances),50))
-        plt.xlim([-1, len(importances)])
-        plt.savefig(fname)
-        plt.clf()
+    def initClassifiers(self,person):
+        return RFSinglePersonModel(self.personLoader,person,self.criterion,self.treeCount)
 
     def run(self):
-
         #create 32 classifiers
         print('initialising the 32 classifiers ...')
-        stop_person = 3
+        stop_person = 2
 
-        for person in range(1,stop_person):
-            self.classifiers.append(
-                RFSinglePersonModel(self.personLoader,person,self.criterion,self.treeCount)
-            )
+        if stop_person < 33:
+            print("[warn] not using all persons")
 
-        st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
-        fpad='../../results/'
-        f = open(fpad + "RFModel" + self.personLoader.classificator.name + self.criterion + str(st) + ".txt", 'w')
+        pool = Pool(processes=POOL_SIZE)
+        self.classifiers = pool.map( self.initClassifiers, range(1,stop_person) )
+        pool.close()
+        pool.join()
+
+        to_keep = {'all_orig_featureNames' : self.classifiers[0].personLoader.featureExtractor.getFeatureNames(),
+            'criterion': self.classifiers[0].criterion,
+            'classificatorName' : self.classifiers[0].personLoader.classificator.name,
+            'stop_person' : stop_person,
+            'threshold'   : self.threshold
+        }
 
         #step 1: variable ranking: get all importances of the different features
         print('step 1: getting importances')
-        '''
-        pool = Pool(processes=POOL_SIZE)
-        importances = np.array( pool.map( self.getImportance, range(1,stop_person) ))
-        pool.close()
-        pool.join()
-        dump(importances, 'importances_once')
-        '''
         importances = load('importances_once')
+        if importances == None:
+            print("[warn] rebuilding importances")
+            pool = Pool(processes=POOL_SIZE)
+            importances = np.array( pool.map( self.getImportance, range(1,stop_person) ))
+            pool.close()
+            pool.join()
+            dump(importances, 'importances_once')
+        to_keep['all_importances'] = importances
+
+
         avg_importances = np.average(importances[:,:,1], axis=0)
         std_importances = [ np.std(importances[:,i,1]) for i in range(len(importances[0]))]
-        self.genPlot(avg_importances,std_importances,'global')
-
-
-        f.write("avg_importances")
-        for feat, importance in zip( self.classifiers[0].personLoader.featureExtractor.featureExtrs, avg_importances):
-            f.write(feat.featureName + " - " + str(importance) + "\n")
+        to_keep['avg_importances'] = avg_importances
+        to_keep['std_importances'] = std_importances
 
         #step 2: elimintaion: remove everything below threshold, a.k.a. keep everything above the threshold
         print('step 2: filtering features -  threshold')
-        to_keep = [i for i, val in enumerate(avg_importances) if val > self.threshold]
+        indexes_to_keep = [i for i, val in enumerate(avg_importances) if val > self.threshold]
 
-        f.write("keeping features" + str(to_keep))
-        for feat in np.array(self.classifiers[0].personLoader.featureExtractor.featureExtrs)[to_keep]:
-            f.write(feat.featureName + "\n")
+        for c in self.classifiers: c.filterFeatures(indexes_to_keep)
+        avg_importances = avg_importances[indexes_to_keep] #cleanup memory
 
-        for c in self.classifiers: c.filterFeatures(to_keep)
-        avg_importances = avg_importances[to_keep]
+        to_keep['step1_featureNames'] = self.classifiers[0].personLoader.featureExtractor.getFeatureNames()
+        to_keep['step1_avg_importances'] = avg_importances
 
         #sort features
         indices = np.array(np.argsort(avg_importances)[::-1])
         for c in self.classifiers: c.filterFeatures(indices)
 
-        f.write("ordering features")
-        for feat, importance in zip( self.classifiers[0].personLoader.featureExtractor.featureExtrs, avg_importances[indices]):
-            f.write(feat.featureName + " - " + str(importance)+ "\n")
-
         #add features one by one and select smallest, lowest oob model
         print('building tree')
         highest_oob_score = 0
         highest_index = 1
+        oob_scores = []
         for i in range(1,len(indices)):
             self.count = i
 
@@ -755,23 +745,27 @@ class RFModel(AModel):
             avg_oob = np.average(oob_errors, axis=0)
 
             print("feat Count: " + str(i) + " - error: " + str(avg_oob))
-            f.write('feat_count: ' + str(i) + " - error: " + str(avg_oob) + "\n")
+            oob_scores.append(avg_oob)
 
             if avg_oob > highest_oob_score:
                 #TODO std
                 highest_oob_score = avg_oob
                 highest_index = i
 
-        #select smalest tree with lowest error => lowest index & lowest error
+        to_keep['step2_oob_scores'] = oob_scores
+
+        #select smallest tree with lowest error => lowest index & lowest error
         for c in self.classifiers: c.filterFeatures( [c for c in range(highest_index)] )
-        f.write("selected tree: size: " + str(highest_index) + " - err: " + str(highest_oob_score) + "\n")
+        to_keep['step3_size'] = highest_index
+        to_keep['step3_oob']  = highest_oob_score
+
+        print("selected tree size:" + str(highest_index) + ' - oob: ' + str(highest_oob_score))
 
         print('final building phase')
         #restart with an empty tree and add features one by one, only keep features that decrease the error with a certain threshold
         prev_oob = 0
         used_features = []
         used_accs = []
-
         for i in range(1,highest_index):
             self.count = i
 
@@ -782,18 +776,14 @@ class RFModel(AModel):
 
             avg_oob = np.average(oob_errors, axis=0)
             print("feat Count: " + str(i) + " - error: " + str(avg_oob))
-            f.write("feat Count: " + str(i) + " - error: " + str(avg_oob) + "\n")
 
             if avg_oob - self.threshold > prev_oob:
                 prev_oob = avg_oob
                 used_features.append(i)
                 used_accs = oob_errors
 
-        f.write("final features: ")
-        for feat in used_features:
-            f.write(str(feat))
+        to_keep['step4_used_accs'] = used_accs
+        to_keep['step4_features']  = used_features
 
-        f.write("final accuracies for each person")
-        for person, acc in enumerate(used_accs):
-            f.write(str(person) + " - " + str(acc) + "\n")
-        f.close()
+        dump(to_keep,'to_keep')
+        return to_keep

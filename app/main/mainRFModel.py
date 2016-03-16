@@ -2,21 +2,23 @@ import featureExtractor as FE
 import personLoader
 import models
 import Classificators
-
+import reporters
 
 def getFeatures():
     # create the features
     featExtr = FE.MultiFeatureExtractor()
 
     #physiological signals
+    '''
     for channel in FE.all_phy_channels:
         featExtr.addFE(FE.AvgExtractor(channel, ''))
         featExtr.addFE(FE.STDExtractor(channel, ''))
-
+    '''
     featExtr.addFE(FE.AVGHeartRateExtractor())
     featExtr.addFE(FE.STDInterBeatExtractor())
 
     #EEG
+    '''
     for channel in FE.all_EEG_channels:
         featExtr.addFE(
             FE.AlphaBetaExtractor(
@@ -40,7 +42,7 @@ def getFeatures():
                     featName='DE ' + FE.all_channels[channel] + '(' + freqband + ')'
                 )
             )
-            '''
+            ''''''
             featExtr.addFE(
                 FE.PSDExtractor(
                     channels=[channel],
@@ -49,7 +51,7 @@ def getFeatures():
                 )
             )
             '''
-
+    '''
     for left, right in zip(FE.all_left_channels, FE.all_right_channels):
         featExtr.addFE(
             FE.LMinRLPlusRExtractor(
@@ -78,7 +80,7 @@ def getFeatures():
                 )
             )
 
-    for front, post in zip(FE.all_frontal_channels, FE.all_frontal_channels):
+    for front, post in zip(FE.all_frontal_channels, FE.all_posterior_channels):
         for freqband in FE.startFreq:
             featExtr.addFE(
                 FE.DCAUExtractor(
@@ -97,7 +99,7 @@ def getFeatures():
                     featName='RCAU ' + FE.all_channels[front] + ',' + FE.all_channels[post]
                 )
             )
-
+    '''
     return featExtr
 
 def valenceWorker(criterion,treecount,threshold):
@@ -139,9 +141,12 @@ if __name__ == '__main__':
     treeCount = 2000
     threshold = 0.0001
 
-    #reporter = reporters.HTMLRFAnalyticsReporter()
+    reporter = reporters.HTMLRFModelReporter()
 
     results = valenceWorker('gini',treeCount,threshold)
+
+    reporter.genReport(results)
+
     '''
     #reporter.genReport(results)
     results = valenceWorker('entropy',treeCount,threshold)

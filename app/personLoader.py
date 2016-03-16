@@ -18,7 +18,6 @@ class APersonLoader:
     def load(self,person):
         #return X_train, y_train, x_test, y_test
         return [], [], [], []
-
 class PersonLoader(APersonLoader):
     def __init__(self, classificator, featExtractor, name='normal', path=DATASET_LOCATION ):
         APersonLoader.__init__(self, classificator, featExtractor, name, path=DATASET_LOCATION)
@@ -78,7 +77,6 @@ class NoTestsetLoader(APersonLoader):
             y = self.classificator.classify(data['labels'])
 
             return np.array(X), np.array(y)
-
 class PersonCombiner(APersonLoader):
     def __init__(self, classificator, featExtractor, name='normal', path=DATASET_LOCATION ):
         APersonLoader.__init__(self, classificator, featExtractor, name, path=DATASET_LOCATION)
@@ -110,6 +108,7 @@ def dump(X, name, path='../../dumpedData'):
     fname = path + '/' + name
     with open(fname, 'wb') as f:
         pickle.dump( X, f )
+
 def load(name, path='../../dumpedData'):
     fname = path + '/' + name
 
