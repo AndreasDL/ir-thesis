@@ -9,11 +9,10 @@ def getFeatures():
     featExtr = FE.MultiFeatureExtractor()
 
     #physiological signals
-    '''
     for channel in FE.all_phy_channels:
         featExtr.addFE(FE.AvgExtractor(channel, ''))
         featExtr.addFE(FE.STDExtractor(channel, ''))
-    '''
+
     featExtr.addFE(FE.AVGHeartRateExtractor())
     featExtr.addFE(FE.STDInterBeatExtractor())
 
@@ -42,7 +41,7 @@ def getFeatures():
                     featName='DE ' + FE.all_channels[channel] + '(' + freqband + ')'
                 )
             )
-            ''''''
+
             featExtr.addFE(
                 FE.PSDExtractor(
                     channels=[channel],
@@ -50,8 +49,7 @@ def getFeatures():
                     featName='PSD ' + FE.all_channels[channel] + '(' + freqband + ')'
                 )
             )
-            '''
-    '''
+
     for left, right in zip(FE.all_left_channels, FE.all_right_channels):
         featExtr.addFE(
             FE.LMinRLPlusRExtractor(

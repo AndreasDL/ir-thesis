@@ -681,7 +681,7 @@ class RFModel(AModel):
     def run(self):
         #create 32 classifiers
         print('initialising the 32 classifiers ...')
-        stop_person = 2
+        stop_person = 3
 
         if stop_person < 33:
             print("[warn] not using all persons")
@@ -735,7 +735,7 @@ class RFModel(AModel):
         highest_oob_score = 0
         highest_index = 1
         oob_scores = []
-        for i in range(1,len(indices)):
+        for i in range(1,len(indices)+1):
             self.count = i
 
             pool = Pool(processes=POOL_SIZE)
