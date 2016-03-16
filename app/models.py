@@ -563,6 +563,7 @@ class RFClusterModel(AModel):
                 'criterion'          : criterion
                 }
 
+#relevant
 class RFSinglePersonModel(AModel):
     def __init__(self, personLoader,person,criterion, treeCount):
         print("loading person ",person)
@@ -681,7 +682,7 @@ class RFModel(AModel):
     def run(self):
         #create 32 classifiers
         print('initialising the 32 classifiers ...')
-        stop_person = 3
+        stop_person = 33
 
         if stop_person < 33:
             print("[warn] not using all persons")

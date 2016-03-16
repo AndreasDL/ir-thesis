@@ -750,7 +750,6 @@ class HTMLRFModelReporter(AReporter):
         plt.clf()
 
         return fname[14:]
-
     def genOOBPlot(self,oob_scores,  fname='oobPlot', fpad="../../results/plots/"):
         st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
         fname = fpad + fname + '_' + str(st) + '.png'
@@ -768,8 +767,6 @@ class HTMLRFModelReporter(AReporter):
         plt.clf()
 
         return fname[14:]
-
-
     def genPlot(self,classificatorName, importances, std, criterion, fname='globalPlot', fpad="../../results/plots/"):
         fname = fpad + fname + classificatorName + '_' + criterion + '.png'
 
@@ -787,6 +784,25 @@ class HTMLRFModelReporter(AReporter):
         plt.xlim([-1, len(importances)])
         plt.savefig(fname)
         plt.clf()
+    def genPersPlot(self,classificatorName, accs, criterion, fname='specificResults', fpad="../../results/plots/"):
+        fname = fpad + fname + classificatorName + '_' + criterion + '.png'
+
+        # Plot the feature importances of the forest
+        plt.figure()
+        plt.title("person accuracies " + classificatorName)
+        plt.bar(
+            range(len(accs)),
+            accs,
+            color="r",
+            #yerr=std,
+            align="center"
+        )
+        plt.xticks(range(0,len(accs),50))
+        plt.xlim([-1, len(accs)])
+        plt.savefig(fname)
+        plt.clf()
+
+        return fname[14:]
 
     def metaTable(self, results):
         return """<h1>Meta Data</h1>
@@ -881,6 +897,15 @@ class HTMLRFModelReporter(AReporter):
         feattable += "</table>"
 
         return feattable
+    def persResults(self,results):
+        fname = self.genPersPlot(
+            results['classificatorName'],
+            results['step4_used_accs'],
+            results['criterion'],
+        )
+
+        return """<h1>Accuracy for each person individually</h1>
+        <img src=""" + str(fname) + '>'
 
     def genReport(self, results, fpad='../../results/'):
         '''FYI
@@ -918,6 +943,8 @@ class HTMLRFModelReporter(AReporter):
         oview, pers = self.overallTable(results)
 
         f.write(oview)
+        f.write("</br></br>")
+        f.write(self.persResults(results))
         f.write("</br></br>")
         f.write(self.accvsNOFeatures(results))
         f.write("</br></br></br>")
