@@ -766,8 +766,8 @@ class RFModel(AModel):
         prev_oob = 0
         used_features = []
         used_accs = []
-        for i in range(1,highest_index):
-            self.count = i
+        for i in range(highest_index):
+            self.count = i + 1
 
             pool = Pool(processes=POOL_SIZE)
             oob_errors = pool.map( self.getOOBErrors, range(1,stop_person) )
@@ -777,13 +777,15 @@ class RFModel(AModel):
             avg_oob = np.average(oob_errors, axis=0)
             print("feat Count: " + str(i) + " - error: " + str(avg_oob))
 
-            if avg_oob - self.threshold > prev_oob:
+            if avg_oob - self.threshold > prev_oob or prev_oob == 0:
                 prev_oob = avg_oob
                 used_features.append(i)
                 used_accs = oob_errors
 
         to_keep['step4_used_accs'] = used_accs
         to_keep['step4_features']  = used_features
+        for c in self.classifiers: c.filterFeatures( [c for c in range(highest_index)] )
+        to_keep['step4_featureNames'] = self.classifiers[0].personLoader.featureExtractor.getFeatureNames()
 
         dump(to_keep,'to_keep')
         return to_keep

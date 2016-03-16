@@ -804,9 +804,17 @@ class HTMLRFModelReporter(AReporter):
                 <td><b>threshold</b></td>
                 <td>""" + str(results['threshold']) + """</td>
             </tr><tr>
+                <td><b>Tree size step 1</b></td>
+                <td>""" + str(len(results['all_orig_featureNames'])) + """</td>
+            </tr><tr>
+                <td><b>Tree size step 2</b></td>
+                <td>""" + str(len(results['step1_featureNames'])) + """</td>
+            </tr><tr>
+                <td><b>Tree size step 4</b></td>
+                <td>""" + str(len(results['step4_features'])) + """</td>
+            </tr>
             </table>
         """
-
     def overallTable(self,results):
         fname = self.genGlobalPlot(results['avg_importances'], results['std_importances'], results['classificatorName'], results['criterion'])
         oview_table  = "<h1> overall importances </h1>"
@@ -860,13 +868,19 @@ class HTMLRFModelReporter(AReporter):
         oview_table += "</table>"
 
         return oview_table, person_sections
-
     def accvsNOFeatures(self,results):
         fname = self.genOOBPlot(results['step2_oob_scores'])
 
         return """<h1>Accuracy versus the number of features</h1>
         <img src=""" + str(fname) + '>'
+    def finalSelectedFeatures(self,results):
+        feattable = "<h1>Final selected features</h1></br></br><table><tr><td><b>feat</b></tr>"
+        for feat in results['step4_featureNames']:
+            feattable += "<tr><td>" + str(feat) + "</td></tr>"
 
+        feattable += "</table>"
+
+        return feattable
 
     def genReport(self, results, fpad='../../results/'):
         '''FYI
@@ -908,9 +922,12 @@ class HTMLRFModelReporter(AReporter):
         f.write(self.accvsNOFeatures(results))
         f.write("</br></br></br>")
 
+        f.write(self.finalSelectedFeatures(results))
+        f.write("</br></br></br>")
+
+
         #junk
         f.write(pers)
-
 
         f.write("</body></html>")
         f.close()

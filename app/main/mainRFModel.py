@@ -9,10 +9,11 @@ def getFeatures():
     featExtr = FE.MultiFeatureExtractor()
 
     #physiological signals
+    '''
     for channel in FE.all_phy_channels:
         featExtr.addFE(FE.AvgExtractor(channel, ''))
         featExtr.addFE(FE.STDExtractor(channel, ''))
-
+    '''
     featExtr.addFE(FE.AVGHeartRateExtractor())
     featExtr.addFE(FE.STDInterBeatExtractor())
 
