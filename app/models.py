@@ -1,4 +1,4 @@
-from sklearn.feature_selection import SelectKBest, f_regression
+from sklearn.feature_selection import SelectKBest, f_regression, f_classif, SelectPercentile
 from sklearn.pipeline import Pipeline
 from sklearn.cross_validation import StratifiedShuffleSplit, KFold
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -789,6 +789,7 @@ class RFModel(AModel):
         dump(to_keep,'to_keep')
         return to_keep
 
+#http://scikit-learn.org/stable/auto_examples/feature_selection/plot_feature_selection.html#example-feature-selection-plot-feature-selection-py
 class SVMSinglePersonModel(AModel):
     def __init__(self, personLoader,person):
         print("loading person ",person)
@@ -860,6 +861,84 @@ class SVMModel(AModel):
 
         return {
             'all_weights' : svm_weights,
+            'avg_weights' : avg_weights,
+            'std_weights' : std_weights,
+            'feat_names'  : self.personLoader.featureExtractor.getFeatureNames()
+        }
+
+class UnivarSinglePerson(AModel):
+    def __init__(self, personLoader,person):
+        print("loading person ",person)
+        AModel.__init__(self,personLoader)
+
+        classificatorName = str(self.personLoader.classificator.name)
+
+        #load all features & keep them in memory
+        self.y = load('global_y_per_person' + classificatorName +'_p' + str(person))
+        if self.y == None:
+            print('[Warn] Rebuilding cache')
+            self.X, self.y = self.personLoader.load(person)
+            dump(self.X,'global_X_per_person_p' + str(person))
+            dump(self.y,'global_y_per_person' + classificatorName + '_p' + str(person))
+        else:
+            self.X = load('global_X_per_person_p' +str(person))
+
+        self.X = np.array(self.X)
+        self.y = np.array(self.y)
+
+        for index,val in enumerate(np.std(self.X,axis=0)):
+            if val == 0:
+                print('warning zero std for feature index: ', index, ' (', personLoader.featureExtractor.getFeatureNames()[index])
+
+        #manual Feature standardization
+        self.X = self.X - np.average(self.X,axis=0)
+        self.X = np.true_divide( self.X, np.std(self.X,axis=0) )
+
+    def getWeights(self):
+        # Univariate feature selection with F-test for feature scoring
+        # We use the default selection function: the 10% most significant features
+        selector = SelectPercentile(f_classif, percentile=10)
+        selector.fit(self.X, self.y)
+        scores = -np.log10(selector.pvalues_)
+        scores /= float(scores.max())
+
+        return scores
+
+class UnivarModel(AModel):
+    def __init__(self, personLoader):
+        AModel.__init__(self,personLoader)
+
+        self.classifiers = []
+    def initClassifiers(self,person):
+        return UnivarSinglePerson(self.personLoader,person)
+    def getWeights(self,person):
+        return self.classifiers[person-1].getWeights()
+
+    def run(self):
+        #create 32 classifiers
+        print('initialising the 32 classifiers ...')
+        stop_person = 33
+
+        if stop_person < 33:
+            print("[warn] not using all persons")
+
+        #init classifiers
+        pool = Pool(processes=POOL_SIZE)
+        self.classifiers = pool.map( self.initClassifiers, range(1,stop_person) )
+        pool.close()
+        pool.join()
+
+        #get wieghts
+        pool = Pool(processes=POOL_SIZE)
+        weights = pool.map( self.getWeights, range(1,stop_person) )
+        pool.close()
+        pool.join()
+
+        avg_weights = np.average(weights, axis=0)
+        std_weights = np.std(weights, axis=0)
+
+        return {
+            'all_weights' : weights,
             'avg_weights' : avg_weights,
             'std_weights' : std_weights,
             'feat_names'  : self.personLoader.featureExtractor.getFeatureNames()
