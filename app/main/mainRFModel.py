@@ -4,6 +4,8 @@ import models
 import Classificators
 import reporters
 
+from personLoader import load, dump
+
 def getFeatures():
     # create the features
     featExtr = FE.MultiFeatureExtractor()
@@ -137,11 +139,15 @@ def arousalWorker(criterion,treecount,threshold):
 
 if __name__ == '__main__':
     treeCount = 2000
-    threshold = 0.0001
+    threshold = 0.002
 
     reporter = reporters.HTMLRFModelReporter()
 
-    results = valenceWorker('gini',treeCount,threshold)
+    results = load('to_keep')
+    if results == None:
+        results = valenceWorker('gini',treeCount,threshold)
+        print("[warn] rebuilding cache")
+        dump(results,'to_keep')
 
     reporter.genReport(results)
 

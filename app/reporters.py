@@ -8,7 +8,7 @@ import featureExtractor
 import matplotlib.pyplot as plt
 
 
-
+FIGSIZE = (18,10)
 
 class AReporter:
     def genReport(self,results,fpad='../../results/'):
@@ -735,7 +735,7 @@ class HTMLRFModelReporter(AReporter):
         fname = fpad + pname + '_' + str(st) + '.png'
 
         # Plot the feature importances of the forest
-        plt.figure()
+        plt.figure(figsize=FIGSIZE)
         plt.title("Feature importances ")
         plt.bar(
             range(len(importances)),
@@ -748,15 +748,16 @@ class HTMLRFModelReporter(AReporter):
         plt.xlim([-1, len(importances)])
         plt.savefig(str(fpad) + str(fname))
         plt.clf()
+        plt.close()
 
         return fname[14:]
     def genOOBPlot(self,oob_scores,  fname='oobPlot', fpad="../../results/plots/"):
         st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
         fname = fpad + fname + '_' + str(st) + '.png'
 
-        plt.figure()
+        plt.figure(figsize=FIGSIZE)
         plt.title("oob scores for different number of features")
-        plt.scatter(
+        plt.plot(
             range(len(oob_scores)),
             oob_scores,
             color="b"
@@ -765,13 +766,14 @@ class HTMLRFModelReporter(AReporter):
         plt.xlim([-1, len(oob_scores)])
         plt.savefig(fname)
         plt.clf()
+        plt.close()
 
         return fname[14:]
     def genPlot(self,classificatorName, importances, std, criterion, fname='globalPlot', fpad="../../results/plots/"):
         fname = fpad + fname + classificatorName + '_' + criterion + '.png'
 
         # Plot the feature importances of the forest
-        plt.figure()
+        plt.figure(figsize=FIGSIZE)
         plt.title("Feature importances " + classificatorName + ' [' + criterion + ']')
         plt.bar(
             range(len(importances)),
@@ -784,11 +786,12 @@ class HTMLRFModelReporter(AReporter):
         plt.xlim([-1, len(importances)])
         plt.savefig(fname)
         plt.clf()
+        plt.close()
     def genPersPlot(self,classificatorName, accs, criterion, fname='specificResults', fpad="../../results/plots/"):
         fname = fpad + fname + classificatorName + '_' + criterion + '.png'
 
         # Plot the feature importances of the forest
-        plt.figure()
+        plt.figure(figsize=FIGSIZE)
         plt.title("person accuracies " + classificatorName)
         plt.bar(
             range(len(accs)),
@@ -801,6 +804,7 @@ class HTMLRFModelReporter(AReporter):
         plt.xlim([-1, len(accs)])
         plt.savefig(fname)
         plt.clf()
+        plt.close()
 
         return fname[14:]
 
@@ -833,6 +837,7 @@ class HTMLRFModelReporter(AReporter):
         """
     def overallTable(self,results):
         fname = self.genGlobalPlot(results['avg_importances'], results['std_importances'], results['classificatorName'], results['criterion'])
+
         oview_table  = "<h1> overall importances </h1>"
         oview_table += '<img src=' + str(fname) + '></br></br>'
 
@@ -840,7 +845,7 @@ class HTMLRFModelReporter(AReporter):
         #|         | feat 1 | feeat 2 | ....
         #|person 1 | ....
         #|person 2 | ...
-        oview_table = """
+        oview_table += """
         <h1>Importances for all persons</h1>
         <table border=1>
             <tr>
