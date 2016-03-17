@@ -963,3 +963,20 @@ class HTMLRFModelReporter(AReporter):
 
         f.write("</body></html>")
         f.close()
+
+class GenericReporter(AReporter):
+    def __init__(self,desc):
+        self.desc = desc
+
+    def genReport(self,results,fpad='../../results/'):
+        #create CSV with values
+        #output to file
+        st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
+        f = open(fpad + self.desc + str(st) + ".csv", 'w')
+
+        f.write('featname;avg weight;std weight;\n')
+
+        for name,avg,std in zip(results['feat_names'], results['avg_weights'], results['std_weights']):
+            f.write(str(name) + ';' + str(avg) + ';' + str(std) +'\n')
+
+        f.close()

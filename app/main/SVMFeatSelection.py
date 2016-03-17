@@ -1,11 +1,9 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn import svm
-from sklearn.feature_selection import SelectPercentile, f_classif
 import featureExtractor as FE
 import personLoader
 import models
 import Classificators
+import reporters
+
 
 
 def getFeatures():
@@ -138,4 +136,7 @@ def arousalWorker():
     return results
 
 if __name__ == '__main__':
+
+    reporter = reporters.GenericReporter('SVM_valence')
     results = valenceWorker()
+    reporter.genReport(results)

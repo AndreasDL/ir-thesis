@@ -6,6 +6,7 @@ import featureExtractor as FE
 import personLoader
 import models
 import Classificators
+import reporters
 
 
 def getFeatures():
@@ -104,7 +105,6 @@ def getFeatures():
 
     return featExtr
 def valenceWorker():
-
     featExtr = getFeatures()
 
     # create classificator
@@ -120,6 +120,7 @@ def valenceWorker():
     results = model.run()
 
     return results
+
 def arousalWorker():
     featExtr = getFeatures()
 
@@ -138,4 +139,9 @@ def arousalWorker():
     return results
 
 if __name__ == '__main__':
+
+    reporter = reporters.GenericReporter('univar')
+
     results = valenceWorker()
+
+    reporter.genReport(results)

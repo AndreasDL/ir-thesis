@@ -863,7 +863,8 @@ class SVMModel(AModel):
             'all_weights' : svm_weights,
             'avg_weights' : avg_weights,
             'std_weights' : std_weights,
-            'feat_names'  : self.personLoader.featureExtractor.getFeatureNames()
+            'feat_names'  : self.personLoader.featureExtractor.getFeatureNames(),
+            'classificatorName' : self.personLoader.classificator.name
         }
 
 class UnivarSinglePerson(AModel):
@@ -941,5 +942,6 @@ class UnivarModel(AModel):
             'all_weights' : weights,
             'avg_weights' : avg_weights,
             'std_weights' : std_weights,
-            'feat_names'  : self.personLoader.featureExtractor.getFeatureNames()
+            'feat_names'  : self.personLoader.featureExtractor.getFeatureNames(),
+            'classificatorName' : self.personLoader.classificator.name
         }
