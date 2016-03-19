@@ -904,7 +904,6 @@ class UnivarSinglePerson(AModel):
         scores /= float(scores.max())
 
         return scores
-
 class UnivarModel(AModel):
     def __init__(self, personLoader):
         AModel.__init__(self,personLoader)
