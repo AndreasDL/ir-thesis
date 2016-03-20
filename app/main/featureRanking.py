@@ -1,17 +1,14 @@
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
-
 import personLoader
 import Classificators
 import featureExtractor as FE
 from sklearn.cross_validation import KFold
 from scipy.stats import pearsonr
-import reporters
 import numpy as np
 import datetime
 import time
-import types
 import featureExtractor
 from featureExtractor import all_channels
 
@@ -263,6 +260,66 @@ def getPersonRankings(person):
         pers_results.append([corr[0], lr_scores, l1_scores, l2_scores, svm_weights, importances])
 
     return pers_results#, featExtr.featureExtrs
+def top30Accs(results):
+    #results = list([corr[0], lr_scores, l1_scores, l2_scores, svm_weights, importances])
+
+    #take averages
+    avg_results = [[0] * len(results[0,0])] * len(results[0])
+
+    for result in results:
+        for i in range(len(result)): #each feature
+            for j in range(len(result[i])):
+                avg_results[i][j] += result[i][j]
+        avg_results = np.array(avg_results)
+        avg_results = np.true_divide(avg_results,float(len(results)))
+
+    acc_no_features = []
+    for person in range(1,len(results)+1):
+        #load all features & keep them in memory
+        y_cont = load('cont_y_p' + str(person))
+        X = load('X_p' +str(person))
+
+        X = np.array(X)
+        y_cont = np.array(y_cont)
+        y_disc = y_cont
+        y_disc[ y_disc <= 5 ] = 0
+        y_disc[ y_disc >  5 ] = 1
+
+        for index,val in enumerate(np.std(X,axis=0)):
+            if val == 0:
+                print('warning zero std for feature index: ', index, ' (', personLoader.featureExtractor.getFeatureNames()[index])
+
+        #manual Feature standardization
+        X = X - np.average(X,axis=0)
+        X = np.true_divide(X, np.std(X,axis=0) )
+
+        #6 accs on 6 metrics
+        pers_accs = []
+        for i in range(len(avg_results[0])):
+            #sort features
+            indices = np.array(np.argsort(avg_results[:,i])[::-1])
+
+            #get first 30 indexes
+            features_to_keep = indices[:30]
+            X_temp = X[:,features_to_keep]
+
+            model_accs = []
+            for i in range(1,len(features_to_keep)+1):
+                X_temp = X[:,:i]
+
+                #svm coefficients
+                clf = svm.SVC()
+                clf.fit(X_temp, y_disc)
+
+                pred = clf.predict(X_temp)
+                acc = accuracy(pred,y_disc)
+
+                model_accs.append(acc)
+            pers_accs.append(model_accs)
+
+        acc_no_features.append(pers_accs)
+
+    return acc_no_features
 
 def genReport(results):
     what_mapper = {
@@ -356,6 +413,36 @@ def genReport(results):
         f.write("\n")
 
     f.close()
+def accReport(accs):
+    #output to file
+    st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
+    f = open('../../results/accs_svm_valence' + str(st) + ".csv", 'w')
+
+    #averages
+    avg_accs = np.average(accs,axis=0)
+    avg_accs = np.transpose(avg_accs)
+
+    #write averages
+    f.write('number of features;pearson;lr;l1;l2;svm;rf\n')
+    for line in avg_accs:
+        for acc in line:
+            f.write(str(acc) + ';')
+        f.write("\n")
+
+    f.write("\n")
+    f.write("\n")
+
+    #write best accs per person
+    max_accs = np.amax(accs, axis=2)
+    f.write("best accs obtained for each person")
+    f.write('person;pearson;lr;l1;l2;svm;rf\n')
+    for person, line in enumerate(avg_accs):
+        f.write(str(person+1) + ";" )
+        for acc in line:
+            f.write(str(acc) + ';')
+        f.write("\n")
+
+    f.close()
 
 if __name__ == '__main__':
     stop_person = 33
@@ -372,6 +459,12 @@ if __name__ == '__main__':
         dump(results,'results_valence')
 
     results = np.array(results)
-
     genReport(results)
 
+    accs = load("accs")
+    if accs == None:
+        print('[warn] rebuilding cache')
+        accs = top30Accs(results)
+        dump(accs,'accs')
+    acc = np.array(accs)
+    accReport(accs)
