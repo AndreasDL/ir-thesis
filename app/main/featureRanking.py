@@ -301,11 +301,11 @@ def top30Accs(results):
 
             #get first 30 indexes
             features_to_keep = indices[:30]
-            X_temp = X[:,features_to_keep]
+            X_filtered = X[:,features_to_keep]
 
             model_accs = []
             for i in range(1,len(features_to_keep)+1):
-                X_temp = X[:,:i]
+                X_temp = X_filtered[:,:i]
 
                 #svm coefficients
                 clf = svm.SVC()
@@ -424,7 +424,8 @@ def accReport(accs):
 
     #write averages
     f.write('number of features;pearson;lr;l1;l2;svm;rf\n')
-    for line in avg_accs:
+    for person, line in enumerate(avg_accs):
+        f.write(str(person+1) + ";" )
         for acc in line:
             f.write(str(acc) + ';')
         f.write("\n")
@@ -436,7 +437,7 @@ def accReport(accs):
     max_accs = np.amax(accs, axis=2)
     f.write("best accs obtained for each person")
     f.write('person;pearson;lr;l1;l2;svm;rf\n')
-    for person, line in enumerate(avg_accs):
+    for person, line in enumerate(max_accs):
         f.write(str(person+1) + ";" )
         for acc in line:
             f.write(str(acc) + ';')
