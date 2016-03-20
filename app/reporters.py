@@ -909,8 +909,16 @@ class HTMLRFModelReporter(AReporter):
             results['criterion'],
         )
 
-        return """<h1>Accuracy for each person individually</h1>
+        pers = """<h1>Accuracy for each person individually</h1>
         <img src=""" + str(fname) + '>'
+
+        pers += """<table><tr><td><b>person</b></td><td><b>accuracy</b></td></tr>"""
+        for person , res in enumerate(results['step4_used_accs']):
+            pers += "<tr><td>" + str(person) + "</td><td>" + str(round(res,5)) + "</td></tr>"
+
+        pers += "</table>"
+        return pers
+
 
     def genReport(self, results, fpad='../../results/'):
         '''FYI
