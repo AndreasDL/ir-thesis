@@ -24,7 +24,6 @@ def getFeatures():
     featExtr = FE.MultiFeatureExtractor()
 
     #physiological signals
-
     for channel in FE.all_phy_channels:
         featExtr.addFE(FE.AvgExtractor(channel, ''))
         featExtr.addFE(FE.STDExtractor(channel, ''))
@@ -41,12 +40,14 @@ def getFeatures():
             )
         )
 
+        '''
         featExtr.addFE(
             FE.FrontalMidlinePower(
                 channels=[channel],
                 featName="FM " + FE.all_channels[channel]
             )
         )
+        '''
 
         for freqband in FE.startFreq:
             featExtr.addFE(
@@ -64,6 +65,7 @@ def getFeatures():
                     featName='PSD ' + FE.all_channels[channel] + '(' + freqband + ')'
                 )
             )
+
 
     for left, right in zip(FE.all_left_channels, FE.all_right_channels):
         featExtr.addFE(
@@ -120,6 +122,7 @@ def accuracy(predictions, truths):
         acc += (pred == truth)
 
     return acc / float(len(predictions))
+
 def getPersonRankings(person):
     #load all features & keep them in memory
     y_cont = load('cont_y_p' + str(person))
@@ -290,9 +293,9 @@ def genReport(results):
 
     #output to file
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
-    f = open('../../results/RF_valence' + str(st) + ".csv", 'w')
+    f = open('../../results/ranking_valence' + str(st) + ".csv", 'w')
 
-    f.write('featname;eeg/phy;what;channels;waveband;pearson_r;l1 coef;l2 coef;svm coef;rf importances;\n')
+    f.write('featname;eeg/phy;what;channels;waveband;pearson_r;lr coef;l1 coef;l2 coef;svm coef;rf importances;\n')
     for featExtr, result in zip(getFeatures().featureExtrs, avg_results):
 
         feat_name = featExtr.featureName
@@ -348,7 +351,7 @@ def genReport(results):
         )
 
         for metric in result:
-            f.write(str(round(abs(metric),5)) + ";")
+            f.write(str(abs(metric)) + ";")
 
         f.write("\n")
 
