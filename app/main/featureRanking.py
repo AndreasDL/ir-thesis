@@ -1,13 +1,19 @@
+from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
 
 import personLoader
 import Classificators
-import numpy as np
 import featureExtractor as FE
 from sklearn.cross_validation import KFold
 from scipy.stats import pearsonr
-from sklearn.metrics import mutual_info_score
+import reporters
+import numpy as np
+import datetime
+import time
+import types
+import featureExtractor
+from featureExtractor import all_channels
 
 from personLoader import load, dump
 from multiprocessing import Pool
@@ -120,6 +126,7 @@ def getPersonRankings(person):
     if y_cont == None:
         print('[Warn] Rebuilding cache -  person ' + str(person))
         classificator = Classificators.ContValenceClassificator()
+        featExtr = getFeatures()
         personLdr = personLoader.NoTestsetLoader(classificator, featExtr)
 
         X, y_cont = personLdr.load(person)
@@ -224,6 +231,11 @@ def getPersonRankings(person):
     l2_scores = ridge.coef_
 
     #svm coefficients
+    clf = svm.SVC(kernel='linear')
+    clf.fit(X, y_disc)
+    svm_weights = (clf.coef_ ** 2).sum(axis=0)
+    svm_weights /= float(svm_weights.max())
+
     #rf importances
     #grow forest
     forest = RandomForestClassifier(
@@ -241,20 +253,122 @@ def getPersonRankings(person):
     #coordinated search111
 
     # [pearson_r, mutual inf, max inf, dist, l1 coef, l2 coef, svm coef, rf importances, coord search]
-    featExtr = getFeatures()
-    featnames = featExtr.getFeatureNames()
-    return zip(featnames, corr, lr_scores, l1_scores, l2_scores, importances)
+    #featExtr = getFeatures()
+    #featnames = featExtr.getFeatureNames()
+    pers_results = []
+    for corr, lr_scores, l1_scores, l2_scores, svm_weights, importances in zip(corr, lr_scores, l1_scores, l2_scores, svm_weights, importances):
+        pers_results.append([corr[0], lr_scores, l1_scores, l2_scores, svm_weights, importances])
 
+    return pers_results#, featExtr.featureExtrs
+
+def genReport(results):
+    what_mapper = {
+        featureExtractor.PSDExtractor: 'PSD',
+        featureExtractor.DEExtractor: 'DE',
+        featureExtractor.RASMExtractor: 'RASM',
+        featureExtractor.DASMExtractor: 'DASM',
+        featureExtractor.AlphaBetaExtractor: 'AB',
+        featureExtractor.DCAUExtractor: 'DCAU',
+        featureExtractor.RCAUExtractor: 'RCAU',
+        featureExtractor.LMinRLPlusRExtractor: 'LminR',
+        featureExtractor.FrontalMidlinePower: 'FM',
+        featureExtractor.AvgExtractor: 'AVG',
+        featureExtractor.STDExtractor: 'STD',
+        featureExtractor.AVGHeartRateExtractor: 'AVG HR',
+        featureExtractor.STDInterBeatExtractor: 'STD HR'
+    }
+
+    #take averages
+    avg_results = []
+    for person in results:
+        for i in range(len(person)):
+            avg_results.append([0,0,0,0,0,0])
+            for j in range(len(person[i])):
+                avg_results[i][j] += person[i][j]
+    avg_results = np.array(avg_results)
+    avg_results = np.true_divide(avg_results,float(len(results)))
+
+    #output to file
+    st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
+    f = open('../../results/RF_valence' + str(st) + ".csv", 'w')
+
+    f.write('featname;eeg/phy;what;channels;waveband;pearson_r;l1 coef;l2 coef;svm coef;rf importances;\n')
+    for featExtr, result in zip(getFeatures().featureExtrs, avg_results):
+
+        feat_name = featExtr.featureName
+        feat_what = what_mapper[type(featExtr)]
+        feat_eeg, feat_channel, feat_waveband = None, None, None
+
+        if type(featExtr) in [featureExtractor.AVGHeartRateExtractor, featureExtractor.AvgExtractor, featureExtractor.STDExtractor, featureExtractor.STDInterBeatExtractor]:
+            feat_eeg = 'phy'
+            feat_waveband = 'n/a' #no freq bands
+            feat_channel = 'n/a'
+        else:
+            feat_eeg = 'eeg'
+
+            #single channel
+            if type(featExtr) in [featureExtractor.PSDExtractor, featureExtractor.DEExtractor, featureExtractor.FrontalMidlinePower]:
+                feat_waveband = featExtr.usedFeqBand
+                feat_channel = all_channels[featExtr.usedChannelIndexes[0]]
+
+            elif type(featExtr) == featureExtractor.AlphaBetaExtractor:
+                feat_waveband = 'alpha & beta'
+                feat_channel = all_channels[featExtr.usedChannelIndexes[0]]
+
+            elif type(featExtr) == featureExtractor.LMinRLPlusRExtractor:
+                feat_waveband = 'alpha'
+                feat_channel = [
+                    all_channels[featExtr.left_channels[0]],
+                    all_channels[featExtr.right_channels[0]]
+                ]
+
+            #multiple channels Left and right
+            elif type(featExtr) in [featureExtractor.DASMExtractor, featureExtractor.RASMExtractor]:
+                feat_waveband = featExtr.leftDEExtractor.usedFeqBand
+                feat_channel = [
+                    all_channels[featExtr.leftDEExtractor.usedChannelIndexes[0]],
+                    all_channels[featExtr.rightDEExtractor.usedChannelIndexes[0]]
+                ]
+
+            #multiple channels post and front
+            else:
+                feat_waveband = featExtr.frontalDEExtractor.usedFeqBand
+                feat_channel = [
+                    all_channels[featExtr.frontalDEExtractor.usedChannelIndexes[0]],
+                    all_channels[featExtr.posteriorDEExtractor.usedChannelIndexes[0]]
+                ]
+
+        #f.write('featname;eeg/phy;what;channels;waveband;pearson_r;l1 coef;l2 coef;svm coef;rf importances;\n')
+        f.write(
+            str(feat_name) + ';' +
+            str(feat_eeg) + ';' +
+            str(feat_what) + ';' +
+            str(feat_channel) + ';' +
+            str(feat_waveband) + ';'
+        )
+
+        for metric in result:
+            f.write(str(round(abs(metric),5)) + ";")
+
+        f.write("\n")
+
+    f.close()
 
 if __name__ == '__main__':
     stop_person = 33
     if stop_person < 33:
         print('[warn] not using all persons!')
 
-    pool = Pool(processes=POOL_SIZE)
-    results = pool.map(getPersonRankings, range(1,stop_person))
-    pool.close()
-    pool.join()
+    results = load('results_valence')
+    if results == None:
+        print('[warn] rebuilding cache')
+        pool = Pool(processes=POOL_SIZE)
+        results = pool.map(getPersonRankings, range(1,stop_person))
+        pool.close()
+        pool.join()
+        dump(results,'results_valence')
 
+    results = np.array(results)
 
-    dump(results,'results_valence')
+    genReport(results)
+
