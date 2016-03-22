@@ -273,7 +273,8 @@ def top30Accs(results):
         avg_results = np.array(avg_results)
         avg_results = np.true_divide(avg_results,float(len(results)))
 
-    acc_no_features = []
+    acc_train_no_features = []
+    acc_test_no_features  = []
     for person in range(1,len(results)+1):
         #load all features & keep them in memory
         y_cont = load('cont_y_p' + str(person))
@@ -294,7 +295,8 @@ def top30Accs(results):
         X = np.true_divide(X, np.std(X,axis=0) )
 
         #6 accs on 6 metrics
-        pers_accs = []
+        pers_train_accs = []
+        pers_test_accs  = []
         for i in range(len(avg_results[0])):
             #sort features
             indices = np.array(np.argsort(avg_results[:,i])[::-1])
@@ -303,23 +305,36 @@ def top30Accs(results):
             features_to_keep = indices[:30]
             X_filtered = X[:,features_to_keep]
 
-            model_accs = []
+            model_train_accs = []
+            model_test_accs  = []
             for i in range(1,len(features_to_keep)+1):
                 X_temp = X_filtered[:,:i]
 
-                #svm coefficients
-                clf = svm.SVC()
-                clf.fit(X_temp, y_disc)
+                train_acc, test_acc = 0, 0
+                for train_index, test_index in KFold(len(y_disc), n_folds=5):
+                    X_train, X_test = X_temp[train_index], X_temp[test_index]
+                    y_train, y_test = y_disc[train_index], y_disc[test_index]
 
-                pred = clf.predict(X_temp)
-                acc = accuracy(pred,y_disc)
+                    clf = svm.SVC()
+                    clf.fit(X_train, y_train)
 
-                model_accs.append(acc)
-            pers_accs.append(model_accs)
+                    train_acc += accuracy(clf.predict(X_train),y_train)
+                    test_acc  += accuracy(clf.predict(X_test ),y_test )
 
-        acc_no_features.append(pers_accs)
+                train_acc /= float(5)
+                test_acc  /= float(5)
 
-    return acc_no_features
+                model_train_accs.append(train_acc)
+                model_test_accs.append(test_acc)
+
+            pers_train_accs.append(model_train_accs)
+            pers_test_accs.append( model_test_accs )
+
+        acc_train_no_features.append(pers_train_accs)
+        acc_test_no_features.append( pers_test_accs )
+
+
+    return acc_train_no_features, acc_test_no_features
 
 def genReport(results):
     what_mapper = {
@@ -413,34 +428,49 @@ def genReport(results):
         f.write("\n")
 
     f.close()
-def accReport(accs):
+def accReport(train_accs, test_accs):
     #output to file
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
     f = open('../../results/accs_svm_valence' + str(st) + ".csv", 'w')
 
     #averages
-    avg_accs = np.average(accs,axis=0)
-    avg_accs = np.transpose(avg_accs)
+    avg_train_accs = np.average(train_accs, axis=0)
+    avg_train_accs = np.transpose(avg_train_accs)
+
+    avg_test_accs = np.average(test_accs, axis=0)
+    avg_test_accs = np.transpose(avg_test_accs)
 
     #write averages
-    f.write('number of features;pearson;lr;l1;l2;svm;rf\n')
-    for person, line in enumerate(avg_accs):
+    f.write('number of features;train_pearson;train_lr;train_l1;train_l2;train_svm;train_rf;')
+    f.write('test_pearson;test_lr;test_l1;test_l2;test_svm;test_rf;\n')
+    for person, (train_line, test_line) in enumerate(zip(avg_train_accs, avg_test_accs)):
         f.write(str(person+1) + ";" )
-        for acc in line:
+
+        for acc in train_line:
             f.write(str(acc) + ';')
+
+        for acc in test_line:
+            f.write(str(acc) + ';')
+
         f.write("\n")
 
     f.write("\n")
     f.write("\n")
 
     #write best accs per person
-    max_accs = np.amax(accs, axis=2)
+    max_train_accs = np.amax(train_accs, axis=2)
+    max_test_accs  = np.amax(test_accs , axis=2)
     f.write("best accs obtained for each person")
-    f.write('person;pearson;lr;l1;l2;svm;rf\n')
-    for person, line in enumerate(max_accs):
+    f.write('person;train_pearson;train_lr;train_l1;train_l2;train_svm;train_rf;')
+    f.write('test_pearson;test_lr;test_l1;test_l2;test_svm;test_rf;\n')
+    for person, (train_line, test_line) in enumerate(zip(max_train_accs,max_test_accs)):
         f.write(str(person+1) + ";" )
-        for acc in line:
+        for acc in train_line:
             f.write(str(acc) + ';')
+
+        for acc in test_line:
+            f.write(str(acc) + ';')
+
         f.write("\n")
 
     f.close()
@@ -462,10 +492,16 @@ if __name__ == '__main__':
     results = np.array(results)
     genReport(results)
 
-    accs = load("accs")
-    if accs == None:
+    train_accs = load('train_accs')
+    test_accs = load('test_accs')
+    if train_accs == None:
         print('[warn] rebuilding cache')
-        accs = top30Accs(results)
-        dump(accs,'accs')
-    acc = np.array(accs)
-    accReport(accs)
+        train_accs, test_accs = top30Accs(results)
+        dump(train_accs,'train_accs')
+        dump(test_accs ,'test_accs' )
+
+    train_accs = np.array(train_accs)
+    test_accs  = np.array(test_accs )
+
+
+    accReport(train_accs, test_accs)
