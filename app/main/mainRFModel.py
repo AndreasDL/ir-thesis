@@ -19,8 +19,10 @@ def getFeatures():
     featExtr.addFE(FE.AVGHeartRateExtractor())
     featExtr.addFE(FE.STDInterBeatExtractor())
 
+
     #EEG
     for channel in FE.all_EEG_channels:
+
         featExtr.addFE(
             FE.AlphaBetaExtractor(
                 channels=[channel],
@@ -28,14 +30,8 @@ def getFeatures():
             )
         )
 
-        featExtr.addFE(
-            FE.FrontalMidlinePower(
-                channels=[channel],
-                featName="FM " + FE.all_channels[channel]
-            )
-        )
-
         for freqband in FE.startFreq:
+
             featExtr.addFE(
                 FE.DEExtractor(
                     channels=[channel],
@@ -52,14 +48,8 @@ def getFeatures():
                 )
             )
 
+
     for left, right in zip(FE.all_left_channels, FE.all_right_channels):
-        featExtr.addFE(
-            FE.LMinRLPlusRExtractor(
-                left_channels=[left],
-                right_channels=[right],
-                featName='LR ' + FE.all_channels[left] + ',' + FE.all_channels[right]
-            )
-        )
 
         for freqband in FE.startFreq:
             featExtr.addFE(
@@ -101,7 +91,6 @@ def getFeatures():
             )
 
     return featExtr
-
 def valenceWorker(criterion,treecount,threshold):
 
     featExtr = getFeatures()
@@ -128,14 +117,10 @@ def arousalWorker(criterion,treecount,threshold):
     # create personloader
     personLdr = personLoader.NoTestsetLoader(classificator, featExtr)
 
-    # put in model
-    model = models.RFModel(personLdr)
-
     # run model
     model = models.RFModel(personLoader=personLdr,criterion=criterion,treeCount=treecount,threshold=threshold)
 
     return results
-
 
 if __name__ == '__main__':
     treeCount = 2000

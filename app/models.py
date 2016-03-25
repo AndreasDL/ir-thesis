@@ -13,7 +13,7 @@ from personLoader import dump,load
 from sklearn.preprocessing import normalize
 
 from multiprocessing import Pool
-POOL_SIZE = 4
+POOL_SIZE = 8
 import datetime
 import time
 
