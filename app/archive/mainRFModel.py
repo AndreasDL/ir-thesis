@@ -135,14 +135,3 @@ if __name__ == '__main__':
         dump(results,'to_keep')
 
     reporter.genReport(results)
-
-    '''
-    #reporter.genReport(results)
-    results = valenceWorker('entropy',treeCount,threshold)
-    #reporter.genReport(results)
-
-    results = arousalWorker('gini',treeCount,threshold)
-    #reporter.genReport(results)
-    results = arousalWorker('entropy',treeCount,threshold)
-    #reporter.genReport(results)
-    '''

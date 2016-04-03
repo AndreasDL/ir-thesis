@@ -1,5 +1,5 @@
 import reporters
-from main.mainAnalytics import valenceCorrelationWorker
+from archive.mainAnalytics import valenceCorrelationWorker
 
 reporter = reporters.HTMLAnalyticsReporter()
 reporter.genReport( [valenceCorrelationWorker(1)] )

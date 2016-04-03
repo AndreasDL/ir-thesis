@@ -1,5 +1,5 @@
 import reporters
-from main.mainCorrSelection import valenceCorrAccWorker
+from archive.mainCorrSelection import valenceCorrAccWorker
 
 reporter = reporters.HTMLCorrReporter()
 results = valenceCorrAccWorker(1)
