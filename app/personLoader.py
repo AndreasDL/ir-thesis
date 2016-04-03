@@ -4,6 +4,8 @@ import os.path
 from sklearn.cross_validation import StratifiedShuffleSplit
 
 DATASET_LOCATION = "C:/dataset"
+from multiprocessing import Pool
+POOL_SIZE = 8
 
 
 class APersonLoader:
@@ -104,11 +106,46 @@ class PersonCombiner(APersonLoader):
 
         return np.array(X), np.array(y)
 
+class PersonsLoader(APersonLoader):
+    def __init__(self, classificator, featExtractor, stopPerson, name='persTestset', path=DATASET_LOCATION):
+        APersonLoader.__init__(self, classificator, featExtractor, name, path=path)
+
+        self.stopPerson = stopPerson + 1 #+1 since the first person is person 1 and not person 0
+        self.ldr = NoTestsetLoader(classificator,featExtractor)
+
+    def load(self):
+        pool = Pool(processes=POOL_SIZE)
+        temp_data = pool.map(self.loadPerson, range(1, self.stopPerson)) #+1 done at init
+        pool.close()
+        pool.join()
+
+        #omzetten naar arrays
+        X, y = [], []
+        for dct in temp_data:
+            X.append(dct['X'])
+            y.append(dct['y'])
+
+        return np.array(X), np.array(y)
+
+    def loadPerson(self,person):
+        print('loading person ' + str(person))
+
+        y_cont = load('cont_y_p' + str(person))
+        if y_cont == None:
+            X, y = self.ldr.load(person)
+            dump(X, 'X_p' + str(person))
+            dump(y_cont, 'cont_y_p' + str(person))
+        else:
+            X = load('X_p' + str(person))
+
+        return {'X':X, 'y': y_cont}
+
+
+
 def dump(X, name, path='../../dumpedData'):
     fname = path + '/' + name
     with open(fname, 'wb') as f:
         pickle.dump( X, f )
-
 def load(name, path='../../dumpedData'):
     fname = path + '/' + name
 

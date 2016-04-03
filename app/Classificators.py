@@ -90,6 +90,7 @@ class ContArousalClassificator(AClassificator):
 
     def classify(self,labels):
         return np.array(labels[:,1])
+
 class ContValenceClassificator(AClassificator):
     def __init__(self,name='ContValenceClasses'):
         AClassificator.__init__(self,name,[])
