@@ -636,6 +636,6 @@ if __name__ == '__main__':
 
     acc_results = np.array(acc_results)
     train_accs = np.array(acc_results[:,0])
-    test_accs  = np.array(acc_results[:,1] )
+    test_accs  = np.array(acc_results[:,1])
 
     accReport(train_accs, test_accs)

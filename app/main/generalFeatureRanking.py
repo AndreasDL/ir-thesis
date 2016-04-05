@@ -130,11 +130,8 @@ def getPersonRankings(person):
     y_disc[ y_disc <= 5 ] = 0
     y_disc[ y_disc >  5 ] = 1
 
-    for index,val in enumerate(np.std(X,axis=0)):
-        if val == 0:
-            print('warning zero std for feature index: ', index, ' (', personLoader.FE.getFeatureNames()[index])
-
     #manual Feature standardization
+
     X = X - np.average(X,axis=0)
     X = np.true_divide(X, np.std(X,axis=0) )
 
@@ -352,8 +349,123 @@ def genReport(results):
 
     f.close()
 
+def getAccs():
+    # load persons
+    # take top X => 1->20 features and get accuracy in the general fashion
+    X, y_cont = personLoader.PersonsLoader(
+        classificator=Classificators.ContValenceClassificator(),
+        featExtractor=getFeatures(),
+        stopPerson=STOPPERSON,
+    ).load()
+
+    y_disc = np.array(y_cont)
+    y_disc[y_disc <= 5] = 0
+    y_disc[y_disc > 5] = 1
+
+    for index, val in enumerate(np.std(X,axis=0)):
+        if val.any() == 0:
+            print("Warn std of zero in " + str(index) + ' of person ' + str(person))
+
+    #manual Feature standardization
+    X = X - np.average(X,axis=0)
+    X = np.true_divide(X, np.std(X,axis=0) )
+
+    # take averages
+    # results[person][metric][feature]
+    avg_results = [x[:] for x in [[0] * len(results[0][0])] * len(results[0])]
+    for person in range(len(results)):  # foreach person
+        for metric in range(len(results[person])):  # foreach metric
+            for feature in range(len(results[person][metric])):
+                avg_results[metric][feature] += results[person][metric][feature]
+    avg_results = np.array(avg_results)
+    avg_results = np.true_divide(avg_results, float(len(results)))  # divide by person count
+    # avg_results[metric][feature]
+
+    metric_test_results = []
+    metric_train_results = []
+    for metric in range(len(avg_results)):
+        # sort features
+        indices = np.array(np.argsort(avg_results[metric])[::-1])
+        # get first TOPFEATCOUNT
+        indices = indices[:TOPFEATCOUNT]
+
+        feat_test_results = []
+        feat_train_results = []
+        for featCount in range(1, TOPFEATCOUNT + 1):
+            print('metric: ' + str(metric) + ' - featCount: ' + str(featCount))
+
+            # filter features out X
+            X_filtered = X[:, :, indices[:featCount]]
+
+            # 5 fold
+            train_acc, test_acc = 0, 0
+            for train_index, test_index in KFold(len(y_disc), n_folds=FOLDS, random_state=19, shuffle=True):
+                X_train, X_test = X_filtered[train_index], X_filtered[test_index]
+                y_train, y_test = y_disc[train_index], y_disc[test_index]
+
+                # combine persons (list[person][video][feature] to list[video][feature])
+                X_temp, y_temp = [], []
+                for person_x, person_y in zip(X_train, y_train):
+                    for video, label in zip(person_x, person_y):
+                        X_temp.append(video)
+                        y_temp.append(label)
+                X_train = X_temp
+                y_train = y_temp
+
+                X_temp, y_temp = [], []
+                for person_x, person_y in zip(X_test, y_test):
+                    for video, label in zip(person_x, person_y):
+                        X_temp.append(video)
+                        y_temp.append(label)
+                X_test = X_temp
+                y_test = y_temp
+
+
+                clf = RandomForestClassifier(
+                    n_estimators=2000,
+                    max_features='auto',
+                    criterion='gini',
+                    n_jobs=-1,
+                )
+                clf.fit(X_train, y_train)
+
+
+                '''
+                clf = svm.SVC()
+                clf.fit(X_train, y_train)
+                '''
+                train_acc += accuracy(clf.predict(X_train), y_train)
+                test_acc += accuracy(clf.predict(X_test), y_test)
+
+            feat_train_results.append(train_acc / float(FOLDS))
+            feat_test_results.append(test_acc / float(FOLDS))
+
+        metric_test_results.append(feat_test_results)
+        metric_train_results.append(feat_train_results)
+
+    return metric_train_results, metric_test_results
+def genAccReport(accs):
+    train_accs, test_accs = accs[0],  accs[1]
+
+    # output to file
+    st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
+    f = open('../../results/accs_rf_valence' + str(st) + ".csv", 'w')
+
+    for metric, (train_line, test_line) in enumerate(zip(train_accs, test_accs)):
+        f.write( "Metric: " + str(metric + 1) + ";\nfeatures;train;test;\n")
+
+        for featCount, (tr, te) in enumerate(zip(train_line, test_line)):
+            f.write(str(featCount) + ";" + str(tr) + ';' + str(te) + str('\n'))
+
+        f.write("\n")
+        f.write("\n")
+        f.write("\n")
+
+    f.close()
+
+
 if __name__ == '__main__':
-    STOPPERSON = 5 # load this many persons
+    STOPPERSON = 32 # load this many persons
     FOLDS = 5 #fold for out of sample acc
     TOPFEATCOUNT = 20 #take 1 -> this amount of features for graph
 
@@ -377,35 +489,13 @@ if __name__ == '__main__':
     #results[person][feature][metric]
     genReport(results)
 
-    #load persons
-    #take top X => 1->20 features and get accuracy in the general fashion
-    X, y_cont = personLoader.PersonsLoader(
-        classificator = Classificators.ContValenceClassificator(),
-        featExtractor = getFeatures(),
-        stopPerson= STOPPERSON,
-    ).load()
+    accs = load('accs')
+    if accs == None:
+        print("[warn] rebuilding accs cache")
+        accs = getAccs()
+        dump(accs, 'accs')
 
-    y_disc = np.array(y_cont)
-    y_disc[y_disc <= 5] = 0
-    y_disc[y_disc > 5] = 1
-
-    # take averages
-    # results[person][metric][feature]
-    avg_results = [x[:] for x in [[0] * len(results[0][0])] * len(results[0])]
-    for person in range(len(results)):  # foreach person
-        for metric in range(len(results[person])):  # foreach metric
-            for feature in range(len(results[person][metric])):
-                avg_results[metric][feature] += results[person][metric][feature]
-    avg_results = np.array(avg_results)
-    avg_results = np.true_divide(avg_results, float(len(results)))  # divide by person count
-    #avg_results[metric][feature]
-
-    # for each metric
-    #take top 20 features
-    for metric in range(len(avg_results)):
-        
-
-
-
+    accs = np.array(accs)
+    genAccReport(accs)
 
 
