@@ -109,6 +109,8 @@ def accuracy(predictions, truths):
     return acc / float(len(predictions))
 
 def getPersonRankings(person):
+    pers_results = []
+
     #load all features & keep them in memory
     y_cont = load('cont_y_p' + str(person))
     if y_cont == None:
@@ -140,19 +142,21 @@ def getPersonRankings(person):
     #get pearson
     corr = []
     for index in range(len(X[0])):
-        corr.append( pearsonr(X[:, index], y_cont) )
+        corr.append( pearsonr(X[:, index], y_cont)[0] )
+    pers_results.append(corr)
 
     # mutual information
     mi = []
     for feature in np.transpose(X):
         c_xy = np.histogram2d(feature, y_cont, 2)[0]
         mi.append( mutual_info_score(None, None, contingency=c_xy) )
+    pers_results.append(mi)
 
     #model based:
     #normal regression
     lr = LinearRegression(n_jobs=-1)
     lr.fit(X, y_cont)
-    lr_scores = lr.coef_
+    pers_results.append(lr.coef_)
 
     #l1 regression
     alphas = [0.03,0.1,0.3,1,3,10]
@@ -186,7 +190,7 @@ def getPersonRankings(person):
 
     lasso = Lasso(alpha=best_alpha)
     lasso.fit(X, y_cont)
-    l1_scores = lasso.coef_
+    pers_results.append(lasso.coef_)
 
     #l2 regression
     alphas = [0.03,0.1,0.3,1,3,10]
@@ -220,13 +224,14 @@ def getPersonRankings(person):
 
     ridge = Ridge(alpha=best_alpha)
     ridge.fit(X, y_cont)
-    l2_scores = ridge.coef_
+    pers_results.append(ridge.coef_)
 
     #svm coefficients
     clf = svm.SVC(kernel='linear')
     clf.fit(X, y_disc)
     svm_weights = (clf.coef_ ** 2).sum(axis=0)
     svm_weights /= float(svm_weights.max())
+    pers_results.append(svm_weights)
 
     #rf importances
     #grow forest
@@ -240,21 +245,14 @@ def getPersonRankings(person):
     #get importances
     importances = forest.feature_importances_
     #std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis = 0)
+    pers_results.append(importances)
 
     # pca coef
     pca = PCA(n_components=1)
     pca.fit(X)
-    pca_coef = pca.components_[0]
+    pers_results.append(pca.components_[0])
 
-
-    # [pearson_r, mutual inf, max inf, dist, l1 coef, l2 coef, svm coef, rf importances, coord search]
-    #featExtr = getFeatures()
-    #featnames = featExtr.getFeatureNames()
-    pers_results = []
-    for corr, lr_scores, l1_scores, l2_scores, svm_weights, importances, pca_coef in zip(corr, lr_scores, l1_scores, l2_scores, svm_weights, importances, pca_coef):
-        pers_results.append([np.abs(corr[0]), np.abs(lr_scores), np.abs(l1_scores), np.abs(l2_scores), np.abs(svm_weights), np.abs(importances), np.abs(pca_coef)])
-
-    return pers_results#, featExtr.featureExtrs
+    return np.array(pers_results)
 def genReport(results):
     what_mapper = {
         FE.PSDExtractor: 'PSD',
@@ -273,20 +271,22 @@ def genReport(results):
     }
 
     #take averages
-    avg_results = []
-    for person in results:
-        for i in range(len(person)):
-            avg_results.append([0] * len(person[i]))
-            for j in range(len(person[i])):
-                avg_results[i][j] += person[i][j]
+    # results[person][metric][feature]
+    avg_results = [x[:] for x in [[0] * len(results[0][0])] * len(results[0])]
+    for person in range(len(results)): #foreach person
+        for metric in range(len(results[person])): #foreach metric
+            for feature in range(len(results[person][metric])):
+                avg_results[metric][feature] += results[person][metric][feature]
     avg_results = np.array(avg_results)
-    avg_results = np.true_divide(avg_results,float(len(results)))
+    avg_results = np.true_divide(avg_results,float(len(results))) #divide by person count
+
+    avg_results = np.transpose(avg_results) #transpose for write to report
 
     #output to file
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
     f = open('../../results/ranking_valence' + str(st) + ".csv", 'w')
 
-    f.write('featname;eeg/phy;what;channels;waveband;pearson_r;mi;lr coef;l1 coef;l2 coef;svm coef;rf importances;\n')
+    f.write('featname;eeg/phy;what;channels;waveband;pearson_r;mi;lr coef;l1 coef;l2 coef;svm coef;rf importances;PCA\n')
     for featExtr, result in zip(getFeatures().featureExtrs, avg_results):
 
         feat_name = featExtr.featureName
@@ -332,7 +332,6 @@ def genReport(results):
                     FE.all_channels[featExtr.posteriorDEExtractor.usedChannelIndexes[0]]
                 ]
 
-        #f.write('featname;eeg/phy;what;channels;waveband;pearson_r;l1 coef;l2 coef;svm coef;rf importances;\n')
         f.write(
             str(feat_name) + ';' +
             str(feat_eeg) + ';' +
@@ -342,27 +341,40 @@ def genReport(results):
         )
 
         for metric in result:
-            f.write(str(abs(metric)) + ";")
-
+            f.write(str(abs(metric)) + str(';'))
         f.write("\n")
+
+        #result[metric][feature]
+        #for feature in range(len(result[0][0])):
+        #    for metric in range(len(result[0])):
+        #        f.write(str(abs(avg_results[metric][feature])) + ";")
+        #    f.write("\n")
 
     f.close()
 
 if __name__ == '__main__':
-    STOPPERSON = 5
+    STOPPERSON = 5 # load this many persons
+    FOLDS = 5 #fold for out of sample acc
+    TOPFEATCOUNT = 20 #take 1 -> this amount of features for graph
+
     if STOPPERSON < 32:
         print('[warn] not using all persons')
+
+    if FOLDS > STOPPERSON:
+        print('[warn] folds > stopperson --quitting')
+        exit
 
     results = load('results_valence')
     if results == None:
         print('[warn] rebuilding valence results cache')
         pool = Pool(processes=POOL_SIZE)
-        results = pool.map(getPersonRankings, range(1, STOPPERSON))
+        results = pool.map(getPersonRankings, range(1, STOPPERSON+1))
         pool.close()
         pool.join()
         dump(results, 'results_valence')
 
     results = np.array(results)
+    #results[person][feature][metric]
     genReport(results)
 
     #load persons
@@ -377,4 +389,23 @@ if __name__ == '__main__':
     y_disc[y_disc <= 5] = 0
     y_disc[y_disc > 5] = 1
 
-    
+    # take averages
+    # results[person][metric][feature]
+    avg_results = [x[:] for x in [[0] * len(results[0][0])] * len(results[0])]
+    for person in range(len(results)):  # foreach person
+        for metric in range(len(results[person])):  # foreach metric
+            for feature in range(len(results[person][metric])):
+                avg_results[metric][feature] += results[person][metric][feature]
+    avg_results = np.array(avg_results)
+    avg_results = np.true_divide(avg_results, float(len(results)))  # divide by person count
+    #avg_results[metric][feature]
+
+    # for each metric
+    #take top 20 features
+    for metric in range(len(avg_results)):
+        
+
+
+
+
+
