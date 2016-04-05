@@ -130,15 +130,16 @@ class PersonsLoader(APersonLoader):
     def loadPerson(self,person):
         print('loading person ' + str(person))
 
-        y_cont = load('cont_y_p' + str(person))
-        if y_cont == None:
+        y = load('cont_y_p' + str(person))
+        if y == None:
+            print('[warn] rebuilding cache for person ' + str(person))
             X, y = self.ldr.load(person)
             dump(X, 'X_p' + str(person))
-            dump(y_cont, 'cont_y_p' + str(person))
+            dump(y, 'cont_y_p' + str(person))
         else:
             X = load('X_p' + str(person))
 
-        return {'X':X, 'y': y_cont}
+        return {'X':X, 'y': y}
 
 
 
@@ -146,8 +147,11 @@ def dump(X, name, path='../../dumpedData'):
     fname = path + '/' + name
     with open(fname, 'wb') as f:
         pickle.dump( X, f )
+
 def load(name, path='../../dumpedData'):
     fname = path + '/' + name
+    #print('loading from')
+    #print(os.path.abspath(fname))
 
     data = None
     if os.path.isfile(fname):

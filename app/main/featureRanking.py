@@ -111,6 +111,7 @@ def accuracy(predictions, truths):
         acc += (pred == truth)
 
     return acc / float(len(predictions))
+
 def getPersonRankings(person):
     #load all features & keep them in memory
     y_cont = load('cont_y_p' + str(person))
