@@ -10,7 +10,10 @@ import numpy as np
 import datetime
 import time
 import matplotlib.pyplot as plt
+from pprint import pprint
 
+from multiprocessing import Pool
+POOL_SIZE = 2
 
 STOPPERSON = 3
 RUNS = 5
@@ -100,23 +103,23 @@ def getFeatures():
             )
     '''
     return featExtr
-def genPlot(importances, std, fpad="../../results/plots/"):
+def genPlot(avgs, stds, title, fpad="../../results/plots/"):
 
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
     fname = fpad + 'plot_' + str(st) + '.png'
 
     # Plot the feature importances of the forest
     plt.figure()
-    plt.title("Feature importances ")
+    plt.title(title)
     plt.bar(
-        range(len(importances)),
-        importances,
+        range(len(avgs)),
+        avgs,
         color="r",
-        yerr=std,
+        yerr=stds,
         align="center"
     )
-    plt.xticks(range(0, len(importances), 50))
-    plt.xlim([-1, len(importances)])
+    plt.xticks(range(0, len(avgs), 50))
+    plt.xlim([-1, len(avgs)])
     plt.savefig(fname)
     plt.clf()
 
@@ -144,7 +147,7 @@ def step1(X,y, featureNames, runs=RUNS,n_estimators=N_ESTIMATORS, criterion='gin
     stds = np.std(importances, axis=0)
     importances = np.average(importances, axis=0)
 
-    # genPlot(importances, stds)
+    # genPlot(importances, stds, 'step1 importances'))
 
     #get threshold from cart estimator
     cart = DecisionTreeClassifier(criterion=criterion)
@@ -170,8 +173,8 @@ def step1(X,y, featureNames, runs=RUNS,n_estimators=N_ESTIMATORS, criterion='gin
     featureNames = featureNames[indices_to_keep]
 
     return np.array(indices_to_keep), featureNames
-def step2(X,y, featureNames, runs=RUNS,n_estimators=N_ESTIMATORS, criterion='gini'):
-    print('step2')
+def step2_interpretation(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATORS, criterion='gini'):
+    print('step2 interpretation')
     featuresLeft = len(X[0])
 
     #for featCount = 1 ~> remaining indices
@@ -198,23 +201,66 @@ def step2(X,y, featureNames, runs=RUNS,n_estimators=N_ESTIMATORS, criterion='gin
     stds = np.std(oob_scores, axis=1)
     avgs = np.average(oob_scores, axis=1)
 
-    #genPlot(avgs,stds)
+    #genPlot(avgs,stds,'oob_scores step2_interpretation')
 
-    highest_avg_index = np.argmax(avgs)
+    highest_avg_index = np.argmax(avgs) + 1
     highest_avg       = avgs[highest_avg_index]
     highest_std       = stds[highest_avg_index]
 
     #look for smaller kandidates, keeping track of STD
-    for i in range(highest_avg_index):
+    for i in range(1,highest_avg_index+1):
         if avgs[i] - stds[i] > highest_avg - highest_std:
             highest_avg_index = i
             highest_std = stds[i]
             highest_avg = avgs[i]
 
-    return highest_avg_index
+    return highest_avg_index, highest_avg, highest_std
+def step2_prediction(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATORS, criterion='gini'):
+    print('step2_prediction')
+    featuresLeft = len(X[0])
 
+    #for featCount = 1 ~> remaining indices
+    best_features_to_keep = []
+    best_score, best_std = 0, 0
+    for feat in range(featuresLeft):
+        print(feat)
+
+        forest = RandomForestClassifier(
+            n_estimators=n_estimators,
+            max_features='auto',
+            criterion=criterion,
+            n_jobs=-1,
+            oob_score=True,
+            bootstrap=True
+        )
+
+        # add new feature to the existing features
+        features_to_keep = best_features_to_keep[:]
+        features_to_keep.append(feat)
+
+        #prepare the dataset
+        X_temp = X[:,features_to_keep]
+
+        #get scores
+        run_scores = []
+        for i in range(runs):
+            forest.fit(X_temp,y)
+            run_scores.append(forest.oob_score_)
+
+        new_score = np.average(run_scores)
+        new_std   = np.std(run_scores)
+
+        #better?
+        if new_score - new_std > best_score - best_std:
+            best_score = new_score
+            best_std   = new_std
+            best_features_to_keep =features_to_keep
+
+    return best_features_to_keep, best_score, best_std
 
 def RFPerson(person):
+    print('person: ' + str(person))
+
     #load X , y
     # load all features & keep them in memory
     featExtr = getFeatures()
@@ -242,29 +288,41 @@ def RFPerson(person):
     X = np.true_divide(X, np.std(X, axis=0))
 
     #step 1 determine importances using RF forest
-    indices_step1 = load('indices')
-    featureNames_step1  = load('featNames_step1')
-    if indices_step1 == None or featureNames == None:
-        indices_step1, featureNames_step1 = step1(X,y_disc,featureNames)
-        dump(indices_step1, 'indices')
-        dump(featureNames_step1, 'featNames_step1')
-
+    indices_step1, featureNames_step1 = step1(X,y_disc,featureNames)
     featureNames = np.array(featureNames_step1)
     indices = np.array(indices_step1)
 
     #filter features (X) based on the results from step 1
     X = X[:,indices]
 
-    #step 2
-    featCount_step2 = step2(X,y_disc,featureNames_step1)
-    indices = indices[:featCount_step2]
-    X = X[:,indices]
-    featureNames = featureNames[indices]
+    #step 2 - interpretation
+    featCount_inter, score_inter, std_inter = step2_interpretation(X, y_disc, featureNames)
+    indices_inter = indices[:featCount_inter]
+    featureNames_inter = featureNames[indices_inter]
 
+    #step 2 - prediction
+    indices_pred, score_pred, std_pred = step2_prediction(X, y_disc, featureNames)
+    featureNames_pred = featureNames[indices_pred]
 
+    print('[' + str(person) + 'interpretation - score: ' + str(score_inter) +  '(' + str(std_inter) +
+          ')prediction - score: ' + str(score_pred) + ' - ' + str(std_pred)
+          )
 
+    to_ret = [
+        [ featCount_inter  , score_inter, std_inter, featureNames_inter ],
+        [ len(indices_pred), score_pred , std_pred , featureNames_pred  ]
+    ]
 
+    dump(to_ret, 'rf_P' + str(person))
+
+    return to_ret
 
 if __name__ == '__main__':
-    #TODO for person in range(STOPPERSON):
-    RFPerson(1)
+    pool = Pool(processes=POOL_SIZE)
+    results = pool.map(RFPerson, range(1, STOPPERSON+1))
+    pool.close()
+    pool.join()
+
+    dump(results, 'RF_pers_specific')
+
+    pprint(results)
