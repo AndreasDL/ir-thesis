@@ -352,9 +352,10 @@ def genReport(results):
 def getAccs():
     # load persons
     # take top X => 1->20 features and get accuracy in the general fashion
+    featExtr = getFeatures()
     X, y_cont = personLoader.PersonsLoader(
         classificator=Classificators.ContValenceClassificator(),
-        featExtractor=getFeatures(),
+        featExtractor=featExtr,
         stopPerson=STOPPERSON,
     ).load()
 
@@ -381,16 +382,17 @@ def getAccs():
     avg_results = np.true_divide(avg_results, float(len(results)))  # divide by person count
     # avg_results[metric][feature]
 
-    metric_test_results = []
-    metric_train_results = []
-    for metric in range(len(avg_results)):
+    metric_results = []
+    for metric in range(1):#len(avg_results)):
         # sort features
         indices = np.array(np.argsort(avg_results[metric])[::-1])
         # get first TOPFEATCOUNT
         indices = indices[:TOPFEATCOUNT]
 
-        feat_test_results = []
-        feat_train_results = []
+        #featurenames
+        featnames = np.array(featExtr.getFeatureNames())[indices]
+
+        feat_results = []
         for featCount in range(1, TOPFEATCOUNT + 1):
             print('metric: ' + str(metric) + ' - featCount: ' + str(featCount))
 
@@ -437,27 +439,31 @@ def getAccs():
                 train_acc += accuracy(clf.predict(X_train), y_train)
                 test_acc += accuracy(clf.predict(X_test), y_test)
 
-            feat_train_results.append(train_acc / float(FOLDS))
-            feat_test_results.append(test_acc / float(FOLDS))
+            feat_results.append([
+                featnames[featCount - 1],
+                train_acc / float(FOLDS),
+                test_acc / float(FOLDS)
+            ])
 
-        metric_test_results.append(feat_test_results)
-        metric_train_results.append(feat_train_results)
+        metric_results.append(feat_results) #metricresults[featCount] = [featname, train, test]
 
-    return metric_train_results, metric_test_results
+    return metric_results
+
 def genAccReport(accs):
-    train_accs, test_accs = accs[0],  accs[1]
+    #accs[metric][featCount -1] = (name,train,test)
 
     # output to file
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
     f = open('../../results/accs_rf_valence' + str(st) + ".csv", 'w')
 
-    for metric, (train_line, test_line) in enumerate(zip(train_accs, test_accs)):
-        f.write( "Metric: " + str(metric + 1) + ";\nfeatures;train;test;\n")
+    for index, metric in enumerate(accs):
+        f.write("Metric: " + str(index + 1) + ";\nfeatureCount;featureAdded;train;test;\n")
+        for featCount, line in enumerate(metric):
+            f.write(str(featCount+1) + ";")
+            for column in line:
+                f.write(str(column) + ";")
+            f.write("\n")
 
-        for featCount, (tr, te) in enumerate(zip(train_line, test_line)):
-            f.write(str(featCount) + ";" + str(tr) + ';' + str(te) + str('\n'))
-
-        f.write("\n")
         f.write("\n")
         f.write("\n")
 
@@ -465,9 +471,9 @@ def genAccReport(accs):
 
 
 if __name__ == '__main__':
-    STOPPERSON = 32 # load this many persons
-    FOLDS = 5 #fold for out of sample acc
-    TOPFEATCOUNT = 20 #take 1 -> this amount of features for graph
+    STOPPERSON = 3 # load this many persons
+    FOLDS = 3 #fold for out of sample acc
+    TOPFEATCOUNT = 10 #take 1 -> this amount of features for graph
 
     if STOPPERSON < 32:
         print('[warn] not using all persons')
