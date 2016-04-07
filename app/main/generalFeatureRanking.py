@@ -15,7 +15,7 @@ import numpy as np
 import datetime
 import time
 from multiprocessing import Pool
-POOL_SIZE = 8
+POOL_SIZE = 1
 
 
 def getFeatures():
@@ -108,6 +108,23 @@ def accuracy(predictions, truths):
 
     return acc / float(len(predictions))
 
+#distance cov
+def d_n(x):
+    d = np.abs(x[:, None] - x)
+    dn = d - d.mean(0) - d.mean(1)[:,None] + d.mean()
+    return dn
+def dcov_all(x, y):
+    #stolen with pride from https://gist.githubusercontent.com/josef-pkt/2938402/raw/ff949d6379484e9fc745bd534bdfc5d22ad074e2/try_distance_corr.py
+    dnx = d_n(x)
+    dny = d_n(y)
+
+    denom = np.product(dnx.shape)
+    dc = (dnx * dny).sum() / denom
+    dvx = (dnx**2).sum() / denom
+    dvy = (dny**2).sum() / denom
+    dr = dc / (np.sqrt(dvx) * np.sqrt(dvy))
+    return np.sqrt(dc), np.sqrt(dr), np.sqrt(dvx), np.sqrt(dvy)
+
 def getPersonRankings(person):
     pers_results = []
 
@@ -131,7 +148,6 @@ def getPersonRankings(person):
     y_disc[ y_disc >  5 ] = 1
 
     #manual Feature standardization
-
     X = X - np.average(X,axis=0)
     X = np.true_divide(X, np.std(X,axis=0) )
 
@@ -148,6 +164,12 @@ def getPersonRankings(person):
         c_xy = np.histogram2d(feature, y_cont, 2)[0]
         mi.append( mutual_info_score(None, None, contingency=c_xy) )
     pers_results.append(mi)
+
+    dcorr = []
+    for feature in np.transpose(X):
+        dc, dr, dvx, dvy = dcov_all(feature, y_cont)
+        dcorr .append(dr)
+    pers_results.append(dcorr)
 
     #model based:
     #normal regression
@@ -283,7 +305,10 @@ def genReport(results):
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
     f = open('../../results/ranking_valence' + str(st) + ".csv", 'w')
 
-    f.write('featname;eeg/phy;what;channels;waveband;pearson_r;mi;lr coef;l1 coef;l2 coef;svm coef;rf importances;PCA\n')
+    f.write('featname;eeg/phy;what;channels;waveband;' +
+            'pearson_r;mi;dcorr;' +
+            'lr coef;l1 coef;l2 coef;' +
+            'svm coef;rf importances;PCA\n')
     for featExtr, result in zip(getFeatures().featureExtrs, avg_results):
 
         feat_name = featExtr.featureName
@@ -383,7 +408,7 @@ def getAccs():
     # avg_results[metric][feature]
 
     metric_results = []
-    for metric in range(1):#len(avg_results)):
+    for metric in range(len(avg_results)):
         # sort features
         indices = np.array(np.argsort(avg_results[metric])[::-1])
         # get first TOPFEATCOUNT
@@ -424,18 +449,13 @@ def getAccs():
 
 
                 clf = RandomForestClassifier(
-                    n_estimators=2000,
+                    n_estimators=70,
                     max_features='auto',
                     criterion='gini',
                     n_jobs=-1,
                 )
                 clf.fit(X_train, y_train)
 
-
-                '''
-                clf = svm.SVC()
-                clf.fit(X_train, y_train)
-                '''
                 train_acc += accuracy(clf.predict(X_train), y_train)
                 test_acc += accuracy(clf.predict(X_test), y_test)
 
@@ -448,7 +468,6 @@ def getAccs():
         metric_results.append(feat_results) #metricresults[featCount] = [featname, train, test]
 
     return metric_results
-
 def genAccReport(accs):
     #accs[metric][featCount -1] = (name,train,test)
 
@@ -469,11 +488,10 @@ def genAccReport(accs):
 
     f.close()
 
-
 if __name__ == '__main__':
-    STOPPERSON = 3 # load this many persons
+    STOPPERSON = 33 # load this many persons
     FOLDS = 3 #fold for out of sample acc
-    TOPFEATCOUNT = 10 #take 1 -> this amount of features for graph
+    TOPFEATCOUNT = 20 #take 1 -> this amount of features for graph
 
     if STOPPERSON < 32:
         print('[warn] not using all persons')
@@ -503,5 +521,3 @@ if __name__ == '__main__':
 
     accs = np.array(accs)
     genAccReport(accs)
-
-

@@ -15,9 +15,9 @@ from pprint import pprint
 from multiprocessing import Pool
 POOL_SIZE = 2
 
-STOPPERSON = 3
-RUNS = 5
-N_ESTIMATORS = 100
+STOPPERSON = 32
+RUNS = 30
+N_ESTIMATORS = 2000
 
 def getFeatures():
     # create the features
@@ -32,7 +32,6 @@ def getFeatures():
     featExtr.addFE(FE.STDInterBeatExtractor())
 
     #EEG
-    '''
     for channel in FE.all_EEG_channels:
 
         featExtr.addFE(
@@ -101,8 +100,8 @@ def getFeatures():
                     featName='RCAU ' + FE.all_channels[front] + ',' + FE.all_channels[post]
                 )
             )
-    '''
     return featExtr
+
 def genPlot(avgs, stds, title, fpad="../../results/plots/"):
 
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
@@ -125,7 +124,6 @@ def genPlot(avgs, stds, title, fpad="../../results/plots/"):
 
 def step1(X,y, featureNames, runs=RUNS,n_estimators=N_ESTIMATORS, criterion='gini'):
     print('step1')
-
     # grow forest
     forest = RandomForestClassifier(
         n_estimators=n_estimators,
@@ -174,7 +172,7 @@ def step1(X,y, featureNames, runs=RUNS,n_estimators=N_ESTIMATORS, criterion='gin
 
     return np.array(indices_to_keep), featureNames
 def step2_interpretation(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATORS, criterion='gini'):
-    print('step2 interpretation')
+    print('step2_interpretation')
     featuresLeft = len(X[0])
 
     #for featCount = 1 ~> remaining indices
@@ -223,6 +221,7 @@ def step2_prediction(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATORS, c
     best_features_to_keep = []
     best_score, best_std = 0, 0
     for feat in range(featuresLeft):
+        print(feat)
         print(feat)
 
         forest = RandomForestClassifier(
