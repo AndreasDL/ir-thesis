@@ -104,8 +104,8 @@ def getFeatures():
 
 def genPlot(avgs, stds, title, fpad="../../results/plots/"):
 
-    st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
-    fname = fpad + 'plot_' + str(st) + '.png'
+    #st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
+    fname = fpad + str(title) + '.png'
 
     # Plot the feature importances of the forest
     plt.figure()
@@ -122,6 +122,44 @@ def genPlot(avgs, stds, title, fpad="../../results/plots/"):
     plt.savefig(fname)
     plt.clf()
     plt.close()
+def genDuoPlot(avgs1, stds1, avgs2,stds2, title, fpad="../../results/plots/"):
+
+    #st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
+    fname = fpad + str(title) + '.png'
+
+    # Plot the feature importances of the forest
+    fig, ax = plt.subplots()
+    N = len(avgs1)
+    ind = np.arange(N)
+    width = 0.35
+
+    plt.title(title)
+    inter = ax.bar(
+        ind,
+        avgs1,
+        color="r",
+        yerr=stds1,
+        align="center",
+        width=width
+    )
+
+    pred = ax.bar(
+        ind+width,
+        avgs2,
+        color="b",
+        yerr=stds2,
+        align="center",
+        width=width
+    )
+    plt.xticks(range(0, len(avgs1), 5))
+    plt.xlim([-1, len(avgs1)])
+    ax.legend((pred,inter), ('inter', 'pred'))
+    plt.savefig(fname)
+
+    #plt.show()
+    plt.clf()
+    plt.close()
+
 
 def step1(X,y, featureNames, threshold, runs=RUNS, criterion='gini'):
     print('step1')
@@ -247,22 +285,35 @@ def genReport(results):
 
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
     f = open('../../results/CART_PERS_' + str(st) + ".csv", 'w')
-    f.write("person;interScore;interStd;interCount;interFeat;predScore;predStd;predCount;predFeat;\n")
-    for person,result in enumerate(results):
-        f.write(str(person) + ';')
-        for i in range(len(result)):
-            f.write(str(result[i][1]) + ';' + str(result[i][2]) + ';' + str(result[i][0]) + ';')
+    f.write("person;interScore;interStd;interCount;interFeat;\n")
 
+    scores = []
+    stds   = []
+    for i in range(len(results[0])):
+        methodScores = []
+        methodSTDs   = []
+        for person,result in enumerate(results):
+            f.write(str(person) + ';')
+            f.write(str(result[i][1]) + ';' + str(result[i][2]) + ';' + str(result[i][0]) + ';')
             for name in result[i][3]:
-                f.write(str(name) + ' - ')
-            f.write(';')
+                f.write(str(name) + ';')
+
+            f.write('\n')
+            genPlot(result[0][4], result[0][5], 'method' + str(i) + ' oob score for person ' + str(person))
+
+            methodScores.append(result[i][1])
+            methodSTDs.append(result[i][2])
+        genPlot(methodScores, methodSTDs, 'method' + str(i) + 'scores')
+        scores.append(methodScores)
+        stds.append(methodSTDs)
 
         f.write('\n')
+        f.write('\n')
 
-        genPlot(result[0][4], result[0][5], 'inter oob score for person ' + str(person))
-
+        f.write("person;predScore;predStd;predCount;predFeat;\n")
     f.close()
 
+    genDuoPlot(scores[0], stds[0], scores[1], stds[1], 'interpretation vs perdiction scores')
 
 def RFPerson(person):
     print('person: ' + str(person))
