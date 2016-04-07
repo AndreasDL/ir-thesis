@@ -4,13 +4,11 @@ import featureExtractor as FE
 import Classificators
 
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
 
 import numpy as np
 import datetime
 import time
 import matplotlib.pyplot as plt
-from pprint import pprint
 
 from multiprocessing import Pool
 POOL_SIZE = 2
@@ -18,6 +16,7 @@ POOL_SIZE = 2
 STOPPERSON = 32
 RUNS = 20
 N_ESTIMATORS = 1000
+THRESHOLD = 0.025
 
 def getFeatures():
     # create the features
@@ -166,7 +165,7 @@ def step1(X,y, featureNames, threshold, criterion='gini'):
 
     #get importances
     forest = RandomForestClassifier(
-        n_estimators=N_ESTIMATORS,
+        n_estimators=N_ESTIMATORS * 3,
         max_features='auto',
         criterion=criterion,
         n_jobs=-1,
@@ -178,14 +177,15 @@ def step1(X,y, featureNames, threshold, criterion='gini'):
     importances = forest.feature_importances_
     stds = np.std([tree.feature_importances_ for tree in forest.estimators_], axis=0)
 
-    # genPlot(importances, stds, 'step1 importances'))
+    importances -= stds
 
-    #throw out everything <= threshold
-    indices_to_keep = []
-    for index, (imp, std) in enumerate(zip(importances, stds)):
-        if imp > threshold: #worst case filtering
-            indices_to_keep.append(index)
-    indices_to_keep = np.array(indices_to_keep)
+    # genPlot(importances, stds, 'step1 importances'))
+    # sort features
+    indices_to_keep = np.array(np.argsort(importances)[::-1])
+    featureNames = featureNames[indices_to_keep]
+
+    #keep upper %threshold
+    indices_to_keep = indices_to_keep[:int(len(indices_to_keep)*threshold)]
 
     #filter indices
     importances = importances[indices_to_keep]
@@ -351,7 +351,7 @@ def RFPerson(person):
         X = np.true_divide(X, np.std(X, axis=0))
 
         #step 1 determine importances using RF forest
-        indices_step1, featureNames_step1 = step1(X,y_disc,featureNames,0.01)
+        indices_step1, featureNames_step1 = step1(X,y_disc,featureNames, THRESHOLD)
         featureNames = np.array(featureNames_step1)
         indices = np.array(indices_step1)
 
