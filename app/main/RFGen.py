@@ -16,8 +16,8 @@ from multiprocessing import Pool
 POOL_SIZE = 2
 
 STOPPERSON = 32
-RUNS = 30
-N_ESTIMATORS = 2000
+RUNS = 20
+N_ESTIMATORS = 1000
 
 def getFeatures():
     # create the features
@@ -161,19 +161,22 @@ def genDuoPlot(avgs1, stds1, avgs2,stds2, title, fpad="../../results/plots/"):
     plt.close()
 
 
-def step1(X,y, featureNames, threshold, runs=RUNS, criterion='gini'):
+def step1(X,y, featureNames, threshold, criterion='gini'):
     print('step1')
 
     #get importances
-    cart = DecisionTreeClassifier(criterion=criterion)
-    importances = []
-    for i in range(runs):
-        cart.fit(X, y)
-        importances.append(cart.feature_importances_)
+    forest = RandomForestClassifier(
+        n_estimators=N_ESTIMATORS,
+        max_features='auto',
+        criterion=criterion,
+        n_jobs=-1,
+    )
 
-    # get Average and std of the importances
-    stds = np.std(importances, axis=0)
-    importances = np.average(importances, axis=0)
+    forest.fit(X,y)
+
+    # get importances
+    importances = forest.feature_importances_
+    stds = np.std([tree.feature_importances_ for tree in forest.estimators_], axis=0)
 
     # genPlot(importances, stds, 'step1 importances'))
 
@@ -194,8 +197,8 @@ def step1(X,y, featureNames, threshold, runs=RUNS, criterion='gini'):
 
     return np.array(indices_to_keep), featureNames
 def step2_interpretation(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATORS, criterion='gini'):
-    print('step2_interpretation')
     featuresLeft = len(X[0])
+    print('step2_interpretation - featLeft: ' + str(featuresLeft))
 
     #for featCount = 1 ~> remaining indices
     oob_scores = []
@@ -235,8 +238,8 @@ def step2_interpretation(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATOR
 
     return highest_avg_index +1, highest_avg, highest_std, avgs, stds
 def step2_prediction(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATORS, criterion='gini'):
-    print('step2_prediction')
     featuresLeft = len(X[0])
+    print('step2_prediction - featLeft: ' + str(featuresLeft))
 
     #for featCount = 1 ~> remaining indices
     best_features_to_keep = []
@@ -284,7 +287,7 @@ def genReport(results):
     #]
 
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
-    f = open('../../results/CART_PERS_' + str(st) + ".csv", 'w')
+    f = open('../../results/RF_PERS_' + str(st) + ".csv", 'w')
     f.write("person;interScore;interStd;interCount;interFeat;\n")
 
     scores = []
@@ -318,7 +321,7 @@ def genReport(results):
 def RFPerson(person):
     print('person: ' + str(person))
 
-    to_ret = load('CART_P' + str(person))
+    to_ret = load('RF_P' + str(person))
     if to_ret == None:
 
         #load X , y
@@ -369,10 +372,10 @@ def RFPerson(person):
             [ len(indices_pred), score_pred , std_pred , featureNames_pred  ]
         ]
 
-        dump(to_ret, 'CART_P' + str(person))
+        dump(to_ret, 'RF_P' + str(person))
 
-    print('[' + str(person) + 'interpretation - score: ' + str(to_ret[0][1]) + '(' + str(to_ret[0][2]) + ') with ' + str(to_ret[0][0]) +
-          'prediction - score: ' + str(to_ret[1][1]) + ' (' + str(to_ret[1][2]) + ') with ' + str(to_ret[1][0])
+    print('[' + str(person) + '] interpretation - score: ' + str(to_ret[0][1]) + ' (' + str(to_ret[0][2]) + ') with ' + str(to_ret[0][0]) +
+          '  prediction - score: ' + str(to_ret[1][1]) + ' (' + str(to_ret[1][2]) + ') with ' + str(to_ret[1][0])
           )
 
 
@@ -380,12 +383,12 @@ def RFPerson(person):
 
 if __name__ == '__main__':
 
-    results = load('CART_pers_specific')
+    results = load('RF_pers_specific')
     if results == None:
         pool = Pool(processes=POOL_SIZE)
         results = pool.map(RFPerson, range(1, STOPPERSON+1))
         pool.close()
         pool.join()
-        dump(results, 'CART_pers_specific')
+        dump(results, 'RF_pers_specific')
 
     genReport(results)
