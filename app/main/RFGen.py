@@ -16,7 +16,8 @@ POOL_SIZE = 2
 STOPPERSON = 32
 RUNS = 20
 N_ESTIMATORS = 1000
-THRESHOLD = 0.025#featcount and samples
+THRESHOLD = 0.05#featcount and samples
+FOLDS = 5
 
 def getFeatures():
     # create the features
@@ -159,13 +160,12 @@ def genDuoPlot(avgs1, stds1, avgs2,stds2, title, fpad="../../results/plots/"):
     plt.clf()
     plt.close()
 
-
 def step1(X,y, featureNames, threshold, criterion='gini'):
     print('step1')
 
     #get importances
     forest = RandomForestClassifier(
-        n_estimators=N_ESTIMATORS,
+        n_estimators=N_ESTIMATORS *3,
         max_features='auto',
         criterion=criterion,
         n_jobs=-1,
@@ -176,6 +176,8 @@ def step1(X,y, featureNames, threshold, criterion='gini'):
     # get importances
     importances = forest.feature_importances_
     stds = np.std([tree.feature_importances_ for tree in forest.estimators_], axis=0)
+
+    importances -= stds
 
     # genPlot(importances, stds, 'step1 importances'))
     # sort features
@@ -194,6 +196,7 @@ def step1(X,y, featureNames, threshold, criterion='gini'):
     featureNames = featureNames[indices_to_keep]
 
     return np.array(indices_to_keep), featureNames
+
 def step2_interpretation(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATORS, criterion='gini'):
     featuresLeft = len(X[0])
     print('step2_interpretation - featLeft: ' + str(featuresLeft))
@@ -285,7 +288,7 @@ def genReport(results):
     #]
 
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
-    f = open('../../results/RF_PERS_' + str(st) + ".csv", 'w')
+    f = open('../../results/RF_general' + str(st) + ".csv", 'w')
     f.write("person;interScore;interStd;interCount;interFeat;\n")
 
     scores = []
@@ -316,77 +319,101 @@ def genReport(results):
 
     genDuoPlot(scores[0], stds[0], scores[1], stds[1], 'interpretation vs perdiction scores')
 
-def RFPerson(person):
-    print('person: ' + str(person))
+def fixStructure(all_X, all_y_disc):
+    # structure of X
+    X, y_disc = [], []
+    for person_x, person_y in zip(all_X, all_y_disc):
+        for video, label in zip(person_x, person_y):
+            X.append(video)
+            y_disc.append(label)
 
-    to_ret = load('RF_P' + str(person))
-    if to_ret == None:
+    X = np.array(X)
+    y_disc = np.array(y_disc)
 
-        #load X , y
-        # load all features & keep them in memory
-        featExtr = getFeatures()
-        featureNames = np.array(featExtr.getFeatureNames())
+    return X, y_disc
+def reverseFixStructure(X, y_disc):
+    persons_x, persons_y = [], []
+    person_x, person_y = [], []
+    for index, (video, label) in enumerate(zip(X, y_disc)):
 
-        y_cont = load('cont_y_p' + str(person))
-        if y_cont == None:
-            print('[Warn] Rebuilding cache -  person ' + str(person))
-            X, y_cont = personLoader.NoTestsetLoader(
-                classificator=Classificators.ContValenceClassificator(),
-                featExtractor=featExtr,
-            ).load(person)
+        if index % 40 == 0 and index != 0: #start of a new person
+            persons_x.append(person_x)
+            persons_y.append(person_y)
 
-            dump(X, 'X_p' + str(person))
-            dump(y_cont, 'cont_y_p' + str(person))
+            person_x = []
+            person_y = []
+
+        person_x.append(video)
+        person_y.append(label)
+
+
+    return persons_x, persons_y
+
+
+if __name__ == '__main__':
+
+    results = load('RF_general')
+    if results == None:
+
+        #load list[person][video][feature] = val
+        featExtrs = getFeatures()
+        featNames = np.array(featExtrs.getFeatureNames())
+
+        all_y_disc = load('all_pers_y')
+        if all_y_disc == None:
+            print("[warn] rebuilding cache")
+            personLoader = personLoader.PersonsLoader(
+                classificator=Classificators.ContValenceClassificator, #will return disc values anyway!
+                featExtractor=featExtrs,
+                stopPerson=STOPPERSON
+            )
+            all_X, all_y_disc = personLoader.load()
+            dump(all_y_disc, 'all_pers_y')
+            dump(all_X, 'all_pers_X')
         else:
-            X = load('X_p' + str(person))
+            all_X = load('all_pers_X')
 
-        y_disc = np.array(y_cont)
-        y_disc[y_disc <= 5] = 0
-        y_disc[y_disc >  5] = 1
+        all_X = np.array(all_X)
+        all_y_disc = np.array(all_y_disc)
+
+        #train test split #TODO
+
+        X, y_disc = fixStructure(all_X, all_y_disc)
 
         # manual Feature standardization
         X = X - np.average(X, axis=0)
         X = np.true_divide(X, np.std(X, axis=0))
 
-        #step 1 determine importances using RF forest
-        indices_step1, featureNames_step1 = step1(X,y_disc,featureNames, THRESHOLD)
+
+        # step 1 determine importances using RF forest
+        indices_step1, featureNames_step1 = step1(X, y_disc, featNames, THRESHOLD)
         featureNames = np.array(featureNames_step1)
         indices = np.array(indices_step1)
 
-        #filter features (X) based on the results from step 1
-        X = X[:,indices]
+        # filter features (X) based on the results from step 1
+        X = X[:, indices]
 
-        #step 2 - interpretation
-        featCount_inter, score_inter, std_inter, avgs, stds = step2_interpretation(X, y_disc, featureNames)
+        #back to orig struct
+        all_X, all_y_disc = reverseFixStructure(X,y_disc)
+
+        # step 2 - interpretation
+        featCount_inter, score_inter, std_inter, avgs, stds = step2_interpretation(all_X, all_y_disc, featureNames)
         indices_inter = indices[:featCount_inter]
         featureNames_inter = featureNames[indices_inter]
 
-        #step 2 - prediction
-        indices_pred, score_pred, std_pred = step2_prediction(X, y_disc, featureNames)
+        # step 2 - prediction
+        indices_pred, score_pred, std_pred = step2_prediction(all_X, all_y_disc, featureNames)
         featureNames_pred = featureNames[indices_pred]
 
         to_ret = [
-            [ featCount_inter  , score_inter, std_inter, featureNames_inter, avgs, stds ],
-            [ len(indices_pred), score_pred , std_pred , featureNames_pred  ]
+            [featCount_inter, score_inter, std_inter, featureNames_inter, avgs, stds],
+            [len(indices_pred), score_pred, std_pred, featureNames_pred]
         ]
 
-        dump(to_ret, 'RF_P' + str(person))
+        print('Interpretation - score: ' + str(to_ret[0][1]) + ' (' + str(to_ret[0][2]) + ') with ' + str(to_ret[0][0]) +
+              '  prediction - score: ' + str(to_ret[1][1]) + ' (' + str(to_ret[1][2]) + ') with ' + str(to_ret[1][0])
+              )
 
-    print('[' + str(person) + '] interpretation - score: ' + str(to_ret[0][1]) + ' (' + str(to_ret[0][2]) + ') with ' + str(to_ret[0][0]) +
-          '  prediction - score: ' + str(to_ret[1][1]) + ' (' + str(to_ret[1][2]) + ') with ' + str(to_ret[1][0])
-          )
-
-
-    return to_ret
-
-if __name__ == '__main__':
-
-    results = load('RF_pers_specific')
-    if results == None:
-        pool = Pool(processes=POOL_SIZE)
-        results = pool.map(RFPerson, range(1, STOPPERSON+1))
-        pool.close()
-        pool.join()
-        dump(results, 'RF_pers_specific')
+        dump(results, 'RF_general')
 
     genReport(results)

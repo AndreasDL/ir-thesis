@@ -5,7 +5,7 @@ from sklearn.cross_validation import StratifiedShuffleSplit
 
 DATASET_LOCATION = "C:/dataset"
 from multiprocessing import Pool
-POOL_SIZE = 8
+POOL_SIZE = 3
 
 
 class APersonLoader:
@@ -131,6 +131,7 @@ class PersonsLoader(APersonLoader):
         print('loading person ' + str(person))
 
         y = load('cont_y_p' + str(person))
+        y_disc = None
         if y == None:
             print('[warn] rebuilding cache for person ' + str(person))
             X, y = self.ldr.load(person)
@@ -139,7 +140,12 @@ class PersonsLoader(APersonLoader):
         else:
             X = load('X_p' + str(person))
 
-        return {'X':X, 'y': y}
+        # to disc
+        y_disc = np.array(y)
+        y_disc[y_disc <= 5] = 0
+        y_disc[y_disc > 5] = 1
+
+        return {'X':X, 'y': y_disc} #not logic since you give cont class, but hey it works
 
 
 
