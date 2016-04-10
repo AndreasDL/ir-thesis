@@ -96,3 +96,5 @@ dumpedData/
 .fuse_hidden*
 
 .idea/
+
+dumpedData*

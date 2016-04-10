@@ -4,6 +4,7 @@ import featureExtractor as FE
 import Classificators
 
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.cross_validation import KFold
 
 import numpy as np
 import datetime
@@ -101,6 +102,13 @@ def getFeatures():
                 )
             )
     return featExtr
+
+def accuracy(predictions, truths):
+    acc = 0
+    for pred, truth in zip(predictions, truths):
+        acc += (pred == truth)
+
+    return acc / float(len(predictions))
 
 def genPlot(avgs, stds, title, fpad="../../results/plots/"):
 
@@ -201,29 +209,48 @@ def step2_interpretation(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATOR
     featuresLeft = len(X[0])
     print('step2_interpretation - featLeft: ' + str(featuresLeft))
 
+
     #for featCount = 1 ~> remaining indices
-    oob_scores = []
-    for featCount in range(1,featuresLeft + 1):
-        print('inter - ' + str(featCount))
-        run_errors = []
-        forest = RandomForestClassifier(
-            n_estimators=n_estimators,
-            max_features='auto',
-            criterion=criterion,
-            n_jobs=-1,
-            oob_score=True,
-            bootstrap=True
-        )
-        X_temp = X[:,:featCount]
-        for i in range(runs):
-            forest.fit(X_temp,y)
-            run_errors.append(forest.oob_score_)
+    oob_scores = load('oob_scores')
+    if oob_scores == None:
+        oob_scores = []
+        #crossval
+        for tr, te in KFold(n=len(X), n_folds=FOLDS,shuffle=True,random_state=17):
+            CV_scores = []
+            X_train, y_train = fixStructure(X[tr], y[tr])
+            X_test , y_test  = fixStructure(X[te], y[te])
 
-        oob_scores.append(run_errors)
+            for featCount in range(1,featuresLeft + 1):
+                print('inter - ' + str(featCount))
+                run_errors = []
+                forest = RandomForestClassifier(
+                    n_estimators=n_estimators,
+                    max_features='auto',
+                    criterion=criterion,
+                    n_jobs=-1,
+                    oob_score=True,
+                    bootstrap=True
+                )
+                X_temp = X_train[:,:featCount]
+                X_test_temp = X_test[:,:featCount]
+                for i in range(runs):
 
-    #std
-    stds = np.std(oob_scores, axis=1)
-    avgs = np.average(oob_scores, axis=1)
+                    #cross val
+                    forest.fit(X_temp,y_train)
+                    run_errors.append(accuracy(forest.predict(X_test_temp),y_test))
+
+                CV_scores.append(run_errors)
+            oob_scores.append(CV_scores)
+
+        dump(oob_scores, 'oob_scores')
+    else:
+        oob_scores = np.array(oob_scores)
+
+    #TODO
+    avgs = np.average(oob_scores, axis=0) #folds
+
+    stds = np.std(oob_scores, axis=0) #videos
+    avgs = np.average(oob_scores, axis=0)
 
     #genPlot(avgs,stds,'oob_scores step2_interpretation')
     highest_avg_index = np.argmax(avgs)
@@ -330,7 +357,7 @@ def fixStructure(all_X, all_y_disc):
     X = np.array(X)
     y_disc = np.array(y_disc)
 
-    return X, y_disc
+    return np.array(X), np.array(y_disc)
 def reverseFixStructure(X, y_disc):
     persons_x, persons_y = [], []
     person_x, person_y = [], []
@@ -346,8 +373,11 @@ def reverseFixStructure(X, y_disc):
         person_x.append(video)
         person_y.append(label)
 
+    persons_x.append(person_x)
+    persons_y.append(person_y)
 
-    return persons_x, persons_y
+
+    return np.array(persons_x), np.array(persons_y)
 
 
 if __name__ == '__main__':
