@@ -1,6 +1,6 @@
 import numpy as np
-from sklearn import preprocessing as PREP
 from scipy.signal import butter, lfilter
+import matplotlib.pyplot as plt
 
 #global const vars!
 channelNames = {
@@ -244,6 +244,7 @@ class LMinRLPlusRExtractor(AFeatureExtractor):
 class FrontalMidlinePower(PSDExtractor):
     def __init__(self,channels,featName='FM'):
         PSDExtractor.__init__(self, channels, 'theta', featName)
+
 
 #physiological features
 class AvgExtractor(AFeatureExtractor):

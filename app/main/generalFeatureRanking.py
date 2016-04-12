@@ -15,7 +15,12 @@ import numpy as np
 import datetime
 import time
 from multiprocessing import Pool
-POOL_SIZE = 1
+POOL_SIZE = 2
+
+NESTIMATORS = 100
+STOPPERSON = 32  # load this many persons
+FOLDS = 5  # fold for out of sample acc
+TOPFEATCOUNT = 20  # take 1 -> this amount of features for graph
 
 
 def getFeatures():
@@ -374,27 +379,68 @@ def genReport(results):
 
     f.close()
 
-def getAccs():
+def fixStructure(all_X, all_y_disc):
+    # structure of X
+    X, y_disc = [], []
+    for person_x, person_y in zip(all_X, all_y_disc):
+        for video, label in zip(person_x, person_y):
+            X.append(video)
+            y_disc.append(label)
+
+    X = np.array(X)
+    y_disc = np.array(y_disc)
+
+    return np.array(X), np.array(y_disc)
+def reverseFixStructure(X, y_disc):
+    persons_x, persons_y = [], []
+    person_x, person_y = [], []
+    for index, (video, label) in enumerate(zip(X, y_disc)):
+
+        if index % 40 == 0 and index != 0: #start of a new person
+            persons_x.append(person_x)
+            persons_y.append(person_y)
+
+            person_x = []
+            person_y = []
+
+        person_x.append(video)
+        person_y.append(label)
+
+    persons_x.append(person_x)
+    persons_y.append(person_y)
+
+
+    return np.array(persons_x), np.array(persons_y)
+
+def getAccs(results):
     # load persons
-    # take top X => 1->20 features and get accuracy in the general fashion
-    featExtr = getFeatures()
-    X, y_cont = personLoader.PersonsLoader(
-        classificator=Classificators.ContValenceClassificator(),
-        featExtractor=featExtr,
-        stopPerson=STOPPERSON,
-    ).load()
+    # load list[person][video][feature] = val
+    featExtrs = getFeatures()
+    featNames = np.array(featExtrs.getFeatureNames())
 
-    y_disc = np.array(y_cont)
-    y_disc[y_disc <= 5] = 0
-    y_disc[y_disc > 5] = 1
+    all_y_disc = load('all_pers_y')
+    if all_y_disc == None:
+        print("[warn] rebuilding cache")
+        all_X, all_y_disc = personLoader.PersonsLoader(
+            classificator=Classificators.ContValenceClassificator,  # will return disc values anyway!
+            featExtractor=featExtrs,
+            stopPerson=STOPPERSON
+        ).load()
+        dump(all_y_disc, 'all_pers_y')
+        dump(all_X, 'all_pers_X')
+    else:
+        all_X = load('all_pers_X')
 
-    for index, val in enumerate(np.std(X,axis=0)):
-        if val.any() == 0:
-            print("Warn std of zero in " + str(index) + ' of person ' + str(person))
+    all_X = np.array(all_X)
+    all_y_disc = np.array(all_y_disc)
 
-    #manual Feature standardization
-    X = X - np.average(X,axis=0)
-    X = np.true_divide(X, np.std(X,axis=0) )
+    # train test split #TODO
+
+    X, y_disc = fixStructure(all_X, all_y_disc)
+
+    # manual Feature standardization
+    X = X - np.average(X, axis=0)
+    X = np.true_divide(X, np.std(X, axis=0))
 
     # take averages
     # results[person][metric][feature]
@@ -411,45 +457,30 @@ def getAccs():
     for metric in range(len(avg_results)):
         # sort features
         indices = np.array(np.argsort(avg_results[metric])[::-1])
-        # get first TOPFEATCOUNT
-        indices = indices[:TOPFEATCOUNT]
 
+        # get first TOPFEATCOUNT
         #featurenames
-        featnames = np.array(featExtr.getFeatureNames())[indices]
+        featNames_metric = np.array(indices[:TOPFEATCOUNT])
 
         feat_results = []
         for featCount in range(1, TOPFEATCOUNT + 1):
             print('metric: ' + str(metric) + ' - featCount: ' + str(featCount))
 
             # filter features out X
-            X_filtered = X[:, :, indices[:featCount]]
+            X_filtered = X[:, indices[:featCount]]
+
+            #old struct
+            X_old, y_old = reverseFixStructure(X_filtered,y_disc)
 
             # 5 fold
             train_acc, test_acc = 0, 0
-            for train_index, test_index in KFold(len(y_disc), n_folds=FOLDS, random_state=19, shuffle=True):
-                X_train, X_test = X_filtered[train_index], X_filtered[test_index]
-                y_train, y_test = y_disc[train_index], y_disc[test_index]
-
-                # combine persons (list[person][video][feature] to list[video][feature])
-                X_temp, y_temp = [], []
-                for person_x, person_y in zip(X_train, y_train):
-                    for video, label in zip(person_x, person_y):
-                        X_temp.append(video)
-                        y_temp.append(label)
-                X_train = X_temp
-                y_train = y_temp
-
-                X_temp, y_temp = [], []
-                for person_x, person_y in zip(X_test, y_test):
-                    for video, label in zip(person_x, person_y):
-                        X_temp.append(video)
-                        y_temp.append(label)
-                X_test = X_temp
-                y_test = y_temp
-
+            for train_index, test_index in KFold(len(y_old), n_folds=FOLDS, random_state=19, shuffle=True):
+                #new struct
+                X_train, y_train = fixStructure(X_old[train_index], y_old[train_index])
+                X_test , y_test  = fixStructure(X_old[test_index ], y_old[test_index ])
 
                 clf = RandomForestClassifier(
-                    n_estimators=70,
+                    n_estimators=NESTIMATORS,
                     max_features='auto',
                     criterion='gini',
                     n_jobs=-1,
@@ -460,9 +491,9 @@ def getAccs():
                 test_acc += accuracy(clf.predict(X_test), y_test)
 
             feat_results.append([
-                featnames[featCount - 1],
+                featNames[featNames_metric[featCount - 1]],
                 train_acc / float(FOLDS),
-                test_acc / float(FOLDS)
+                test_acc  / float(FOLDS)
             ])
 
         metric_results.append(feat_results) #metricresults[featCount] = [featname, train, test]
@@ -489,9 +520,7 @@ def genAccReport(accs):
     f.close()
 
 if __name__ == '__main__':
-    STOPPERSON = 33 # load this many persons
-    FOLDS = 3 #fold for out of sample acc
-    TOPFEATCOUNT = 20 #take 1 -> this amount of features for graph
+
 
     if STOPPERSON < 32:
         print('[warn] not using all persons')
@@ -516,7 +545,7 @@ if __name__ == '__main__':
     accs = load('accs')
     if accs == None:
         print("[warn] rebuilding accs cache")
-        accs = getAccs()
+        accs = getAccs(results)
         dump(accs, 'accs')
 
     accs = np.array(accs)

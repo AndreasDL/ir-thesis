@@ -16,14 +16,15 @@ POOL_SIZE = 2
 STOPPERSON = 32
 RUNS = 20
 N_ESTIMATORS = 1000
-THRESHOLD = 0.025
+THRESHOLD = 1
 
 def getFeatures():
+
     # create the features
     featExtr = FE.MultiFeatureExtractor()
 
+
     #physiological signals
-    '''
     for channel in FE.all_phy_channels:
         featExtr.addFE(FE.AvgExtractor(channel, ''))
         featExtr.addFE(FE.STDExtractor(channel, ''))
@@ -101,6 +102,7 @@ def getFeatures():
                     featName='RCAU ' + FE.all_channels[front] + ',' + FE.all_channels[post]
                 )
             )
+    '''
     return featExtr
 
 def genPlot(avgs, stds, title, fpad="../../results/plots/"):
@@ -335,7 +337,7 @@ def RFPerson(person):
         if y_cont == None:
             print('[Warn] Rebuilding cache -  person ' + str(person))
             X, y_cont = personLoader.NoTestsetLoader(
-                classificator=Classificators.ContValenceClassificator(),
+                classificator=Classificators.ContArousalClassificator(),#tClassificators.ContValenceClassificator(),
                 featExtractor=featExtr,
             ).load(person)
 
