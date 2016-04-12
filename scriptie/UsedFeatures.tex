@@ -1,0 +1,56 @@
+\chapter{Used Features}
+{\samenvatting This section will explain which features are how extracted .} %TODO
+
+\section{EEG Features}
+The EEG features are features extracted from the electroencephalography measurements from the subject's scalp. This section will go through the used EEG features in this thesis.
+\npar
+The power spectral density (PSD) \nomenclature{PSD}{Power Spectral Density} of a signal gives the distribution of the signal's energy in the frequency domain. By calculating the spectral density for different waveband of the signal, one can determine how much alpha, beta, ... power is in the signal.
+\npar
+Differential entropy is defined as follows \citep{killyPaper} \\
+\begin{center}
+$ - \int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2}} exp(\frac{(x-\mu)^2}{2\sigma^2}) log(\frac{1}{\sqrt{2\pi\sigma^2}}) exp(\frac{(x-\mu)^2}{2\sigma^2})dx$
+\end{center}
+According to \citep{diffEnt}, the differential entropy of a certain band is equivalent to the logarithmic power spectral density for a fixed length EEG sequence, which simplifies the calculations significantly.
+\npar
+The most known feature for valence recognition is the frontal asymmetry of the alpha power\cite{GivenPaper}.
+The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The asymmetry can be calculated in different ways, one of them is the differential asymmetry (DASM) \nomenclature{DASM}{Differential Asymmetry}, where the left alpha power is subtracted from the right alpha power.
+\begin{center}
+$DASM = DE_{left} - DE_{right}$
+\end{center}
+Another way to measure the asymmetry if by division. The Rational Asymmetry (RASM) \nomenclature{RASM}{Rational Asymmetry} does exactly this and is given by: \\
+\begin{center}
+$RASM = \frac{DE_{left}}{DE_{right}}$
+\end{center}
+With $DE_{left}$ and $DE_{right}$ being the left and right differential entropy respectively.
+\npar
+Another reported feature in literature is the caudality, or the asymmetry in fronto-posterior direction\cite{caudality}. This can again be calculated in two ways. The first method is the differential Caudality (DCAU) \nomenclature{DCAU}{Differential Caudality} is defined as: \\
+\begin{center}
+$DCAU = DE_{front} - DE_{post}$
+\end{center}
+Another way to determine the Caudality is the Rational Caudality (RCAU) \nomenclature{RCAU}{Rational Caudality}, which is defined as:
+\begin{center}
+$RCAU = \frac{DE_{front}}{DE_{post}}$
+\end{center}
+With $DE_{front}$ and $DE_{post}$ being the frontal and posterior power respectively.
+\npar
+One way to determine the arousal is by looking at the different wavebands. Each waveband has their own medical interpretation, see \ref{wavebands}. More alpha power corresponds to a more relaxed brain, while more beta power corresponds to a more active brain. The alpha / beta ratio therefore seems a good indicator for the arousal state of a person.
+
+\section{Other Physiological Features}
+The aforementioned EEG features are just one class of physiological features. The DEAP dataset contains several physiological measurements, listed below \citep{DEAP}. For each of these measurements the average and the standard deviation is calculated.
+\npar
+The Galvanic Skin Response \nomenclature{GSR}{Galvanic Skin Response} uses two electrodes on the middle and index finger of the subjects left hand to measure the skin resistance. It has been reported that the mean value of the GSR is related to the level of arousal\citep{GSR, DEAP}.
+\npar
+The respiration belt, indices the user's respiration rate. Slow respiration is linked to relaxation (low arousal), while fast and irregular respiration patterns corresponds to anger or fear, both emotions with low valence and high arousal\citep{DEAP}.
+\npar
+A plethysmograph is a measurement of the volume of blood in the subject's left thumb. This can be interpreted as the the blood pressure. Blood pressure offers valuable insight into the emotional state of a person as it correlated with emotion; stress is known to increase blood pressure\citep{DEAP}.
+\npar
+The heart rate is not explicitly in the DEAP dataset, but can be extracted from the plethysmograph, by looking at local minima and maxima\citep{DEAP}. This is clearly visible when looking at the plethysmograph's output, shown in Figure \ref{before}.
+\mijnfiguur{width=0.9\textwidth}{before}{The plethysmograph before smoothing.}
+\npar
+The heart rate extraction is done in two steps. First the plethysmograph signal is smoothed using a butter filter to avoid noise being selected as local optima. In the second stage the local optima are located, which is shown in Figure \ref{extrema}
+
+\mijnfiguur{width=0.9\textwidth}{extrema}{The local optima in the plethysmograph.}
+
+These optima correspond to a heart beat, therefore the time between two consecutive local minima or maxima corresponds to the time between two heart beats, known as the interbeat interval. Getting the average heart rate from the interbeat interval is straight forward.
+
+The last physiological feature is the skin temperature of the subject.
