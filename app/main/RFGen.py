@@ -3,16 +3,13 @@ from personLoader import load, dump
 import featureExtractor as FE
 import Classificators
 
-from sklearn.ensemble import RandomForestClassifier
+from PersTree import PersTree
 from sklearn.cross_validation import KFold
 
 import numpy as np
 import datetime
 import time
 import matplotlib.pyplot as plt
-
-from multiprocessing import Pool
-POOL_SIZE = 2
 
 STOPPERSON = 32
 RUNS = 20
@@ -103,13 +100,6 @@ def getFeatures():
             )
     return featExtr
 
-def accuracy(predictions, truths):
-    acc = 0
-    for pred, truth in zip(predictions, truths):
-        acc += (pred == truth)
-
-    return acc / float(len(predictions))
-
 def genPlot(avgs, stds, title, fpad="../../results/plots/"):
 
     #st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
@@ -172,18 +162,14 @@ def step1(X,y, featureNames, threshold, criterion='gini'):
     print('step1')
 
     #get importances
-    forest = RandomForestClassifier(
-        n_estimators=N_ESTIMATORS *3,
-        max_features='auto',
-        criterion=criterion,
-        n_jobs=-1,
+    forest = PersTree(
+        n_trees=N_ESTIMATORS
     )
 
     forest.fit(X,y)
 
     # get importances
-    importances = forest.feature_importances_
-    stds = np.std([tree.feature_importances_ for tree in forest.estimators_], axis=0)
+    importances, stds = forest.getImportance()
 
     importances -= stds
 
@@ -209,45 +195,31 @@ def step2_interpretation(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATOR
     featuresLeft = len(X[0])
     print('step2_interpretation - featLeft: ' + str(featuresLeft))
 
-
     #for featCount = 1 ~> remaining indices
     oob_scores = load('oob_scores')
     if oob_scores == None:
         oob_scores = []
-        #crossval
-        for tr, te in KFold(n=len(X), n_folds=FOLDS,shuffle=True,random_state=17):
-            CV_scores = []
-            X_train, y_train = fixStructure(X[tr], y[tr])
-            X_test , y_test  = fixStructure(X[te], y[te])
 
-            for featCount in range(1,featuresLeft + 1):
-                print('inter - ' + str(featCount))
-                run_errors = []
-                forest = RandomForestClassifier(
-                    n_estimators=n_estimators,
-                    max_features='auto',
-                    criterion=criterion,
-                    n_jobs=-1,
-                    oob_score=True,
-                    bootstrap=True
-                )
-                X_temp = X_train[:,:featCount]
-                X_test_temp = X_test[:,:featCount]
-                for i in range(runs):
+        for featCount in range(1,featuresLeft + 1):
+            print('inter - ' + str(featCount))
+            run_errors = []
+            forest = PersTree(
+                n_trees=N_ESTIMATORS
+            )
 
-                    #cross val
-                    forest.fit(X_temp,y_train)
-                    run_errors.append(accuracy(forest.predict(X_test_temp),y_test))
+            X_temp = X[:featCount]
+            for i in range(runs):
 
-                CV_scores.append(run_errors)
-            oob_scores.append(CV_scores)
+                #cross val
+                forest.fit(X_temp,y)
+                avg, std = forest.getOob()
+                run_errors.append(avg)
+
+        oob_scores.append(run_errors)
 
         dump(oob_scores, 'oob_scores')
     else:
         oob_scores = np.array(oob_scores)
-
-    #TODO
-    avgs = np.average(oob_scores, axis=0) #folds
 
     stds = np.std(oob_scores, axis=0) #videos
     avgs = np.average(oob_scores, axis=0)
@@ -275,13 +247,8 @@ def step2_prediction(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATORS, c
     for feat in range(featuresLeft):
         print('pred - ' + str(feat))
 
-        forest = RandomForestClassifier(
-            n_estimators=n_estimators,
-            max_features='auto',
-            criterion=criterion,
-            n_jobs=-1,
-            oob_score=True,
-            bootstrap=True
+        forest =PersTree(
+            n_trees=N_ESTIMATORS
         )
 
         # add new feature to the existing features
@@ -295,7 +262,8 @@ def step2_prediction(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATORS, c
         run_scores = []
         for i in range(runs):
             forest.fit(X_temp,y)
-            run_scores.append(forest.oob_score_)
+            avg, std = forest.getOob()
+            run_scores.append(avg)
 
         new_score = np.average(run_scores)
         new_std   = np.std(run_scores)
@@ -346,6 +314,7 @@ def genReport(results):
 
     genDuoPlot(scores[0], stds[0], scores[1], stds[1], 'interpretation vs perdiction scores')
 
+
 def fixStructure(all_X, all_y_disc):
     # structure of X
     X, y_disc = [], []
@@ -363,7 +332,7 @@ def reverseFixStructure(X, y_disc):
     person_x, person_y = [], []
     for index, (video, label) in enumerate(zip(X, y_disc)):
 
-        if index % 40 == 0 and index != 0: #start of a new person
+        if index % 40 == 0 and index != 0:  # start of a new person
             persons_x.append(person_x)
             persons_y.append(person_y)
 
@@ -376,9 +345,7 @@ def reverseFixStructure(X, y_disc):
     persons_x.append(person_x)
     persons_y.append(person_y)
 
-
     return np.array(persons_x), np.array(persons_y)
-
 
 if __name__ == '__main__':
 
@@ -414,6 +381,8 @@ if __name__ == '__main__':
         X = X - np.average(X, axis=0)
         X = np.true_divide(X, np.std(X, axis=0))
 
+        # back to orig struct
+        X, y_disc = reverseFixStructure(X,y_disc)
 
         # step 1 determine importances using RF forest
         indices_step1, featureNames_step1 = step1(X, y_disc, featNames, THRESHOLD)
@@ -421,10 +390,9 @@ if __name__ == '__main__':
         indices = np.array(indices_step1)
 
         # filter features (X) based on the results from step 1
+        X, y_disc = fixStructure(X, y_disc)
         X = X[:, indices]
-
-        #back to orig struct
-        all_X, all_y_disc = reverseFixStructure(X,y_disc)
+        X, y_disc = reverseFixStructure(X, y_disc)
 
         # step 2 - interpretation
         featCount_inter, score_inter, std_inter, avgs, stds = step2_interpretation(all_X, all_y_disc, featureNames)
