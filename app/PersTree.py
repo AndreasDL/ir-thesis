@@ -3,7 +3,7 @@ import numpy as np
 import random
 
 from multiprocessing import Pool
-POOL_SIZE = 10
+POOL_SIZE = 3
 
 class PersTree():
     def __init__(self,n_trees):
@@ -13,18 +13,23 @@ class PersTree():
             self.trees.append(DecisionTreeClassifier())
 
     def fit(self,X,y):
-        self.oobErrs = []
         self.X = X
         self.y = y
 
         pool = Pool(processes=POOL_SIZE)
-        self.oobErrs = pool.map( self.fitTree, range(self.n_trees))
+        results = pool.map( self.fitTree, range(self.n_trees))
         pool.close()
         pool.join()
 
+        self.oobErrs = []
+        self.featImp = []
+        for (acc, importances) in results:
+            self.oobErrs.append(acc)
+            self.featImp.append(importances)
+
     def fitTree(self,tree):
         persCount = len(self.X)
-        for tree in self.trees:
+        for i in range(self.n_trees):
             # create bootstrap & oob set
             indices_bootstrap = []
             for i in range(persCount):
@@ -43,20 +48,18 @@ class PersTree():
             X_oob, y_oob = self.fixStructure(self.X[indices_oob], self.y[indices_oob])
 
             # train with bootstrap
-            tree.fit(X_bootstrap, y_bootstrap)
+            self.trees[i].fit(X_bootstrap, y_bootstrap)
 
-            # get oob err
-            return self.accuracy(tree.predict(X_oob), y_oob)
+            return [
+                self.accuracy(self.trees[i].predict(X_oob), y_oob),
+                self.trees[i].feature_importances_
+                ]
 
     def getOob(self):
         return np.average(self.oobErrs), np.std(self.oobErrs)
 
     def getImportance(self):
-        importances = []
-        for tree in self.trees:
-            importances.append(tree.feature_importances_)
-
-        return np.average(importances), np.std(importances)
+        return np.average(self.featImp, axis=0), np.std(self.featImp,axis=0)
 
     def fixStructure(self,all_X, all_y_disc):
         # structure of X

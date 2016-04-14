@@ -170,7 +170,6 @@ def step1(X,y, featureNames, threshold, criterion='gini'):
 
     # get importances
     importances, stds = forest.getImportance()
-
     importances -= stds
 
     # genPlot(importances, stds, 'step1 importances'))
@@ -207,7 +206,7 @@ def step2_interpretation(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATOR
                 n_trees=N_ESTIMATORS
             )
 
-            X_temp = X[:featCount]
+            X_temp = X[:,:featCount]
             for i in range(runs):
 
                 #cross val
@@ -276,7 +275,7 @@ def step2_prediction(X, y, featureNames, runs=RUNS, n_estimators=N_ESTIMATORS, c
 
     return best_features_to_keep, best_score, best_std
 
-def genReport(results):
+def genReport(result):
     #results[person] = [
     #   [ featCount_inter  , score_inter, std_inter, featureNames_inter, avgs, stds ],
     #   [ len(indices_pred), score_pred , std_pred , featureNames_pred  ]
@@ -284,24 +283,24 @@ def genReport(results):
 
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
     f = open('../../results/RF_general' + str(st) + ".csv", 'w')
-    f.write("person;interScore;interStd;interCount;interFeat;\n")
+    f.write("interScore;interStd;interCount;interFeat;\n")
+    f.write("interScore;interStd;interCount;interFeat;\n")
 
     scores = []
     stds   = []
-    for i in range(len(results[0])):
+    for i in range(2):
         methodScores = []
         methodSTDs   = []
-        for person,result in enumerate(results):
-            f.write(str(person) + ';')
-            f.write(str(result[i][1]) + ';' + str(result[i][2]) + ';' + str(result[i][0]) + ';')
-            for name in result[i][3]:
-                f.write(str(name) + ';')
+        f.write(str(result[i][1]) + ';' + str(result[i][2]) + ';' + str(result[i][0]) + ';')
+        for name in result[i][3]:
+            f.write(str(name) + ';')
 
-            f.write('\n')
-            genPlot(result[0][4], result[0][5], 'method' + str(i) + ' oob score for person ' + str(person))
+        f.write('\n')
+        genPlot(result[0][4], result[0][5], 'method' + str(i) + ' oob score ')
 
-            methodScores.append(result[i][1])
-            methodSTDs.append(result[i][2])
+        methodScores.append(result[i][1])
+        methodSTDs.append(result[i][2])
+
         genPlot(methodScores, methodSTDs, 'method' + str(i) + 'scores')
         scores.append(methodScores)
         stds.append(methodSTDs)
@@ -309,11 +308,10 @@ def genReport(results):
         f.write('\n')
         f.write('\n')
 
-        f.write("person;predScore;predStd;predCount;predFeat;\n")
+        f.write("predScore;predStd;predCount;predFeat;\n")
     f.close()
 
     genDuoPlot(scores[0], stds[0], scores[1], stds[1], 'interpretation vs perdiction scores')
-
 
 def fixStructure(all_X, all_y_disc):
     # structure of X
@@ -349,7 +347,7 @@ def reverseFixStructure(X, y_disc):
 
 if __name__ == '__main__':
 
-    results = load('RF_general')
+    results = load('results')
     if results == None:
 
         #load list[person][video][feature] = val
@@ -360,7 +358,7 @@ if __name__ == '__main__':
         if all_y_disc == None:
             print("[warn] rebuilding cache")
             personLoader = personLoader.PersonsLoader(
-                classificator=Classificators.ContValenceClassificator, #will return disc values anyway!
+                classificator=Classificators.ContValenceClassificator(), #will return disc values anyway!
                 featExtractor=featExtrs,
                 stopPerson=STOPPERSON
             )
@@ -385,9 +383,19 @@ if __name__ == '__main__':
         X, y_disc = reverseFixStructure(X,y_disc)
 
         # step 1 determine importances using RF forest
-        indices_step1, featureNames_step1 = step1(X, y_disc, featNames, THRESHOLD)
+        temp = load("step1")
+        indices_step1, featureNames_step1 = None, None
+        if temp == None:
+            indices_step1, featureNames_step1 = step1(X, y_disc, featNames, THRESHOLD)
+            dump({'indicices': indices_step1,
+                  'featNames': featureNames_step1}, "step1")
+        else:
+            indices_step1 = temp['indicices']
+            featureNames_step1 = temp['featNames']
+
         featureNames = np.array(featureNames_step1)
         indices = np.array(indices_step1)
+
 
         # filter features (X) based on the results from step 1
         X, y_disc = fixStructure(X, y_disc)
@@ -395,23 +403,23 @@ if __name__ == '__main__':
         X, y_disc = reverseFixStructure(X, y_disc)
 
         # step 2 - interpretation
-        featCount_inter, score_inter, std_inter, avgs, stds = step2_interpretation(all_X, all_y_disc, featureNames)
+        featCount_inter, score_inter, std_inter, avgs, stds = step2_interpretation(X, y_disc, featureNames)
         indices_inter = indices[:featCount_inter]
         featureNames_inter = featureNames[indices_inter]
 
         # step 2 - prediction
-        indices_pred, score_pred, std_pred = step2_prediction(all_X, all_y_disc, featureNames)
+        indices_pred, score_pred, std_pred = step2_prediction(X, y_disc, featureNames)
         featureNames_pred = featureNames[indices_pred]
 
-        to_ret = [
+        results = [
             [featCount_inter, score_inter, std_inter, featureNames_inter, avgs, stds],
             [len(indices_pred), score_pred, std_pred, featureNames_pred]
         ]
 
-        print('Interpretation - score: ' + str(to_ret[0][1]) + ' (' + str(to_ret[0][2]) + ') with ' + str(to_ret[0][0]) +
-              '  prediction - score: ' + str(to_ret[1][1]) + ' (' + str(to_ret[1][2]) + ') with ' + str(to_ret[1][0])
+        print('Interpretation - score: ' + str(results[0][1]) + ' (' + str(results[0][2]) + ') with ' + str(results[0][0]) +
+              '  prediction - score: ' + str(results[1][1]) + ' (' + str(results[1][2]) + ') with ' + str(results[1][0])
               )
 
-        dump(results, 'RF_general')
+        dump(results, 'results')
 
     genReport(results)

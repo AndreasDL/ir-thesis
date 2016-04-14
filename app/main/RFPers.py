@@ -156,7 +156,7 @@ def genDuoPlot(avgs1, stds1, avgs2,stds2, title, fpad="../../results/plots/"):
     )
     plt.xticks(range(0, len(avgs1), 5))
     plt.xlim([-1, len(avgs1)])
-    ax.legend((pred,inter), ('inter', 'pred'))
+    ax.legend((inter,pred), ('inter','pred'))
     plt.savefig(fname)
 
     #plt.show()
@@ -320,7 +320,7 @@ def genReport(results):
         f.write("person;predScore;predStd;predCount;predFeat;\n")
     f.close()
 
-    genDuoPlot(scores[0], stds[0], scores[1], stds[1], 'interpretation vs perdiction scores')
+    genDuoPlot(scores[0], stds[0], scores[1], stds[1], 'interpretation vs prediction scores')
 
 def RFPerson(person):
     print('person: ' + str(person))

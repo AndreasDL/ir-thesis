@@ -4,7 +4,7 @@ import Classificators
 import featureExtractor as FE
 
 from scipy.stats import pearsonr
-from sklearn.metrics import mutual_info_score
+from sklearn.metrics import normalized_mutual_info_score
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
 from sklearn.cross_validation import KFold
 from sklearn import svm
@@ -167,7 +167,7 @@ def getPersonRankings(person):
     mi = []
     for feature in np.transpose(X):
         c_xy = np.histogram2d(feature, y_cont, 2)[0]
-        mi.append( mutual_info_score(None, None, contingency=c_xy) )
+        mi.append( normalized_mutual_info_score(None, None, contingency=c_xy) )
     pers_results.append(mi)
 
     dcorr = []

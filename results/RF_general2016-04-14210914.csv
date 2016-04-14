@@ -1,0 +1,10 @@
+interScore;interStd;interCount;interFeat;
+interScore;interStd;interCount;interFeat;
+0.501200183701;0.0;6;RCAU F8,P8;PSD C4(gamma);DE P7(beta);PSD F8(delta);DASM CP1,CP2;DE P3(alpha);
+
+
+predScore;predStd;predCount;predFeat;
+0.620209476054;0.00219731909554;7;RCAU F8,P8;PSD C4(gamma);DE P7(beta);PSD F8(delta);DASM CP1,CP2;A/B T8;PSD CP1(theta);
+
+
+predScore;predStd;predCount;predFeat;
