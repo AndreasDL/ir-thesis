@@ -111,11 +111,13 @@ The respiration belt, indices the user's respiration rate. Slow respiration is l
 A plethysmograph is a measurement of the volume of blood in the subject's left thumb. This can be interpreted as the the blood pressure. Blood pressure offers valuable insight into the emotional state of a person as it correlated with emotion; stress is known to increase blood pressure\citep{DEAP}.
 \npar
 The heart rate is not explicitly in the DEAP dataset, but can be extracted from the plethysmograph, by looking at local minima and maxima\citep{DEAP}. This is clearly visible when looking at the plethysmograph's output, shown in Figure \ref{before}.
-\mijnfiguur{width=0.9\textwidth}{before}{The plethysmograph before smoothing.}
+\mijnfiguur{width=0.7\textwidth}{before}{The plethysmograph before smoothing.}
 \npar
 The heart rate extraction is done in two steps. First the plethysmograph signal is smoothed using a butter filter to avoid noise being selected as local optima. In the second stage the local optima are located, which is shown in Figure \ref{extrema}
 
-\mijnfiguur{width=0.9\textwidth}{extrema}{The local optima in the plethysmograph.}
+\mijnfiguur{width=0.7\textwidth}{extrema}{The local optima in the plethysmograph.}
+
+\npar
 
 These optima correspond to a heart beat, therefore the time between two consecutive local minima or maxima corresponds to the time between two heart beats, known as the interbeat interval. Getting the average heart rate from the interbeat interval is straight forward.
 
@@ -141,8 +143,10 @@ Another way to group the algorithms is based on their training data. In the aski
 
 \npar
 
-In this thesis machine learning is used to find patterns in the aforementioned features that indicate the user's emotional state.
-%TODO schematje!
+In this thesis machine learning is used to find patterns in the aforementioned features that indicate the user's emotional state. The general process of machine learning is shown in Figure \ref{eegtopred}, the process starts with gathering EEG data, from which features are selected. These features are then fed to a machine learning algorithm, which outputs a prediction.
+
+\mijnfiguur{width=0.7\textwidth}{eegtopred}{Basic steps of machine learning.}
+
 
 \subsection{Over and underfitting / high bias and high variance}
 
@@ -152,21 +156,17 @@ Suppose the example in Figure \ref{overunderfitting}, where one tries to find a 
 
 The figure on the left corresponds to an underfit, where the proposed function is not able to capture sufficient detail of the points. The function is not complex enough to approach the generator function, which is known as high bias. A high bias problem has a high training error, as the function is not able to fit the points correctly, this is visible in Figure \ref{highbias}
 
-\mijnfiguur{width=0.9\textwidth}{highbias}{A high bias function is not complex enough to approach the generator function closely.}
+\mijnfiguur{width=0.6\textwidth}{highbias}{A high bias function is not complex enough to approach the generator function closely.}
 
 The function on the rights The function on the right corresponds to an overfit; the function 'goes through' each point exactly, but one can see that in between data points the behaviour of the hypothesis function is not logical. This problem is known as a high variance problem, where the train error is close to zero, but the test error is quite dramatic. 
 
-\mijnfiguur{width=0.9\textwidth}{highvariance}{A High variance function is too complex and fits the data point too closely.}
+\mijnfiguur{width=0.6\textwidth}{highvariance}{A High variance function is too complex and fits the data point too closely.}
 
 Another way to explain the bias variance tradeoff is by an example. Suppose you have a dart board, as shown in Figure \ref{BiasVariance}. Suppose the situation on the top left corner, this corresponds to a world class player that has perfect aim, and very little variation on his precision. The situation on the left bottom corresponds to a player that has very little variation on his precision, but that is consistently aiming too high, he is biased to hit higher than needed. The pictures on the right side are different, there the person may or may not have a biased aim, but it is clear that he has a lot of variation in the precision of his aim.
 \npar
 In the context of machine learning, the low bias corresponds to having a hypothesis set that is close to the generator function, which allows you to get quite close. However you still have to pick the right function from that set, which is hard to do if you don't have enough data. If you are not able to take the best solution from the hypothesis set, you have high variance.
 
-\mijnfiguur{width=0.9\textwidth}{BiasVariance}{The bias variance explained using the dartboard example found at \cite{biasvariance}}
-
-%TODO kan ook bij feature selection methods
-\subsection{Support Vector Machines (SVM)}
-\subsection{Random Forests (RF)}
+\mijnfiguur{width=0.6\textwidth}{BiasVariance}{The bias variance explained using the dartboard example found at \cite{biasvariance}}
 
 %goal of thesis
 \section{Goal of the thesis}
@@ -174,10 +174,7 @@ The first goal is finding relevant features for emotion recognition in a person 
 
 \npar
 
-The main problem is that there are already a lot of features known, but, as is often the case with EEG data, training data is expensive and limited. Using a lot of features will thus quickly result in overfitting. 
-
-\npar
-Additionally, a lot of different features are reported in the literature, as you can see in Table \ref{diffFeat}.
+The main problem is that there are already a lot of features known, but, as is often the case with EEG data, training data is expensive and limited. Using a lot of features will thus quickly result in overfitting. Additionally, a lot of different features are reported in the literature, as you can see in Table \ref{diffFeat}.
 
 \begin{table}[]
 \centering
@@ -196,7 +193,7 @@ Additionally, a lot of different features are reported in the literature, as you
 
 \npar %TODO person specific ref
 
-Another point to note is that simply using a limited set of features, might work, but is likely to lead too less accurate results as optimal features might have been left out. This problem is even more severe when considering that EEG data is person specific, features that work good for one person, might not work for another person. Finding a good set of features that works for all persons is a non trivial problem. One solution to this problem could be to use a large pool of possible features from which a limited set of good features are selected. This allows to provide good features to the machine learning algorithm, while still keeping the set of features limited in size. The machine learning algorithm which features to use and which to neglect.
+Another point to note is that even though a simple limited set of features might work, it is more likely to have less accurate results as optimal features might have been left out. This problem is even more severe when considering that EEG data is person specific, features that work good for one person, might not work for another person. Finding a good set of features that works for all persons is a non trivial problem. One solution to this problem could be to use a large pool of possible features from which a limited set of good features are selected. This allows to provide good features to the machine learning algorithm, while still keeping the set of features limited in size. The machine learning algorithm which features to use and which to neglect.
 
 %data
 \subsection{Dataset}

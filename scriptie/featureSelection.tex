@@ -1,10 +1,10 @@
-\chapter{Feature Selection methods}
+\chapter{Methods}
 {\samenvatting This section will first explain what feature selection means and why it is used, before giving a detailed overview of the different methods.}
 
 \section{Feature selection}
 Feature selection is the process of selecting good features from a set of feature. The need for this is twofold: first by reducing the number of features, you can protect yourself against overfitting. This is important when the dataset is limited. Second, reducing the number of features can speedup the learning process of a learning algorithm as fewer parameters need to be optimized. Additionally, in the context of research and this thesis, looking at which features are important gives insight in the problem. In the context of this thesis, knowing what feature are relevant can help neuroscientists understand the working of the brain better.
 
-\subsection{Pearson correlation}
+\subsection{Pearson Correlation}
 The Pearson correlation coefficient measures the linear relationship between two variables. The output is a value r, that lies between -1 and 1, corresponding to perfect negative correlation and perfect positive correlation respectively. A correlation value of 0 means that there is no correlation.
 
 \npar
@@ -33,7 +33,7 @@ The Pearson correlation coefficient is fast and simple to calculate, but has som
 
 In the context of this thesis, whether the correlation is positive or negative is not important; a learning algorithm needs features that have significant correlation. As a result the absolute value of the r value is reported as this allows for faster comparison of correlations.
 
-\subsection{mutual information}
+\subsection{Mutual Information}
 Mutual information is a more robust option for correlation estimation. The mutual information, I, of two variables $X$ and $Y$ is defined as \citep{mutPaper}:
 \begin{center}
 $I(X,Y) = \sum\limits_{y\in Y} \sum\limits_{x\in X} p(x,y)log(\frac{p(x,y)}{^(x)p(y)}$
@@ -57,7 +57,7 @@ $H(Y) = \sum\limits_{i\in Y} p_ilog(\frac{1}{p_i}) = - \sum\limits_i p_ilog(p_i)
 %\subsection{ANOVA}
 %TODO
 
-\subsection{distance correlation}
+\subsection{Distance Correlation}
 Distance correlation is a relatively new technique that is designed explicitly to address shortcomings of Pearson correlation. A Pearson correlation coefficient of zero implies that the variables might be independent, but as mentioned before, does not guarantee this. 
 
 \npar
