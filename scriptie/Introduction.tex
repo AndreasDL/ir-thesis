@@ -1,5 +1,6 @@
 \chapter{Introduction}
-{\samenvatting This chapter describes the context of the thesis, starting with brain computer interfaces(BCI), before defining some BCI basics. After that, the P300 speller and P300 paradigm are introduced. Before the need for an emotionally aware P300 speller is justified, the basic process of emotion in the brain is explained.}
+{\samenvatting This chapter describes the context of the thesis, starting with brain computer interfaces(BCI), before defining some BCI basics. After that, the P300 speller and P300 paradigm are introduced. Before the need for an emotionally aware P300 speller is justified, the basic process of emotion in the brain is explained. %TODO
+}
 
 
 \section{Brain computer interfaces}
@@ -48,35 +49,7 @@ In the frequency domain, brain waves are usually split up into different bands\c
 \end{enumerate}
 Most muscle and eye artifacts have a frequency around 1.2Hz. Artificats caused by nearby power lines, have a frequency around 50Hz\cite{ExtendedPaper}. To remove most of this noise, a bandpass filter is usually applied to filter out frequencies below 4Hz and above 40-45Hz.
 
-\subsubsection{Event related potentials}
 
-An Event related potential (ERP)\nomenclature{ERP}{Event Related Potential}, is a measured brain response to an event, measured by EEG or MEG. The ERP nomenclature usually starts with a letter that indicates the polarity: the P corresponds to a positive polarity, while the N indicates a negative polarity. The number indicates the mean latency, measured between the ERP and the stimulus, which might may variate significantly between subjects.
-
-\npar
-
-The most important one is the P300 wave, which is usually elicited using the oddball paradigm. The oddball paradigm is the occurence of a low probability target item between high probability targets, e.g. flashing a specific symbol in a grid of different symbols. It consists of two components, the P3a with a latency of 240ms and the P3b with a latency of 350 ms\cite{P300TwoParts}. The later component, P3b only occurs when the subject actively counted either the targeted or more frequent stimuli.
-
-\mijnfiguur{width=0.45\textwidth}{waves}{The Different ERP linked to an oddball paradigm, found at\cite{P300Figure}.}
-
-\subsection{The P300 speller}
-
-The P300 speller is an active topic of research that uses EEG data to enable persons with the locked in syndrome to communicate\cite{P300Origin}. The basic version uses a six by six grid of characters, each row and column is flashed in a random order while the subject silently counts the number of flashes of a certain character, as shown in figure \ref{P300SpellerPerson}. This procedure, where a train of stimuli with some infrequent occurring target stimuli is applied, is called the oddball paradigm\cite{PaperThibault}. It is known that this technique triggers an increase in the potential difference in the EEG around the parietal lobe. This ERP occurs +- 300 milliseconds after the stimuli is flashed, hence its name, the P300 waveform\cite{ComparisonClassifications}. The presence or absence of the P300 waveform is used by the P300 speller to determine what character the subject was focusing on, which basically allows the subject to spell text. 
-
-\mijnfiguur{width=0.7\textwidth}{P300SpellerPerson}{Different parts of the P300 speller, found at \cite{P300SpellerPerson}.}
-
-To improve the spelling time, many improvements and research has been done. Language models were used to predict the word based on the first characters, which enabled great speedups\cite{LangModel}, classifiers were compared and tested on both healthy\cite{ClassTechniqueComp} and unhealthy subjects\cite{ComparisonClassifications}. Since many unhealthy subjects might have an impaired vision or eye movement, tactile\cite{TactileP300} and auditory\cite{AuditoryP300} spellers have been developed to circumvent this problem.
-
-\npar
-
-To improve accuracy, common problems such as adjacency distraction, when a subject is distracted by a neighboring flash, and double flashes, when the target row and column are flashed close after each other, were avoided using new randomized paradigms\cite{PaperThibault}. Other input layouts like the T9 interface P300 speller have also been developed\cite{P300T9}. 
-
-\npar
-
-To further speedup the spelling, error potentials were explored. Error potentials are triggered when the user becomes aware of an erroneous action\cite{ErrorPotentials}, i.e. when a wrong character is selected. When an Error potential is detected, the character is usually changed to the second most probable character according to the P300 decoding\cite{ErrSecChar}, which is the most viable character.
-
-\npar
-
-The basic P300 speller needs a calibration period before it can be used, when a healthy subject makes a mistake during calibration, he can simply communicate this. This is not the case for a patient, who has no other means of communication than the P300 speller. Having wrongly labeled data during calibration can lead to severe problems. The unsupervised speller as proposed in \cite{P300Unsupervised} solves this problem by removing the need for a calibration procedure. The speller works with expectation maximization and has an undemanding linear classification backend. This system starts with a warm-up period where the system adapts to the given condition.
 
 \section{Emotion recognition}
 
@@ -87,92 +60,145 @@ Psychology makes a clear distinction between physiological behavior and the cons
 \label{valarrdomspace}
 
 %\subsection{Arousal - valence (- dominance) classification}
-Before emotions can be recognized, a classification model is needed. A common model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, that places emotions in a two dimensional space. The main advantage of using a multidimensional model, is that all emotions are modeled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
+Before emotions can be recognized, a classification model is needed. A common model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, that places emotions in a two dimensional space. The main advantage of using a multidimensional model, is that all emotions are modelled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
 
 \npar
 Even though arousal and valence describe emotion quite well, a third dimension can also be added. The new model then has three dimensions: arousal, valence and dominance. Arousal indicates how active a person is and ranges from inactive, bored to active, excited. The valence indicates if the emotion is perceived as positive or negative. The third dimension, the dominance, indicates how strong the emotional feeling was and ranges from a weak feeling to an empowered, overwhelming feeling. The dominance component can aid to filter out samples of strong feelings, since feelings with low dominance are less likely to show significant effects.
 
 \mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.}
 
-\subsubsection{Determining valence}
-\label{DetValence}
-
-The most known and used feature is the frontal asymmetry of alpha power\cite{GivenPaper}.
-The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets}. The asymmetry is given for L and R being the Left and Right frontal alpha powers as:\\
+\subsection{Features}
+The next step is defining relevant physiological features for emotion recognition, two categories of features are observed: EEG features and non-EEG features.
+The EEG features are features extracted from the electroencephalography measurements from the subject's scalp. This section will go through the used EEG features in this thesis.
+\npar
+The power spectral density (PSD) \nomenclature{PSD}{Power Spectral Density} of a signal gives the distribution of the signal's energy in the frequency domain. By calculating the spectral density for different waveband of the signal, one can determine how much alpha, beta, ... power is in the signal.
+\npar
+Differential entropy is defined as follows \citep{killyPaper} \\
 \begin{center}
-$Asymmetry = \frac{L-R}{L+R}$
+$ - \int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2}} exp(\frac{(x-\mu)^2}{2\sigma^2}) log(\frac{1}{\sqrt{2\pi\sigma^2}}) exp(\frac{(x-\mu)^2}{2\sigma^2})dx$
 \end{center}
-Computing the spectral power of the alpha band is possible via e.g. the fast Fourier transform or wavelet transform.
+According to \citep{diffEnt}, the differential entropy of a certain band is equivalent to the logarithmic power spectral density for a fixed length EEG sequence, which simplifies the calculations significantly.
+\npar
+The most known feature for valence recognition is the frontal asymmetry of the alpha power\cite{GivenPaper}.
+The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The asymmetry can be calculated in different ways, one of them is the differential asymmetry (DASM) \nomenclature{DASM}{Differential Asymmetry}, where the left alpha power is subtracted from the right alpha power.
+\begin{center}
+$DASM = DE_{left} - DE_{right}$
+\end{center}
+Another way to measure the asymmetry if by division. The Rational Asymmetry (RASM) \nomenclature{RASM}{Rational Asymmetry} does exactly this and is given by: \\
+\begin{center}
+$RASM = \frac{DE_{left}}{DE_{right}}$
+\end{center}
+With $DE_{left}$ and $DE_{right}$ being the left and right differential entropy respectively.
+\npar
+Another reported feature in literature is the caudality, or the asymmetry in fronto-posterior direction\cite{caudality}. This can again be calculated in two ways. The first method is the differential Caudality (DCAU) \nomenclature{DCAU}{Differential Caudality} is defined as: \\
+\begin{center}
+$DCAU = DE_{front} - DE_{post}$
+\end{center}
+Another way to determine the Caudality is the Rational Caudality (RCAU) \nomenclature{RCAU}{Rational Caudality}, which is defined as:
+\begin{center}
+$RCAU = \frac{DE_{front}}{DE_{post}}$
+\end{center}
+With $DE_{front}$ and $DE_{post}$ being the frontal and posterior power respectively.
+\npar
+One way to determine the arousal is by looking at the different wavebands. Each waveband has their own medical interpretation, see \ref{wavebands}. More alpha power corresponds to a more relaxed brain, while more beta power corresponds to a more active brain. The alpha / beta ratio therefore seems a good indicator for the arousal state of a person.
+\npar
+The aforementioned EEG features are just one class of physiological features. The DEAP dataset contains several physiological measurements, listed below \citep{DEAP}. For each of these measurements the average and the standard deviation is calculated.
+\npar
+The Galvanic Skin Response \nomenclature{GSR}{Galvanic Skin Response} uses two electrodes on the middle and index finger of the subjects left hand to measure the skin resistance. It has been reported that the mean value of the GSR is related to the level of arousal\citep{GSR, DEAP}.
+\npar
+The respiration belt, indices the user's respiration rate. Slow respiration is linked to relaxation (low arousal), while fast and irregular respiration patterns corresponds to anger or fear, both emotions with low valence and high arousal\citep{DEAP}.
+\npar
+A plethysmograph is a measurement of the volume of blood in the subject's left thumb. This can be interpreted as the the blood pressure. Blood pressure offers valuable insight into the emotional state of a person as it correlated with emotion; stress is known to increase blood pressure\citep{DEAP}.
+\npar
+The heart rate is not explicitly in the DEAP dataset, but can be extracted from the plethysmograph, by looking at local minima and maxima\citep{DEAP}. This is clearly visible when looking at the plethysmograph's output, shown in Figure \ref{before}.
+\mijnfiguur{width=0.9\textwidth}{before}{The plethysmograph before smoothing.}
+\npar
+The heart rate extraction is done in two steps. First the plethysmograph signal is smoothed using a butter filter to avoid noise being selected as local optima. In the second stage the local optima are located, which is shown in Figure \ref{extrema}
+
+\mijnfiguur{width=0.9\textwidth}{extrema}{The local optima in the plethysmograph.}
+
+These optima correspond to a heart beat, therefore the time between two consecutive local minima or maxima corresponds to the time between two heart beats, known as the interbeat interval. Getting the average heart rate from the interbeat interval is straight forward.
+
+The last physiological feature is the skin temperature of the subject.
+
+%machine learning
+\section{Machine learning}
+The next important topic that needs to be covered is machine learning. Machine learning is the missing link between the features and the emotion recognition. As machine learning is a very broad domain, the discussion will be limited to the application of machine learning and machine learning techniques as this is the most relevant part for this thesis. One possible definition for Machine learning is: "the science of getting computers to act without being explicitly programmed". To do so, machine learning uses pattern recognition to find patterns or structure in the data. A simple example of machine learning is the Optical Character Recognition (OCR)\nomenclature{OCR}{Optical Character Recognition}, where a computer recognises characters in pictures.
 
 \npar
 
-It is also possible to include beta waves in the process. High alpha rates correspond with an inactive brain, while high beta waves with an active brain. Looking for an increase in beta activity and a decrease in alpha activity at one side, while the other hemisphere should show an increase in alpha waves and a decrease of beta waves as indication that is becomes less active, offers an insight to the frontal asymmetry and thus the valence\cite{ExtendedPaper}. 
+Let's get a look at the following example, to further explain how machine learning works. Suppose one has a price list of houses that are for sale combined with their total area. Logic sense dictates us that a bigger house will have a higher asking price than a smaller house. Therefore the asking price of a house is correlated to the asking price. Suppose you want to predict how much a certain home is worth, based on their area. This is possible with machine learning, first you need to train your machine learning algorithm with a list of asking prices and the corresponding area of the house. This should give you a coefficient, lets say you pay 1000 euro for each square meter. Once this is done you can predict prices of new houses based on the corresponding area. 
+\npar
+This will give some reasonable results, but the algorithm will probably have some flaws. This is due to the fact that the area of the house is only one feature that determines the price, there are many other that we haven't taken into consideration. Looking with more detail at the data, i.e. adding additional features will thus improve the performance of our algorithm. For example, a house with 5 bedrooms is more expensive than a house with only 3 bedrooms.
 
 \npar
 
-Another feature is the frontal midline (Fm)\nomenclature{Fm}{Frontal Midline} theta power, that is shown to increase with increasing pleasant ratings for audio stimuli\cite{MusicPaper}. %Gamma phase synchronization increases for unpleasant images.
-
-\subsubsection{Determining arousal}
-\label{DetArousal}
-
-Arousal can be determined in several ways. A first methods for the arousal recognition uses only alpha and beta bands. the Alpha band corresponds with a relaxed state and is often connected to brain inactivity\cite{ExtendedPaper,RealTimeEEGEmotion}. Beta waves, on the other hand, are an indication that the brain is a more active state or has a higher level of arousal. Combining these two parameters gives the beta/alpha ratio as an indication of the arousal level. 
+Machine learning algorithms are responsible for finding the relation between features and the predicted value. There exist many machine learning algorithms, one way to group these algorithms, is to look at their produced output. In the asking price examples above, the output is a price, which is a continuous value. The OCR example from above, where characters are recognized in a picture is a classification problem, as there is only a limited set of characters. 
 
 \npar
 
-Other methods are based on the EEG coherence across the prefrontal and posterior beta oscillations, which is known to increase when high arousal images are viewed. Additionally, gamma power is said to increase with arousal after a delay of 500ms\cite{GivenPaper}.
+Another way to group the algorithms is based on their training data. In the asking price examples above one gets labelled results; the asking price is given for each area, this is referred to as supervised machine learning. The other possibility is unsupervised machine learning, which often results in finding groups of similar data points (clustering), without knowing the actual labels. Note that the combination of supervised and unsupervised data, also known as semi supervised learning, is also possible. Suppose you have a dataset with 5000 webpages and you want to categorise them in 10 distinct categories, e.g. science, nature, cooking, ... , but you only have the labels for 100 of the 5000 pages. Then you could first cluster the pages in similar groups using unsupervised learning. As soon as a group contains a labelled page, you can label all the pages in the group, since clustering returns groups of similar examples. Semi supervised learning has the advantage that one can also use unlabelled data. Unlabelled data is often easy and cheaper to obtain, unlike labelled data which is usually quite rare; if you had a fast and easy way to label the data then you wouldn't be needing machine learning.
 
-\subsubsection{Datasets}
+\npar
+
+In this thesis machine learning is used to find patterns in the aforementioned features that indicate the user's emotional state.
+%TODO schematje!
+
+\subsection{Over and underfitting / high bias and high variance}
+
+\mijnfiguur{width=0.9\textwidth}{overunderfitting}{Overfitting versus underfitting\cite{overunderfitting}.}
+
+Suppose the example in Figure \ref{overunderfitting}, where one tries to find a good function to fit the given data points. Looking at the three proposed functions, one can easily see that the middle figure is the most likely generator function of the red points. 
+
+The figure on the left corresponds to an underfit, where the proposed function is not able to capture sufficient detail of the points. The function is not complex enough to approach the generator function, which is known as high bias. A high bias problem has a high training error, as the function is not able to fit the points correctly, this is visible in Figure \ref{highbias}
+
+\mijnfiguur{width=0.9\textwidth}{highbias}{A high bias function is not complex enough to approach the generator function closely.}
+
+The function on the rights The function on the right corresponds to an overfit; the function 'goes through' each point exactly, but one can see that in between data points the behaviour of the hypothesis function is not logical. This problem is known as a high variance problem, where the train error is close to zero, but the test error is quite dramatic. 
+
+\mijnfiguur{width=0.9\textwidth}{highvariance}{A High variance function is too complex and fits the data point too closely.}
+
+Another way to explain the bias variance tradeoff is by an example. Suppose you have a dart board, as shown in Figure \ref{BiasVariance}. Suppose the situation on the top left corner, this corresponds to a world class player that has perfect aim, and very little variation on his precision. The situation on the left bottom corresponds to a player that has very little variation on his precision, but that is consistently aiming too high, he is biased to hit higher than needed. The pictures on the right side are different, there the person may or may not have a biased aim, but it is clear that he has a lot of variation in the precision of his aim.
+\npar
+In the context of machine learning, the low bias corresponds to having a hypothesis set that is close to the generator function, which allows you to get quite close. However you still have to pick the right function from that set, which is hard to do if you don't have enough data. If you are not able to take the best solution from the hypothesis set, you have high variance.
+
+\mijnfiguur{width=0.9\textwidth}{BiasVariance}{The bias variance explained using the dartboard example found at \cite{biasvariance}}
+
+%TODO kan ook bij feature selection methods
+\subsection{Support Vector Machines (SVM)}
+\subsection{Random Forests (RF)}
+
+%goal of thesis
+\section{Goal of the thesis}
+The first goal is finding relevant features for emotion recognition in a person specific setting. This algorithm tries to accurately predict the emotions of one person, using only training data from that person. The Second goal is finding features for emotion recognition in a cross-persons setting. In this setting the features should generalise well across different persons, thus the algorithm should be able to recognize emotions from unseen persons.
+
+\npar
+
+The main problem is that there are already a lot of features known, but, as is often the case with EEG data, training data is expensive and limited. Using a lot of features will thus quickly result in overfitting. 
+
+\npar
+Additionally, a lot of different features are reported in the literature, as you can see in Table \ref{diffFeat}.
+
+\begin{table}[]
+\centering
+\caption{Six different papers on emotion recognition, six different feature sets}
+\label{diffFeat}
+\begin{tabular}{ll}
+\textbf{study} & \textbf{features used}                         \\
+\citep{ref4}     & Alpha and beta power                           \\
+\citep{ref7}     & PSD and asymmetry features                     \\
+\citep{ref8}     & PSD                                            \\
+\citep{ref6}     & discrete wavelet transform of alpha, beta and gamma band \\♠
+\citep{ExtendedPaper}	&	alpha/beta ratio, Fpz beta and alpha band power \\
+\citep{killyPaper} & PSD, RCAU, DCAU, DASM, RASM, DE \\
+\end{tabular}
+\end{table}
+
+\npar %TODO person specific ref
+
+Another point to note is that simply using a limited set of features, might work, but is likely to lead too less accurate results as optimal features might have been left out. This problem is even more severe when considering that EEG data is person specific, features that work good for one person, might not work for another person. Finding a good set of features that works for all persons is a non trivial problem. One solution to this problem could be to use a large pool of possible features from which a limited set of good features are selected. This allows to provide good features to the machine learning algorithm, while still keeping the set of features limited in size. The machine learning algorithm which features to use and which to neglect.
+
+%data
+\subsection{Datasets}
 One of the most used datasets in the context of emotion recognition is the Dataset for Emotion Analysis using Physiological Signals (DEAP)\nomenclature{DEAP}{Dataset for Emotion Analysis using Physiological Signals} dataset\cite{DEAP}. This dataset contains EEG samples at 512 Hz of 32 persons each viewing 40 videos. A preprocessed version of this dataset, that is down sampled to 128Hz and has EOG removal will be used extensively during this thesis.
 
-\npar
-
-Furthermore, the center for the study of emotion and attention (CSEA)\nomenclature{CSEA}{Center for the Study of Emotion and Attention}, by the university of Florida made several visual datasets available:
-\begin{itemize}
-\item \textbf{IAPS:} International Affective Picture System\nomenclature{IAPS}{International Affective Picture System}\\
-This dataset consists of a large set op emotional stimuli in the form of color photographs.
-\item \textbf{IADS:} International Affective Digital Sounds \nomenclature{IADS}{International Affective Digital Sounds}\\
-This dataset consists of acoustic emotional stimuli designed for investigation and research of emotion and attention.
-\item \textbf{ANEW:} Affective Norms for English Words\nomenclature{ANEW}{Affective Norms for English Words}\\
-This dataset provides a set of emotional ratings for a large number of english words.
-\item \textbf{ANET:} Affective Norms for English Text\nomenclature{ANET}{Affective Norms for English Text}\\
-This set provides normative ratings of emotion for a large set of brief texts.
-\item \textbf{SAM:} Self-Assessment Manikin\nomenclature{SAM}{Self-Assessment Manikin}\\
-A non-verbal pictorial assessment technique that measures the pleasure, arousal and dominance associated with a person's affective reaction to a wide variety of stimuli.
-\end{itemize}
-The stimuli from these sets are used in experimental setups to trigger emotions\cite{ExtendedPaper, EmotionSite, RealTimeEEGEmotion, EEGDatasets}.
-
-
-\subsection{Benefits of creating an emotionally aware P300 speller}
-
-Emotions play a major role in non-verbal communication, are quite complex and essential to understand human behavior. The ability to recognize emotions will improve the ability of computers to understand human interaction\cite{CompRecognizeEmotion} and are likely to improve the P300 speller's accuracy in different ways.
-
-\npar
-
-To improve the detection of error potentials, emotion can be used. It is expected that when a person makes a lot of mistakes, his/her emotional state will change to a less happy, more frustrated state. Making the speller emotionally aware, could improve the detection of error potentials.
-
-\npar
-
-Research with visual stimuli on healthy subjects, show that emotion has an effect on the auditory P300 wave\cite{AuditoryP300Effect}. Both the P300 peak amplitude and area was highest when viewing neutral pictures and descended further, in decreasing order, for sadness, anger and pleasure. The amplitudes were significantly lower at both Fz and C3 positions than Pz and Oz. The latency of the P300 ERP speller was shortest or neutrality and in increasing order longer for pleasure, anger and sadness. It is expected that a visually triggered P300 wave, will also be influenced by emotion. Detecting emotion can therefore improve the detection of P300 waves.
-
-\npar
-
-Contrary to what subjects might think, the P300 speller is unable to read the mind and know what a person is thinking about\cite{P300Origin}. The P300 speller provides no more than a means of communication that the subject can use. Should he chose to ignore the instructions and focus his attention elsewhere, then the recordings become useless. Nevertheless, ethical question often remain unanswered. Knowing how the subject feels, can help him communicate more humane on one hand, while providing more insight for ethical issues, on the other hand, e.g. "How does the subject think about the P300 speller recording and analyzing his brain activity?". Information about the subject's emotional state can help answer some of these ethical questions.
-
-
-\section{Goal of the thesis}
-
-This thesis aims to improve the performance of the P300 speller by making the speller emotionally aware. An emotional aware speller is expected to yield better performance, since the P300 wave is affected by the emotion. Furthermore, the detection of error potentials can be combined with the emotional state, since the emotional state is expected to change with increasing errors.
-
-\npar
-
-More concrete, the main goal is to recognize emotions in the arousal-valence model, using the DEAP dataset. First the emotions of a single person should be recognized, since the features are known to differ from person to person. Later, the model will be adjusted so that it is capable of detecting emotion of different persons. Once the emotion recognition is able to classify the emotions with decent accuracy, it will be integrated in the P300 speller, which should give additional accuracy and aid in the error potential detection. The expected results are:
-\begin{itemize}
-\item Being able to recognize emotions of a single person
-\item Being able to recognize emotions across different persons
-\item Improved accuracy for the P300 speller
-\item Improved error potential recognition for the P300 speller
-\end{itemize}
-
-\npar
-
-Additionally the gained information for emotion recognition can be used for other ethical research studies, to answer ethical questions about the usage of BCI on patients.
