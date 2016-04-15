@@ -6,6 +6,7 @@ import Classificators
 from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.cross_validation import train_test_split
 
 from multiprocessing import Pool
 POOL_SIZE = 2
@@ -165,7 +166,7 @@ class RFPers():
         featureNames = featureNames[indices_to_keep]
 
         #keep upper %threshold
-        indices_to_keep = indices_to_keep[:int(len(indices_to_keep)*self.threshold)]
+        indices_to_keep = indices_to_keep[:self.threshold]
 
         #filter indices
         importances = importances[indices_to_keep]
@@ -262,41 +263,26 @@ class RFPers():
 
     def genReport(self, results):
         #results[person] = [
-        #   [ featCount_inter  , score_inter, std_inter, featureNames_inter, avgs, stds ],
-        #   [ len(indices_pred), score_pred , std_pred , featureNames_pred  ]
+        #   [ len(indices_pred), score_pred , std_pred , featureNames_pred  , test_acc_avg, test_acc_std]
         #]
 
-        #st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
         f = open(self.rpad + "results.csv", 'w')
-        f.write("person;interScore;interStd;interCount;interFeat;\n")
+        f.write("person;predScore;predStd;avg_test_acc;std_test_acc;predCount;predFeat;\n")
 
-        scores = []
-        stds   = []
-        for i in range(len(results[0])):
-            methodScores = []
-            methodSTDs   = []
-            for person,result in enumerate(results):
-                f.write(str(person) + ';')
-                f.write(str(result[i][1]) + ';' + str(result[i][2]) + ';' + str(result[i][0]) + ';')
-                for name in result[i][3]:
-                    f.write(str(name) + ';')
-
-                f.write('\n')
-                self.genPlot(result[0][4], result[0][5], 'method' + str(i) + ' oob score for person ' + str(person))
-
-                methodScores.append(result[i][1])
-                methodSTDs.append(result[i][2])
-            self.genPlot(methodScores, methodSTDs, 'method' + str(i) + 'scores')
-            scores.append(methodScores)
-            stds.append(methodSTDs)
+        methodScores = []
+        methodSTDs   = []
+        for person,result in enumerate(results):
+            f.write(str(person) + ';')
+            f.write(str(result[1]) + ';' + str(result[2]) + ';' + str(result[4]) + ';' + str(result[5]) + ';' + str(result[0]) + ';')
+            for name in result[3]:
+                f.write(str(name) + ';')
 
             f.write('\n')
-            f.write('\n')
+            methodScores.append(result[1])
+            methodSTDs.append(result[2])
+        self.genPlot(methodScores, methodSTDs,'scores')
 
-            f.write("person;predScore;predStd;predCount;predFeat;\n")
         f.close()
-
-        self.genDuoPlot(scores[0], stds[0], scores[1], stds[1], 'interpretation vs prediction scores')
     def genPlot(self, avgs, stds, title):
 
         fname = self.rpad + str(title) + '.png'
@@ -351,6 +337,12 @@ class RFPers():
         # plt.show()
         plt.clf()
         plt.close()
+    def accuracy(self,predictions, truths):
+        acc = 0
+        for pred, truth in zip(predictions, truths):
+            acc += (pred == truth)
+
+        return acc / float(len(predictions))
 
     def RFPerson(self, person):
         print('person: ' + str(person))
@@ -383,10 +375,10 @@ class RFPers():
             X = np.true_divide(X, np.std(X, axis=0))
 
             # Train / testset
-            
+            X, X_test, y_disc, y_test = train_test_split(X,y_disc,test_size=10, random_state=17)
 
             #step 1 determine importances using RF forest
-            step1_importances, step1_indices, step1_featureNames = self.step1(X,y_disc,featureNames)
+            step1_importances, step1_indices, step1_featureNames = self.step1(X,y_disc, featureNames)
             featureNames = np.array(step1_featureNames)
             indices = np.array(step1_indices)
 
@@ -402,16 +394,35 @@ class RFPers():
             step2_indices_pred, step2_score_pred, step2_std_pred = self.step2_prediction(X, y_disc, featureNames)
             featureNames_pred = featureNames[step2_indices_pred]
 
+            # test err ?
+            indices = np.array(step2_indices_pred)
+            X = X[:,indices]
+            X_test = X_test[:,step2_indices_pred]
+
+            forest = RandomForestClassifier(
+                n_estimators=self.n_estimators,
+                max_features='auto',
+                criterion='gini',
+                n_jobs=-1,
+                oob_score=True,
+                bootstrap=True
+            )
+            test_accs = []
+            for i in range(self.runs):
+                forest.fit(X,y_disc)
+                test_accs.append(self.accuracy(forest.predict(X_test),y_test))
+
             to_ret = [
                 #[ featCount_inter  , score_inter, std_inter, featureNames_inter, avgs, stds ],
-                [ len(step2_indices_pred), step2_score_pred , step2_std_pred , featureNames_pred  ]
+                len(step2_indices_pred), step2_score_pred , step2_std_pred , featureNames_pred, np.average(test_accs), np.std(test_accs)
             ]
 
             dump(to_ret, 'RF_P' + str(person), path=self.ddpad)
+        print('[' + str(person) + '] prediction - score: ' + str(to_ret[1]) + ' (' + str(to_ret[2]) + ') with ' + str(to_ret[0]) + ' test_score ' + str(to_ret[4]) + ' (' + str(to_ret[5]))
 
-        print('[' + str(person) + '] interpretation - score: ' + str(to_ret[0][1]) + ' (' + str(to_ret[0][2]) + ') with ' + str(to_ret[0][0]) +
-              '  prediction - score: ' + str(to_ret[1][1]) + ' (' + str(to_ret[1][2]) + ') with ' + str(to_ret[1][0])
-              )
+            #print('[' + str(person) + '] interpretation - score: ' + str(to_ret[0][1]) + ' (' + str(to_ret[0][2]) + ') with ' + str(to_ret[0][0]) +
+        #      '  prediction - score: ' + str(to_ret[1][1]) + ' (' + str(to_ret[1][2]) + ') with ' + str(to_ret[1][0])
+        #      )
 
 
         return to_ret
@@ -430,4 +441,4 @@ class RFPers():
 
 
 if __name__ == '__main__':
-    RFPers("PHY", 32,20,1000,0.025, Classificators.ContArousalClassificator()).run()
+    RFPers("PHY", 2,2,10,40, Classificators.ContArousalClassificator()).run()

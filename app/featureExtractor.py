@@ -390,7 +390,7 @@ class STDInterBeatExtractor(AFeatureExtractor):
 
         return std_interbeats
 class MaxHRExtractor(AFeatureExtractor):
-    def __init__(self, featName):
+    def __init__(self, featName=''):
         if featName == '':
             featName = 'maxHR'
 
@@ -416,7 +416,7 @@ class MaxHRExtractor(AFeatureExtractor):
 
         return np.max(interbeats)
 class MinHRExtractor(AFeatureExtractor):
-    def __init__(self, featName):
+    def __init__(self, featName=''):
         if featName == '':
             featName = 'minHR'
 
@@ -442,7 +442,7 @@ class MinHRExtractor(AFeatureExtractor):
 
         return np.min(interbeats)
 class MedianHRExtractor(AFeatureExtractor):
-    def __init__(self, featName):
+    def __init__(self, featName=''):
         if featName == '':
             featName = 'medianHR'
 
@@ -468,7 +468,7 @@ class MedianHRExtractor(AFeatureExtractor):
 
         return np.median(interbeats)
 class VarHRExtractor(AFeatureExtractor):
-    def __init__(self, featName):
+    def __init__(self, featName=''):
         if featName == '':
             featName = 'varHR'
 
