@@ -9,11 +9,11 @@ import matplotlib.pyplot as plt
 from sklearn.cross_validation import train_test_split
 
 from multiprocessing import Pool
-POOL_SIZE = 2
+POOL_SIZE = 3
 
 class RFPers():
 
-    def __init__(self, feats, stopperson, runs, n_estimators, threshold, classifier):
+    def __init__(self, feats, stopperson, threshold,classifier,runs=40, n_estimators=1000):
         self.featExtr = FE.MultiFeatureExtractor()
         if feats == 'EEG':
             self.addEEGFeatures()
@@ -445,7 +445,3 @@ class RFPers():
             dump(results, 'data_results', path=self.ddpad)
 
         self.genReport(results)
-
-
-if __name__ == '__main__':
-    RFPers("ALL", 2,2,10,40, Classificators.ContArousalClassificator()).run()

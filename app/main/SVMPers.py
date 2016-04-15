@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from sklearn.cross_validation import train_test_split
 
 from multiprocessing import Pool
-POOL_SIZE = 2
+POOL_SIZE = 3
 
 class SVMPers():
 
@@ -150,12 +150,12 @@ class SVMPers():
         model.fit(X,y)
 
         # get importances
-        importances = model.coef_
+        importances = model.coef_[0]
 
         # genPlot(importances, stds, 'step1 importances'))
         # sort features
         indices_to_keep = np.array(np.argsort(importances)[::-1])
-        featureNames = featureNames[indices_to_keep]
+        #featureNames = featureNames[indices_to_keep]
 
         #keep upper %threshold
         indices_to_keep = indices_to_keep[:self.threshold]
