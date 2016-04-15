@@ -1,9 +1,0 @@
-person;interScore;interStd;interCount;interFeat;
-0.513312373819;0.0;6;avg GSR;PSD P7(alpha);DE F4(beta);PSD CP6(theta);DE F8(beta);PSD CP6(gamma);
-
-
-person;predScore;predStd;predCount;predFeat;
-0.887335632942;0.00209122126392;1;avg GSR;
-
-
-person;predScore;predStd;predCount;predFeat;
