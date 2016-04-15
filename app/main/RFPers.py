@@ -59,6 +59,14 @@ class RFPers():
 
             for freqband in FE.startFreq:
                 self.featExtr.addFE(
+                    FE.BandFracExtractor(
+                        channels=[channel],
+                        featName=str(channel) + "-" + str(freqband),
+                        freqband= freqband
+                    )
+                )
+
+                self.featExtr.addFE(
                     FE.DEExtractor(
                         channels=[channel],
                         freqBand=freqband,
@@ -119,65 +127,18 @@ class RFPers():
         for channel in FE.all_phy_channels:
             self.featExtr.addFE(FE.AvgExtractor(channel, ''))
             self.featExtr.addFE(FE.STDExtractor(channel, ''))
+            self.featExtr.addFE(FE.MaxExtractor(channel, ''))
+            self.featExtr.addFE(FE.MinExtractor(channel, ''))
+            self.featExtr.addFE(FE.MedianExtractor(channel, ''))
+            self.featExtr.addFE(FE.VarExtractor(channel, ''))
 
         self.featExtr.addFE(FE.AVGHeartRateExtractor())
         self.featExtr.addFE(FE.STDInterBeatExtractor())
+        self.featExtr.addFE(FE.MaxHRExtractor())
+        self.featExtr.addFE(FE.MinHRExtractor())
+        self.featExtr.addFE(FE.MedianHRExtractor())
+        self.featExtr.addFE(FE.VarHRExtractor())
 
-    def genPlot(self,avgs, stds, title):
-
-        fname = self.rpad + str(title) + '.png'
-
-        # Plot the feature importances of the forest
-        plt.figure()
-        plt.title(title)
-        plt.bar(
-            range(len(avgs)),
-            avgs,
-            color="r",
-            yerr=stds,
-            align="center"
-        )
-        plt.xticks(range(len(avgs)))
-        plt.xlim([-1, len(avgs)])
-        plt.savefig(fname)
-        plt.clf()
-        plt.close()
-
-    def genDuoPlot(self,avgs1, stds1, avgs2,stds2, title):
-        fname = self.rpad + str(title) + '.png'
-
-        # Plot the feature importances of the forest
-        fig, ax = plt.subplots()
-        N = len(avgs1)
-        ind = np.arange(N)
-        width = 0.35
-
-        plt.title(title)
-        inter = ax.bar(
-            ind,
-            avgs1,
-            color="r",
-            yerr=stds1,
-            align="center",
-            width=width
-        )
-
-        pred = ax.bar(
-            ind+width,
-            avgs2,
-            color="b",
-            yerr=stds2,
-            align="center",
-            width=width
-        )
-        plt.xticks(range(0, len(avgs1), 5))
-        plt.xlim([-1, len(avgs1)])
-        ax.legend((inter,pred), ('inter','pred'))
-        plt.savefig(fname)
-
-        #plt.show()
-        plt.clf()
-        plt.close()
 
     def step1(self,X,y, featureNames):
         print('step1')
@@ -214,8 +175,8 @@ class RFPers():
         indices_to_keep = np.array(np.argsort(importances)[::-1])
         featureNames = featureNames[indices_to_keep]
 
-        return np.array(indices_to_keep), featureNames
-    def step2_interpretation(self,X, y, featureNames):
+        return importances, np.array(indices_to_keep), featureNames
+    '''def step2_interpretation(self,X, y, featureNames):
         featuresLeft = len(X[0])
         print('step2_interpretation - featLeft: ' + str(featuresLeft))
 
@@ -255,7 +216,7 @@ class RFPers():
                 highest_std = stds[i]
                 highest_avg = avgs[i]
 
-        return highest_avg_index +1, highest_avg, highest_std, avgs, stds
+        return highest_avg_index +1, highest_avg, highest_std, avgs, stds'''
     def step2_prediction(self,X, y, featureNames):
         featuresLeft = len(X[0])
         print('step2_prediction - featLeft: ' + str(featuresLeft))
@@ -336,12 +297,66 @@ class RFPers():
         f.close()
 
         self.genDuoPlot(scores[0], stds[0], scores[1], stds[1], 'interpretation vs prediction scores')
+    def genPlot(self, avgs, stds, title):
+
+        fname = self.rpad + str(title) + '.png'
+
+        # Plot the feature importances of the forest
+        plt.figure()
+        plt.title(title)
+        plt.bar(
+            range(len(avgs)),
+            avgs,
+            color="r",
+            yerr=stds,
+            align="center"
+        )
+        plt.xticks(range(len(avgs)))
+        plt.xlim([-1, len(avgs)])
+        plt.savefig(fname)
+        plt.clf()
+        plt.close()
+    def genDuoPlot(self, avgs1, stds1, avgs2, stds2, title):
+        fname = self.rpad + str(title) + '.png'
+
+        # Plot the feature importances of the forest
+        fig, ax = plt.subplots()
+        N = len(avgs1)
+        ind = np.arange(N)
+        width = 0.35
+
+        plt.title(title)
+        inter = ax.bar(
+            ind,
+            avgs1,
+            color="r",
+            yerr=stds1,
+            align="center",
+            width=width
+        )
+
+        pred = ax.bar(
+            ind + width,
+            avgs2,
+            color="b",
+            yerr=stds2,
+            align="center",
+            width=width
+        )
+        plt.xticks(range(0, len(avgs1), 5))
+        plt.xlim([-1, len(avgs1)])
+        ax.legend((inter, pred), ('inter', 'pred'))
+        plt.savefig(fname)
+
+        # plt.show()
+        plt.clf()
+        plt.close()
+
     def RFPerson(self, person):
         print('person: ' + str(person))
 
         to_ret = load('RF_P' + str(person), path=self.ddpad)
         if to_ret == None:
-
             #load X , y
             # load all features & keep them in memory
             featureNames = np.array(self.featExtr.getFeatureNames())
@@ -367,26 +382,29 @@ class RFPers():
             X = X - np.average(X, axis=0)
             X = np.true_divide(X, np.std(X, axis=0))
 
+            # Train / testset
+            
+
             #step 1 determine importances using RF forest
-            indices_step1, featureNames_step1 = self.step1(X,y_disc,featureNames)
-            featureNames = np.array(featureNames_step1)
-            indices = np.array(indices_step1)
+            step1_importances, step1_indices, step1_featureNames = self.step1(X,y_disc,featureNames)
+            featureNames = np.array(step1_featureNames)
+            indices = np.array(step1_indices)
 
             #filter features (X) based on the results from step 1
             X = X[:,indices]
 
             #step 2 - interpretation
-            featCount_inter, score_inter, std_inter, avgs, stds = self.step2_interpretation(X, y_disc, featureNames)
-            indices_inter = indices[:featCount_inter]
-            featureNames_inter = featureNames[indices_inter]
+            #featCount_inter, score_inter, std_inter, avgs, stds = self.step2_interpretation(X, y_disc, featureNames)
+            #indices_inter = indices[:featCount_inter]
+            #featureNames_inter = featureNames[indices_inter]
 
             #step 2 - prediction
-            indices_pred, score_pred, std_pred = self.step2_prediction(X, y_disc, featureNames)
-            featureNames_pred = featureNames[indices_pred]
+            step2_indices_pred, step2_score_pred, step2_std_pred = self.step2_prediction(X, y_disc, featureNames)
+            featureNames_pred = featureNames[step2_indices_pred]
 
             to_ret = [
-                [ featCount_inter  , score_inter, std_inter, featureNames_inter, avgs, stds ],
-                [ len(indices_pred), score_pred , std_pred , featureNames_pred  ]
+                #[ featCount_inter  , score_inter, std_inter, featureNames_inter, avgs, stds ],
+                [ len(step2_indices_pred), step2_score_pred , step2_std_pred , featureNames_pred  ]
             ]
 
             dump(to_ret, 'RF_P' + str(person), path=self.ddpad)

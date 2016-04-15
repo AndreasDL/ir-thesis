@@ -244,6 +244,18 @@ class LMinRLPlusRExtractor(AFeatureExtractor):
 class FrontalMidlinePower(PSDExtractor):
     def __init__(self,channels,featName='FM'):
         PSDExtractor.__init__(self, channels, 'theta', featName)
+#fractions
+class BandFracExtractor(AFeatureExtractor):
+    def __init__(self,channels,freqBand,featName):
+        AFeatureExtractor.__init__(self,featName)
+        self.usedChannelIndexes = channels
+        self.freqBand = freqBand
+
+    def extract(self, video):
+        all_power = float(np.sum(PSDExtractor(self.usedChannelIndexes, 'all').extract(video)))
+        bnd_power = float(np.sum(PSDExtractor(self.usedChannelIndexes, self.freqBand).extract(video)))
+
+        return bnd_power / all_power
 
 
 #physiological features
@@ -267,6 +279,48 @@ class STDExtractor(AFeatureExtractor):
 
     def extract(self, video):
         return np.std(video[self.usedChannelIndex])
+class MaxExtractor(AFeatureExtractor):
+    def __init__(self, channel, featName):
+        if featName == '':
+            featName = 'max ' + all_channels[channel]
+
+        AFeatureExtractor.__init__(self, featName)
+        self.usedChannelIndex = channel
+
+    def extract(self, video):
+        return np.max(video[self.usedChannelIndex])
+class MinExtractor(AFeatureExtractor):
+    def __init__(self, channel, featName):
+        if featName == '':
+            featName = 'min ' + all_channels[channel]
+
+        AFeatureExtractor.__init__(self, featName)
+        self.usedChannelIndex = channel
+
+    def extract(self, video):
+        return np.min(video[self.usedChannelIndex])
+class MedianExtractor(AFeatureExtractor):
+    def __init__(self, channel, featName):
+        if featName == '':
+            featName = 'median ' + all_channels[channel]
+
+        AFeatureExtractor.__init__(self, featName)
+        self.usedChannelIndex = channel
+
+    def extract(self, video):
+        return np.median(video[self.usedChannelIndex])
+class VarExtractor(AFeatureExtractor):
+    def __init__(self, channel, featName):
+        if featName == '':
+            featName = 'var ' + all_channels[channel]
+
+        AFeatureExtractor.__init__(self, featName)
+        self.usedChannelIndex = channel
+
+    def extract(self, video):
+        return np.var(video[self.usedChannelIndex])
+
+
 #get Heart Rate from plethysmograph
 class AVGHeartRateExtractor(AFeatureExtractor):
     def __init__(self,featName='avg HR'):
@@ -335,6 +389,110 @@ class STDInterBeatExtractor(AFeatureExtractor):
 
 
         return std_interbeats
+class MaxHRExtractor(AFeatureExtractor):
+    def __init__(self, featName):
+        if featName == '':
+            featName = 'maxHR'
+
+        AFeatureExtractor.__init__(self, featName)
+        self.channel = channelNames['Plethysmograph']
+
+    def extract(self, video):
+        # lowpass filter => sufficient smoothing is needed to extract heart rate from plethysmograph
+        low = 3 / nyq  # lower values => smoother
+        b, a = butter(6, low, btype='low')
+        for channel in range(len(video)):
+            video[channel] = lfilter(b, a, video[channel])
+
+        # Plethysmograph => heart rate, heart rate variability
+        # this requires sufficient smoothing !!
+        # heart rate is visible with local optima, therefore we need to search the optima first
+
+        # stolen with pride from http://stackoverflow.com/questions/4624970/finding-local-maxima-minima-with-numpy-in-a-1d-numpy-array
+        diffs = np.diff(np.sign(np.diff(video[self.channel])))
+        maxima = (diffs < 0).nonzero()[0] + 1  # local max
+
+        interbeats = np.diff(maxima) / float(Fs)  # time in between beats => correlated to hreat rate!
+
+        return np.max(interbeats)
+class MinHRExtractor(AFeatureExtractor):
+    def __init__(self, featName):
+        if featName == '':
+            featName = 'minHR'
+
+        AFeatureExtractor.__init__(self, featName)
+        self.channel = channelNames['Plethysmograph']
+
+    def extract(self, video):
+        # lowpass filter => sufficient smoothing is needed to extract heart rate from plethysmograph
+        low = 3 / nyq  # lower values => smoother
+        b, a = butter(6, low, btype='low')
+        for channel in range(len(video)):
+            video[channel] = lfilter(b, a, video[channel])
+
+        # Plethysmograph => heart rate, heart rate variability
+        # this requires sufficient smoothing !!
+        # heart rate is visible with local optima, therefore we need to search the optima first
+
+        # stolen with pride from http://stackoverflow.com/questions/4624970/finding-local-maxima-minima-with-numpy-in-a-1d-numpy-array
+        diffs = np.diff(np.sign(np.diff(video[self.channel])))
+        maxima = (diffs < 0).nonzero()[0] + 1  # local max
+
+        interbeats = np.diff(maxima) / float(Fs)  # time in between beats => correlated to hreat rate!
+
+        return np.min(interbeats)
+class MedianHRExtractor(AFeatureExtractor):
+    def __init__(self, featName):
+        if featName == '':
+            featName = 'medianHR'
+
+        AFeatureExtractor.__init__(self, featName)
+        self.channel = channelNames['Plethysmograph']
+
+    def extract(self, video):
+        # lowpass filter => sufficient smoothing is needed to extract heart rate from plethysmograph
+        low = 3 / nyq  # lower values => smoother
+        b, a = butter(6, low, btype='low')
+        for channel in range(len(video)):
+            video[channel] = lfilter(b, a, video[channel])
+
+        # Plethysmograph => heart rate, heart rate variability
+        # this requires sufficient smoothing !!
+        # heart rate is visible with local optima, therefore we need to search the optima first
+
+        # stolen with pride from http://stackoverflow.com/questions/4624970/finding-local-maxima-minima-with-numpy-in-a-1d-numpy-array
+        diffs = np.diff(np.sign(np.diff(video[self.channel])))
+        maxima = (diffs < 0).nonzero()[0] + 1  # local max
+
+        interbeats = np.diff(maxima) / float(Fs)  # time in between beats => correlated to hreat rate!
+
+        return np.median(interbeats)
+class VarHRExtractor(AFeatureExtractor):
+    def __init__(self, featName):
+        if featName == '':
+            featName = 'varHR'
+
+        AFeatureExtractor.__init__(self, featName)
+        self.channel = channelNames['Plethysmograph']
+
+    def extract(self, video):
+        # lowpass filter => sufficient smoothing is needed to extract heart rate from plethysmograph
+        low = 3 / nyq  # lower values => smoother
+        b, a = butter(6, low, btype='low')
+        for channel in range(len(video)):
+            video[channel] = lfilter(b, a, video[channel])
+
+        # Plethysmograph => heart rate, heart rate variability
+        # this requires sufficient smoothing !!
+        # heart rate is visible with local optima, therefore we need to search the optima first
+
+        # stolen with pride from http://stackoverflow.com/questions/4624970/finding-local-maxima-minima-with-numpy-in-a-1d-numpy-array
+        diffs = np.diff(np.sign(np.diff(video[self.channel])))
+        maxima = (diffs < 0).nonzero()[0] + 1  # local max
+
+        interbeats = np.diff(maxima) / float(Fs)  # time in between beats => correlated to hreat rate!
+
+        return np.var(interbeats)
 
 #!! only one that can handle a list of videos!
 class MultiFeatureExtractor(AFeatureExtractor):
