@@ -48,8 +48,8 @@ all_channels = [#global const vars!
 ]
 
 #turn bands into frequency ranges
-startFreq = {'alpha' : 8 , 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4}#, 'all' : 0}
-stopFreq  = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8}#, 'all' : 50}
+startFreq = {'alpha' : 8 , 'beta'  : 13, 'gamma' : 30, 'delta' : 0, 'theta' : 4, 'all' : 0}
+stopFreq  = {'alpha' : 13, 'beta'  : 30, 'gamma' : 50, 'delta' : 4, 'theta' : 8, 'all' : 50}
 
 Fs = 128 #global const frequency of the brain signals
 nyq  = 0.5 * Fs

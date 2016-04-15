@@ -3,7 +3,8 @@ from personLoader import load, dump
 import featureExtractor as FE
 import Classificators
 
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.cross_validation import KFold
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cross_validation import train_test_split
@@ -11,9 +12,9 @@ from sklearn.cross_validation import train_test_split
 from multiprocessing import Pool
 POOL_SIZE = 2
 
-class RFPers():
+class SVMPers():
 
-    def __init__(self, feats, stopperson, runs, n_estimators, threshold, classifier):
+    def __init__(self, feats, stopperson, threshold, classifier):
         self.featExtr = FE.MultiFeatureExtractor()
         if feats == 'EEG':
             self.addEEGFeatures()
@@ -24,14 +25,12 @@ class RFPers():
             self.addPhyFeatures()
 
         self.stopperson = stopperson
-        self.runs = runs
-        self.n_estimators = n_estimators
         self.threshold = threshold
 
         self.classifier = classifier
 
 
-        self.ddpad = "../../dumpedData/RF/"
+        self.ddpad = "../../dumpedData/SVM/"
         if self.classifier.name == "ContArousalClasses":
             self.ddpad += "arousal/"
         else:
@@ -59,13 +58,12 @@ class RFPers():
             )
 
             for freqband in FE.startFreq:
-
                 if freqband != 'all':
                     self.featExtr.addFE(
                         FE.BandFracExtractor(
                             channels=[channel],
                             featName=str(channel) + "-" + str(freqband),
-                            freqBand= freqband
+                            freqBand=freqband
                         )
                     )
 
@@ -142,25 +140,17 @@ class RFPers():
         self.featExtr.addFE(FE.MedianHRExtractor())
         self.featExtr.addFE(FE.VarHRExtractor())
 
-
     def step1(self,X,y, featureNames):
         print('step1')
 
         #get importances
-        forest = RandomForestClassifier(
-            n_estimators=self.n_estimators * 3,
-            max_features='auto',
-            criterion='gini',
-            n_jobs=-1,
-        )
 
-        forest.fit(X,y)
+        model = SVC(kernel='linear')
+
+        model.fit(X,y)
 
         # get importances
-        importances = forest.feature_importances_
-        stds = np.std([tree.feature_importances_ for tree in forest.estimators_], axis=0)
-
-        importances -= stds
+        importances = model.coef_
 
         # genPlot(importances, stds, 'step1 importances'))
         # sort features
@@ -179,47 +169,6 @@ class RFPers():
         featureNames = featureNames[indices_to_keep]
 
         return importances, np.array(indices_to_keep), featureNames
-    '''def step2_interpretation(self,X, y, featureNames):
-        featuresLeft = len(X[0])
-        print('step2_interpretation - featLeft: ' + str(featuresLeft))
-
-        #for featCount = 1 ~> remaining indices
-        oob_scores = []
-        for featCount in range(1,featuresLeft + 1):
-            print('inter - ' + str(featCount))
-            run_errors = []
-            forest = RandomForestClassifier(
-                n_estimators=self.n_estimators,
-                max_features='auto',
-                criterion='gini',
-                n_jobs=-1,
-                oob_score=True,
-                bootstrap=True
-            )
-            X_temp = X[:,:featCount]
-            for i in range(self.runs):
-                forest.fit(X_temp,y)
-                run_errors.append(forest.oob_score_)
-
-            oob_scores.append(run_errors)
-
-        #std
-        stds = np.std(oob_scores, axis=1)
-        avgs = np.average(oob_scores, axis=1)
-
-        #genPlot(avgs,stds,'oob_scores step2_interpretation')
-        highest_avg_index = np.argmax(avgs)
-        highest_avg       = avgs[highest_avg_index]
-        highest_std       = stds[highest_avg_index]
-
-        #look for smaller kandidates, keeping track of STD
-        for i in range(1,highest_avg_index+1):
-            if avgs[i] - stds[i] > highest_avg - highest_std:
-                highest_avg_index = i
-                highest_std = stds[i]
-                highest_avg = avgs[i]
-
-        return highest_avg_index +1, highest_avg, highest_std, avgs, stds'''
     def step2_prediction(self,X, y, featureNames):
         featuresLeft = len(X[0])
         print('step2_prediction - featLeft: ' + str(featuresLeft))
@@ -230,14 +179,7 @@ class RFPers():
         for feat in range(featuresLeft):
             print('pred - ' + str(feat))
 
-            forest = RandomForestClassifier(
-                n_estimators=self.n_estimators,
-                max_features='auto',
-                criterion='gini',
-                n_jobs=-1,
-                oob_score=True,
-                bootstrap=True
-            )
+            model = SVC(kernel='linear')
 
             # add new feature to the existing features
             features_to_keep = best_features_to_keep[:]
@@ -248,9 +190,10 @@ class RFPers():
 
             #get scores
             run_scores = []
-            for i in range(self.runs):
-                forest.fit(X_temp,y)
-                run_scores.append(forest.oob_score_)
+            for tr, te in KFold(n=len(X_temp), n_folds=5, shuffle=True, random_state=17):
+
+                model.fit(X_temp[tr], y[tr])
+                run_scores.append(self.accuracy(model.predict(X_temp[te]), y[te]))
 
             new_score = np.average(run_scores)
             new_std   = np.std(run_scores)
@@ -346,10 +289,10 @@ class RFPers():
 
         return acc / float(len(predictions))
 
-    def RFPerson(self, person):
+    def fixPerson(self, person):
         print('person: ' + str(person))
 
-        to_ret = load('RF_P' + str(person), path=self.ddpad)
+        to_ret = load('P' + str(person), path=self.ddpad)
         if to_ret == None:
             #load X , y
             # load all features & keep them in memory
@@ -371,11 +314,6 @@ class RFPers():
             y_disc = np.array(y_cont)
             y_disc[y_disc <= 5] = 0
             y_disc[y_disc >  5] = 1
-
-            for index, val in enumerate(np.std(X, axis=0)):
-                if val == 0:
-                    print(str(index) + str(featureNames[index]))
-                    exit()
 
             # manual Feature standardization
             X = X - np.average(X, axis=0)
@@ -406,26 +344,19 @@ class RFPers():
             X = X[:,indices]
             X_test = X_test[:,step2_indices_pred]
 
-            forest = RandomForestClassifier(
-                n_estimators=self.n_estimators,
-                max_features='auto',
-                criterion='gini',
-                n_jobs=-1,
-                oob_score=True,
-                bootstrap=True
-            )
-            test_accs = []
-            for i in range(self.runs):
-                forest.fit(X,y_disc)
-                test_accs.append(self.accuracy(forest.predict(X_test),y_test))
+            model = SVC(kernel='linear')
+
+            # get scores
+            model.fit(X, y_disc)
+            test_acc = self.accuracy(model.predict(X_test), y_test)
 
             to_ret = [
                 #[ featCount_inter  , score_inter, std_inter, featureNames_inter, avgs, stds ],
-                len(step2_indices_pred), step2_score_pred , step2_std_pred , featureNames_pred, np.average(test_accs), np.std(test_accs)
+                len(step2_indices_pred), step2_score_pred , step2_std_pred , featureNames_pred, test_acc
             ]
 
-            dump(to_ret, 'RF_P' + str(person), path=self.ddpad)
-        print('[' + str(person) + '] prediction - score: ' + str(to_ret[1]) + ' (' + str(to_ret[2]) + ') with ' + str(to_ret[0]) + ' test_score ' + str(to_ret[4]) + ' (' + str(to_ret[5]) + ')' )
+            dump(to_ret, 'P' + str(person), path=self.ddpad)
+        print('[' + str(person) + '] prediction - score: ' + str(to_ret[1]) + ' (' + str(to_ret[2]) + ') with ' + str(to_ret[0]) + ' test_score ' + str(to_ret[4]))
 
             #print('[' + str(person) + '] interpretation - score: ' + str(to_ret[0][1]) + ' (' + str(to_ret[0][2]) + ') with ' + str(to_ret[0][0]) +
         #      '  prediction - score: ' + str(to_ret[1][1]) + ' (' + str(to_ret[1][2]) + ') with ' + str(to_ret[1][0])
@@ -439,7 +370,7 @@ class RFPers():
         results = load('data_results', path=self.ddpad)
         if results == None:
             pool = Pool(processes=POOL_SIZE)
-            results = pool.map(self.RFPerson, range(1, self.stopperson + 1))
+            results = pool.map(self.fixPerson, range(1, self.stopperson + 1))
             pool.close()
             pool.join()
             dump(results, 'data_results', path=self.ddpad)
@@ -448,4 +379,4 @@ class RFPers():
 
 
 if __name__ == '__main__':
-    RFPers("ALL", 2,2,10,40, Classificators.ContArousalClassificator()).run()
+    SVMPers("ALL", 2, 40, Classificators.ContArousalClassificator()).run()
