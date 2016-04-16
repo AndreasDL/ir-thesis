@@ -202,24 +202,44 @@ $H(Y) = \sum\limits_{i\in Y} p_ilog(\frac{1}{p_i}) = - \sum\limits_i p_ilog(p_i)
 \npar
 
 \subsubsection{Distance Correlation}
-Distance correlation is a relatively new technique that is designed explicitly to address shortcomings of Pearson correlation. A Pearson correlation coefficient of zero implies that the variables might be independent, but as mentioned before, does not guarantee this. 
+The Pearson correlation coefficient might give a correlation of zero for dependent variables, as shown in Figure \ref{pearson}.
 
-\npar
 
-The distance covariance is defined as\citep{distPaper}:
+\mijnfiguur{width=0.7\textwidth}{pearson}{Pearson correlation coefficients for different sets of (x,y) points. Note that many coefficients are zero, while there clearly is some correlation. Source: Wikipedia}
+
+The distance covariance, sometimes referred as the Brownian covariance, addresses this problem\citep{distPaper}. Its main idea is that a good measurement for dependence is the 'distance' between the join distribution $f_{XY}$ and the product of the marginal distributions $f_X$ and $f_Y$ weighted by a weight function $W$. This gives the following theoretical function:
+
 \begin{center}
-$dCov^2(X,Y) = \frac{1}{n^2}\sum_limits_{k,l=1}^{n} A_{k,l}B_{k,l}$
+$|| f_{XY} - f_Xf_y||_W$
 \end{center}
-With A, B being simple linear functions of the pairwise distances between sample elements. This metric is a covariance metric, which means that it is not normalized. The distance correlation is the normalized version of the distance covariance and is defined as:
+
+The result is that the distance correlation metric gives very different results, as you can see when comparing the distance correlation outputs in Figure\ref{distcorr} with the pearson correlation outputs in Figure \ref{pearson}.
+
+
+\mijnfiguur{width=0.7\textwidth}{distcorr}{Distance correlation coefficients for different sets of (x,y) points. Note the difference with the pearson correlation coefficients in Figure \ref{pearson}. Source: Wikipedia}
+
+Without going further into the theory, the distance correlation between two variables X and Y, each with n data points can be calculated as follows.
+First compute all pairwise euclidean distances for both variables.
+\begin{center}
+$[D_x]_{j,k} = || X_j - X_k||   j,k = 1,2,...,n$\\
+$[D_Y]_{j,k} = || Y_j - Y_k||   j,k = 1,2,...,n$\\
+\end{center}
+The result is two n by n distance matrices a and b. Next center both matrices.
+\begin{center}
+$S_x = C_nD_xC_n$\\
+$S_y = C_nD_yC_n$\\
+\end{center}
+Finally, compute the covariance.
+\begin{center}
+$\nu^2(X,Y) = \frac{1}{n^2} \sum\limits_l \sum\limits_k [S_x]_{k,l}[S_y]_{k,l}$ 
+\end{center}
+
+This metric is a covariance metric, which means that it is not normalized. The distance correlation is the normalized version of the distance covariance and is defined as:
 
 \begin{center}
 $dCor(X,Y) = \frac{dCov(X,Y)}{\sqrt{dVar(X)dVar(Y)}}$
 \end{center}
-With $dCov(X,Y)$ being the aforementioned distance covariance, $dVar(X)$ and $dVar(Y)$ are the distance standard deviations. 
-
-\npar
-
-The distance correlation has the disadvantage that is much slower than mutual information or Pearson correlation, but in return, the distance correlation is able to detect more complex relationships between two variables.
+With $dCov(X,Y)$ being the aforementioned distance covariance, $dVar(X)$ and $dVar(Y)$ are the distance standard deviations. The distance correlation has the disadvantage that is much slower than mutual information or Pearson correlation, but in return, the distance correlation is able to detect more complex relationships between two variables.
 
 \subsection{Machine Learning Methods}
 These methods select features by applying an arbitrary machine learning technique and looking at the coefficients of the features. 
