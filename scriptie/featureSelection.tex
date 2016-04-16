@@ -1,7 +1,73 @@
 \chapter{Methods}
-%{\samenvatting TODO %TODO }
+{\samenvatting This chapter starts by going over the possible features for emotion recognition, before going through some emotion recognition studies found in the literature. The last part will go over different feature selection techniques.}
 
-\section{Emotion recognition in the literature}
+\section{Features}
+\label{featuresExplained}
+Usually, good features are needed before one can train a machine learning algorithm. Two categories of features are observed: EEG features and non-EEG features. This section will cover them briefly.
+
+\subsection{EEG-features}
+EEG features are extracted from the electroencephalography measurements from the subject's scalp. This section will go through the used EEG features in this thesis.
+\npar
+The power spectral density (PSD) \nomenclature{PSD}{Power Spectral Density} of a signal gives the distribution of the signal's energy in the frequency domain. By calculating the spectral density for different waveband of the signal, one can determine how much alpha, beta, ... power is in the signal.
+\npar
+Differential entropy (DE)\nomenclature{DE}{Differential Entropy} is defined as follows \citep{killyPaper} \\
+\begin{center}
+$ - \int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2}} exp(\frac{(x-\mu)^2}{2\sigma^2}) log(\frac{1}{\sqrt{2\pi\sigma^2}}) exp(\frac{(x-\mu)^2}{2\sigma^2})dx$
+\end{center}
+According to \citep{diffEnt}, the differential entropy of a certain band is equivalent to the logarithmic power spectral density for a fixed length EEG sequence, which simplifies the calculations significantly.
+\npar
+The most known feature for valence recognition is the frontal asymmetry of the alpha power\cite{GivenPaper}.
+The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The asymmetry can be calculated in different ways, one of them is the differential asymmetry (DASM) \nomenclature{DASM}{Differential Asymmetry}, where the left alpha power is subtracted from the right alpha power.
+\begin{center}
+$DASM = DE_{left} - DE_{right}$
+\end{center}
+Another way to measure the asymmetry if by division. The Rational Asymmetry (RASM) \nomenclature{RASM}{Rational Asymmetry} does exactly this and is given by: \\
+\begin{center}
+$RASM = \frac{DE_{left}}{DE_{right}}$
+\end{center}
+With $DE_{left}$ and $DE_{right}$ being the left and right differential entropy respectively.
+\npar
+Another reported feature in literature is the caudality, or the asymmetry in fronto-posterior direction\cite{caudality}. This can again be calculated in two ways. The first method is the differential Caudality (DCAU) \nomenclature{DCAU}{Differential Caudality} is defined as: \\
+\begin{center}
+$DCAU = DE_{front} - DE_{post}$
+\end{center}
+Another way to determine the Caudality is the Rational Caudality (RCAU) \nomenclature{RCAU}{Rational Caudality}, which is defined as:
+\begin{center}
+$RCAU = \frac{DE_{front}}{DE_{post}}$
+\end{center}
+With $DE_{front}$ and $DE_{post}$ being the frontal and posterior power respectively.
+\npar
+One way to determine the arousal is by looking at the different wavebands. Each waveband has their own medical interpretation, see \ref{wavebands}. More alpha power corresponds to a more relaxed brain, while more beta power corresponds to a more active brain. The alpha / beta ratio therefore seems a good indicator for the arousal state of a person.
+\npar
+The Alpha/ beta ratio is limited to comparing two wavebands. Other frequently used features are powerband fractions. Where the fractions of waveband power is determined for a channel, given by:
+\begin{center}
+$frac_{band} = \frac{power_{band}}{power_{total}}$
+\end{center}
+
+
+\subsection{non-EEG features}
+The aforementioned EEG features are just one class of physiological features. The DEAP dataset contains several physiological measurements, listed below \citep{DEAP}. For each of these measurements the average, standard deviation, variation, median, minimum, maximum and the standard deviation is calculated.
+\npar
+The Galvanic Skin Response \nomenclature{GSR}{Galvanic Skin Response} uses two electrodes on the middle and index finger of the subjects left hand to measure the skin resistance. It has been reported that the mean value of the GSR is related to the level of arousal\citep{GSR, DEAP}.
+\npar
+The respiration belt, indices the user's respiration rate. Slow respiration is linked to relaxation (low arousal), while fast and irregular respiration patterns corresponds to anger or fear, both emotions with low valence and high arousal\citep{DEAP}.
+\npar
+A plethysmograph is a measurement of the volume of blood in the subject's left thumb. This can be interpreted as the the blood pressure. Blood pressure offers valuable insight into the emotional state of a person as it correlated with emotion; stress is known to increase blood pressure\citep{DEAP}.
+\npar
+The heart rate is not explicitly in the DEAP dataset, but can be extracted from the plethysmograph, by looking at local minima and maxima\citep{DEAP}. This is clearly visible when looking at the plethysmograph's output, shown in Figure \ref{before}.
+\mijnfiguur{width=0.7\textwidth}{before}{The plethysmograph before smoothing.}
+\npar
+The heart rate extraction is done in two steps. First the plethysmograph signal is smoothed using a butter filter to avoid noise being selected as local optima. In the second stage the local optima are located, which is shown in Figure \ref{extrema}
+
+\mijnfiguur{width=0.7\textwidth}{extrema}{The local optima in the plethysmograph.}
+
+\npar
+
+These optima correspond to a heart beat, therefore the time between two consecutive local minima or maxima corresponds to the time between two heart beats, known as the interbeat interval. Getting the average heart rate from the interbeat interval is straight forward.
+
+The last physiological feature is the skin temperature of the subject.
+
+\section{Emotion recognition Studies}
 This section will give a overview of (some) other studies that did similar research and their conclusions.
 
 \subsection{DEAP method}
@@ -25,11 +91,64 @@ $G(f_1, ..., f_n) = argmax_c p(C=c) \prod\limits_{i=1}^n p(F_i=f_i|C=c)$ \\
 With F being the set of features and C the classes. $p(F_i=f_i|C=c)$ is estimated by assuming Gaussian distributions of features and modelling these from the training set.
 \end{center}
 
+\subsection{Stable Emotion Recognition over Time}
+%KillyPaper
+In \citep{killyPaper}, research is done to find EEG patterns for emotion recognition that are stable over time. EEG patterns are not only subject dependent, they are also dependent on the subjects mood and thus might vary in time. The paper starts by researching different EEG features: PSD, DE, DASM, RASM, DCAU, RCAU, these features are explained in \ref{featuresExplained}.
 
-\section{Feature selection}
+\npar
+
+Their machine learning set-up is as follows, first they perform feature extraction of the aforementioned features. Then feature smoothing is done using a Linear Dynamic system (LDS) \nomenclature{LDS}{Linear Dynamic System}, that can be expressed by:
+\begin{center}
+$x_t = z_t + w_t$\\
+$z_t = Az_{t-1} + v_t$
+\end{center}
+$x_t$ denotes the observed variables or features, while $z_t$ denotes the hidden emotion variables. $A$ is a transformation matrix and $w_t$ is Gaussian noise. The need for a linear dynamic system is supported by the assumption that emotion change gradually over time. The LDS filters out components that are not associated with emotional states.
+
+\npar
+
+The list of features at this point is too big and may contain uncorrelated features that might lead to performance degradation of the classifier. Two methods for this are compared, principal component analysis (PCA) and minimal redundancy maximal relevance (MRMR)\nomenclature{MRMR}{Minimal Redundancy Maximal Relevance}. 
+
+\npar
+
+PCA uses an orthogonal transformation to create a lower dimensional feature space starting from the original higher dimensional feature space. It does so by minimizing the loss of information, i.e. the principal component should have the largest possible variance. 
+
+\npar
+
+PCA cannot preserve original domain information like channel and frequency, therefore the paper also uses the MRMR method. MRMR uses mutual information in combination with maximal dependency criterion and minimal redundancy. The algorithm starts by searching features satisfying:
+
+\begin{center}
+$max D(S,c), D=\frac{1}{|S|} {\displaystyle \sum_{x_d \in S}} I(x_d;c)$
+\end{center}
+
+Where S is the feature subset to select. When two features are highly correlated, the maximal dependency is not likely to change when one of the correlated features is removed. This is expressed by the minimal redundancy condition.
+
+\begin{center}
+$min R(S), R = \frac{1}{|S|^2} {\displaystyle \sum_{x_{di}, x_{dj} \in S}} I(x_{di},x_{dj})$
+\end{center}
+
+The two conditions are then combined to from the Maximal Relevance Minimum Redundancy, which can be expressed as:
+
+\begin{center}
+$max \varphi(D,R), \varphi=D-R$
+\end{center}
+Note that incremental search methods exists and are often used in practice. After performing the dimensionality reduction, the samples from the DEAP data set are classified in high / low valence and high/low arousal, giving a total of four classes. All values close to the separation border are removed from the training data, as they might confuse the classifier. 
+
+\npar 
+For the classification, three conventional and one newly developed pattern classifiers were compared. k-nearest neighbors (KNN) \nomenclature{KNN}{k-nearest neightbors}, logistic regression (LR)\nomenclature{LR}{Logistic Regression}, Support Vector Machines (SVM) and Graph regularized Extreme Learning Machine (GELM) \nomenclature{GELM}{Graph regularized Extreme Learning Machine}. 
+
+\npar
+
+Extreme Learning Machine (ELM) \nomenclature{ELM}{Extreme Learning Machine} is a single layer feed forward neural network\citep{ELMpaper}. GELM is based on the idea that similar shapes should have similar properties and obtains better results for face recognition\citep{GELMpaper} and as the paper concludes, also for emotion classification.
+
+\npar
+
+The study found then performed a study on the different features and concluded that DE features are the most suitable EEG features, followed by the asymmetry features (RASM, DASM, DCAU and RCAU). The LDS smoothing was also found to be the better feature smoothing method. 
+
+
+\section{Feature selection methods}
 Feature selection is the process of selecting good features from a set of feature. The need for this is twofold: first by reducing the number of features, you can protect yourself against overfitting. This is important when the dataset is limited. Second, reducing the number of features can speedup the learning process of a learning algorithm as fewer parameters need to be optimized. Additionally, in the context of research and this thesis, looking at which features are important gives insight in the problem. In the context of this thesis, knowing what feature are relevant can help neuroscientists understand the working of the brain better.
 
-\subsection{independent metrics}
+\subsection{Independent Metrics}
 These feature selection methods select features based on statistical tests or another independent metric. 
 
 \subsubsection{Pearson Correlation}
@@ -82,9 +201,6 @@ $H(Y) = \sum\limits_{i\in Y} p_ilog(\frac{1}{p_i}) = - \sum\limits_i p_ilog(p_i)
 \end{center}
 \npar
 
-%\subsection{ANOVA}
-%TODO
-
 \subsubsection{Distance Correlation}
 Distance correlation is a relatively new technique that is designed explicitly to address shortcomings of Pearson correlation. A Pearson correlation coefficient of zero implies that the variables might be independent, but as mentioned before, does not guarantee this. 
 
@@ -105,7 +221,7 @@ With $dCov(X,Y)$ being the aforementioned distance covariance, $dVar(X)$ and $dV
 
 The distance correlation has the disadvantage that is much slower than mutual information or Pearson correlation, but in return, the distance correlation is able to detect more complex relationships between two variables.
 
-\subsection{Machine learning methods}
+\subsection{Machine Learning Methods}
 These methods select features by applying an arbitrary machine learning technique and looking at the coefficients of the features. 
 
 \subsubsection{Linear Regression}
@@ -114,8 +230,6 @@ Another way of finding relevant features is to use model based ranking. In model
 \npar
 
 The first method to use is simple linear regression. This method tries to find a linear combination of features that produces the output value. Linear regression can achieve good results given that the data doesn't contain a lot of noise and the features are (relatively) independent. When the set of features contains correlated features, the model becomes unstable. As a result, small changes in input data might lead to huge differences in output coefficients. for example assume the 'real output' is given by $Y = X_1 + X_2$ and the dataset contains output in the form of $Y = X_1 + X_2 + \epsilon$ with $\epsilon$ being some random noise. Further more assume that $X_1$ and $X_2$ are linearly correlated, meaning that $X_1 \approx X_2$. The suspected output of the model should be $Y = X_1 + X_2$, but since noise is added the algorithm might end up with arbitrary combinations of $X_1$ and $X_2$, e.g. $Y = -X_1 + 3X_2$ and rate one feature much higher than another one, while in reality they are of equal importance. This is due to the noise; by maximizing the performance, the algorithm will minimize the influence of noise on the output, which result in unstable behaviour when sufficient correlated features are present. 
-
-\clearpage
 
 \subsubsection{Lasso Regression}
 Lasso regression uses L1 regularization, that adds a penalty $\alpha\sum\limits_{i=1}^{n} |w_i|$ to the loss function. the result is that the coefficients of weak features are forced to zero, as each non-zero feature adds to the penalty. This form is regularization is thus quite aggressive, it removes weak features completely. The problem with this is, again, stability; coefficient can vary significantly even for small changes in training data, when there are correlated features.
@@ -132,7 +246,7 @@ Random forests (RF) \nomenclature{RF}{Random Forests} is a efficient learning al
 
 \npar
 
-Additionally, some randomness is included, each tree looks at a random subset of the samples and a random subset of the features. This principle is shown in Figure \ref{RF}. This random subset of samples is called the bootstrap sample and is selected out of N samples, by picking N times a sample, with replacement. This results, on average, in 2/3 of the samples being selected (with some doubles). The other 1/3 of the samples are then used as out of bag (oob) \nomenclature{oob}{out of bag} set. Averaging the performance of each tree on the out of bag set, offers an indication of the generalisation of the random forest.
+Additionally, some randomness is included, each tree looks at a random subset of the samples and a random subset of the features. This principle is shown in Figure \ref{RF}. This random subset of samples is called the bootstrap sample and is selected out of N samples, by picking N times a sample, with replacement. This results, on average, in 2/3 of the samples being selected (with some doubles). The other 1/3 of the samples are then used as out of bag (oob) \nomenclature{OOB}{Out of Bag} set. Averaging the performance of each tree on the out of bag set, offers an indication of the generalisation of the random forest.
 
 \mijnfiguur{width=0.9\textwidth}{RF}{The structure of a random forest, found at \citep{rfPic}}
 
@@ -195,19 +309,22 @@ It is clear that feature A and B are very important when it comes to predicting 
 
 This problem does not occur for random forest though, as combinations of features are also 'tested' in the sense that a tree might split on them in different stages. Once the combination of features occurs randomly in a decision tree, the impurity will drop significantly, which will result in higher importance rankings.
 
+\subsection{Dimensionality Reduction methods}
+The algorithms described below perform a dimensionality reduction, often by projecting a high dimensional to a lower dimensional features space. Looking at coefficients of these trained models, gives insight in which features are important. Note that some of this methods could also be seem as machine learning algorithms. 
+
 \subsubsection{Common Spatial Patterns}
 Common Spatial Patterns (CSP)\nomenclature{CSP}{Common Spatial Patterns} is a supervised technique that has its origin in the optimization of motor imagery BCIs\citep{CSPSeba}. It is a common technique in BCI research\cite{ErrorPotentials,svmldacomp,currTrends}. CSP creates linear combinations of the original EEG channels that maximize the variance for one class while simultaneously minimizing the variance of the other class \cite{ErrorPotentials}. One disadvantage of using CSP is that the default version can only distinguish between 2 classes, though one can easily aggregate multiple CSP models to create one-vs-one and one-vs-all models, similarly to the one-vs-one and one-vs-all SVMs.
 
 \npar
 
-The input for a CSP filter is a set of N labelled samples $E_j (j=1...N)$, with dimension $N_ch x T_j$, with $N_ch$ being the number of EEG channels and $T*j$ the number of samples in a single trial\citep{CSPSeba}.
+The input for a CSP filter is a set of N labelled samples $E_j (j=1...N)$, with dimension $N_{ch}$ x $T_j$, with $N_{ch}$ being the number of EEG channels and $T_j$ the number of samples in a single trial\citep{CSPSeba}.
 
 \npar
 
 First the train data is split into two classes, before computing the covariance matrices of both classes.
 \begin{center}
-$\Sigma_1 = {\displaystyle \sum_{j \in C_1}} X\frac{E_jE_j^T}{trace(E_jE_j^T}$ \\
-$\Sigma_2 = {\displaystyle \sum_{j \in C_2}} X\frac{E_jE_j^T}{trace(E_jE_j^T}$ \\
+$\Sigma_1 = {\displaystyle \sum_{j \in C_1}} X\frac{E_jE_j^T}{trace(E_jE_j^T)}$ \\
+$\Sigma_2 = {\displaystyle \sum_{j \in C_2}} X\frac{E_jE_j^T}{trace(E_jE_j^T)}$ \\
 \end{center}
 Note that the average of $E_j$ is expected to be zero, because a bandpass filter is applied that make the DC component of the signal zero. The next step is to calculate the composite covariance matrix.
 \begin{center}
@@ -256,14 +373,24 @@ $E^{CSP} = WE^{orig}$
 Since CSP filters create simple linear combination of incoming channels, they can also be used as feature selection mechanism. The first and last row of the resulting matrix $W$ shows the coefficients for which the variance is maximized between the two signals. Looking at those coefficients, one can determine which channels are of more importance than other.
 
 \subsubsection{Linear Discriminant Analysis}
-Linear Discriminant Analysis (LDA)\nomenclature{LDA}{Linear Disciminant Analysis}, is a machine learning technique often used in combination with CSP\cite{ErrorPotentials,svmldacomp,currTrends}. LDA looks for a projection of the data where the data is linearly separable, as shown in Figure \ref{lda}.
+Linear Discriminant Analysis (LDA)\nomenclature{LDA}{Linear Disciminant Analysis}, is a machine learning technique often used in combination with CSP\cite{ErrorPotentials,svmldacomp,currTrends}. LDA looks for a projection of the data where the data is linearly separable, as shown in Figure \ref{lda}. Looking at the coefficients of the LDA model, one can again determine the importance of the different features.
 
 \mijnfiguur{width=0.7\textwidth}{lda}{LDA finds a projection of the data where the separation of the data is clear.}
 
 %TODO langer?
 
-\subsection{literature}
-These methods are more advanced feature selection methods found in the literature
+\subsection{Principal Component Analysis}
+Principal Component Analysis (PCA) \nomenclature{PCA}{Principal Component Analysis} is a technique to do dimension reduction. Intuitively, PCA can be seen as fitting an n-dimensional ellipsoid to the data. The Principal components are then the axes of the ellipsoid. Less variation in one direction, corresponds to a smaller axis, removing that axis, will only remove a small fraction of the information. This is shown in Figure \ref{ellipsoid}, where the ellipsoid covers a three dimensional features space. The ellipsoid has three axes: a,b and c. Intuitively, one can see that there is more variation (information) in the c ans b direction, while the a axis is relatively small.
+
+\mijnfiguur{width=0.7\textwidth}{ellipsoid}{Suppose a three-dimensional feature space, where all points lie in the ellipsoid in the left.}
+
+\npar
+
+Remove the a axis by projecting the data on the plane given by vectors b and c, and one will end up with a two dimensional projection of the data in the form of an ellipse. This process can be repeated for higher dimensional features spaces. In other words, PCA will thus, without going into too much detail, start with an n-dimensional ellipsoid and iteratively remove the smallest axis in each iteration until the desired number of dimensions is obtained. Note that the ellipsoid should be adjusted in each step.
+
+\subsection{Advanced methods}
+These methods are more advanced feature selection methods found in the literature.
+
 \subsubsection{RF feature selection}
 One advanced method for feature selection is the two-step method using random forest, described in \citep{rfPaper}. The paper states that there are two possible motivations for feature selection. The first motivation is to do interpretation, find out which features are important and use them for research. In the context of BCI, feature interpretation could help neuroscientist find out which parts of the brain are affected by an emotion, for example. The second motivation is to improve machine learning techniques, having fewer features will not only speed up training and prediction times, it also reduces the complexity, which often has a good influence on the generalisation property of a machine learning algorithm. Additionally in the context of BCI research and EEG data gathering, using fewer electrodes means less preprocessing time; mounting 32 electrodes to the brain of a subject is a time consuming task.
 
@@ -275,7 +402,7 @@ The selection procedure itself consists of two steps, in the first step data is 
 
 Then depending on the motivation of feature selection, a second step is performed. For feature interpretation the second steps by fitting a random forest with a single feature. The OOB is then averages over multiple runs. the runs are inserted because a random forest has an element of randomness, fitting the same data twice to a random forest, will not give you the same random forest. The average OOB score and its standard deviation is then used to determine an initial OOB score.
 \begin{center}
-$OOB_init = AVG(OOB) - STD(OOB)$
+$OOB_{init} = AVG(OOB) - STD(OOB)$
 \end{center}
 The standard deviation is used to avoid noisy results, a result is only regarded as better, when there is statistical prove. Next features are added iteratively, when a larger features set has a better average OOB score (taking the standard deviation into account), the feature set is replaced by the larger feature set.
 
@@ -283,75 +410,9 @@ The standard deviation is used to avoid noisy results, a result is only regarded
 
 The other second step is used for prediction, here the algorithm starts similarly, by determining an initial average OOB score and standard deviation. The idea behind the standard deviation is the same as with the interpretation step, noise removal.
 \begin{center}
-$OOB_init = AVG(OOB) - STD(OOB)$
+$OOB_{init} = AVG(OOB) - STD(OOB)$
 \end{center}
-The next part is different, now a feature is introduced in each iteration. When the average OOB score of the feature is better, the feature is added to the features set, otherwise it is neglected. The different between step2-interpretation and step2-prediction is that here single features are added to the feature set, while step2-interpretation always takes the feature set containing all features with higher importance than the lastly added feature. step2-prediction on the other hand is able to select a distinct set of features out of the results from step1.
+The next part is different, now a feature is introduced in each iteration. When the average OOB score of the feature is better, the feature is added to the features set, otherwise it is neglected. This is a greedy forward selection algorithm, once a feature is selected it remains selected. The difference between step two interpretation and step two prediction is that here single features are added to the feature set, while step two-interpretation always takes the feature set containing all features with higher importance than the lastly added feature. step two prediction on the other hand is able to select a distinct set of features out of the results from step one.
 
 \npar
-In the end the paper notes several observations, the step2-prediction method provides better OOB scores using fewer features. Additionally they mention that highly correlated features might confuse the algorithm, as correlated features have lower importances.
-
-\section{Features}
-\label{featuresExplained}
-The next step is defining relevant physiological features for emotion recognition, two categories of features are observed: EEG features and non-EEG features.
-
-\subsection{EEG-features}
-EEG features are extracted from the electroencephalography measurements from the subject's scalp. This section will go through the used EEG features in this thesis.
-\npar
-The power spectral density (PSD) \nomenclature{PSD}{Power Spectral Density} of a signal gives the distribution of the signal's energy in the frequency domain. By calculating the spectral density for different waveband of the signal, one can determine how much alpha, beta, ... power is in the signal.
-\npar
-Differential entropy is defined as follows \citep{killyPaper} \\
-\begin{center}
-$ - \int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2}} exp(\frac{(x-\mu)^2}{2\sigma^2}) log(\frac{1}{\sqrt{2\pi\sigma^2}}) exp(\frac{(x-\mu)^2}{2\sigma^2})dx$
-\end{center}
-According to \citep{diffEnt}, the differential entropy of a certain band is equivalent to the logarithmic power spectral density for a fixed length EEG sequence, which simplifies the calculations significantly.
-\npar
-The most known feature for valence recognition is the frontal asymmetry of the alpha power\cite{GivenPaper}.
-The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The asymmetry can be calculated in different ways, one of them is the differential asymmetry (DASM) \nomenclature{DASM}{Differential Asymmetry}, where the left alpha power is subtracted from the right alpha power.
-\begin{center}
-$DASM = DE_{left} - DE_{right}$
-\end{center}
-Another way to measure the asymmetry if by division. The Rational Asymmetry (RASM) \nomenclature{RASM}{Rational Asymmetry} does exactly this and is given by: \\
-\begin{center}
-$RASM = \frac{DE_{left}}{DE_{right}}$
-\end{center}
-With $DE_{left}$ and $DE_{right}$ being the left and right differential entropy respectively.
-\npar
-Another reported feature in literature is the caudality, or the asymmetry in fronto-posterior direction\cite{caudality}. This can again be calculated in two ways. The first method is the differential Caudality (DCAU) \nomenclature{DCAU}{Differential Caudality} is defined as: \\
-\begin{center}
-$DCAU = DE_{front} - DE_{post}$
-\end{center}
-Another way to determine the Caudality is the Rational Caudality (RCAU) \nomenclature{RCAU}{Rational Caudality}, which is defined as:
-\begin{center}
-$RCAU = \frac{DE_{front}}{DE_{post}}$
-\end{center}
-With $DE_{front}$ and $DE_{post}$ being the frontal and posterior power respectively.
-\npar
-One way to determine the arousal is by looking at the different wavebands. Each waveband has their own medical interpretation, see \ref{wavebands}. More alpha power corresponds to a more relaxed brain, while more beta power corresponds to a more active brain. The alpha / beta ratio therefore seems a good indicator for the arousal state of a person.
-\npar
-The Alpha/ beta ratio is limited to comparing two wavebands. Other frequently used features are powerband fractions. Where the fractions of waveband power is determined for a channel, given by:
-\begin{center}
-$frac_band = \frac{power_band}{power_total}$
-\end{center}
-
-
-\subsection{non-EEG features}
-The aforementioned EEG features are just one class of physiological features. The DEAP dataset contains several physiological measurements, listed below \citep{DEAP}. For each of these measurements the average, standard deviation, variation, median, minimum, maximum and the standard deviation is calculated.
-\npar
-The Galvanic Skin Response \nomenclature{GSR}{Galvanic Skin Response} uses two electrodes on the middle and index finger of the subjects left hand to measure the skin resistance. It has been reported that the mean value of the GSR is related to the level of arousal\citep{GSR, DEAP}.
-\npar
-The respiration belt, indices the user's respiration rate. Slow respiration is linked to relaxation (low arousal), while fast and irregular respiration patterns corresponds to anger or fear, both emotions with low valence and high arousal\citep{DEAP}.
-\npar
-A plethysmograph is a measurement of the volume of blood in the subject's left thumb. This can be interpreted as the the blood pressure. Blood pressure offers valuable insight into the emotional state of a person as it correlated with emotion; stress is known to increase blood pressure\citep{DEAP}.
-\npar
-The heart rate is not explicitly in the DEAP dataset, but can be extracted from the plethysmograph, by looking at local minima and maxima\citep{DEAP}. This is clearly visible when looking at the plethysmograph's output, shown in Figure \ref{before}.
-\mijnfiguur{width=0.7\textwidth}{before}{The plethysmograph before smoothing.}
-\npar
-The heart rate extraction is done in two steps. First the plethysmograph signal is smoothed using a butter filter to avoid noise being selected as local optima. In the second stage the local optima are located, which is shown in Figure \ref{extrema}
-
-\mijnfiguur{width=0.7\textwidth}{extrema}{The local optima in the plethysmograph.}
-
-\npar
-
-These optima correspond to a heart beat, therefore the time between two consecutive local minima or maxima corresponds to the time between two heart beats, known as the interbeat interval. Getting the average heart rate from the interbeat interval is straight forward.
-
-The last physiological feature is the skin temperature of the subject.
+In the end the paper notes several observations, the step two-prediction method provides better OOB scores using fewer features. Additionally they mention that highly correlated features might confuse the algorithm, as correlated features have lower importances.
