@@ -378,15 +378,12 @@ Linear Discriminant Analysis (LDA)\nomenclature{LDA}{Linear Disciminant Analysis
 \mijnfiguur{width=0.7\textwidth}{lda}{LDA finds a projection of the data where the separation of the data is clear.}
 
 %TODO langer?
-
-\subsection{Principal Component Analysis}
+\subsubsection{Principal Component Analysis}
 Principal Component Analysis (PCA) \nomenclature{PCA}{Principal Component Analysis} is a technique to do dimension reduction. Intuitively, PCA can be seen as fitting an n-dimensional ellipsoid to the data. The Principal components are then the axes of the ellipsoid. Less variation in one direction, corresponds to a smaller axis, removing that axis, will only remove a small fraction of the information. This is shown in Figure \ref{ellipsoid}, where the ellipsoid covers a three dimensional features space. The ellipsoid has three axes: a,b and c. Intuitively, one can see that there is more variation (information) in the c ans b direction, while the a axis is relatively small.
 
 \mijnfiguur{width=0.7\textwidth}{ellipsoid}{Suppose a three-dimensional feature space, where all points lie in the ellipsoid in the left.}
 
-\npar
-
-Remove the a axis by projecting the data on the plane given by vectors b and c, and one will end up with a two dimensional projection of the data in the form of an ellipse. This process can be repeated for higher dimensional features spaces. In other words, PCA will thus, without going into too much detail, start with an n-dimensional ellipsoid and iteratively remove the smallest axis in each iteration until the desired number of dimensions is obtained. Note that the ellipsoid should be adjusted in each step.
+Remove the a axis by projecting the data on the plane given by vectors b and c, and one will end up with a two dimensional projection of the data in the form of an ellipse. This would be the black plane in Figure \ref{ellipsoid}. This process can be repeated for higher dimensional features spaces. In other words, PCA will thus, without going into too much detail, start with an n-dimensional ellipsoid and iteratively remove the smallest axis in each iteration until the desired number of dimensions is obtained. Note that the ellipsoid should be adjusted in each step.
 
 \subsection{Advanced methods}
 These methods are more advanced feature selection methods found in the literature.
