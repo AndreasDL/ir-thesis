@@ -6,7 +6,7 @@ for model in [RFPers, SVMPers]:
     for feat in ['ALL','PHY','EEG']:
         for cls in [ContArousalClassificator(), ContValenceClassificator()]:
             try:
-                model(feat,32,40,cls).run()
+                model(feat,32,20,cls).run()
             except Exception as e:
                 print(model, feat, cls, 'went wrong')
                 print(e)
