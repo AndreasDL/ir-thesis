@@ -49,7 +49,8 @@ In the frequency domain, brain waves are usually split up into different bands\c
 \end{enumerate}
 Most muscle and eye artifacts have a frequency around 1.2Hz. Artificats caused by nearby power lines, have a frequency around 50Hz\cite{ExtendedPaper}. To remove most of this noise, a bandpass filter is usually applied to filter out frequencies below 4Hz and above 40-45Hz.
 
-
+\subsection{Person specific recognition versus general recognition}
+BCI applications are used in two settings. The first mode is a person specific setting, where a BCI interface is calibrated on a subject. The second mode is a general BCI interface that works 'cross-subject', meaning that it should be able to works for different persons. It is much harder to achieve good results for the second setting, since EEG data is very personal from nature. Transfer learning has provided good results in imaginary motion recognition in the past. For emotion recognition though simple person specific classifiers are used, as finding person independent EEG features cross person is still an ongoing topic of research. %TODO ref
 
 \section{Emotion recognition}
 
@@ -138,9 +139,9 @@ The main problem is that there are already a lot of features known, but, as is o
 \end{tabular}
 \end{table}
 
-\npar %TODO person specific ref
+\npar
 
-Another point to note is that even though a simple limited set of features might work, it is more likely to have less accurate results as optimal features might have been left out. This problem is even more severe when considering that EEG data is person specific, features that work good for one person, might not work for another person. Finding a good set of features that works for all persons is a non trivial problem. One solution to this problem could be to use a large pool of possible features from which a limited set of good features are selected. This allows to provide good features to the machine learning algorithm, while still keeping the set of features limited in size. The machine learning algorithm which features to use and which to neglect.
+Another point to note is that even though a simple limited set of features might work, it is more likely to have less accurate results as optimal features might have been left out. This problem is even more severe when considering that EEG data is person specific\citep{DEAP}, features that work good for one person, might not work for another person. Finding a good set of features that works for all persons is a non trivial problem. One solution to this problem could be to use a large pool of possible features from which a limited set of good features are selected. This allows to provide good features to the machine learning algorithm, while still keeping the set of features limited in size. The machine learning algorithm which features to use and which to neglect.
 
 %data
 \subsection{Dataset}
@@ -152,11 +153,7 @@ This dataset consists of several parts, the first part is a rating of 120 music 
 
 \npar
 
-The next part of the dataset is the physiological experiment that contains emotional reactions of 32 subjects. The emotional reactions were triggered using music video excerpts; each subject watched 40 one-minute videos, while several physiological signals were recorded. These physiological signals consist of 32 channel 512Hz EEH and peripheral physiological signals. Additionally 22 of the 32 subjects were recorded, so research in facial expressions is also possible with this dataset. These videos are also rated for arousal, valence and dominance. Additionally, the video were rated for liking. It is important to note that liking is not the same as valence, e.g. a user can like a sad song. As liking is no dimension of the emotional space, it is neglected for this thesis.
-
-\npar
-
-More concretely, this dataset contains following signals:
+The next part of the dataset is the physiological experiment that contains emotional reactions of 32 subjects. The emotional reactions were triggered using music video excerpts; each subject watched 40 one-minute videos, while several physiological signals were recorded. These physiological signals consist of 32 channel 512Hz EEH and peripheral physiological signals. More concretely, this dataset contains following signals:
 \begin{table}[]
 \centering
 \caption{The available signals in the DEAP dataset}
@@ -186,7 +183,19 @@ More concretely, this dataset contains following signals:
 \end{tabular}
 \end{table}
 
-
 \npar
 
 There also exists a preprocessed version of the physiological experiment database, which has downsampling to 128Hz, noise removal and EOG artifact removal. This dataset is used during this thesis.
+
+\npar
+
+Additionally facial video of 22 out of 32 subjects was recorded, so research in facial expressions is also possible with this dataset. These videos are also rated on 4 scales: arousal, valence, dominance and liking. The liking component indicates how much the person liked the video excerpt and should not be confused with the valence component; it inquires information about the participants' tastes, not their feelings, i.e. a person can like a video that triggers angry or sad emotions. However strong correlations were observed\citep{DEAP}. The liking rates are neglected, since they are not part of the emotion space.
+\npar
+
+For assessment of these scales, the self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins}, were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scale with pictures, each picture corresponds to a discrete value. The user can click anywhere in between the different figures, which makes the scales continuous. All dimension are given by a float between 1 and 9. In this thesis, a preprocessing step scaled and translated these values to ensure they range between 0 and 1, a more convenient interval.
+
+\npar
+
+The used SAM figures are shown in Figure \ref{SAM}. The first row gives the valence scale, ranging from sad to happy. The second row shows the arousal scale, ranging from bored to excited. The last row represents the different dominance levels. The left figure represents a submissive emotion, while the right figure corresponds with a dominant feeling.
+
+\mijnfiguur{width=0.5\textwidth}{SAM}{The images used for the SAM\cite{DEAP}.}
