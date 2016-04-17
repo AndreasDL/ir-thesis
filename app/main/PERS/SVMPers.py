@@ -31,6 +31,9 @@ class SVMPers():
 
 
         self.ddpad = "../../dumpedData/SVM/"
+        #self.ddpad = "../" + str(self.ddpad)
+        #print('warn do not use this with nightrune')
+
         if self.classifier.name == "ContArousalClasses":
             self.ddpad += "arousal/"
         else:
@@ -212,13 +215,13 @@ class SVMPers():
         #]
 
         f = open(self.rpad + "results.csv", 'w')
-        f.write("person;predScore;predStd;avg_test_acc;std_test_acc;predCount;predFeat;\n")
+        f.write("person;predScore;predStd;avg_test_acc;predCount;predFeat;\n")
 
         methodScores = []
         methodSTDs   = []
         for person,result in enumerate(results):
             f.write(str(person) + ';')
-            f.write(str(result[1]) + ';' + str(result[2]) + ';' + str(result[4]) + ';' + str(result[5]) + ';' + str(result[0]) + ';')
+            f.write(str(result[1]) + ';' + str(result[2]) + ';' + str(result[4]) + ';' + str(result[0]) + ';')
             for name in result[3]:
                 f.write(str(name) + ';')
 

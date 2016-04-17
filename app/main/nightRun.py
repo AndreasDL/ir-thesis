@@ -2,7 +2,7 @@ from Classificators import ContArousalClassificator, ContValenceClassificator
 from main.PERS.RFPers import RFPers
 from main.PERS.SVMPers import SVMPers
 
-for model in [RFPers, SVMPers]:
+for model in [SVMPers]:
     for feat in ['ALL','PHY','EEG']:
         for cls in [ContArousalClassificator(), ContValenceClassificator()]:
             try:
