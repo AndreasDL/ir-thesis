@@ -318,7 +318,6 @@ Since the importance is averaged over different nodes and different trees, it is
 
 \begin{table}[H]
 \centering
-\label{featPair}
 \begin{tabular}{lll}
 \textbf{label} & \textbf{feature A} & \textbf{feature B} \\
 \textbf{Happy} & +                  & +                  \\
@@ -326,7 +325,7 @@ Since the importance is averaged over different nodes and different trees, it is
 \textbf{Sad}   & -                  & +                  \\
 \textbf{Sad}   & +                  & -                 
 \end{tabular}
-\caption{Some feature are not significant on its own, but a might be part of a combination of features.}
+\caption{Some feature are not significant on its own, but a might be part of a combination of features.\label{featPair}}
 \end{table}
 
 It is clear that feature A and B are very important when it comes to predicting whether or not a person is happy or sad. When both features have the same sign, the person is happy, otherwise he is not. This problem occurs in many simple selection methods. 

@@ -53,7 +53,7 @@ Most muscle and eye artifacts have a frequency around 1.2Hz. Artificats caused b
 BCI applications are used in two settings. The first mode is a person specific setting, where a BCI interface is calibrated on a subject. The second mode is a general BCI interface that works 'cross-subject', meaning that it should be able to works for different persons. It is much harder to achieve good results for the second setting, since EEG data is very personal from nature. Transfer learning has provided good results in imaginary motion recognition in the past. For emotion recognition though simple person specific classifiers are used, as finding person independent EEG features cross person is still an ongoing topic of research. %TODO ref
 
 \subsection{Motivation for emotion recognition}
-Emotion recognition can have many different applications, e.g. in the P300 speller or marketing analysis. The P300 speller is a very well-known academic application of BCI and an active topic of research that uses EEG data to enable persons with the locked in syndrome to communicate\cite{P300Origin}. The basic version uses a six by six grid of characters, each row and column is flashed in a random order while the subject silently counts the number of flashes of a certain character, as shown in figure \ref{P300SpellerPerson}. This procedure, where a train of stimuli with some infrequent occurring target stimuli is applied, is called the oddball paradigm\cite{PaperThibault}. It is known that this technique triggers an increase in the potential difference in the EEG around the parietal lobe. When a potential difference in the brain occurs as a reaction to an event, it is referred to as en event related potential (ERP) \nomenclature{ERP}{Event Related Potential}. The P300 ERP occurs roughly 300 milliseconds after the stimuli is flashed, hence its name\cite{ComparisonClassifications}. The presence or absence of the P300 waveform is used by the P300 speller to determine what character the subject was focusing on, which basically allows the subject to spell text. 
+Emotion recognition can have many different applications, e.g. in the P300 speller or marketing analysis. The P300 speller is a very well-known academic application of BCI and an active topic of research that uses EEG data to enable persons with the locked in syndrome to communicate\cite{P300Origin}. The basic version uses a six by six grid of characters, each row and column is flashed in a random order while the subject silently counts the number of flashes of a certain character, as shown in figure \ref{P300SpellerPerson}. This procedure, where a train of stimuli with some infrequent occurring target stimuli is applied, is called the oddball paradigm\cite{PaperThibault}. It is known that this technique triggers an increase in the potential difference in the EEG around the parietal lobe. When a potential difference in the brain occurs as a reaction to an event, it is referred to as en event related potential (ERP) \nomenclature{ERP}{Event Related Potential}. The P300 ERP occurs roughly 300 milliseconds after the stimuli is flashed, hence its name\citep{ComparisonClassifications}. The presence or absence of the P300 waveform is used by the P300 speller to determine what character the subject was focusing on, which basically allows the subject to spell text. 
 
 \mijnfiguur{width=0.7\textwidth}{P300SpellerPerson}{Different parts of the P300 speller, found at \cite{P300SpellerPerson}.}
 
@@ -117,7 +117,7 @@ In this thesis machine learning is used to find patterns in the aforementioned f
 
 \subsection{Over and underfitting / high bias and high variance}
 
-\mijnfiguur{width=0.9\textwidth}{overunderfitting}{Overfitting versus underfitting\cite{overunderfitting}.}
+\mijnfiguur{width=0.9\textwidth}{overunderfitting}{Overfitting versus underfitting\cite{overunderfittingFig}.}
 
 Suppose the example in Figure \ref{overunderfitting}, where one tries to find a good function to fit the given data points. Looking at the three proposed functions, one can easily see that the middle figure is the most likely generator function of the red points. 
 
@@ -133,7 +133,7 @@ Another way to explain the bias variance tradeoff is by an example. Suppose you 
 \npar
 In the context of machine learning, the low bias corresponds to having a hypothesis set that is close to the generator function, which allows you to get quite close. However you still have to pick the right function from that set, which is hard to do if you don't have enough data. If you are not able to take the best solution from the hypothesis set, you have high variance.
 
-\mijnfiguur{width=0.6\textwidth}{BiasVariance}{The bias variance explained using the dartboard example found at \cite{biasvariance}}
+\mijnfiguur{width=0.6\textwidth}{BiasVariance}{The bias variance explained using the dartboard example found at \cite{biasvarianceFig}}
 
 %goal of thesis
 \section{Goal of the thesis}
