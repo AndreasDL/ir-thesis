@@ -68,7 +68,7 @@ These optima correspond to a heart beat, therefore the time between two consecut
 The last physiological feature is the skin temperature of the subject.
 
 \section{Emotion recognition Studies}
-This section will give a overview of (some) other studies that did similar research and their conclusions.
+This section will give a overview of other relevant studies that did similar research combined with their results and conclusions.
 
 \subsection{DEAP method}
 The first method of emotion recognition is the DEAP method, described in the DEAP paper\citep{DEAP}. The research found that Valence shows the strongest correlations with the EEG signals. Additionally the study found correlations in all frequency bands, with an increase in power for the lower range wavebands for an increase in valence. These effects occur in the occipital regions of the brain, above the visual cortices, which might indicate that the subject is focussing on a pleasurable sound. A central decrease in beta power was observed together with a occipital and right temporal increase in power for positive emotions. The research conclude that these observed correlations concur with other neurological studies, but that the absolute value of the correlations are seldom bigger than $0.1$ for a cross person setting. For a person specific setting, the absolute values of correlations were around $0.5$. Getting a single classifier to work for all participants, is still an ongoing topic of research.
@@ -144,6 +144,12 @@ Extreme Learning Machine (ELM) \nomenclature{ELM}{Extreme Learning Machine} is a
 
 The study found then performed a study on the different features and concluded that DE features are the most suitable EEG features, followed by the asymmetry features (RASM, DASM, DCAU and RCAU). The LDS smoothing was also found to be the better feature smoothing method. 
 
+\subsection{EEG-based emotion recognition in music listening}
+This study uses EEG features to recognize 4 different emotions (joy, anger, sadness, pleasure) that were induced by music. They compared four different feature sets on 6 different wavebands: RASM and DASM of 12 channelpairs, raw PSD of the 24 channels and PSD of 30 channels (including 6 midline channels). The compared set of wavebands consists of: alpha, beta, gamma, delta, tetha and all wavebands. These features were fed to two different classifiers, one Multilayer perceptron (MLP) \nomenclature{MLP}{Multilayer Perceptron} and an SVM. 
+
+\npar
+
+Their main results were that the DASM features worked better that the RASM features and even better than using the corresponding PSD features. They also did research to person independent EEG features and found that their accuracy remained consistent. Note that while these results sound promising, they were unfortunately not performed on the DEAP dataset.  
 
 \section{Feature selection methods}
 Feature selection is the process of selecting good features from a set of feature. The need for this is twofold: first by reducing the number of features, you can protect yourself against overfitting. This is important when the dataset is limited. Second, reducing the number of features can speedup the learning process of a learning algorithm as fewer parameters need to be optimized. Additionally, in the context of research and this thesis, looking at which features are important gives insight in the problem. In the context of this thesis, knowing what feature are relevant can help neuroscientists understand the working of the brain better.
