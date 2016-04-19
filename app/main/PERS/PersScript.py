@@ -457,7 +457,7 @@ class PersScript():
 
             #accuracies
             f.write("model;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;\n")
-            for model, modelName in zip(range(len(self.accs[person])), ["rf1000,SVMLIN;SVMRBF;KNN3;KNN5;KNN7;KNN11"]):
+            for model, modelName in zip(range(len(self.accs[person])), ["rf1000","SVMLIN","SVMRBF","KNN3","KNN5","KNN7","KNN11"]):
                 f.write(modelName + ';')
 
                 for metric in model:
@@ -467,7 +467,7 @@ class PersScript():
             f.write('\n\n\n')
 
             #features
-            for model, modelName in zip(range(len(self.accs[person])), ["rf1000,SVMLIN;SVMRBF;KNN3;KNN5;KNN7;KNN11"]):
+            for model, modelName in zip(range(len(self.accs[person])), ["rf1000","SVMLIN","SVMRBF","KNN3","KNN5","KNN7","KNN11"]):
                 f.write(modelName + '\n\n')
                 f.write("matric;features used")
                 for metric, metricName in zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA']):

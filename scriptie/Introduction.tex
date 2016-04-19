@@ -224,6 +224,7 @@ There also exists a preprocessed version of the physiological experiment databas
 \npar
 
 Additionally facial video for 22 of the 32 subjects was recorded, so research in facial expressions is also possible with this dataset. These videos are also rated on 4 scales: arousal, valence, dominance and liking. The liking component indicates how much the person liked the video excerpt and should not be confused with the valence component; it inquires information about the participants' tastes, not their feelings, i.e. a person can like a video that triggers angry or sad emotions. However strong correlations were observed\citep{DEAP}. The liking rates are neglected, since they are not part of the emotion space.
+
 \npar
 
 For assessment of these scales, the self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins}, were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scales with pictures, each picture corresponds to a discrete value. The user can click anywhere in between the different figures, which makes the scales continuous. All dimension are given by a float between 1 and 9. In this thesis, a preprocessing step scaled and translated these values to ensure they range between 0 and 1, a more convenient interval.
