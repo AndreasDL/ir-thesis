@@ -18,6 +18,8 @@
 \usepackage{fancyhdr}
 \usepackage{hyperref}
 \usepackage{float}
+\usepackage{pdfpages}					% Pdf includeren
+\usepackage{afterpage}
 
 \usepackage{nomencl}
 \makenomenclature
@@ -79,6 +81,12 @@
   {\par\normalfont\hfill--\ \chapquote@author\hspace*{\@tempdima}\par\bigskip}
 \makeatother
 
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
+    
 % Nieuw commando om figuren in te voegen. Gebruik:
 \newcommand{\mijnfiguur}[4][H]{            % Het eerste argument is standaar `ht'. op H zetten voor HIER EN NERGENS ANDERS
     \begin{figure}[#1]                      % Beginnen van de figure omgeving
@@ -106,11 +114,9 @@
 \begin{document}
 
 % titelblad (voor kaft)
-\include{titel} %moet nog via plato %TODO
-
-% lege pagina (!!)
-
-% titelblad (!!) => via pdf van plato!
+\includepdf[pages={1}, offset=75 - 75]{voorblad.pdf}
+%\afterpage{\blankpage} \clearpage
+%\includepdf[pages={1}, offset=75 - 75]{voorblad.pdf}
 
 % geen paginanummering tot we aan de inhoudsopgave komen
 \pagestyle{empty}
