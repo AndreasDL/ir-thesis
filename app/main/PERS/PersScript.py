@@ -36,7 +36,7 @@ class PersScript():
 
         self.classifier = classifier
 
-        self.ddpad = "../../../dumpedData/persScript/"
+        self.ddpad = "../../dumpedData/persScript/"
         if self.classifier.name == "ContArousalClasses":
             self.ddpad += "arousal/"
         else:
@@ -50,6 +50,7 @@ class PersScript():
             self.ddpad += "all/"
 
         self.rpad = self.ddpad + "results/"
+
     def addEEGFeatures(self):
 
         # EEG
@@ -333,9 +334,8 @@ class PersScript():
     def genReport(self):
 
         #self.results[person][metric][feature] = value
-        f = open(self.rpad + "results.csv", 'w')
-
         for person, persData in enumerate(self.results):
+            f = open(self.rpad + "results" + str(person) + ".csv", 'w')
             f.write('Person: ' + str(person) + '\nfeatName;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;\n')
 
             for index,featName in zip(range(len(persData[0])),self.featExtr.getFeatureNames()): #all metrics
@@ -345,8 +345,7 @@ class PersScript():
                 f.write('\n')
             f.write('\n\n\n')
 
-
-        f.close()
+            f.close()
 
     def accuracy(self, predictions, truths):
         acc = 0
@@ -447,8 +446,6 @@ class PersScript():
             dump(to_ret, 'accs_p' + str(person), path = self.ddpad)
 
         return to_ret
-
-
     def genAccReport(self):
         #self.accs[person][model][metric] = [best_feat, best_featNames, best_score, best_std, all_score, all_std]
 
@@ -457,7 +454,7 @@ class PersScript():
 
             #accuracies
             f.write("model;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;\n")
-            for model, modelName in zip(range(len(self.accs[person])), ["rf1000","SVMLIN","SVMRBF","KNN3","KNN5","KNN7","KNN11"]):
+            for model, modelName in zip(self.accs[person], ["rf1000","SVMLIN","SVMRBF","KNN3","KNN5","KNN7","KNN11"]):
                 f.write(modelName + ';')
 
                 for metric in model:
@@ -467,9 +464,9 @@ class PersScript():
             f.write('\n\n\n')
 
             #features
-            for model, modelName in zip(range(len(self.accs[person])), ["rf1000","SVMLIN","SVMRBF","KNN3","KNN5","KNN7","KNN11"]):
+            for model, modelName in zip(self.accs[person], ["rf1000","SVMLIN","SVMRBF","KNN3","KNN5","KNN7","KNN11"]):
                 f.write(modelName + '\n\n')
-                f.write("matric;features used")
+                f.write("matric;features used;")
                 for metric, metricName in zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA']):
                     f.write(metricName + ';')
                     for featName in metric[1]:
@@ -497,5 +494,4 @@ class PersScript():
 
 
 if __name__ == '__main__':
-    print("path wrong for nightrun")
     PersScript("PHY",2,30,Classificators.ContArousalClassificator()).run()

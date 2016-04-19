@@ -6,7 +6,7 @@
 Usually, good features are needed to train a machine learning algorithm. In the context of this thesis, good features should be correlated with the subject's emotional state. Two categories of features are observed: EEG features and non-EEG features. Both categories are covered in the following sections.
 
 \subsection{EEG-features}
-EEG features are extracted from the electroencephalography measurements from the subject's scalp. The power spectral density (PSD) \nomenclature{PSD}{Power Spectral Density} of a signal gives the distribution of the signal's energy in the frequency domain. By calculating the spectral density for different wavebands of the signal, one can determine how much alpha, beta, ... power is in the signal.
+EEG features are extracted from the electroencephalography measurements from the subject's scalp. The power spectral density (PSD) \nomenclature{PSD}{Power Spectral Density} of a signal gives the distribution of the signal's energy in the frequency domain. By calculating the spectral density for different wavebands of the signal, one can determine how much power of each waveband is in the signal.
 
 \npar
 
@@ -55,10 +55,10 @@ The Alpha/ Beta ratio is limited to comparing two wavebands. Other frequently us
 $frac_{band,channel} = \frac{power_{band,channel}}{power_{total,channel}}$
 \end{center}
 
-The fractions give insight in the distributions of wavebands at different channel locations.
+These fractions give insight in the distributions of wavebands at different channel locations.
 
 \subsection{non-EEG features}
-The aforementioned EEG features are just one class of physiological features, the DEAP dataset contains several physiological measurements\citep{DEAP}. For each of these measurements the average, standard deviation, variation, median, minimum, maximum and the standard deviation are calculated.
+The aforementioned EEG features are just one class of physiological features, the DEAP dataset contains several non-EEG, physiological measurements\citep{DEAP}. For each of these measurements the average, standard deviation, variation, median, minimum, maximum and the standard deviation are calculated.
 
 \npar
 
@@ -66,28 +66,28 @@ The Galvanic Skin Response \nomenclature{GSR}{Galvanic Skin Response} uses two e
 
 \npar
 
-The respiration belt, indicates the user's respiration rate. Slow respiration is linked to relaxation (low arousal), while fast and irregular respiration patterns corresponds to anger or fear, both emotions with low valence and high arousal\citep{DEAP}.
+The respiration belt (RSP)\nomenclature{RSP}{Respiration Belt}, indicates the user's respiration rate. Slow respiration is linked to relaxation (low arousal), while fast and irregular respiration patterns corresponds to anger or fear, both emotions with low valence and high arousal\citep{DEAP}.
 
 \npar
 
-A plethysmograph is a measurement of the volume of blood in the subject's left thumb. This can be interpreted as the the blood pressure. Blood pressure offers valuable insight into the emotional state of a person as it correlates with emotion; stress is known to increase blood pressure\citep{DEAP}.
+A plethysmograph is a measurement of the volume of blood in the subject's left thumb. This can be use to determine the blood pressure. Blood pressure offers valuable insight into the emotional state of a person as it correlates with emotion; stress is known to increase blood pressure\citep{DEAP}.
 
 \npar
 
 The heart rate is not directly available in the DEAP dataset, but can be extracted from the plethysmograph, by looking at local minima and maxima\citep{DEAP}. This is clearly visible when looking at the plethysmograph's output, shown in Figure \ref{before}.
 
-\mijnfiguur{width=0.7\textwidth}{before}{The plethysmograph before smoothing.}
+\mijnfiguur{width=0.9\textwidth}{before}{The plethysmograph before smoothing.}
 
 The heart rate extraction is done in two steps. First the plethysmograph signal is smoothed, by filtering out the high frequency components to avoid noise being selected as a local optima. In the second stage the local optima are located, this is shown in Figure \ref{extrema}
 
-\mijnfiguur{width=0.7\textwidth}{extrema}{The local optima in the plethysmograph.}
+\mijnfiguur{width=0.9\textwidth}{extrema}{The local optima in the plethysmograph.}
 
 \npar
 
 The combination of a local minima and maxima correspond to a heart beat, therefore the time between two consecutive local minima or maxima correspond to the time between two heart beats, known as the interbeat interval. Getting the average heart rate from the interbeat interval is straight forward. Lastly, the skin temperature of the subject is also available.
 
 \section{Emotion recognition Studies}
-This section will give a overview of similar studies and their conclusions. Some of these studies also did some research on cross-subject emotion recognition, but as the research for emotion recognition is still in its infancy\citep{emorecoghard} and subject independent features are hard to find \citep{DEAP}, the research is generally speaking, more focussed on person specific emotion recognition.
+This section will give a overview of similar studies and their conclusions. Some of these studies also did some research on cross-subject emotion recognition, but as the research for emotion recognition is still in its infancy\citep{emorecoghard} and subject independent features are hard to find \citep{DEAP} and as a result, the research is generally speaking, more focussed on person specific emotion recognition.
 
 \subsection{DEAP method}
 The first method of emotion recognition is the DEAP method, described in the DEAP paper\citep{DEAP}, the paper that introduces the DEAP dataset used in this thesis. The research found that Valence shows the strongest correlations with the EEG signals. Additionally the study found correlations in all frequency bands, with an increase in power for the lower range wavebands for an increase in valence. These effects occur in the occipital regions of the brain, above the visual cortices, which might indicate that the subject is focussing on a pleasurable sound. A central decrease in beta power was observed together with a occipital and right temporal increase in power for positive emotions. The research conclude that these observed correlations concur with other neurological studies, but that the absolute value of the correlations are seldom bigger than $0.1$ for a cross person setting, which indicates that cross person emotion recognition is a non trivial problem. The absolute values of the person specific correlations were around $0.5$.
