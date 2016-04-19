@@ -1,4 +1,3 @@
-from sklearn import svm
 from scipy.stats import pearsonr, entropy
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
@@ -7,6 +6,9 @@ from sklearn.cross_validation import KFold
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.feature_selection import f_regression, SelectKBest
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier as KNN
+
 
 import personLoader
 import Classificators
@@ -159,12 +161,6 @@ class PersScript():
         dvy = (dny ** 2).sum() / denom
         dr = dc / (np.sqrt(dvx) * np.sqrt(dvy))
         return np.sqrt(dc), np.sqrt(dr), np.sqrt(dvx), np.sqrt(dvy)
-    def accuracy(self, predictions, truths):
-        acc = 0
-        for pred, truth in zip(predictions, truths):
-            acc += (pred == truth)
-
-        return acc / float(len(predictions))
     def runPers(self,person):
         #load person data
         pers_results = load('pers_res_p' + str(person), path=self.ddpad)
@@ -291,7 +287,7 @@ class PersScript():
             pers_results.append(ridge.coef_)
 
             #SVM
-            clf = svm.SVC(kernel='linear')
+            clf = SVC(kernel='linear')
             clf.fit(X, y_disc)
             svm_weights = (clf.coef_ ** 2).sum(axis=0)
             svm_weights /= float(svm_weights.max())
@@ -328,18 +324,149 @@ class PersScript():
             pca.fit(X)
             pers_results.append(pca.components_[0])
 
+            #absolute values
+            pers_results = np.absolute(np.array(pers_results))
+
             dump(pers_results, 'pers_res_p' + str(person), path=self.ddpad)
 
         return np.array(pers_results)
+    def genReport(self):
+
+        #self.results[person][metric][feature] = value
+        f = open(self.rpad + "results.csv", 'w')
+
+        for person, persData in enumerate(self.results):
+            f.write('Person: ' + str(person) + '\nfeatName;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;\n')
+
+            for index,featName in zip(range(len(persData[0])),self.featExtr.getFeatureNames()): #all metrics
+                f.write(featName + ";")
+                for value in persData[:,index]:
+                    f.write(str(value) +  ';')
+                f.write('\n')
+            f.write('\n\n\n')
+
+
+        f.close()
+
+    def accuracy(self, predictions, truths):
+        acc = 0
+        for pred, truth in zip(predictions, truths):
+            acc += (pred == truth)
+
+        return acc / float(len(predictions))
+    def getAccs(self, person):
+        print('gettings accs for person ' + str(person))
+
+        to_ret = load('accs_p' + str(person), path = self.ddpad)
+        if to_ret == None:
+
+            # load person data
+            # load all features & keep them in memory
+            y = load('cont_y_p' + str(person), path=self.ddpad)
+            if y == None:
+                print('[Warn] Rebuilding cache -  person ' + str(person))
+                personLdr = personLoader.NoTestsetLoader(self.classifier, self.featExtr)
+
+                X, y = personLdr.load(person)
+
+                dump(X, 'X_p' + str(person), path=self.ddpad)
+                dump(y, 'cont_y_p' + str(person), path=self.ddpad)
+            else:
+                X = load('X_p' + str(person), path=self.ddpad)
+
+            y = np.array(y)
+            y[y <= 5] = 0
+            y[y >  5] = 1
+
+            # manual Feature standardization
+            X = X - np.average(X, axis=0)
+            X = np.true_divide(X, np.std(X, axis=0))
+
+            to_ret = []
+            for model in [
+                RandomForestClassifier(
+                            n_estimators=1000,
+                            max_features='auto',
+                            criterion='gini',
+                            n_jobs=-1,
+                        ),
+                SVC(kernel='linear'),
+
+                KNN(n_neighbors=3),
+                KNN(n_neighbors=5),
+                KNN(n_neighbors=7),
+                KNN(n_neighbors=11)
+
+                #lda needs two features
+            ]:
+                model_to_ret = []
+                for metric in self.results[person-1]:
+                    featNames = np.array(self.featExtr.getFeatureNames()) #take clean copy
+
+                    #sort features
+                    indices = np.array(np.argsort(metric)[::-1])
+                    #take top threshold
+                    indices = indices[:self.threshold]
+
+                    #apply
+                    X = X[:,indices]
+                    featNames = featNames[indices]
+
+                    best_feat, best_featNames = [], []
+                    all_scores, all_stds = [],[]
+                    best_score, best_std = 0, 0
+                    for i in range(self.threshold):
+                        to_keep = best_feat[:]
+                        to_keep.append(i)
+
+                        X_temp = X[:,to_keep]
+
+                        # get scores
+                        run_scores = []
+                        for tr, te in KFold(n=len(X_temp), n_folds=5, shuffle=True, random_state=17):
+                            model.fit(X_temp[tr], y[tr])
+                            run_scores.append(self.accuracy(model.predict(X_temp[te]), y[te]))
+
+                        new_score = np.average(run_scores)
+                        new_std = np.std(run_scores)
+
+                        all_scores.append(new_score)
+                        all_stds.append(new_std)
+
+                        # better?
+                        if new_score - new_std > best_score - best_std:
+                            best_score = new_score
+                            best_std = new_std
+                            best_feat = to_keep
+                            best_featNames.append(featNames[i])
+
+                    model_to_ret.append([best_feat, best_score, best_std, new_score, new_std])
+                to_ret.append(model_to_ret)
+
+            dump(to_ret, 'accs_p' + str(person), path = self.ddpad)
+
+        return to_ret
+    def genAccReport(self):
+        
+        return None;
 
     def run(self):
 
         pool = Pool(processes=POOL_SIZE)
-        rankings = pool.map(self.runPers, range(1, self.stopperson + 1))
+        self.results = pool.map(self.runPers, range(1, self.stopperson + 1))
         pool.close()
         pool.join()
 
-        print(rankings)
+        self.genReport()
+
+        pool = Pool(processes=POOL_SIZE)
+        self.accs = pool.map(self.getAccs, range(1, self.stopperson + 1))
+        pool.close()
+        pool.join()
+
+        self.genAccReport()
+
 
 if __name__ == '__main__':
-    PersScript("PHY",2,20,Classificators.ContArousalClassificator()).run()
+    print("path wrong for nightrun")
+    PersScript("PHY",2,30,Classificators.ContArousalClassificator()).run()

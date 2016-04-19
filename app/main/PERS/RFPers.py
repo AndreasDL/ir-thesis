@@ -445,3 +445,4 @@ class RFPers():
             dump(results, 'data_results', path=self.ddpad)
 
         self.genReport(results)
+
