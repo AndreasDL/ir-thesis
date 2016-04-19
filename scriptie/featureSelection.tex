@@ -245,7 +245,7 @@ Using the mutual information directly for feature ranking might be inconvenient 
 
 The normalized mutual information, NMI of variables X and Y is given by:
 \begin{center}
-$NMI(X,Y) = \frac{H(X) + H(Y)}{H(X,Y)}$
+$NMI(X,Y) = \frac{I(X,Y)}{\sqrt{(H(X)H(Y))}}$
 \end{center}
 With $H(X)$ and $H(Y)$ being the Shannon entropy of variable X and variable Y, defined as:
 \begin{center}
@@ -291,6 +291,16 @@ This metric is a covariance metric, which means that it is not normalized. The d
 $dCor(X,Y) = \frac{dCov(X,Y)}{\sqrt{dVar(X)dVar(Y)}}$
 \end{center}
 With $dCov(X,Y)$ being the aforementioned distance covariance, $dVar(X)$ and $dVar(Y)$ are the distance standard deviations. The distance correlation has the disadvantage that is much slower than mutual information or Pearson correlation, but in return, the distance correlation is able to detect more complex relationships between two variables.
+
+\subsubsection{Analysis of Variance}
+
+Analysis of variance (ANOVA) \nomenclature{ANOVA}{Analysis of Variance} is a statistical test to analyse differences between groups. The idea is that the total variance, found in the samples consists of two parts. The first part is the variance within a single group, the second part is the variance between groups. 
+
+\npar
+
+Suppose you want to test the influence of caffeine on the reaction speed\footnote{This example was based on the following video: https://www.youtube.com/watch?v=ITf4vHhyGpc}. To do so, you take two groups of each 10 persons. The first group has to drink a large coffee, the second group is the control group that only drinks water, before the reaction time of all persons in the group are measured. Next the total variance can be calculated as well as the variance within each group and the variance between the groups. If the variance within each group is much larger than the variance in between the groups, one concludes that the groups are similar. The reaction time is thus dependent on the person and not on the caffeine. However should the variance between the groups be much bigger than the variance within each group, than one concludes that the variance in reaction time is caused by the caffeine. 
+
+
 
 \subsection{Machine Learning Methods}
 These methods select features by applying an arbitrary machine learning technique and looking at the coefficients of the features. Features with high coefficients have more influence on the end results than features with a lower coefficients. Note that again, the absolute value is of importance.
@@ -471,6 +481,7 @@ Principal Component Analysis (PCA) \nomenclature{PCA}{Principal Component Analys
 \mijnfiguur{width=0.7\textwidth}{ellipsoid}{Suppose a three-dimensional feature space, where all points lie in the ellipsoid in the left.}
 
 Remove the a axis by projecting the data on the plane given by vectors b and c, and one will end up with a two dimensional projection of the data in the form of an ellipse. This would be the black plane in Figure \ref{ellipsoid}. This process can be repeated for higher dimensional features spaces. In other words, PCA will thus, without going into too much detail, start with an n-dimensional ellipsoid and iteratively remove the smallest axis in each iteration until the desired number of dimensions is obtained. Note that the ellipsoid should be adjusted in each step.
+The major disadvantage of PCA is that the algorithm is unsupervised, meaning that it does not look at the corresponding labels of the given samples, as a result valuable information might be thrown out.
 
 \subsection{Advanced methods}
 These methods are more advanced feature selection methods found in the literature.

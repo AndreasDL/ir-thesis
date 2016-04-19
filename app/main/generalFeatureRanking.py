@@ -3,13 +3,14 @@ from personLoader import load,dump
 import Classificators
 import featureExtractor as FE
 
-from scipy.stats import pearsonr
+from scipy.stats import pearsonr, entropy
 from sklearn.metrics import mutual_info_score
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
 from sklearn.cross_validation import KFold
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.decomposition import PCA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 import numpy as np
 import datetime
@@ -197,9 +198,18 @@ class persScript():
         mi = []
         for feature in np.transpose(X):
             c_xy = np.histogram2d(feature, y_cont, 2)[0]
-            mi.append( mutual_info_score(None, None, contingency=c_xy) )
+            mutInf = mutual_info_score(None, None, contingency=c_xy)
+
+            #entropy X, entropy Y
+            entX = entropy(feature, y_cont)
+            entY = entropy(feature, y_cont)
+
+            nMutInf = mutInf / float(np.sqrt(entX * entY))
+
+            mi.append(nMutInf)
         pers_results.append(mi)
 
+        #distance correlation
         dcorr = []
         for feature in np.transpose(X):
             dc, dr, dvx, dvy = self.dcov_all(feature, y_cont)
@@ -280,6 +290,7 @@ class persScript():
         ridge.fit(X, y_cont)
         pers_results.append(ridge.coef_)
 
+
         #svm coefficients
         clf = svm.SVC(kernel='linear')
         clf.fit(X, y_disc)
@@ -305,6 +316,11 @@ class persScript():
         pca = PCA(n_components=1)
         pca.fit(X)
         pers_results.append(pca.components_[0])
+
+        #LDA coef
+        lda = LinearDiscriminantAnalysis(n_components=1)
+        lda.fit(X)
+        pers_results.append(lda.coef_)
 
         return np.array(pers_results)
 
