@@ -391,6 +391,7 @@ class PersScript():
                             n_jobs=-1,
                         ),
                 SVC(kernel='linear'),
+                SVC(kernel='rbf'),
 
                 KNN(n_neighbors=3),
                 KNN(n_neighbors=5),
@@ -440,15 +441,43 @@ class PersScript():
                             best_feat = to_keep
                             best_featNames.append(featNames[i])
 
-                    model_to_ret.append([best_feat, best_score, best_std, new_score, new_std])
+                    model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds])
                 to_ret.append(model_to_ret)
 
             dump(to_ret, 'accs_p' + str(person), path = self.ddpad)
 
         return to_ret
+
+
     def genAccReport(self):
-        
-        return None;
+        #self.accs[person][model][metric] = [best_feat, best_featNames, best_score, best_std, all_score, all_std]
+
+        for person in range(len(self.accs)):
+            f = open(self.rpad + "Accresults" + str(person) + ".csv", 'w')
+
+            #accuracies
+            f.write("model;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;\n")
+            for model, modelName in zip(range(len(self.accs[person])), ["rf1000,SVMLIN;SVMRBF;KNN3;KNN5;KNN7;KNN11"]):
+                f.write(modelName + ';')
+
+                for metric in model:
+                    f.write(str(metric[2]) + '(' + str(metric[3]) + ');')
+                f.write('\n')
+
+            f.write('\n\n\n')
+
+            #features
+            for model, modelName in zip(range(len(self.accs[person])), ["rf1000,SVMLIN;SVMRBF;KNN3;KNN5;KNN7;KNN11"]):
+                f.write(modelName + '\n\n')
+                f.write("matric;features used")
+                for metric, metricName in zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA']):
+                    f.write(metricName + ';')
+                    for featName in metric[1]:
+                        f.write(featName + ';')
+                    f.write('\n')
+                f.write('\n\n\n')
+
+            f.close()
 
     def run(self):
 
