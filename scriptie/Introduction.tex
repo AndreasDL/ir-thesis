@@ -1,26 +1,26 @@
 \chapter{Introduction}
-{\samenvatting This chapters gives an introduction of the masterthesis. It starts by explaining what a brain computer interface is and how it works. After that emotion recognition is explained and the basic concepts of machine learning are introduced. This chapters ends by explaining the goal of the thesis.}
+{\samenvatting This chapters introduces the masterthesis. It starts by explaining what a brain computer interface is and how it works. After that, emotion recognition is explained and the basic concepts of machine learning are introduced. This chapters ends by discussing the goal of the thesis.}
 
 
 \section{Brain computer interfaces}
 
-A Brain Computer Interface (BCI)\nomenclature{BCI}{Brain Computer Interface}, creates a direct neural link from the brain to the computer\cite{LangModel}, that tries to recognize patterns and based on the extracted information, performs actions. A BCI removes to need for physical actions, i.e. typing or moving a mouse, for the transfer of information. The neural link provided by the BCI is made of two important components. The first component is the extraction component, which extract brain signals from the brain. The second component is the computer that interprets signals and performs actions based on the outcome.
+A Brain Computer Interface (BCI)\nomenclature{BCI}{Brain Computer Interface}, creates a direct neural link from the brain to the computer\cite{LangModel}, that tries to recognize patterns and based on the extracted information, performs actions. A BCI removes the need for physical actions, i.e. typing or moving a mouse, for the transfer of information. The neural link provided by the BCI is made of two important components. The first component is the extraction component, which extract brain signals from the brain. The second component is the computer that interprets signals and performs actions based on the outcome.
 
 
 \subsection{Electroencephalography (EEG)}
-Different technologies exist to analyse the brain, the most convenient method is via Electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery; they simply measure electrical activity using electrodes placed on the scalp.
+Different technologies exist to analyse the brain, the most convenient method is via Electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery; in the case of EEG, they simply measure electrical activity using electrodes placed on the scalp.
 
 \npar
 
-The electrical activity in a brain is caused when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighboring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significantly, making it visible to the EEG surface electrodes. EEG can thus only capture synchronized activity of many, many neurons.
+The electrical activity in a brain is caused when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighboring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significantly, making it visible to the EEG surface electrodes. EEG can thus only capture synchronized activity of many, many neurons, which explains its low spatial resolution capabilities.
 
 \npar
 
-Signals originating from the cortex, close to the skull, are most visible, while signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally, other artifacts like eye and muscle movement add a lot a noise to the signal. Noise removal techniques are therefor advised. Note that even though the presence of noise and the low spatial resolution of EEG data, it can still provide significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
+Signals originating from the cortex, close to the skull, are most visible, while signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally, other artifacts like eye and muscle movement add a lot a noise to the signal, which explains what EEG signals are very noisy signal from nature. Noise removal techniques are therefor advised. Note that even though EEG data contains a lot of noise and has a low spatial resolution, it still provides significant insight into the electrical activity of the cortex and is able to offer excellent temporal resolution\cite{GivenPaper}.
 
 \npar
 
-Note that EEG records electrical activity, other methods like magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} use magnetic fields to measure brain activity. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile. This method was not explored during this thesis as a result.
+Note that EEG records electrical activity, other methods like magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} use magnetic fields to measure brain activity. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile. As a result, this method was not considered during this thesis.
 
 \npar
 
@@ -32,11 +32,11 @@ EEG measures electrical activity with electrodes that are placed on the scalp. T
 \item \textbf{P:} Parietal
 \item \textbf{O:} Occipital
 \end{itemize}
-Note that no central lobe exists; the C letter is only used for identification purposes. The letter z indicates that the electrode is placed on the central line. Even numbers are use for the right hemisphere, while odd numbers are used for the left hemisphere. Figure \ref{1020ElectrodePlacementSystem} shows a picture of a 23 channel 10/20 system is added below for clarification. Note that the 10/20 system does not require a fixed number of channels, some experiment setups may use a different set of channels, but they all follow the same naming convention.
+Note that no central lobe exists; the C letter is only used for identification purposes. The letter z indicates that the electrode is placed on the central line. Even numbers are use for the right hemisphere, while odd numbers are used for the left hemisphere. Figure \ref{1020ElectrodePlacementSystem} shows a picture of a 23 channel 10/20 system. Note that the 10/20 system does not require a fixed number of channels, some experiments may use a different set of channels, but they all follow the same naming convention.
 
-\mijnfiguur{width=0.9\textwidth}{1020ElectrodePlacementSystem}{The electrode placement of a 23 channel system\cite{1020Site}.}
+\mijnfiguur{width=0.8\textwidth}{1020ElectrodePlacementSystem}{The electrode placement of a 23 channel system\cite{1020Site}.}
 
-Two different types of EEG channels exist, monopolar and dipolar. A monopolar channel records the potential difference of a signal, compared to a neutral electrode, usually connected to an ear lobe of mastoid. A bipolar channel, on the otherhand, is obtained by subtracting two monopolar EEG signals, which improves SNR by removing shared artifacts\cite{MonoBiPolar}. 
+Two different types of EEG channels exist, monopolar and dipolar. A monopolar channel records the potential difference of a signal, compared to a neutral electrode, usually connected to an ear lobe of mastoid. A bipolar channel, on the otherhand, is obtained by subtracting two monopolar EEG signals, which improves Sound to Noise ratio (SNR) \nomenclature{SNR}{Sound to Noise Ratio} by removing shared artifacts\cite{MonoBiPolar}. 
 
 \npar 
 
@@ -48,27 +48,29 @@ In the frequency domain, brain waves are usually split up into different bands\c
 \item \textbf{Delta:} 0-4hz, these waves are generated during dreamless sleep and meditation.
 \item \textbf{Theta:} 4-8Hz, occurs during dreaming.
 \end{enumerate}
+
 Most muscle and eye artifacts have a frequency around 1.2Hz. Artifacts caused by nearby power lines, have a frequency around 50Hz\cite{ExtendedPaper}. To remove most of this noise, a bandpass filter is usually applied to filter out frequencies below 4Hz and above 40-45Hz.
 
 \subsection{Person specific recognition versus general recognition}
-BCI applications are used in two settings. The first mode is a person specific setting, where a BCI interface is calibrated on a single subject. The second mode is a general BCI interface that works 'cross-subject', meaning that it should be able to works for different persons. It is much harder to achieve good results for the second setting, since EEG data is very personal from nature\citep{DEAP}. Transfer learning has provided good results in imaginary motion recognition in the past. For emotion recognition though simple person specific classifiers are used, as finding person independent EEG features cross person is still an ongoing topic of research. %TODO ref?
+BCI applications are used in two settings. The first mode is a person specific setting, where a BCI interface is calibrated on a single subject. The second mode is a general BCI interface that works 'cross-subject', meaning that it should be able to work for different persons. It is much harder to achieve good results for a cross-subject setting, as EEG data is very personal from nature\citep{DEAP}. While transfer learning has provided good results in imaginary motion recognition in the past, little research has been done for transfer learning in the context of emotion recognition. Person specific classifiers are often used, as finding person independent EEG features cross person is still an ongoing topic of research\citep{DEAP}.
 
 \section{Emotion recognition}
 
-Psychology makes a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. The expression consists of many parts, including the facial expression, body language and voice concern. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion. One possibility for this is analysis of brain activity via Electroencephalography\cite{EEGDatasets}, which is the main method for this thesis. Another possibility, that was not explored in this thesis, is analysing speech to recognize emotion\citep{EMSpeech}. 
+Psychology makes a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. The expression consists of many parts, including the facial expression, body language and voice concern\citep{EMSpeech}. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. This makes emotion recognition based on physiological signals more robust to social masking, the process where an individual masks or hides their emotions to conform to social pressures. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion. This thesis focusses on emotion recognition via physiological signals, including brain activity measurements via Electroencephalography\cite{EEGDatasets}. 
 
 \subsection{Valence/Arousal classification model for emotion}
 \label{valarrdomspace}
 
-Before emotions can be recognized, a classification model is needed. A simple way of achieving this is by using several discrete emotions, like anger, joy, sad and pleasure. A more convienent model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, that places emotions in a two dimensional space. The main advantage of using a continuous multidimensional model, is that all emotions are modelled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
+Before emotions can be recognized, a classification model is needed. A simple way of achieving this is using several discrete emotions, e.g. anger, joy, sad and pleasure. A more convienent model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, that places emotions in a two dimensional space. The main advantage of using a continuous multidimensional model, is that all emotions are modelled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
 
 \npar
+
 Even though arousal and valence describe emotion quite well, a third dimension can also be added. The new model then has three dimensions: arousal, valence and dominance. Arousal indicates how active a person is and ranges from inactive/bored to active/excited. The valence indicates if the emotion is perceived as positive or negative. The third dimension, the dominance, indicates how strong the emotional feeling was and ranges from a weak feeling to an empowered, overwhelming feeling. The dominance component can aid to filter out samples of strong feelings, since feelings with low dominance are less likely to show significant effects.
 
 \mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.}
 
-\subsection{Motivation for emotion recognition}
-Emotion recognition can have many different applications, e.g. in the P300 speller or marketing analysis. The P300 speller is a very well-known academic application of BCI and an active topic of research that uses EEG data to enable persons with the locked in syndrome to communicate\cite{P300Origin}. The basic version uses a six by six grid of characters, each row and column is flashed in a random order while the subject silently counts the number of flashes of a certain character, as shown in figure \ref{P300SpellerPerson}. This procedure, where a train of stimuli with some infrequent occurring target stimuli is applied, is called the oddball paradigm\cite{PaperThibault}. It is known that this technique triggers an increase in the potential difference in the EEG around the parietal lobe. When a potential difference in the brain occurs as a reaction to an event, it is referred to as en event related potential (ERP) \nomenclature{ERP}{Event Related Potential}. The P300 ERP occurs roughly 300 milliseconds after the stimuli is flashed, hence its name\citep{ComparisonClassifications}. The presence or absence of the P300 waveform is used by the P300 speller to determine what character the subject was focusing on, which basically allows the subject to spell text. 
+\subsection{Possible applications for emotion recognition}
+Emotion recognition has many different applications, e.g. as an improvement for the P300 speller or marketing analysis. The P300 speller is a very well-known, academic application of BCI and an active topic of research. The P300 speller uses EEG data to enable patients with a locked in syndrome to communicate\cite{P300Origin}. The basic version uses a six by six grid of characters, each row and column is flashed in a random order while the subject silently counts the number of flashes of a certain character, as shown in figure \ref{P300SpellerPerson}. This procedure, where a train of stimuli with some infrequent occurring target stimuli is applied, is called the oddball paradigm\cite{PaperThibault}. It is known that this technique triggers an increase in the potential difference in the EEG around the parietal lobe. When a potential difference in the brain occurs as a reaction to an event, it is referred to as en event related potential (ERP) \nomenclature{ERP}{Event Related Potential}. The P300 ERP occurs roughly 300 milliseconds after the stimuli is flashed, hence its name\citep{ComparisonClassifications}. The presence or absence of the P300 waveform is used by the P300 speller to determine what character the subject was focusing on, which basically allows the subject to spell text. 
 
 \mijnfiguur{width=0.7\textwidth}{P300SpellerPerson}{Different parts of the P300 speller, found at \cite{P300SpellerPerson}.}
 
@@ -76,7 +78,7 @@ To improve the spelling time, many improvements and research has been done. Lang
 
 \npar
 
-Research with visual stimuli on healthy subjects, has shown that emotion has an effect on the auditory P300 wave\cite{AuditoryP300Effect}. Both the P300 peak amplitude and area was highest when viewing neutral pictures and descended further, in decreasing order, for sadness, anger and pleasure. The latency of the P300 ERP speller was shortest or neutrality and in increasing order longer for pleasure, anger and sadness. It is expected that a visually triggered P300 wave, will also be influenced by emotion. Having a good emotion recognition system, can therefore improve the detection of P300 waves. Additionally knowing a subject's emotional state can help detecting when a subject get frustrated, because of mistakes he makes. 
+Research with visual stimuli on healthy subjects, has shown that emotion has an effect on the auditory P300 wave\cite{AuditoryP300Effect}. Both the P300 peak amplitude and area was highest when viewing neutral pictures and descended further, in decreasing order, for sadness, anger and pleasure. The latency of the P300 ERP speller was shortest or neutrality and in increasing order longer for pleasure, anger and sadness. It is expected that a visually triggered P300 wave, will also be influenced by emotion. Having a good emotion recognition system, can therefore improve the detection of P300 waves. Additionally knowing a subject's emotional state can help detecting when a subject get frustrated, because of mistakes he makes. Integrating the results from this thesis with the P300 speller, is an opportunity for future research.
 
 \npar
 
@@ -84,62 +86,66 @@ Contrary to what subjects might think, the P300 speller is unable to read the mi
 
 \npar
 
-Another application for emotion recognition is in the field of marketing and customer satisfaction. Discovering how a persons feels about a product is often tricky. Questionnaires is one way to go, but they might contain a lot of noise. Being able to 'read' the emotion straight from a subject's mind, is expected to give more accurate results.
+Another application for emotion recognition is in the field of marketing and customer satisfaction. Discovering how a persons feels about a product is often tricky. Questionnaires is one way to go, but they might contain a lot of noise. Being able to 'read' the emotion straight from a subject's mind, is expected to give more accurate results as it avoids any form of social masking.
 
 \section{Machine learning}
-Machine learning is the missing link between the EEG data the emotion recognition. As machine learning is a very broad domain, the discussion will be limited to the application of machine learning and machine learning techniques as this is the most relevant part for this thesis. One possible definition for Machine learning is: "the science of getting computers to act without being explicitly programmed". To do so, machine learning uses pattern recognition to find patterns or structure in the data. A simple example of machine learning is the Optical Character Recognition (OCR)\nomenclature{OCR}{Optical Character Recognition}, where a computer recognises characters in pictures.
+Machine learning is the missing link between the EEG data the emotion recognition. As machine learning is a very broad domain, this discussion will be limited to an introduction of the basic machine learning concepts with the focus on the application of machine learning and machine learning techniques. 
 
 \npar
 
-To further explain how machine learning works, have a look at the following example. Suppose one has a price list of houses that are for sale combined with their total area. Logic sense dictates us that a bigger house will have a higher asking price than a smaller house. The total area is a characteristic of the house that helps us in predicting the price. In the context of machine learning, the characteristic is called a feature.
+One possible definition for Machine learning is: "the science of getting computers to act without being explicitly programmed". To do so, machine learning uses pattern recognition to find patterns or structure in the data. A simple example of machine learning is the Optical Character Recognition (OCR)\nomenclature{OCR}{Optical Character Recognition}, where a computer recognises characters in pictures.
 
 \npar
 
-The asking price of a house is correlated to the total area. Predicting the value of a house is possible with machine learning, first you need to train your machine learning algorithm with a list of asking prices and the corresponding area of the house. This process is called training or fitting and gives the machine learning component an idea to what the corresponding price is for an area. The outcome might be a coefficient, suppose one square meter is worth 1000 euro. Once this is done you can predict prices of new houses based on the corresponding area. 
+To further explain how machine learning works, have a look at the following example. Suppose one has a price list of houses that are for sale combined with their total area. Logic sense dictates us that a bigger house will have a higher asking price than a smaller house. The total area is a characteristic of the house that helps us in predicting the price. In the context of machine learning, the characteristic 'total area', will be called a feature as the asking price of a house is correlated to the total area. 
 
 \npar
 
-This will give some reasonable results, but the algorithm will probably have some flaws. This is due to the fact that the area of the house is only one feature that determines the price, there are many other features that were not taking into consideration. Adding additional features, gives more insight into the data, e.g. a house with 5 bedrooms is more expensive than a house with only 3 bedrooms. Adding additional features will thus improve the performance of our algorithm.
+One possible way of predicting the asking price of a house is machine learning. Machine learning works in several steps, first you need to train your machine learning algorithm with a list of asking prices and the corresponding area of the house. This process is called training or fitting and gives the machine learning component an idea to what the corresponding price is for an area. The outcome might be a coefficient, suppose one square meter is worth 1000 euro, than the predicted asking price will be 1000 x the total area.
 
 \npar
 
-Machine learning algorithms are responsible for finding the relation between features and the predicted value. There are many of these machine learning algorithms, one way to group these algorithms, is to look at their produced output. In the asking price examples above, the output is a price, which is (more or less) a continuous value. In the OCR example from above, where characters are recognized in a picture is a classification problem, as there are only a limited number of possible outcomes. 
+Even though, this might already give some reasonable results, the algorithm will probably not be accurate enough for real life usage. This is due to the fact that the area of the house is only one feature that determines the price. Other features, like the number of bedrooms or the location of the house, were not taken into consideration. Adding additional features, gives more insight into the data, e.g. a house with 5 bedrooms is more expensive than a house with only 3 bedrooms. Having more features is thus likely to improve the performance of the machine learning algorithm.
 
 \npar
 
-Another way to group the algorithms is based on their training data. In the asking price examples above one gets labelled results; the asking price is given for each area, this is referred to as supervised machine learning. The other possibility is unsupervised machine learning, which often results in finding groups of similar data points (clustering), without knowing the actual labels. Note that the combination of supervised and unsupervised data, known as semi supervised learning, is also possible. Imagine a dataset with 5000 webpages that need to be grouped into 10 distinct categories, e.g. science, nature, cooking, ... . Only 100 of the 5000 pages are labelled. An approach to solve this problem could be to first cluster the pages in similar groups using unsupervised learning. As soon as a group contains a single labelled page, all pages in the group can be labelled accordingly, as clustering returns groups of similar samples. Semi supervised learning has the advantage that one can also use unlabelled data, which is often easier and cheaper to obtain, unlike labelled data which is usually quite rare; if there was a fast and easy way to label the data then there wouldn't wouldn't be a need for machine learning.
+Machine learning algorithms are responsible for finding the relation between features and the predicted value. There are many of these machine learning algorithms, one way to group these algorithms, is to look at their produced output. In the asking price examples above, the output is a price, which is (more or less) a continuous value. In the OCR example from above, where characters are recognized in a picture is a classification problem, as the number of possible outcomes is limited to the set of characters a language has.
 
 \npar
 
-In this thesis machine learning is used to find patterns in the aforementioned features that indicate the user's emotional state. The general process of machine learning is shown in Figure \ref{eegtopred}, the process starts with gathering EEG data, from which features are selected. These features are then fed to a machine learning algorithm, which outputs a prediction.
+Another way to group algorithms is on their training data. In the asking price examples above, the training data consists of labelled results; the correct asking price is given for each area. This type of machine learning, where the correct outputs for the train data are given, is referred to as supervised machine learning. The alternative is unsupervised machine learning, which often results in finding groups of similar data points (clustering), without knowing the actual labels. Note that the combination of supervised and unsupervised data, known as semi supervised learning, is also possible. Imagine a dataset with 5000 webpages that need to be grouped into 10 distinct categories, e.g. science, nature, cooking, ... . Only 100 of the 5000 pages in the train set are labelled. An approach to solve this problem could be to first cluster the pages in similar groups using unsupervised learning. As soon as a group contains a single labelled page, all pages in the group can be labelled accordingly, as clustering returns groups of similar samples. Semi supervised learning has the advantage that one can also use unlabelled data, which is often easier and cheaper to obtain, unlike labelled data which is usually quite rare; if there was a fast and easy way to label the data then there wouldn't wouldn't be a need for machine learning.
+
+\npar
+
+Machine learning can be used for emotion recognition to find patterns in features extracted from physiological signals. The output of the machine learning algorithm is a prediction of the subject's emotional state. The general process of machine learning is shown in Figure \ref{eegtopred}, the process starts with gathering EEG data, from which features are extracted. These features are then fed to a machine learning algorithm, which outputs a prediction.
 
 \mijnfiguur{width=0.7\textwidth}{eegtopred}{Basic steps of machine learning.}
 
-To recognise emotion in the brain, features need to be extracted from the physiological signals. In this thesis two categories of features are observed. EEG features and non-EEG features. Non-EEG features are physiological signals like heart rate, skin conductivity, respiration rate, ... These features are more convenient to obtain as they do not require one to mount an EEG cap to a subjects scalp. 
+To recognise emotion in the brain, features need to be extracted from the physiological signals. In this thesis two categories of physiological features are observed. non-EEG features and EEG features. Non-EEG features are physiological signals like heart rate, skin conductivity, respiration rate, ... These features are more convenient to obtain as they do not require one to mount an EEG cap to a subjects scalp. 
 
 \npar
 
-The EEG features are features extracted from the EEG signals of a subjects. Note that the current literature does not fully agree on a specific set of EEG signals nor does it agree on what channels and/or waveband are important. However the literature does agree on certain things; the right hemisphere of a subject is generally speaking, more active during negative emotions than the left hemisphere, which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The features are discussed in more depth in \ref{featuresExplained}.
+EEG features are features extracted from the EEG measurements of the subjects. Unfortunately, the literature does not fully agree on a specific set of features nor does it agree on what channels and/or waveband are most important for emotion recognition. This problem is addressed by this thesis, by ranking a large set of features using different features selection methods. However the literature does agree on certain things; the right hemisphere of a subject is generally speaking, more active during negative emotions than the left hemisphere, which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The features are discussed in more depth in \ref{featuresExplained}.
 
 \subsection{Over and underfitting / high bias and high variance}
 
-Over and underfitting is a common problem in many machine learning projects. An algorithm that 'overfits the data' is able to recognise point in the sample range very well. when test the algorithm on unseen points however, the performance might be a lot lower than expected.
+Over and underfitting is a common problem in many machine learning projects. An algorithm that 'overfits the data' is able to recognise point in the sample range very well. However when the algorithm is tested on unseen points however, the performance might be a lot lower than expected.
 
 \mijnfiguur{width=0.9\textwidth}{overunderfitting}{Overfitting versus underfitting\cite{overunderfittingFig}.}
 
-Suppose the example in Figure \ref{overunderfitting}, where one tries to find a good function to fit the given data points. Looking at the three proposed functions, one can easily see that the middle figure is the most likely generator function of the red points. 
+Suppose the example in Figure \ref{overunderfitting}, where one tries to find a good function to fit the given data points. Looking at the three proposed functions, one can easily see that the middle figure corresponds to the most logical generator function of the red points. 
 
 \npar
 
 The figure on the left corresponds to an underfit, where the proposed function is not able to capture sufficient detail of the points. The function is not complex enough to approach the generator function. This is known as a high bias problem. A high bias problem has a high training error, as the function is not able to fit the points sufficiently, this is visible in Figure \ref{highbias}.
 
-\mijnfiguur{width=0.6\textwidth}{highbias}{A high bias function is not complex enough to approach the generator function closely.}
+\mijnfiguur{width=0.75\textwidth}{highbias}{A high bias function is not complex enough to approach the generator function closely.}
 
 The function on the right corresponds to an overfit; the function fits or 'goes through' each point exactly, but one can see that the behaviour of the hypothesis function in between data points is not what one would expect. This problem is known as a high variance problem. A high variance problem occurs when the train error is close to zero, so the algorithm fits the points well, but the test error is quite dramatic, which means that the algorithm will perform very badly when it gets new points. 
 
-\mijnfiguur{width=0.6\textwidth}{highvariance}{A High variance function is too complex and fits the data point too closely.}
+\mijnfiguur{width=0.75\textwidth}{highvariance}{A High variance function is too complex and fits the data point too closely.}
 
-Another way to explain the bias variance tradeoff is by an example. Suppose you have a dart board, as shown in Figure \ref{BiasVariance}. Suppose the situation on the top left corner, this corresponds to a world class player that has perfect aim, and very little variation on his precision. The situation on the left bottom corresponds to a player that has very little variation on his precision, but that is consistently aiming too high, he is biased to hit higher than needed. The pictures on the right side are different, there the person may or may not have a biased aim, but it is clear that he has a lot of variation in the precision of his aim.
+Another way to explain the bias variance trade-off is by an example. Suppose you have a dart board, as shown in Figure \ref{BiasVariance}. Suppose the situation on the top left corner, this corresponds to a world class player that has perfect aim, and very little variation on his precision. The situation on the left bottom corresponds to a player that has very little variation on his precision, but that is consistently aiming too high, he is biased to hit higher than needed. The pictures on the right side are different, there the person may or may not have a biased aim, but it is clear that he has a lot of variation in the precision of his aim.
 
 \npar
 
@@ -152,11 +158,11 @@ The first goal is finding relevant features for emotion recognition in a person 
 
 \npar
 
-The Second goal is finding features for emotion recognition in a cross-persons setting. In this setting the features should generalise well across different persons, thus the algorithm should be able to recognize emotions from unseen persons. Emotion recognition is harder in a cross-subject setting, since EEG features for emotion recognition are very personal\citep{DEAP}.
+The second goal is finding features for emotion recognition in a cross-persons setting. In this setting the features should generalise well across different persons, thus the algorithm should be able to recognize emotions from unseen persons. Emotion recognition is harder in a cross-subject setting, since EEG features for emotion recognition are very personal\citep{DEAP}.
 
 \npar
 
-The main problem is that there are already a lot of features known, but, as is often the case with EEG data, training data is expensive and limited. Using a lot of features will thus quickly result in overfitting. Additionally, a lot of different features are reported in the literature, as you can see in Table \ref{diffFeat}. This thesis tries to overcome this problem, by comparing the selected features to the features found in literature.
+The main problem is that there are already a lot of features known, but, as is often the case with EEG data, training data is expensive and limited. Using a lot of features will thus quickly result in overfitting. Using fewer features, does not only limit the risk of overfitting, it might speed up the algorithm and the preparation time. Mounting EEG electrodes is a time consuming activity, using fewer electrodes limits this time.
 
 \begin{table}[]
 \centering
@@ -173,9 +179,11 @@ The main problem is that there are already a lot of features known, but, as is o
 \end{tabular}
 \end{table}
 
+Another point to note is that even though a simple limited set of features might solve the overfitting problem, it will likely result in a performance drop as optimal features might have been left out. This problem is even more severe in a cross person setting, when considering that EEG data is person specific\citep{DEAP}, features that work good for one person, might not work for another person. Finding a good set of features that works for all persons is a non trivial problem. One solution to this problem could be to use a large pool of possible features from which a limited person specific set of good features is selected. This allows to provide good features to the machine learning algorithm, while still keeping the set of features limited in size. Another solution is to use dimensionality reduction, to project the feature space to a lower dimension, but this has the disadvantage that bad features still have influence and thus might confuse the classifier. 
+
 \npar
 
-Another point to note is that even though a simple limited set of features might solve the overfitting problem, it will likely result in a performance drop as optimal features might have been left out. This problem is even more severe in a cross person setting, when considering that EEG data is person specific\citep{DEAP}, features that work good for one person, might not work for another person. Finding a good set of features that works for all persons is a non trivial problem. One solution to this problem could be to use a large pool of possible features from which a limited set of good features are selected. This allows to provide good features to the machine learning algorithm, while still keeping the set of features limited in size. Another solution is to use dimensionality reduction, to project the feature space to a lower dimension, but the problem here is that all features still might have some influence. Selecting features on the other hand means that only a limit number of features need to be evaluated, which might mean that only a limited set of EEG channels is relevant.
+Additionally, a lot of different features are reported in the literature, as you can see in Table \ref{diffFeat}. This thesis tries to overcome this problem, by comparing a large set of features with different feature selection methods to the features reported in literature.
 
 %data
 \subsection{Dataset}
@@ -223,7 +231,7 @@ There also exists a preprocessed version of the physiological experiment databas
 
 \npar
 
-Additionally facial video of 22 out of 32 subjects was recorded, so research in facial expressions is also possible with this dataset. These videos are also rated on 4 scales: arousal, valence, dominance and liking. The liking component indicates how much the person liked the video excerpt and should not be confused with the valence component; it inquires information about the participants' tastes, not their feelings, i.e. a person can like a video that triggers angry or sad emotions. However strong correlations were observed\citep{DEAP}. The liking rates are neglected, since they are not part of the emotion space.
+Additionally facial video for 22 of the 32 subjects was recorded, so research in facial expressions is also possible with this dataset. These videos are also rated on 4 scales: arousal, valence, dominance and liking. The liking component indicates how much the person liked the video excerpt and should not be confused with the valence component; it inquires information about the participants' tastes, not their feelings, i.e. a person can like a video that triggers angry or sad emotions. However strong correlations were observed\citep{DEAP}. The liking rates are neglected, since they are not part of the emotion space.
 \npar
 
 For assessment of these scales, the self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins}, were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scale with pictures, each picture corresponds to a discrete value. The user can click anywhere in between the different figures, which makes the scales continuous. All dimension are given by a float between 1 and 9. In this thesis, a preprocessing step scaled and translated these values to ensure they range between 0 and 1, a more convenient interval.
