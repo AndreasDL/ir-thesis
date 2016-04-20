@@ -368,7 +368,9 @@ A decision tree will take a feature and split the data based on the possible out
 
 \mijnfiguur{width=0.6\textwidth}{decisionTree}{A decision tree for the data in Table \ref{decisionTreeTable}}
 
-Once the tree is constructed it becomes clear that the predicted output of sample 15 is yes. This is obtained simply by following the tree branches. Even though the features are selected at random, they have influence on the accuracy. Good features will reduce the impurity significantly, thus the impurity reductions are a good indication for how important a feature is.
+\clearpage
+
+Once the tree is constructed it becomes clear that the predicted output of sample 15 is 'Yes'. This is obtained simply by following the tree branches. Even though the features are selected at random, they have influence on the accuracy. Good features will reduce the impurity significantly, thus the impurity reductions are a good indication for how important a feature is.
 
 \npar
 
@@ -409,7 +411,7 @@ First the train data is split into two classes, before computing the covariance 
 $\Sigma_1 = {\displaystyle \sum_{j \in C_1}} X\frac{E_jE_j^T}{trace(E_jE_j^T)}$ \\
 $\Sigma_2 = {\displaystyle \sum_{j \in C_2}} X\frac{E_jE_j^T}{trace(E_jE_j^T)}$ \\
 \end{center}
-Note that the average of $E_j$ is expected to be zero, because a bandpass filter is applied that make the DC component of the signal zero. The next step is to calculate the composite covariance matrix.
+Note that the average of $E_j$ is expected to be zero, because a bandpass filter is applied that makes the DC component of the signal zero. The next step is to calculate the composite covariance matrix.
 \begin{center}
 $\Sigma = \Sigma_1 + \Sigma2$
 \end{center}
@@ -471,10 +473,7 @@ Removing the a axis by projecting the data on the plane given by vectors b and c
 
 The major disadvantage of PCA is that the algorithm is unsupervised, meaning that it does not look at the corresponding labels of the given samples. Suppose the difference between two classes was clearly given by looking at the a axis in Figure \ref{ellipsoid}. PCA would, in that case, result in a total loss of all information.
 
-\subsection{Advanced methods}
-These methods are more advanced feature selection methods found in the literature.
-
-\subsubsection{RF feature selection}
+\subsubsection{Advanced RF feature selection}
 One advanced method for feature selection is the two-step method using random forest, described in \citep{rfPaper}. The paper states that there are two possible motivations for feature selection. The first motivation is to do interpretation, find out which features are important and use them for research. In the context of BCI, feature interpretation could help neuroscientist find out which parts of the brain are affected by an emotion, for example. The second motivation is to improve machine learning techniques, having fewer features will not only speed up training and prediction times, it also reduces the complexity, which often has a good influence on the generalisation property of a machine learning algorithm. Additionally in the context of BCI research and EEG data gathering, using fewer electrodes means less preprocessing time; mounting 32 electrodes to the brain of a subject is a time consuming task.
 
 \npar
@@ -483,13 +482,13 @@ The selection procedure itself consists of two steps, in the first step data is 
 
 \npar
 
-Then depending on the motivation of feature selection, one of two possible second steps is performed. For feature interpretation the second step starts by fitting a random forest using a single feature. The OOB is then averaged over multiple runs. The runs are needed because a random forest has an element of randomness, fitting the same data twice to a random forest, will not give you the same random forest. To get an accurate estimate of the performance of a random forest, it might be a good idea to fit the data several times. The average OOB score and its standard deviation is then used to determine an initial OOB score.
+Then, depending on the motivation of feature selection, one of two possible second steps is performed. For feature interpretation the second step starts by fitting a random forest using a single feature. The OOB is then averaged over multiple runs. The runs are needed because a random forest has an element of randomness; fitting the same data twice to a random forest, will not give you the same random forest. To get an accurate estimate of the performance of a random forest, it might be a good idea to fit the data several times. The average OOB score and its standard deviation is then used to determine an initial OOB score.
 
 \begin{center}
 $OOB_{init} = AVG(OOB) - STD(OOB)$
 \end{center}
 
-The standard deviation is used to avoid noisy results, a result is only regarded as better, when there is better from a statistical point of view. Next features are added iteratively, when a larger features set has a better average OOB score (taking the standard deviation into account), the feature set is replaced by the larger feature set. Note that the whole set of features is always considered; it is not possible to leave a feature out and include the next feature.
+The standard deviation is used to avoid noisy results, a result is only regarded as better, when it is better from a statistical point of view. Next features are added iteratively, when a larger features set has a better average OOB score (taking the standard deviation into account), the feature set is replaced by the larger feature set. Note that the whole set of features is always considered; it is not possible to leave a feature out and include the next feature.
 
 \npar
 
