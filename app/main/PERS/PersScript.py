@@ -506,8 +506,8 @@ class PersScript():
         else:
             tail += "all"
 
-        fname = self.rpad + "finalReport_" + tail + '.csv'
-        f = open(fname, 'w')
+        f = open(self.rpad + "finalReport_" + tail + '.csv', 'w')
+
 
         #header line
         f.write("metricName;")
@@ -532,14 +532,43 @@ class PersScript():
                              tail + metricname
                              )
 
-                #indices of selected feat
-
-
                 #select feat names
 
         f.close()
 
+        g = open(self.rpad + "lastIndex" + tail + '.csv', 'w')
+        g.write("metricName;")
+        for name in modelnames:
+            g.write(name + ';')
+        g.write('\n')
 
+        # indices of last selected feat index
+        avg_lasts = []
+        std_lasts = []
+        for metric in range(12):
+            avg_metric_last = []
+            std_metric_last = []
+            for model in range(5):
+                lastIndexes = []
+                for person in range(32):
+                    lastIndexes.append(self.accs[person][model][metric][0][-1])
+                avg_metric_last.append(np.average(lastIndexes))
+                std_metric_last.append(np.std(lastIndexes))
+            avg_lasts.append(avg_metric_last)
+            std_lasts.append(std_metric_last)
+
+
+        for metIndex, (metricname, avg_last, std_last) in enumerate(zip(metricnames, avg_lasts, std_lasts)):
+            if metIndex == 8:  # RF STD
+                continue
+            else:
+                # create acc overview
+                g.write(metricname + ';')
+                for l, s in zip(avg_last, std_last):
+                    g.write(str(l) + ' (' + str(s) + ')' + ';')
+                g.write('\n')
+
+        g.close()
 
     def genPlot(self,avgs, stds, lbls, title):
 
