@@ -70,7 +70,7 @@ class PersScript():
                     self.featExtr.addFE(
                         FE.BandFracExtractor(
                             channels=[channel],
-                            featName=str(channel) + "-" + str(freqband),
+                            featName='frac' + str(FE.all_channels[channel]) + "-" + str(freqband),
                             freqBand=freqband
                         )
                     )
@@ -496,7 +496,7 @@ class PersScript():
             for model in range(5):
                 model_results = []
                 for person in range(32):
-                    model_results.append(self.accs[person][model][metric][2])
+                    model_results.append(self.accs[person][model][metric][7])
                 avg_metric_results.append(np.average(model_results))
                 std_metric_results.append(np.std(model_results))
             avgs.append(avg_metric_results)
@@ -524,7 +524,7 @@ class PersScript():
         #header line
         f.write("metricName;")
         for name in modelnames:
-            f.write(name + ';')
+            f.write(name + ';;')
         f.write('\n')
 
         for metIndex, (metricname, avg_metric, std_metric) in enumerate(zip(metricnames,avgs, stds)):
@@ -534,7 +534,7 @@ class PersScript():
                 #create acc overview
                 f.write(metricname + ';')
                 for avg_model, std_model in zip(avg_metric, std_metric):
-                    f.write(str(avg_model) + ' (' + str(std_model) + ');')
+                    f.write(str(round(avg_model,5)) + ';' + str(round(std_model,5)) + ';')
                 f.write('\n')
 
                 #create plot
@@ -579,6 +579,24 @@ class PersScript():
                 g.write('\n')
 
         g.close()
+
+
+        featnames = np.array(self.featExtr.getFeatureNames())
+
+        for person, personData in enumerate(self.accs):
+            h = open(self.rpad + "selectedFeat" + tail + '_' + str(person) + '.csv', 'w')
+
+            model =personData[0]
+            for metricName, metric in zip(metricnames,model):
+                h.write(metricName + ';')
+
+                feats = featnames[metric[6]]
+                for feat in feats:#sorted(feats):
+                    h.write(feat + ';')
+
+                h.write('\n')
+        h.close()
+
 
     def genPlot(self,avgs, stds, lbls, title):
 
@@ -631,11 +649,11 @@ class PersScript():
         self.genFinalReport()
 
 if __name__ == '__main__':
-    PersScript("EEG", 32, 30, Classificators.ContValenceClassificator()).run()
-    PersScript("PHY", 32, 30, Classificators.ContValenceClassificator()).run()
-    PersScript("ALL", 32, 30, Classificators.ContValenceClassificator()).run()
+    #PersScript("EEG", 32, 30, Classificators.ContValenceClassificator()).run()
+    #PersScript("PHY", 32, 30, Classificators.ContValenceClassificator()).run()
+    #PersScript("ALL", 32, 30, Classificators.ContValenceClassificator()).run()
 
     PersScript("EEG", 32, 30, Classificators.ContArousalClassificator()).run()
-    PersScript("EEG", 32, 30, Classificators.ContArousalClassificator()).run()
-    PersScript("EEG", 32, 30, Classificators.ContArousalClassificator()).run()
+    PersScript("PHY", 32, 30, Classificators.ContArousalClassificator()).run()
+    PersScript("ALL", 32, 30, Classificators.ContArousalClassificator()).run()
 
