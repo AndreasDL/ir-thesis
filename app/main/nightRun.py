@@ -5,11 +5,9 @@ from main.PERS.PersScript import PersScript
 
 if __name__ == '__main__':
 
-    PersScript('PHY',2,30,ContArousalClassificator()).run()
-
     for model in [PersScript]:
-        for feat in ['ALL','PHY','EEG']:
-            for cls in [ContArousalClassificator(), ContValenceClassificator()]:
+        for cls in [ContValenceClassificator(), ContArousalClassificator()]:
+            for feat in ['ALL','PHY','EEG']:
                 try:
                     model(feat,32,30,cls).run()
                 except Exception as e:

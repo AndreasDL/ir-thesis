@@ -8,7 +8,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.feature_selection import f_regression, SelectKBest
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier as KNN
-
+import matplotlib.pyplot as plt
 
 import personLoader
 import Classificators
@@ -17,12 +17,13 @@ from personLoader import load, dump
 import numpy as np
 
 from multiprocessing import Pool
-POOL_SIZE = 3
+POOL_SIZE = 5
 
 
 class PersScript():
     def __init__(self, feats, stopperson, threshold, classifier):
         self.featExtr = FE.MultiFeatureExtractor()
+        self.feats = feats
         if feats == 'EEG':
             self.addEEGFeatures()
         elif feats == 'PHY':
@@ -36,7 +37,7 @@ class PersScript():
 
         self.classifier = classifier
 
-        self.ddpad = "../../dumpedData/persScript/"
+        self.ddpad = "../../../dumpedData/persScript/"
         if self.classifier.name == "ContArousalClasses":
             self.ddpad += "arousal/"
         else:
@@ -382,20 +383,19 @@ class PersScript():
             X = np.true_divide(X, np.std(X, axis=0))
 
             to_ret = []
+            #RandomForestClassifier(
+            #    n_estimators=1000,
+            #    max_features='auto',
+            #    criterion='gini',
+            #    n_jobs=-1,
+            #)
             for model in [
-                RandomForestClassifier(
-                            n_estimators=1000,
-                            max_features='auto',
-                            criterion='gini',
-                            n_jobs=-1,
-                        ),
                 SVC(kernel='linear'),
                 SVC(kernel='rbf'),
 
                 KNN(n_neighbors=3),
                 KNN(n_neighbors=5),
                 KNN(n_neighbors=7),
-                KNN(n_neighbors=11)
 
                 #lda needs two features
             ]:
@@ -409,7 +409,7 @@ class PersScript():
                     indices = indices[:self.threshold]
 
                     #apply
-                    X = X[:,indices]
+                    X_model = np.array(X[:,indices])
                     featNames = featNames[indices]
 
                     best_feat, best_featNames = [], []
@@ -419,7 +419,7 @@ class PersScript():
                         to_keep = best_feat[:]
                         to_keep.append(i)
 
-                        X_temp = X[:,to_keep]
+                        X_temp = np.array(X_model[:,to_keep])
 
                         # get scores
                         run_scores = []
@@ -440,7 +440,7 @@ class PersScript():
                             best_feat = to_keep
                             best_featNames.append(featNames[i])
 
-                    model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds])
+                    model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices])
                 to_ret.append(model_to_ret)
 
             dump(to_ret, 'accs_p' + str(person), path = self.ddpad)
@@ -476,6 +476,106 @@ class PersScript():
 
             f.close()
 
+    def genFinalReport(self):
+        avgs, stds = [], []
+        for metric in range(12):
+            avg_metric_results = []
+            std_metric_results = []
+            for model in range(5):
+                model_results = []
+                for person in range(32):
+                    model_results.append(self.accs[person][model][metric][2])
+                avg_metric_results.append(np.average(model_results))
+                std_metric_results.append(np.std(model_results))
+            avgs.append(avg_metric_results)
+            stds.append(std_metric_results)
+
+        metricnames =  ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF', 'RFSTD', 'ANOVA','LDA', 'PCA']
+        modelnames  = ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"]
+
+        tail = ''
+        if self.classifier.name == "ContArousalClasses":
+            tail += "arousal_"
+        else:
+            tail += "valence_"
+
+        if self.feats == "EEG":
+            tail += "eeg"
+        elif self.feats == "PHY":
+            tail += "phy"
+        else:
+            tail += "all"
+
+        fname = self.rpad + "finalReport_" + tail + '.csv'
+        f = open(fname, 'w')
+
+        #header line
+        f.write("metricName;")
+        for name in modelnames:
+            f.write(name + ';')
+        f.write('\n')
+
+        for metIndex, (metricname, avg_metric, std_metric) in enumerate(zip(metricnames,avgs, stds)):
+            if metIndex == 8: #RF STD
+                continue
+            else:
+                #create acc overview
+                f.write(metricname + ';')
+                for avg_model, std_model in zip(avg_metric, std_metric):
+                    f.write(str(avg_model) + ' (' + str(std_model) + ');')
+                f.write('\n')
+
+                #create plot
+                self.genPlot(avg_metric,
+                             std_metric,
+                             modelnames,
+                             tail + metricname
+                             )
+
+                #indices of selected feat
+
+
+                #select feat names
+
+        f.close()
+
+
+
+    def genPlot(self,avgs, stds, lbls, title):
+
+        fname = self.rpad + 'accComp_' + str(title) + '.png'
+
+        # Plot the feature importances of the forest
+        fig, ax = plt.subplots()
+
+        plt.title(title)
+        for i, (avg, std) in enumerate(zip(avgs, stds)):
+            color = ""
+            if i < 2:
+                color = "r"
+            else:
+                color = "b"
+
+            ax.bar(
+                i,
+                avg,
+                color=color,
+                ecolor="k",
+                yerr=std,
+                label=lbls[i]
+            )
+
+        plt.xticks(range(0, len(avgs), 1))
+        plt.xlim([-0.2, len(avgs)])
+        ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.25),
+                  ncol=3, fancybox=True, shadow=True)
+
+        plt.savefig(fname)
+        plt.clf()
+        plt.close()
+
+
+
     def run(self):
 
         pool = Pool(processes=POOL_SIZE)
@@ -491,7 +591,15 @@ class PersScript():
         pool.join()
 
         self.genAccReport()
+        self.genFinalReport()
 
 
 if __name__ == '__main__':
-    PersScript("PHY",2,30,Classificators.ContArousalClassificator()).run()
+    PersScript("EEG", 32, 30, Classificators.ContValenceClassificator()).run()
+    PersScript("PHY", 32, 30, Classificators.ContValenceClassificator()).run()
+    PersScript("ALL", 32, 30, Classificators.ContValenceClassificator()).run()
+
+    PersScript("EEG", 32, 30, Classificators.ContArousalClassificator()).run()
+    PersScript("EEG", 32, 30, Classificators.ContArousalClassificator()).run()
+    PersScript("EEG", 32, 30, Classificators.ContArousalClassificator()).run()
+
