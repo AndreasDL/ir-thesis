@@ -2,7 +2,7 @@ from scipy.stats import pearsonr, entropy
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
 from sklearn.metrics import mutual_info_score
-from sklearn.cross_validation import KFold
+from sklearn.cross_validation import KFold, train_test_split
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.feature_selection import f_regression, SelectKBest
@@ -382,6 +382,10 @@ class PersScript():
             X = X - np.average(X, axis=0)
             X = np.true_divide(X, np.std(X, axis=0))
 
+            #train test set
+            # Train / testset
+            X, X_test, y, y_test = train_test_split(X,y,test_size=10, random_state=17)
+
             to_ret = []
             #RandomForestClassifier(
             #    n_estimators=1000,
@@ -410,6 +414,7 @@ class PersScript():
 
                     #apply
                     X_model = np.array(X[:,indices])
+                    X_model_test = np.array(X_test[:,indices])
                     featNames = featNames[indices]
 
                     best_feat, best_featNames = [], []
@@ -440,7 +445,16 @@ class PersScript():
                             best_feat = to_keep
                             best_featNames.append(featNames[i])
 
-                    model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices])
+                    #get test score
+
+                    model.fit(X_model[:,best_feat], y)
+
+                    X_model_test = np.array(X_model_test[:,best_feat])
+                    test_acc = self.accuracy(model.predict(X_model_test), y_test)
+
+
+
+                    model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices, test_acc])
                 to_ret.append(model_to_ret)
 
             dump(to_ret, 'accs_p' + str(person), path = self.ddpad)
@@ -532,8 +546,6 @@ class PersScript():
                              tail + metricname
                              )
 
-                #select feat names
-
         f.close()
 
         g = open(self.rpad + "lastIndex" + tail + '.csv', 'w')
@@ -603,8 +615,6 @@ class PersScript():
         plt.clf()
         plt.close()
 
-
-
     def run(self):
 
         pool = Pool(processes=POOL_SIZE)
@@ -621,7 +631,6 @@ class PersScript():
 
         self.genAccReport()
         self.genFinalReport()
-
 
 if __name__ == '__main__':
     PersScript("EEG", 32, 30, Classificators.ContValenceClassificator()).run()
