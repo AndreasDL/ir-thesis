@@ -452,8 +452,6 @@ class PersScript():
                     X_model_test = np.array(X_model_test[:,best_feat])
                     test_acc = self.accuracy(model.predict(X_model_test), y_test)
 
-
-
                     model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices, test_acc])
                 to_ret.append(model_to_ret)
 
