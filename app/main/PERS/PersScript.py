@@ -461,32 +461,57 @@ class PersScript():
     def genAccReport(self):
         #self.accs[person][model][metric] = [best_feat, best_featNames, best_score, best_std, all_score, all_std]
 
+        tekst = []
         for person in range(len(self.accs)):
             f = open(self.rpad + "Accresults" + str(person) + ".csv", 'w')
 
             #accuracies
             f.write("model;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;\n")
-            for model, modelName in zip(self.accs[person], ["rf1000","SVMLIN","SVMRBF","KNN3","KNN5","KNN7","KNN11"]):
+            for model, modelName in zip(self.accs[person], ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"]):
                 f.write(modelName + ';')
 
+                t = []
                 for metric in model:
+                    t.append([])
                     f.write(str(metric[2]) + '(' + str(metric[3]) + ');')
                 f.write('\n')
+
+                if person == 0:
+                    tekst.append(t)
+
 
             f.write('\n\n\n')
 
             #features
-            for model, modelName in zip(self.accs[person], ["rf1000","SVMLIN","SVMRBF","KNN3","KNN5","KNN7","KNN11"]):
+            for modelIndex, (model, modelName) in enumerate(zip(self.accs[person], ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"])):
                 f.write(modelName + '\n\n')
-                f.write("matric;features used;")
-                for metric, metricName in zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA']):
+                f.write("matric;features used;\n")
+                for metricIndex, (metric, metricName) in enumerate(zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA'])):
                     f.write(metricName + ';')
                     for featName in metric[1]:
                         f.write(featName + ';')
                     f.write('\n')
+
+                    tekst[modelIndex][metricIndex].append(metric[1])
                 f.write('\n\n\n')
 
             f.close()
+
+        for model, modelName in zip(tekst, ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"]):
+            g = open(self.rpad + "finFeat" + str(modelName) + ".csv", 'w')
+
+            for metric, metricName in zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA']):
+                g.write(metricName + "\n")
+                g.write('person;usedFeatures;\n')
+
+                for person,data in enumerate(metric):
+                    g.write(str(person) + ';')
+                    for feat in data:
+                        g.write(str(feat) + ';')
+                    g.write('\n')
+
+                g.write("\n\n\n'")
+            g.close()
 
     def genFinalReport(self):
         avgs, stds = [], []
@@ -649,9 +674,9 @@ class PersScript():
         self.genFinalReport()
 
 if __name__ == '__main__':
-    #PersScript("EEG", 32, 30, Classificators.ContValenceClassificator()).run()
-    #PersScript("PHY", 32, 30, Classificators.ContValenceClassificator()).run()
-    #PersScript("ALL", 32, 30, Classificators.ContValenceClassificator()).run()
+    PersScript("EEG", 32, 30, Classificators.ContValenceClassificator()).run()
+    PersScript("PHY", 32, 30, Classificators.ContValenceClassificator()).run()
+    PersScript("ALL", 32, 30, Classificators.ContValenceClassificator()).run()
 
     PersScript("EEG", 32, 30, Classificators.ContArousalClassificator()).run()
     PersScript("PHY", 32, 30, Classificators.ContArousalClassificator()).run()

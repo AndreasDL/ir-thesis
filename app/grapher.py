@@ -2,7 +2,7 @@ import matplotlib.pylab as plt
 import numpy as np
 
 
-def genPlot(avgs,stds,lbls,title, fpad="../results/plots/"):
+def genPlot(avgs,stds,lbls,title,bar_colors=None,fpad="../results/plots/"):
 
     fname = fpad + 'accComp_' + str(title) + '.png'
 
@@ -13,7 +13,11 @@ def genPlot(avgs,stds,lbls,title, fpad="../results/plots/"):
 
     plt.title(title)
     for i, (avg, std) in enumerate(zip(avgs,stds)):
+
         color = "b"
+        if bar_colors != None:
+            color = bar_colors[i]
+
 
         ax.bar(
             i,
@@ -43,64 +47,68 @@ def RFPers():
     title = 'accuracies for valence'
     genPlot(avgs, stds, lbls, title)
 
-    avgs = [0.715, 0.693, 0.692, 0.664, 0.576, 0.817, 0.8381, 0.7925, 0.831]
-    stds = [0.0885, 0.0981, 0.0878, 0, 0, 0, 0.0492, 0.023, 0.0483]
+    avgs = [0.715, 0.693 , 0.692 , 0.664, 0.576, 0.817, 0.8381, 0.7925, 0.831]
+    stds = [0.0885, 0.098, 0.0878, 0    , 0    , 0    , 0.0492, 0.023, 0.0483]
     title = 'accuracies for arousal'
     genPlot(avgs, stds, lbls, title)
 
 def valence():
+    clrs = ['r', 'r', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b']
+
     # all valence
-    lbls = ['pearsonR', 'MutInf', 'dCorr', 'LR', 'L1', 'L2', 'SVM', 'RF', 'ANOVA', 'LDA', 'PCA']
-    avgs = [0.6875, 0.59062, 0.7, 0.625, 0.70625, 0.625, 0.69688, 0.74062, 0.71562, 0.61875, 0.61563]
-    stds = [0.13, 0.17, 0.13, 0.12, 0.14, 0.12, 0.15, 0.11, 0.13, 0.16, 0.13]
+    lbls = ['bayesian','DEAP','pearsonR', 'MutInf', 'dCorr', 'LR', 'L1', 'L2', 'SVM', 'RF', 'ANOVA', 'LDA', 'PCA']
+    avgs = [0.666, 0.620, 0.6875, 0.5906, 0.7 , 0.625, 0.7063, 0.625, 0.697, 0.741, 0.716, 0.619, 0.61563]
+    stds = [0    , 0    , 0.13  , 0.17  , 0.13, 0.12 , 0.14  , 0.12 , 0.15 , 0.11 , 0.13 , 0.16 , 0.13   ]
     title = 'best test acc valence ALL'
-    genPlot(avgs, stds, lbls, title)
+    genPlot(avgs, stds, lbls, title, clrs)
 
     # eeg valence
-    avgs = [0.684, 0.591, 0.713, 0.644, 0.716, 0.653, 0.697, 0.728, 0.713, 0.650, 0.606]
-    stds = [0.118, 0.126, 0.122, 0.130, 0.146, 0.135, 0.151, 0.118, 0.134, 0.195, 0.134]
+    avgs = [0.666, 0.620, 0.684, 0.591, 0.713, 0.644, 0.716, 0.653, 0.697, 0.728, 0.713, 0.650, 0.606]
+    stds = [0    , 0    , 0.118, 0.126, 0.122, 0.130, 0.146, 0.135, 0.151, 0.118, 0.134, 0.195, 0.134]
     title = 'best test acc valence EEG'
-    genPlot(avgs, stds, lbls, title)
+    genPlot(avgs, stds, lbls, title, clrs)
 
     # phy valence
-    avgs = [0.600, 0.575, 0.600, 0.594, 0.581, 0.578, 0.603, 0.609, 0.566, 0.584, 0.594]
-    stds = [0.141, 0.173, 0.146, 0.168, 0.147, 0.154, 0.121, 0.177, 0.185, 0.164, 0.158]
+    avgs = [0.666, 0.620, 0.600, 0.575, 0.600, 0.594, 0.581, 0.578, 0.603, 0.609, 0.566, 0.584, 0.594]
+    stds = [0    , 0    , 0.141, 0.173, 0.146, 0.168, 0.147, 0.154, 0.121, 0.177, 0.185, 0.164, 0.158]
     title = 'best test acc valence PHY'
-    genPlot(avgs, stds, lbls, title)
+    genPlot(avgs, stds, lbls, title, clrs)
 
     # all vs eeg vs phy
-    lbls = ['ALL', 'EEG', 'PHY']
-    avgs = [0.741, 0.728, 0.609]
-    stds = [0.109, 0.118, 0.177]
+    lbls = ['bayesian', 'DEAP','ALL', 'EEG', 'PHY']
+    avgs = [0.666, 0.620, 0.741, 0.728, 0.609]
+    stds = [0    , 0    , 0.109, 0.118, 0.177]
     title = 'valence ALL vs EEG vs PHY'
-    genPlot(avgs, stds, lbls, title)
+    genPlot(avgs, stds, lbls, title, clrs)
 
 def arousal():
+    clrs = ['r','r','b','b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b']
+
     # all valence
-    lbls = ['pearsonR', 'MutInf', 'dCorr', 'LR', 'L1', 'L2', 'SVM', 'RF', 'ANOVA', 'LDA', 'PCA']
-    avgs = [0.681, 0.588, 0.713, 0.669, 0.728, 0.659, 0.688, 0.741, 0.688, 0.638, 0.597]
-    stds = [0.159, 0.139, 0.127, 0.159, 0.118, 0.158, 0.132, 0.100, 0.145, 0.122, 0.145]
+    lbls = ['bayesian', 'DEAP','pearsonR', 'MutInf', 'dCorr', 'LR', 'L1', 'L2', 'SVM', 'RF', 'ANOVA', 'LDA', 'PCA']
+    avgs = [0.664, 0.576, 0.681, 0.588, 0.713, 0.669, 0.728, 0.659, 0.688, 0.741, 0.688, 0.638, 0.597]
+    stds = [0    , 0    , 0.159, 0.139, 0.127, 0.159, 0.118, 0.158, 0.132, 0.100, 0.145, 0.122, 0.145]
     title = 'best test acc arousal ALL'
-    genPlot(avgs, stds, lbls, title)
+    genPlot(avgs, stds, lbls, title, clrs)
 
     # eeg valence
-    avgs = [0.684, 0.594, 0.716, 0.656, 0.706, 0.656, 0.669, 0.753, 0.700, 0.666, 0.581]
-    stds = [0.156, 0.152, 0.123, 0.137, 0.139, 0.141, 0.136, 0.097, 0.112, 0.143, 0.149]
+    avgs = [0.664, 0.576, 0.684, 0.594, 0.716, 0.656, 0.706, 0.656, 0.669, 0.753, 0.700, 0.666, 0.581]
+    stds = [0    , 0    , 0.156, 0.152, 0.123, 0.137, 0.139, 0.141, 0.136, 0.097, 0.112, 0.143, 0.149]
     title = 'best test acc arousal EEG'
-    genPlot(avgs, stds, lbls, title)
+    genPlot(avgs, stds, lbls, title, clrs)
 
     # phy valence
-    avgs = [0.619, 0.622, 0.634, 0.594, 0.619, 0.594, 0.628, 0.650, 0.606, 0.591, 0.594]
-    stds = [0.153, 0.122, 0.147, 0.141, 0.124, 0.127, 0.150, 0.127, 0.130, 0.159, 0.141]
+    avgs = [0.664, 0.576, 0.619, 0.622, 0.634, 0.594, 0.619, 0.594, 0.628, 0.650, 0.606, 0.591, 0.594]
+    stds = [0    , 0    , 0.153, 0.122, 0.147, 0.141, 0.124, 0.127, 0.150, 0.127, 0.130, 0.159, 0.141]
     title = 'best test acc arousal PHY'
-    genPlot(avgs, stds, lbls, title)
+    genPlot(avgs, stds, lbls, title, clrs)
 
     # all vs eeg vs phy
-    lbls = ['ALL', 'EEG', 'PHY']
-    avgs = [0.741, 0.753, 0.650]
-    stds = [0.100, 0.097, 0.127]
+    lbls = ['bayesian', 'DEAP','ALL', 'EEG', 'PHY']
+    avgs = [0.664, 0.576,0.741, 0.753, 0.650]
+    stds = [0,0,0.100, 0.097, 0.127]
     title = 'arousal ALL vs EEG vs PHY'
-    genPlot(avgs, stds, lbls, title)
+    genPlot(avgs, stds, lbls, title, clrs)
 
 if __name__ == '__main__':
     valence()
