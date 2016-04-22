@@ -4,27 +4,16 @@
 
 \section{Brain computer interfaces}
 
-A Brain Computer Interface (BCI)\nomenclature{BCI}{Brain Computer Interface}, creates a direct neural link between the brain and the computer\cite{LangModel}, that tries to recognize patterns and based on the extracted information, performs actions. A BCI removes the need for physical actions, i.e. typing or moving a mouse, for the transfer of information. The neural link provided by the BCI is made of two important components. The first component is the extraction component, which extract brain signals from the brain. The second component is the computer that interprets signals and performs actions based on the outcome.
+A Brain Computer Interface (BCI)\nomenclature{BCI}{Brain Computer Interface}, creates a direct link between the brain and the computer\cite{LangModel}, that enables a subject to control the computer using only his mind. A BCI is usually composed of two components. The first component is the extraction component, which extracts brain signals from the brain. The second component is a decoder that interprets signals translates them to control signals.
 
+\mijnfiguur{width=0.9\textwidth}{bcicomponents}{The basic components of a BCI system\citep{bcicomps}}
 
 \subsection{Electroencephalography (EEG)}
-Different technologies exist to analyse brain activity, the most convenient method is Electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery; in the case of EEG, they simply measure electrical activity using electrodes placed on the scalp.
+Different technologies exist to record brain activity. The most convenient method is electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery. In the case of EEG, they simply measure electrical activity using electrodes placed on the scalp.
 
 \npar
 
-Electrical activity in the brain is caused when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighbouring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significant, making it visible to the EEG surface electrodes. EEG can thus only capture synchronized activity of many, many neurons, which explains its low spatial resolution capabilities.
-
-\npar
-
-Signals originating from the cortex, close to the skull, are most visible, while signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally, other artifacts like eye and muscle movement add a lot of noise to the signal, which explains why EEG signals are very noisy signal from nature. Noise removal techniques are therefor advised. Note that even though EEG data contains a lot of noise and has a low spatial resolution, it still provides significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
-
-\npar
-
-Note that EEG only records electrical activity of the brain, other methods like magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} use magnetic fields to measure brain activity. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile. As a result, this method was not explored during this thesis.
-
-\npar
-
-EEG measures electrical activity with electrodes that are placed on the scalp. To ensure that experiments are replicable, standards for locations of electrodes have been developed. One of these systems is the 10/20 system, an internationally recognized methods to describe location of scalp electrodes\cite{TenTwentyManual}. The numbers 10 and 20 refer to the distances between the electrodes, which are either 10\% or 20\% of the total front-back or left-right distance of the skull. Each site is identified with a letter that determines the lobe and a number that determines the hemisphere location.
+EEG measures electrical activity with electrodes that are placed on the scalp. To ensure that experiments are replicable, standards for locations of electrodes have been developed. One of these systems is the 10/20 system, an internationally recognized method to describe the location of scalp electrodes\cite{TenTwentyManual}. The numbers 10 and 20 refer to the distances between the electrodes, which are either 10\% or 20\% of the total front-back or left-right distance of the scalp. Each site is identified with a letter that determines the lobe and a number that determines the hemisphere location.
 \begin{itemize}
 \item \textbf{F:} Frontal
 \item \textbf{T:} Temporal
@@ -32,9 +21,22 @@ EEG measures electrical activity with electrodes that are placed on the scalp. T
 \item \textbf{P:} Parietal
 \item \textbf{O:} Occipital
 \end{itemize}
-Note that no central lobe exists; the C letter is only used for identification purposes. The letter z indicates that the electrode is placed on the central line. Even numbers are use for the right hemisphere, while odd numbers are used for the left hemisphere. Figure \ref{1020ElectrodePlacementSystem} shows a picture of a 23 channel 10/20 system. Note that the 10/20 system does not require a fixed number of channels, some experiments may use a different set of channels, but they all follow the same naming convention.
+Note that no central lobe exists; the C letter is only used for identification purposes. The letter z indicates that the electrode is placed on the central line. Even numbers are use for the right hemisphere, while odd numbers are used for the left hemisphere. Figure \ref{1020ElectrodePlacementSystem} shows a picture of a 23 channel 10/20 system.
 
 \mijnfiguur{width=0.8\textwidth}{1020ElectrodePlacementSystem}{The electrode placement of a 23 channel system\cite{1020Site}.}
+
+Note that the 10/20 system does not require a fixed number of channels, some experiments may use a different set of channels, but they all follow the same naming convention. This thesis uses a 32 channel EEG cap. The corresponding electrode locations are shown in Figure \ref{1020labels}
+
+\mijnfiguur{width=0.5\textwidth}{1020labels}{Placement of the 32 electrodes in this thesis.}
+
+
+Electrical activity in the brain is generated when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighbouring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significant enough, it is measured by the EEG surface electrodes. EEG can thus only capture synchronized activity of many, many neurons\cite{ExtendedPaper}, which explains its low spatial resolution capabilities. EEG measurements consist of electrical potentials of different channels, measures over time, like shown in Figure \ref{eegexample}.
+
+\mijnfiguur{width=0.9\textwidth}{eegexample}{EEG measurements is a trace electrical potentials of different channels over time.} %TODO labels
+
+Signals originating from the cortex, close to the skull, are easier to measure, while signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally, other artifacts like eye and muscle movement add a lot of noise to the signal, which explains why EEG signals are very noisy by nature. Noise removal techniques are therefor advised\citep{noiseRem}. Note that even though EEG data contains a lot of noise and has a low spatial resolution, it still provides significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
+
+\npar
 
 Two different types of EEG channels exist, monopolar and dipolar. A monopolar channel records the potential difference of a signal, compared to a neutral electrode, usually connected to an ear lobe of mastoid. A bipolar channel, on the otherhand, is obtained by subtracting two monopolar EEG signals, which improves Sound to Noise ratio (SNR) \nomenclature{SNR}{Sound to Noise Ratio} by removing shared artifacts\cite{MonoBiPolar}. 
 
@@ -49,7 +51,9 @@ In the frequency domain, brain waves are usually split up into different bands\c
 \item \textbf{Theta:} 4-8Hz, occurs during dreaming.
 \end{enumerate}
 
-Most muscle and eye artifacts have a frequency around 1.2Hz. Artifacts caused by nearby power lines, have a frequency around 50Hz\cite{ExtendedPaper}. To remove most of this noise, a bandpass filter is usually applied to filter out frequencies below 4Hz and above 40-45Hz.
+\npar
+
+Note that EEG only records electrical activity of the brain, other methods like magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} use magnetic fields to measure brain activity\citep{meg}. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile. As a result, this method was not explored during this thesis. %TODO other methods 
 
 \subsection{Person specific classification versus cross-subject classification}
 There exists two types of BCI applications. The first type is a person specific BCI, where the BCI interface is calibrated for a single subject. The second type is a general BCI interface that works 'cross-subject', meaning that it should be able to work for different persons. It is much harder to achieve good results for a cross-subject BCI, as EEG data is very personal from nature\citep{DEAP}. While transfer learning has provided good results in imaginary motion recognition in the past, little research has been done for transfer learning in the context of emotion recognition. Person specific classifiers are often used, due to the fact that finding person independent EEG features is still an ongoing topic of research\citep{DEAP}.
