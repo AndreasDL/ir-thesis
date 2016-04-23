@@ -32,7 +32,7 @@ Note that the 10/20 system does not require a fixed number of channels, some exp
 
 Electrical activity in the brain is generated when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighbouring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significant enough, it is measured by the EEG surface electrodes. EEG can thus only capture synchronized activity of many, many neurons\cite{ExtendedPaper}, which explains its low spatial resolution capabilities. EEG measurements consist of electrical potentials of different channels, measures over time, like shown in Figure \ref{eegexample}.
 
-\mijnfiguur{width=0.9\textwidth}{eegexample}{EEG measurements is a trace electrical potentials of different channels over time.} 
+\mijnfiguur{width=0.9\textwidth}{eegexample}{EEG measurements is a trace electrical potentials of different channels over time.\citep{EEGExampleFig}}
 
 Signals originating from the cortex, close to the skull, are easier to measure, while signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally, other artifacts like eye and muscle movement add a lot of noise to the signal, which explains why EEG signals are very noisy by nature. Noise removal techniques are therefor advised\citep{noiseRem}. Note that even though EEG data contains a lot of noise and has a low spatial resolution, it still provides significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
 
@@ -53,12 +53,12 @@ In the frequency domain, brain waves are usually split up into different bands\c
 
 \npar
 
-Note that EEG only records electrical activity of the brain, other methods like magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} use magnetic fields to measure brain activity\citep{meg}. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile. As a result, this method was not explored during this thesis. 
-
-\npar
-
-Some alternative methods to measure brain activity are:
+EEG was used in this thesis because it is a convenient method that has been used for a lot of research. Some alternative methods to measure brain activity are:
 \begin{itemize}
+
+\item Magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} use magnetic fields to measure brain activity\citep{meg}. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile.
+
+
 \item Functional magnetic resonance (fMRI) \nomenclature{fMRI}{Functional Magnetic Resonance}\citep{fMRI}: works by detecting changes in blood oxygenation and blood flow. An active area of the brain consumes more oxygen and has an increased blood flow.
 
 \item Computed tomography (CT) \nomenclature{CT}{Computed Tomography}\citep{CT}: uses X-rays to create an image of the brain. 
@@ -68,48 +68,32 @@ Some alternative methods to measure brain activity are:
 \item Near infrared spectroscopy (NIRS) \nomenclature{NIRS}{Near Infrared Spectroscopy}\citep{NIRS}: an optical technique to measure blood oxygenation in the brain. This technique works by shining light in the near infrared part of the spectrum through the skull and measuring how much remerging light is attenuated.
 
 \end{itemize} 
-This thesis uses EEG data, because most of the similar research found in literature also focussed on EEG.
 
 \section{Emotion recognition}
 
-Psychology makes a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. The expression consists of many parts, including the facial expression, body language and voice concern\citep{EMSpeech}. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. This makes emotion recognition based on physiological signals more robust to social masking\citep{PhytoEm}, the process where an individual masks or hides their emotions to conform to social pressures. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion.
+Psychology makes a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. The expression consists of many parts, including the facial expression, body language and voice concern\citep{EMSpeech}. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. This makes emotion recognition based on physiological signals more robust to social masking\citep{PhytoEm}, the process where an individual masks or hides their emotions to conform to social pressure. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion.
 
 \subsection{Valence/Arousal classification model for emotion}
 \label{valarrdomspace}
 
-Before emotions can be recognized, a classification model is needed. A simple way of achieving this is using several discrete emotions, e.g. anger, joy, sad and pleasure. A more convienent model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, that places emotions in a two dimensional space. The main advantage of using a continuous multidimensional model, is that all emotions are modelled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
+Before emotions can be recognized, an objective class model describing different emotions is needed. A simple way of achieving this is using several discrete emotions, e.g. anger, joy, sad and pleasure. A more convienent model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, which places emotions in a two dimensional space. The main advantage of using a continuous multidimensional model, is that all emotions are modelled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
 
 \npar
 
  Arousal indicates how active a person is and ranges from inactive/bored to active/excited. The valence indicates if the emotion is perceived as positive or negative. Even though arousal and valence describe emotions quite well, a third dimension, dominance, can also be added. The third dimension, dominance, indicates how strong the emotional feeling was and ranges from a weak feeling to an empowered, overwhelming feeling. The dominance component can aid to filter out samples of strong feelings, since feelings with low dominance are less likely to show significant effects.
 
-\mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.}
-
-\subsection{Possible applications for emotion recognition}
-Emotion recognition has many different applications, e.g. as an improvement for the P300 speller or marketing analysis. The P300 speller is a very well-known, academic application of BCI and an active topic of research. It uses EEG data to enable patients with a locked in syndrome to communicate\cite{P300Origin}. The basic version uses a six by six grid of characters, each row and column is flashed in a random order while the subject silently counts the number of flashes of a certain character, as shown in figure \ref{P300SpellerPerson}. This procedure, where a train of stimuli with some infrequent occurring target stimuli is applied, is called the oddball paradigm\cite{PaperThibault}. It is known that this technique triggers an increase in the potential difference in the EEG around the parietal lobe. When a potential difference in the brain occurs as a reaction to an event, it is referred to as en event related potential (ERP) \nomenclature{ERP}{Event Related Potential}. The P300 ERP occurs roughly 300 milliseconds after the stimuli is flashed, hence its name\citep{ComparisonClassifications}. The presence or absence of the P300 waveform is used by the P300 speller to determine what character the subject was focusing on, which basically allows the subject to spell text. 
-
-\mijnfiguur{width=0.7\textwidth}{P300SpellerPerson}{Different parts of the P300 speller, found at \cite{P300SpellerPerson}.}
-
-Research with visual stimuli on healthy subjects, has shown that emotion has an effect on the auditory P300 wave\cite{AuditoryP300Effect}. Both the P300 peak amplitude and area was highest when viewing neutral pictures and descended further, in decreasing order, for sadness, anger and pleasure. The latency of the P300 ERP speller was shortest or neutrality and in increasing order longer for pleasure, anger and sadness. It is expected that a visually triggered P300 wave, will also be influenced by emotion. Having a good emotion recognition system, might therefore improve the detection of P300 waves. Additionally knowing a subject's emotional state can help detecting when a subject gets frustrated, e.g. because of mistakes he makes.
-
-\npar
-
-An improvement in performance is not the only advantage an emotionally aware P300 speller has. Contrary to what subjects might think, the P300 speller is unable to read the mind and know what a person is thinking about\cite{P300Origin}. The P300 speller provides no more than a means of communication that the subject can use. Should he chose to ignore the instructions and focus his attention elsewhere, then the recordings become useless. Nevertheless, ethical questions often remain unanswered. Knowing how the subject feels, can help him communicate more humane on one hand, while providing more insight for ethical issues, on the other hand, e.g. "How does the subject think about the P300 speller recording and analyzing his brain activity?". Information about the subject's emotional state can help answer some of these ethical questions. Integrating the results from this thesis with the P300 speller, is an opportunity for future research.
-
-\npar
-
-Another application for emotion recognition is in the field of marketing and customer satisfaction research. Discovering how a persons feels about a product is often tricky. Questionnaires is one way to go, but they might contain a lot of noise. Being able to 'read' the emotion straight from a subject's mind, is expected to give more accurate results as it avoids any form of social masking.
+\mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane\citep{ValArrFig}}
 
 \section{Machine learning}
-Machine learning is the missing link between the EEG data the emotion recognition. Machine learning is a very broad domain, as a result, this discussion will be limited to an introduction of the basic machine learning concepts with the focus on the application of machine learning and machine learning techniques. 
+Machine learning is the missing link between the EEG data the emotion recognition. Machine learning is a very broad domain. As a result, this discussion will be limited to an introduction of the basic machine learning concepts with the focus on the application of machine learning and machine learning techniques. 
 
 \npar
 
-One possible definition for Machine learning is: "the science of getting computers to act without being explicitly programmed". To do so, machine learning uses pattern recognition to find patterns or structure in the data. A simple example of machine learning is the Optical Character Recognition (OCR)\nomenclature{OCR}{Optical Character Recognition}, where a computer recognises characters in pictures.
+One possible definition for machine learning is: "the science of getting computers to act without being explicitly programmed"\citep{MLDef}. To do so, machine learning uses pattern recognition to find patterns or structure in the data. A simple example of machine learning is the Optical Character Recognition (OCR)\nomenclature{OCR}{Optical Character Recognition}, where a computer recognises characters in pictures\citep{OCR}.
 
 \npar
 
-To further explain how machine learning works, have a look at the following example. Suppose one has a price list of houses that are for sale combined with their total area. Logic sense dictates us that a bigger house will have a higher asking price than a smaller house. The total area is a characteristic of the house that helps us in predicting the price. In the context of machine learning, the characteristic 'total area', will be called a feature as the asking price of a house is correlated to the total area. 
+To further explain how machine learning works, have a look at the following example. Suppose one has a price list of houses that are for sale combined with their total area. Logic sense dictates us that a bigger house will have a higher price than a smaller house. The total area is a characteristic of the house that helps us in predicting the price. In the context of machine learning, the characteristic 'total area', will be called a feature as the asking price of a house is correlated to the total area. 
 
 \npar
 
@@ -121,19 +105,19 @@ Even though, this might already give some reasonable results, the algorithm will
 
 \npar
 
-Machine learning algorithms are responsible for finding the relation between features and the predicted value. There are many of these machine learning algorithms, one way to group these algorithms, is to look at their produced output. In the asking price examples above, the output is a price, which is (more or less) a continuous value. Machine learning problems that require the output of a continuous value, are called regression problems. In the OCR example from above, where characters are recognized in a picture is a classification problem, as the outcome is a character out of a limit set of different characters.
+Machine learning algorithms are responsible for finding the relation between features and the predicted value. There are many of these machine learning algorithms. One way to group these algorithms is to look at their produced output\citep{prml}. In the asking price examples above, the output is a price, which is (more or less) a continuous value. Machine learning problems that require the output of a continuous value, are called regression problems. In the OCR example above, a picture of a character is classified as a character. This means that OCR is a classification problem, as there are only a limited number of characters in an alphabet.
 
 \npar
 
-Another way to group algorithms is on their training data. In the asking price examples above, the training data consists of labelled results; the correct asking price is given for each area. This type of machine learning, where the correct outputs for the train data are given, is referred to as supervised machine learning. The alternative is unsupervised machine learning, which often results in finding groups of similar data points (clustering), without knowing the actual labels. Note that the combination of supervised and unsupervised data, known as semi supervised learning, is also possible. Imagine a dataset with 5000 webpages that need to be grouped into 10 distinct categories, e.g. science, nature, cooking, ... . Only 100 of the 5000 pages in the train set are labelled. An approach to solve this problem could be to first cluster the pages in similar groups using unsupervised learning. As soon as a group contains a single labelled page, all pages in the group can be labelled accordingly, as clustering returns groups of similar samples. Semi supervised learning has the advantage that one can also use unlabelled data, which is often easier and cheaper to obtain, unlike labelled data which is usually quite rare; if there was a fast and easy way to label the data then there would not be a need for machine learning.
+Another way to group algorithms is based on their training data\citep{prml}. In the asking price examples above, the training data consists of labelled results; the correct asking price is given for each area. This type of machine learning, where the correct outputs for the train data are given, is referred to as supervised machine learning\citep{prml}. The alternative is unsupervised machine learning\citep{prml}, which often results in finding groups of similar data points (clustering), without knowing the actual labels. Note that the combination of supervised and unsupervised data, known as semi supervised learning, is also possible\citep{semiSup}. Imagine a dataset with 5000 webpages that need to be grouped into 10 distinct categories, e.g. science, nature, cooking, ... . Only 100 of the 5000 pages in the train set are labelled. An approach to solve this problem could be to first cluster the pages in similar groups using unsupervised learning. As soon as a group contains a single labelled page, all pages in the group can be labelled accordingly, as clustering returns groups of similar samples. Semi supervised learning has the advantage that one can also use unlabelled data, which is often easier and cheaper to obtain, unlike labelled data which is usually quite rare; if there was a fast and easy way to label the data then there would not be a need for machine learning.
 
 \npar
 
-Machine learning can be used for emotion recognition to find patterns in features extracted from physiological signals. The output of the machine learning algorithm is a prediction of the subject's emotional state. The general process of machine learning is as follows, the process starts with gathering EEG data, from which features are extracted. These features are then fed to a machine learning algorithm, which outputs a prediction.
+Machine learning can be used for emotion recognition to find patterns in features extracted from physiological signals\citep{DEAP,ExtendedPaper}. The output of the machine learning algorithm is a prediction of the subject's emotional state. The general process of machine learning is as follows, the process starts with gathering EEG data, from which features are extracted. These features are then fed to a machine learning algorithm, which outputs a prediction.
 
 \npar
 
-To recognise emotion in the brain, features need to be extracted from the physiological signals. In this thesis two categories of physiological features are observed. non-EEG features and EEG features. Non-EEG features are physiological signals like heart rate, skin conductivity, respiration rate, ... These features are more convenient to obtain as they do not require one to mount an EEG cap to a subjects scalp. 
+To recognise emotion in the brain, features need to be extracted from the physiological signals. In this thesis, two categories of physiological features are observed: non-EEG features and EEG features. Non-EEG features are physiological signals like heart rate, skin conductivity, respiration rate, etc . These features are more convenient to obtain as they do not require one to mount an EEG cap to a subjects scalp. 
 
 \npar
 
@@ -141,7 +125,7 @@ EEG features, on the other hand, are features extracted from the EEG measurement
 
 \subsection{Over and underfitting / high bias and high variance}
 
-Over and underfitting is a common problem in many machine learning projects. An algorithm that 'overfits the data' is able to recognise seen sample points very well. However when the algorithm is tested on unseen points, the performance might be a lot lower than expected.
+Over and underfitting is a common problem in many machine learning projects\citep{prml}. An algorithm that 'overfits the data' is able to recognise seen sample points very well. However when the algorithm is tested on unseen points, the performance might be a lot lower than expected.
 
 \mijnfiguur{width=0.9\textwidth}{overunderfitting}{Overfitting versus underfitting\cite{overunderfittingFig}.}
 
@@ -197,58 +181,6 @@ Another point to note is that even though a simple limited subset of features mi
 
 Additionally, a lot of different features are reported in the literature, as you can see in Table \ref{diffFeat}. This thesis tries to overcome this problem, by comparing a large set of features with different feature selection methods to the features reported in literature.
 
-%data
-\subsection{Dataset}
-One of the most used datasets in the context of emotion recognition is the Dataset for Emotion Analysis using Physiological Signals (DEAP)\nomenclature{DEAP}{Dataset for Emotion Analysis using Physiological Signals} dataset\cite{DEAP}. This dataset consists of several parts, the first part is a rating of 120 music videos by 14 - 16 persons. Each video is rated for valence, arousal and dominance on a scale ranging from 1 to 9. This part of the dataset is not used during this thesis, because it contains no EEG recordings.
 
-\npar
-
-The next part of the dataset is the physiological experiment that contains emotional reactions of 32 subjects. The emotional reactions were triggered using music video excerpts; each subject watched 40 one-minute videos, while several physiological signals were recorded. These physiological signals consist of 32 channel 512Hz EEH and peripheral physiological signals. More concretely, this dataset contains following signals:
-\begin{table}[]
-\centering
-\caption{The available signals in the DEAP dataset}
-\label{DEAPSignals}
-\begin{tabular}{l|ll|l|ll}
-\textbf{Channel} & \textbf{Name} & \textbf{Category} & \textbf{Channel} & \textbf{Name}    & \textbf{Category} \\ \hline
-\textbf{1}       & Fp1           & EEG               & \textbf{21}      & F8               & EEG               \\
-\textbf{2}       & AF3           & EEG               & \textbf{22}      & FC6              & EEG               \\
-\textbf{3}       & F3            & EEG               & \textbf{23}      & FC2              & EEG               \\
-\textbf{4}       & F7            & EEG               & \textbf{24}      & Cz               & EEG               \\
-\textbf{5}       & FC5           & EEG               & \textbf{25}      & C4               & EEG               \\
-\textbf{6}       & FC1           & EEG               & \textbf{26}      & T8               & EEG               \\
-\textbf{7}       & C3            & EEG               & \textbf{27}      & CP6              & EEG               \\
-\textbf{8}       & T7            & EEG               & \textbf{28}      & CP2              & EEG               \\
-\textbf{9}       & CP5           & EEG               & \textbf{29}      & P4               & EEG               \\
-\textbf{10}      & CP1           & EEG               & \textbf{30}      & P8               & EEG               \\
-\textbf{11}      & P3            & EEG               & \textbf{31}      & PO4              & EEG               \\
-\textbf{12}      & P7            & EEG               & \textbf{32}      & O2               & EEG               \\
-\textbf{13}      & PO3           & EEG               & \textbf{33}      & hEOG             & non-EEG           \\
-\textbf{14}      & O1            & EEG               & \textbf{34}      & vEOG             & non-EEG           \\
-\textbf{15}      & Oz            & EEG               & \textbf{35}      & zEMG             & non-EEG           \\
-\textbf{16}      & Pz            & EEG               & \textbf{36}      & tEMG             & non-EEG           \\
-\textbf{17}      & Fp2           & EEG               & \textbf{37}      & GSR              & non-EEG           \\
-\textbf{18}      & AF4           & EEG               & \textbf{38}      & respiration belt & non-EEG           \\
-\textbf{19}      & Fz            & EEG               & \textbf{39}      & plethysmograph   & non-EEG           \\
-\textbf{20}      & F4            & EEG               & \textbf{40}      & temperature      & non-EEG          
-\end{tabular}
-\end{table}
-
-\npar
-
-There also exists a preprocessed version of the physiological experiment database, where the EEG recordings were downsampled to 128Hz and noise and EOG artifact removal was performed. This dataset is used during this thesis.
-
-\npar
-
-Additionally facial video for 22 of the 32 subjects was recorded, so research in facial expressions is also possible with this dataset. These videos are also rated on 4 scales: arousal, valence, dominance and liking. The liking component indicates how much the person liked the video excerpt and should not be confused with the valence component; it inquires information about the participants' tastes, not their feelings, i.e. a person can like a video that triggers angry or sad emotions. However strong correlations were observed\citep{DEAP}. The liking rates are neglected, since they are not part of the emotion space.
-
-\npar
-
-For assessment of these scales, the self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins}, were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scales with pictures, each picture corresponds to a discrete value. The user can click anywhere in between the different figures, which makes the scales continuous. All dimension are given by a float between 1 and 9. In this thesis, a preprocessing step scaled and translated these values to ensure they range between 0 and 1, a more convenient interval.
-
-\npar
-
-The used SAM figures are shown in Figure \ref{SAM}. The first row gives the valence scale, ranging from sad to happy. The second row shows the arousal scale, ranging from bored to excited. The last row represents the different dominance levels. The left figure represents a submissive emotion, while the right figure corresponds with a dominant feeling.
-
-\mijnfiguur{width=0.5\textwidth}{SAM}{The images used for the SAM\cite{DEAP}.}
 
 
