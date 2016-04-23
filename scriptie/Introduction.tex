@@ -32,7 +32,7 @@ Note that the 10/20 system does not require a fixed number of channels, some exp
 
 Electrical activity in the brain is generated when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighbouring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significant enough, it is measured by the EEG surface electrodes. EEG can thus only capture synchronized activity of many, many neurons\cite{ExtendedPaper}, which explains its low spatial resolution capabilities. EEG measurements consist of electrical potentials of different channels, measures over time, like shown in Figure \ref{eegexample}.
 
-\mijnfiguur{width=0.9\textwidth}{eegexample}{EEG measurements is a trace electrical potentials of different channels over time.} %TODO labels
+\mijnfiguur{width=0.9\textwidth}{eegexample}{EEG measurements is a trace electrical potentials of different channels over time.} 
 
 Signals originating from the cortex, close to the skull, are easier to measure, while signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally, other artifacts like eye and muscle movement add a lot of noise to the signal, which explains why EEG signals are very noisy by nature. Noise removal techniques are therefor advised\citep{noiseRem}. Note that even though EEG data contains a lot of noise and has a low spatial resolution, it still provides significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
 
@@ -53,10 +53,22 @@ In the frequency domain, brain waves are usually split up into different bands\c
 
 \npar
 
-Note that EEG only records electrical activity of the brain, other methods like magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} use magnetic fields to measure brain activity\citep{meg}. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile. As a result, this method was not explored during this thesis. %TODO other methods 
+Note that EEG only records electrical activity of the brain, other methods like magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} use magnetic fields to measure brain activity\citep{meg}. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile. As a result, this method was not explored during this thesis. 
 
-\subsection{Person specific classification versus cross-subject classification}
-There exists two types of BCI applications. The first type is a person specific BCI, where the BCI interface is calibrated for a single subject. The second type is a general BCI interface that works 'cross-subject', meaning that it should be able to work for different persons. It is much harder to achieve good results for a cross-subject BCI, as EEG data is very personal from nature\citep{DEAP}. While transfer learning has provided good results in imaginary motion recognition in the past, little research has been done for transfer learning in the context of emotion recognition. Person specific classifiers are often used, due to the fact that finding person independent EEG features is still an ongoing topic of research\citep{DEAP}.
+\npar
+
+Some alternative methods to measure brain activity are:
+\begin{itemize}
+\item Functional magnetic resonance (fMRI) \nomenclature{fMRI}{Functional Magnetic Resonance}\citep{fMRI}: works by detecting changes in blood oxygenation and blood flow. An active area of the brain consumes more oxygen and has an increased blood flow.
+
+\item Computed tomography (CT) \nomenclature{CT}{Computed Tomography}\citep{CT}: uses X-rays to create an image of the brain. 
+
+\item Positron emission tomography (PET) \nomenclature{Positron Emission Tomography}\citep{PET}: this methods uses trace amounts of short-lived radioactive material. When this material undergoes decay, a positron is emitted that is picked up by a detector.
+
+\item Near infrared spectroscopy (NIRS) \nomenclature{NIRS}{Near Infrared Spectroscopy}\citep{NIRS}: an optical technique to measure blood oxygenation in the brain. This technique works by shining light in the near infrared part of the spectrum through the skull and measuring how much remerging light is attenuated.
+
+\end{itemize} 
+This thesis uses EEG data, because most of the similar research found in literature also focussed on EEG.
 
 \section{Emotion recognition}
 
