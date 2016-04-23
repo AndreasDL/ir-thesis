@@ -456,66 +456,6 @@ This problem does not occur for random forest though, as combinations of feature
 \subsection{Dimensionality Reduction methods}
 The algorithms described below perform a dimensionality reduction, often by projecting a high dimensional to a lower dimensional features space. Looking at coefficients of these trained models, indicate what features are important.
 
-\subsubsection{Common Spatial Patterns}
-Common Spatial Patterns (CSP)\nomenclature{CSP}{Common Spatial Patterns} is a supervised technique that has its origin in the optimization of motor imagery BCIs\citep{CSPSeba}. It is a common technique in BCI research\cite{ErrorPotentials,svmldacomp,currTrends}. CSP creates linear combinations of the original EEG channels that maximize the variance for one class while simultaneously minimizing the variance of the other class \cite{ErrorPotentials}. One disadvantage of using CSP is that the default version can only distinguish between 2 classes, though one can easily aggregate multiple CSP models to create one-vs-one and one-vs-all models, similarly to the one-vs-one and one-vs-all SVMs.
-
-\npar
-
-The input for a CSP filter is a set of N labelled samples $E_j (j=1...N)$, with dimension $N_{ch}$ x $T_j$, with $N_{ch}$ being the number of EEG channels and $T_j$ the number of samples in a single trial\citep{CSPSeba}.
-
-\npar
-
-First the train data is split into two classes, before computing the covariance matrices of both classes.
-\begin{center}
-$\Sigma_1 = {\displaystyle \sum_{j \in C_1}} X\frac{E_jE_j^T}{trace(E_jE_j^T)}$ \\
-$\Sigma_2 = {\displaystyle \sum_{j \in C_2}} X\frac{E_jE_j^T}{trace(E_jE_j^T)}$ \\
-\end{center}
-Note that the average of $E_j$ is expected to be zero, because a bandpass filter is applied that makes the DC component of the signal zero. The next step is to calculate the composite covariance matrix.
-\begin{center}
-$\Sigma = \Sigma_1 + \Sigma2$
-\end{center}
-
-\npar
-
-Next the covariance matrix is diagonalised by calculating the eigenvalues and eigenvectors of $\Sigma$.
-\begin{center}
-$V^T\Sigma V = P$
-\end{center}
-The eigenvalues are then found on the diagonal of P, each eigenvalue corresponds to an eigenvector found in the columns of V.
-
-\npar
-
-The next step is the whitening transformation.
-\begin{center}
-$U = P^{\frac{1}{2}}V^T$ \\
-\end{center}
-Which results in
-\begin{center}
-$U\Sigma U^T = 1$
-\end{center}
-Next the following two matrices are calculated:
-\begin{center}
-$R_1 = U\Sigma_1U^T$\\
-$R_2 = U\Sigma_2U^T$
-\end{center}
-$R_1$ is then diagonalised
-\begin{center}
-$Z^TR_1Z = D = diag(d1, ..., d_m)$
-\end{center}
-The eigenvalues on the diagonal are then sorted, as larger eigenvalues correspond to higher importances. %TODO
-Next the filters are determined by:
-\begin{center}
-$W = Z^TU$
-\end{center}
-The EEG channels can then be filtered as follows:
-\begin{center}
-$E^{CSP} = WE^{orig}$
-\end{center}
-
-\npar
-
-Since CSP filters create simple linear combination of incoming channels, they can also be used as feature selection mechanism,albeit in a limited fashion. The result of a CSP transformation are again a set of EEG channels, where each channel is a combination of the previous channels. The first and last row of the resulting matrix $W$ shows the coefficients for which the variance is maximized between the two signals. Looking at those coefficients, one can determine which channels are of more importance than other and thus which channel locations have the most influence on emotion.
-
 \subsubsection{Linear Discriminant Analysis}
 Linear Discriminant Analysis (LDA)\nomenclature{LDA}{Linear Disciminant Analysis}, is a machine learning technique often used in combination with CSP\cite{ErrorPotentials,svmldacomp,currTrends}. LDA looks for a projection of the data where the data is linearly separable, as shown in Figure \ref{lda}. Looking at the coefficients of the LDA model, one can again determine the importance of the different features.
 
