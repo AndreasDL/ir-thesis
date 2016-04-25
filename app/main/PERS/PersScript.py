@@ -21,7 +21,7 @@ POOL_SIZE = 5
 
 
 class PersScript():
-    def __init__(self, feats, stopperson, threshold, classifier):
+    def __init__(self, feats, stopperson, threshold, classifier, ddpad = "../../../dumpedData/persScript/"):
         self.featExtr = FE.MultiFeatureExtractor()
         self.feats = feats
         if feats == 'EEG':
@@ -37,7 +37,7 @@ class PersScript():
 
         self.classifier = classifier
 
-        self.ddpad = "../../../dumpedData/persScript/"
+        self.ddpad = ddpad
         if self.classifier.name == "ContArousalClasses":
             self.ddpad += "arousal/"
         else:
@@ -622,6 +622,17 @@ class PersScript():
                 h.write('\n')
         h.close()
 
+
+        h = open(self.rpad + "test_accs.csv",'w')
+        for person, personData in enumerate(self.accs):
+            model =personData[1]
+
+            h.write(str(person) + ';')
+            for metric in model:
+                h.write(str(metric[7]) + ';')
+            h.write('\n')
+
+        h.close()
 
     def genPlot(self,avgs, stds, lbls, title):
 

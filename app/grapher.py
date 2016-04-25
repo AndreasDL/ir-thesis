@@ -1,5 +1,17 @@
+import matplotlib
 import matplotlib.pylab as plt
 import numpy as np
+import Classificators
+from main.PERS.PersScript import PersScript
+from main.PERS.RFPers import RFPers
+from personLoader import load,dump
+
+
+font = {'family': 'normal',
+        'weight': 'bold',
+        'size': 32}
+
+matplotlib.rc('font', **font)
 
 
 def genPlot(avgs,stds,lbls,title,bar_colors=None,fpad="../results/plots/"):
@@ -30,8 +42,8 @@ def genPlot(avgs,stds,lbls,title,bar_colors=None,fpad="../results/plots/"):
 
     plt.xticks(range(0, len(avgs), 1))
     plt.xlim([-0.2, len(avgs)])
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.25),
-              ncol=4, fancybox=True, shadow=True)
+    # ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.25),
+    #          ncol=4, fancybox=True, shadow=True)
 
     plt.savefig(fname)
 
@@ -52,7 +64,7 @@ def RFPers():
     title = 'accuracies for arousal'
     genPlot(avgs, stds, lbls, title)
 
-def valence():
+def best_valence():
     clrs = ['r', 'r', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b']
 
     # all valence
@@ -81,7 +93,7 @@ def valence():
     title = 'valence ALL vs EEG vs PHY'
     genPlot(avgs, stds, lbls, title, clrs)
 
-def arousal():
+def best_arousal():
     clrs = ['r','r','b','b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b']
 
     # all valence
@@ -110,6 +122,130 @@ def arousal():
     title = 'arousal ALL vs EEG vs PHY'
     genPlot(avgs, stds, lbls, title, clrs)
 
+def svm_rbf_accs():
+    #get testaccs
+    test_accs = []
+
+    model = PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), "../dumpedData/persScript/")
+    model.run()
+
+    for person in model.accs:
+        model = person[1]
+
+        m = []
+        for metric in model:
+            m.append(metric[7])
+        test_accs.append(m)
+
+    test_accs = np.array(test_accs)
+    test_accs = test_accs[:,np.array([0,1,2,3,4,5,6,7,9,10,11])]
+
+    avgs = np.average(test_accs,axis=0)
+    stds = np.std(test_accs, axis=0)
+
+    genPlot(avgs,
+            stds,
+            ['R', 'MI', 'dC', 'LR', 'L1', 'L2', 'SVM', 'RF', 'ANOVA', 'LDA', 'PCA'],
+            'valence Accs RBF SVM'
+    )
+
+    # get testaccs
+    test_accs = []
+
+    model = PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(), "../dumpedData/persScript/")
+    model.run()
+
+    for person in model.accs:
+        model = person[1]
+
+        m = []
+        for metric in model:
+            m.append(metric[7])
+        test_accs.append(m)
+
+    test_accs = np.array(test_accs)
+    test_accs = test_accs[:, np.array([0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11])]
+
+    avgs = np.average(test_accs, axis=0)
+    stds = np.std(test_accs, axis=0)
+
+    genPlot(avgs,
+            stds,
+            ['R', 'MI', 'dC', 'LR', 'L1', 'L2', 'SVM', 'RF', 'ANOVA', 'LDA', 'PCA'],
+            'arousal Accs RBF SVM'
+            )
+
+def phyeegall():
+    # get testaccs
+    test_accs = []
+
+    all = []
+    model = PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), "../dumpedData/persScript/")
+    model.run()
+    for person in model.accs:
+        all.append(person[1][7][7])
+    test_accs.append(all)
+
+    all = []
+    model = PersScript("EEG", 32, 30, Classificators.ContValenceClassificator(), "../dumpedData/persScript/")
+    model.run()
+    for person in model.accs:
+        all.append(person[1][7][7])
+    test_accs.append(all)
+
+    all = []
+    model = PersScript("PHY", 32, 30, Classificators.ContValenceClassificator(), "../dumpedData/persScript/")
+    model.run()
+    for person in model.accs:
+        all.append(person[1][7][7])
+    test_accs.append(all)
+
+    test_accs = np.array(test_accs)
+
+    avgs = np.average(test_accs, axis=1)
+    stds = np.std(test_accs, axis=1)
+    lbls = ['ALL','EEG','non-EEG']
+
+    genPlot(avgs,
+            stds,
+            lbls,
+            'Valence RF acc for different feat sets'
+            )
+
+    test_accs = []
+
+    all = []
+    model = PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(), "../dumpedData/persScript/")
+    model.run()
+    for person in model.accs:
+        all.append(person[1][7][7])
+    test_accs.append(all)
+
+    all = []
+    model = PersScript("EEG", 32, 30, Classificators.ContArousalClassificator(), "../dumpedData/persScript/")
+    model.run()
+    for person in model.accs:
+        all.append(person[1][7][7])
+    test_accs.append(all)
+
+    all = []
+    model = PersScript("PHY", 32, 30, Classificators.ContArousalClassificator(), "../dumpedData/persScript/")
+    model.run()
+    for person in model.accs:
+        all.append(person[1][7][7])
+    test_accs.append(all)
+
+    test_accs = np.array(test_accs)
+
+    avgs = np.average(test_accs, axis=1)
+    stds = np.std(test_accs, axis=1)
+    lbls = ['ALL', 'EEG', 'non-EEG']
+
+    genPlot(avgs,
+            stds,
+            lbls,
+            'Arousal RF acc for different feat sets'
+            )
+
 if __name__ == '__main__':
-    valence()
-    arousal()
+    phyeegall()
