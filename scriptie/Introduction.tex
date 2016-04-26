@@ -3,32 +3,39 @@
 
 \section{Emotion recognition}
 
-Psychology makes a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. The expression consists of many parts, including the facial expression, body language and voice concern\citep{EMSpeech}. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. This makes emotion recognition based on physiological signals more robust to social masking\citep{PhytoEm}, the process where an individual masks or hides their emotions to conform to social pressure. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion.
 
-\subsection{Valence/Arousal classification model for emotion}
+Human-to-machine communication, where humans communicate with machines or computer agents, is become more and more common\citep{hummaccom}. Fully understanding human communication is a quite complex problem. In addition to verbal communication, non-verbal communication is also used to exchange information\citep{EmotionRelativePower}. Emotion recognition is becoming an increasingly important field, to better understand non-verbal communication\citep{RealTimeEEGEmotion}.
+
+\npar 
+
+Psychology makes a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. Expression consists of many parts, including facial expression, body language and voice concern\citep{EMSpeech}. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. This makes emotion recognition based on physiological signals more robust to social masking\citep{PhytoEm}. Social masking is the process where an individual masks or hides their emotions to conform to social pressure. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion.
+
+\npar
+
 \label{valarrdomspace}
-
 Before emotions can be recognized, an objective class model describing different emotions is needed. A simple way of achieving this is using several discrete emotions, e.g. anger, joy, sad and pleasure. A more convienent model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, which places emotions in a two dimensional space. The main advantage of using a continuous multidimensional model, is that all emotions are modelled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
 
 \npar
 
- Arousal indicates how active a person is and ranges from inactive/bored to active/excited. The valence indicates if the emotion is perceived as positive or negative. Even though arousal and valence describe emotions quite well, a third dimension, dominance, can also be added. The third dimension, dominance, indicates how strong the emotional feeling was and ranges from a weak feeling to an empowered, overwhelming feeling. The dominance component can aid to filter out samples of strong feelings, since feelings with low dominance are less likely to show significant effects.
+The valence-arousal model consists of two dimensions. Arousal indicates how active a person is and ranges from inactive/bored to active/excited. The valence indicates if the emotion is perceived as positive or negative. Even though arousal and valence describe emotions quite well, a third dimension, dominance, can also be added. This third dimension indicates how strong the emotional feeling was and ranges from a weak feeling to an empowered, overwhelming feeling. The dominance component can aid to filter out samples of strong feelings, since feelings with low dominance are less likely to show significant effects.
 
 \mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane\citep{ValArrFig}}
 
-\subsection{Getting the physiological signals}
+\subsection{Recording of physiological signals}
 
-%TODO
-A Brain Computer Interface (BCI)\nomenclature{BCI}{Brain Computer Interface}, creates a direct link between the brain and the computer\cite{LangModel}, that enables a subject to control the computer using only his mind. This means that physical actions like moving a mouse or typing on a keyboard are no longer needed to control a computer. A BCI is usually composed of two components. The first component is the extraction component, which extracts brain signals from the brain. The second component is a decoder that interprets signals translates them to device commands.
-
-\mijnfiguur{width=0.9\textwidth}{bcicomponents}{The basic components of a BCI system\citep{bcicomps}}
-
-\subsection{Electroencephalography (EEG)}
-Different technologies exist to record brain activity. The most convenient method is electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery. In case of EEG, they simply measure electrical activity using electrodes placed on the scalp.
+Now that the classification model is defined, the collection of physiological signals must be explained. As mentioned before it is possible to do automatic emotion recognition based on physiological signals. Physiological signals consists of two subgroups, brain activity and other signals, e.g. heart rate, respiration rate, etc. Different technologies exist to record brain activity. The most convenient method is electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery. In case of EEG, they simply measure electrical activity using electrodes placed on the scalp.
 
 \npar
 
-EEG is a technique that measures electrical activity with electrodes that are placed on the scalp. To ensure that experiments are replicable, standards for locations of electrodes have been developed. One of these systems is the 10/20 system, an internationally recognized method to describe the location of scalp electrodes\cite{TenTwentyManual}. The numbers 10 and 20 refer to the distances between the electrodes, which are either 10\% or 20\% of the total front-back or left-right distance of the scalp, this is depicted in Figure \ref{1020ElectrodePlacementSystem}. 
+Electrical activity in the brain is generated when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighbouring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significant enough, it is measured by the EEG surface electrodes. EEG can thus only capture synchronized activity of many, many neurons\cite{ExtendedPaper}, which explains its low spatial resolution capabilities. EEG measurements consist of electrical potentials of different channels, measures over time, like shown in Figure \ref{eegexample}.
+
+\mijnfiguur{width=0.9\textwidth}{eegexample}{EEG measurements is a trace electrical potentials of different channels over time.\citep{EEGExampleFig}}
+
+Signals originating from the cortex, close to the skull, are easier to measure, while signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally, other artifacts like eye and muscle movement add a lot of noise to the signal, which explains why EEG signals are very noisy by nature. Noise removal techniques are therefor advised\citep{noiseRem}. Note that even though EEG data contains a lot of noise and has a low spatial resolution, it still provides significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
+
+\npar
+
+To ensure that experiments are replicable, standards for locations of electrodes have been developed. One of these systems is the 10/20 system, an internationally recognized method to describe the location of scalp electrodes\cite{TenTwentyManual}. The numbers 10 and 20 refer to the distances between the electrodes, which are either 10\% or 20\% of the total front-back or left-right distance of the scalp, this is depicted in Figure \ref{1020ElectrodePlacementSystem}. 
 
 \mijnfiguur{width=0.8\textwidth}{1020ElectrodePlacementSystem}{The electrode placement of a 23 channel system\cite{1020Site}.}
 
@@ -44,17 +51,9 @@ Note that no central lobe exists; the C letter is only used for identification p
 
 \mijnfiguur{width=0.7\textwidth}{1020labels}{Placement of the 32 electrodes in this thesis.}
 
-Electrical activity in the brain is generated when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighbouring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significant enough, it is measured by the EEG surface electrodes. EEG can thus only capture synchronized activity of many, many neurons\cite{ExtendedPaper}, which explains its low spatial resolution capabilities. EEG measurements consist of electrical potentials of different channels, measures over time, like shown in Figure \ref{eegexample}.
+%Two different types of EEG channels exist, monopolar and dipolar. A monopolar channel records the potential difference of a signal, compared to a neutral electrode, usually connected to an ear lobe of mastoid. A bipolar channel, on the otherhand, is obtained by subtracting two monopolar EEG signals, which improves Sound to Noise ratio (SNR) \nomenclature{SNR}{Sound to Noise Ratio} by removing shared artifacts\cite{MonoBiPolar}. 
 
-\mijnfiguur{width=0.9\textwidth}{eegexample}{EEG measurements is a trace electrical potentials of different channels over time.\citep{EEGExampleFig}}
-
-Signals originating from the cortex, close to the skull, are easier to measure, while signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally, other artifacts like eye and muscle movement add a lot of noise to the signal, which explains why EEG signals are very noisy by nature. Noise removal techniques are therefor advised\citep{noiseRem}. Note that even though EEG data contains a lot of noise and has a low spatial resolution, it still provides significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
-
-\npar
-
-Two different types of EEG channels exist, monopolar and dipolar. A monopolar channel records the potential difference of a signal, compared to a neutral electrode, usually connected to an ear lobe of mastoid. A bipolar channel, on the otherhand, is obtained by subtracting two monopolar EEG signals, which improves Sound to Noise ratio (SNR) \nomenclature{SNR}{Sound to Noise Ratio} by removing shared artifacts\cite{MonoBiPolar}. 
-
-\npar 
+%\npar 
 
 In the frequency domain, brain waves are usually split up into different bands\cite{EmotionRelativePower,WavesSite}, each band has a different medical interpretation. These wavebands \label{wavebands} are:
 \begin{enumerate}
@@ -67,11 +66,10 @@ In the frequency domain, brain waves are usually split up into different bands\c
 
 \npar
 
-As mentioned before, EEG is used in this thesis, because it is a convenient method. Alternative methods to measure brain activity are:
+Even though EEG is used in this thesis, alternative methods to measure brain activity exist. What follows is an overview of some of these techniques.
 \begin{itemize}
 
 \item Magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} use magnetic fields to measure brain activity\citep{meg}. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile.
-
 
 \item Functional magnetic resonance (fMRI) \nomenclature{fMRI}{Functional Magnetic Resonance}\citep{fMRI}: works by detecting changes in blood oxygenation and blood flow. An active area of the brain consumes more oxygen and has an increased blood flow.
 
@@ -82,6 +80,8 @@ As mentioned before, EEG is used in this thesis, because it is a convenient meth
 \item Near infrared spectroscopy (NIRS) \nomenclature{NIRS}{Near Infrared Spectroscopy}\citep{NIRS}: an optical technique to measure blood oxygenation in the brain. This technique works by shining light in the near infrared part of the spectrum through the skull and measuring how much remerging light is attenuated.
 
 \end{itemize} 
+
+In addition to brain activity, other physiological signals are also available. The most known signal is the heart rate, which measures the number of contractions per minute. Respiration rate gives to number of breaths a human takes in one minute\citep{DEAP}.. Another physiological signal is the galvanic skin response. The galvanic skin response measure the electrical characteristics of the skin\citep{GSR, DEAP}. In addition to the electrical characteristics, the temperature of the skin can also be measured. The last used physiological signal in this thesis is the plethysmograph. A plethysmograph measures changes in volume within an organ\citep{DEAP}, which can be used to extract a subject's blood pressure. 
 
 \section{Machine learning}
 Machine learning is the missing link between the EEG data the emotion recognition. Machine learning is a very broad domain. As a result, this discussion will be limited to an introduction of the basic machine learning concepts with the focus on the application of machine learning and machine learning techniques. 
@@ -144,15 +144,16 @@ One should be careful for these problems, when designing a machine learning algo
 
 \subsection{Machine learning for emotion recognition}
 
-Machine learning can be used for emotion recognition to find patterns in features extracted from physiological signals\citep{DEAP,ExtendedPaper}. The output of the machine learning algorithm is a prediction of the subject's emotional state. The general process of machine learning is as follows, the process starts with gathering EEG data, from which features are extracted. These features are then fed to a machine learning algorithm, which outputs a prediction.
+Machine learning can be used for emotion recognition to find patterns in features extracted from physiological signals\citep{DEAP,ExtendedPaper}. The output of the machine learning algorithm is a prediction of the subject's emotional state. The general process of machine learning is as follows, the process starts with gathering EEG data, from which features are extracted. These features are then fed to a machine learning algorithm, which outputs a prediction. This is shown in Figure \ref{eegtopred}
 
-\npar
+\mijnfiguur{width=0.9\textwidth}{eegtopred}{The basic setup for emotion recognition with machine learning. In the first step, physiological signals are gathered. Next: features are extracted and passed to a machine learning algorithm. The output of the machine algorithm is a prediction of the emotional state, in the valence/arousal space. }
 
-To recognise emotion in the brain, features need to be extracted from the physiological signals. In this thesis, two categories of physiological features are observed: non-EEG features and EEG features. Non-EEG features are physiological signals like heart rate, skin conductivity, respiration rate, etc . These features are more convenient to obtain as they do not require one to mount an EEG cap to a subjects scalp. 
+To recognise emotion in the brain, features need to be extracted from the physiological signals. In this thesis, two categories of physiological features are observed: non-EEG features and EEG features. Non-EEG features are physiological signals like heart rate, skin conductivity, respiration rate, etc. EEG features, on the other hand, are features extracted from the EEG measurements of the subjects. 
 
-\npar
+\section{Problem statement}
 
-EEG features, on the other hand, are features extracted from the EEG measurements of the subjects. Unfortunately, the literature does not fully agree on a specific set of features nor does it agree on what channels and/or waveband are most important for emotion recognition. This problem is addressed in this thesis, by ranking a large set of features using different features selection methods. However the literature does agree on certain things; the right hemisphere of a subject is generally speaking, more active during negative emotions than the left hemisphere, which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The features are discussed in more depth in \ref{featuresExplained}.
+
+Unfortunately, the literature does not fully agree on a specific set of features nor does it agree on what channels and/or waveband are most important for emotion recognition. This problem is addressed in this thesis, by ranking a large set of features using different features selection methods. However the literature does agree on certain things; the right hemisphere of a subject is generally speaking, more active during negative emotions than the left hemisphere, which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The features are discussed in more depth in \ref{featuresExplained}.
 
 
 
