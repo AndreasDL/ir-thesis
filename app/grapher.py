@@ -15,7 +15,7 @@ font = {'family': 'normal',
 matplotlib.rc('font', **font)
 
 
-def genPlot(avgs,stds,lbls,title,bar_colors=None,fpad="../results/plots/"):
+def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../results/plots/"):
 
     fname = fpad + 'accComp_' + str(title) + '.png'
 
@@ -46,6 +46,8 @@ def genPlot(avgs,stds,lbls,title,bar_colors=None,fpad="../results/plots/"):
     # ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.25),
     #          ncol=4, fancybox=True, shadow=True)
 
+    ax.set_xlabel(xLbl)
+    ax.set_ylabel(yLbl)
     plt.savefig(fname)
 
     plt.show()
@@ -147,7 +149,9 @@ def svm_rbf_accs():
     genPlot(avgs,
             stds,
             ['R', 'MI', 'dC', 'LR', 'L1', 'L2', 'SVM', 'RF', 'ANOVA', 'LDA', 'PCA'],
-            'valence Accs RBF SVM'
+            'valence Accs RBF SVM',
+            'model',
+            'test acc'
     )
 
     # get testaccs
@@ -173,7 +177,9 @@ def svm_rbf_accs():
     genPlot(avgs,
             stds,
             ['R', 'MI', 'dC', 'LR', 'L1', 'L2', 'SVM', 'RF', 'ANOVA', 'LDA', 'PCA'],
-            'arousal Accs RBF SVM'
+            'arousal Accs RBF SVM',
+            'model',
+            'test acc'
             )
 
 def phyeegall():
@@ -210,7 +216,9 @@ def phyeegall():
     genPlot(avgs,
             stds,
             lbls,
-            'Valence RF acc for different feat sets'
+            'Valence RF acc for different feat sets',
+            'feature Set',
+            'test acc'
             )
 
     test_accs = []
@@ -245,7 +253,9 @@ def phyeegall():
     genPlot(avgs,
             stds,
             lbls,
-            'Arousal RF acc for different feat sets'
+            'Arousal RF acc for different feat sets',
+            'feature Set',
+            'test acc'
             )
 
 def linear_regression_example():
@@ -288,8 +298,8 @@ def linear_regression_example():
         print(str(X[i]) + ';' + str(Y[i]))
 
 if __name__ == '__main__':
-    linear_regression_example()
-
+    svm_rbf_accs()
+    phyeegall()
 
 
 
