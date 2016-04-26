@@ -3,12 +3,11 @@
 
 \section{Emotion recognition}
 
-
-Human-to-machine communication, where humans communicate with machines or computer agents, is become more and more common\citep{hummaccom}. Fully understanding human communication is a quite complex problem. In addition to verbal communication, non-verbal communication is also used to exchange information\citep{EmotionRelativePower}. Emotion recognition is becoming an increasingly important field, to better understand non-verbal communication\citep{RealTimeEEGEmotion}.
+Human-to-machine communication, where humans communicate with machines or computer agents, is becoming more and more common\citep{hummaccom}. Fully understanding human communication is a complex problem. In addition to verbal communication, non-verbal communication is also used to exchange information\citep{EmotionRelativePower}. To better understand human-to-machine communication, more insight in the non-verbal communication is needed. Emotion recognition is becoming an increasingly important field as a result\citep{RealTimeEEGEmotion}.
 
 \npar 
 
-Psychology makes a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. Expression consists of many parts, including facial expression, body language and voice concern\citep{EMSpeech}. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. This makes emotion recognition based on physiological signals more robust to social masking\citep{PhytoEm}. Social masking is the process where an individual masks or hides their emotions to conform to social pressure. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion.
+Emotion recognition tries to recognise a subject's emotional state. Psychology makes a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. Expression consists of many parts, including facial expression, body language and voice concern\citep{EMSpeech}. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. This makes emotion recognition based on physiological signals more robust to social masking\citep{PhytoEm}. Social masking is the process where an individual masks or hides their emotions to conform to social pressure. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion.
 
 \npar
 
@@ -23,7 +22,7 @@ The valence-arousal model consists of two dimensions. Arousal indicates how acti
 
 \subsection{Recording of physiological signals}
 
-Now that the classification model is defined, the collection of physiological signals must be explained. As mentioned before it is possible to do automatic emotion recognition based on physiological signals. Physiological signals consists of two subgroups, brain activity and other signals, e.g. heart rate, respiration rate, etc. Different technologies exist to record brain activity. The most convenient method is electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery. In case of EEG, they simply measure electrical activity using electrodes placed on the scalp.
+Now that the classification model is defined, the collection of physiological signals will be explained. As mentioned before it is possible to do automatic emotion recognition based on physiological signals. Physiological signals consists of two subgroups, brain activity and other signals, e.g. heart rate, respiration rate, etc. Different technologies exist to record brain activity. The most convenient method is electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery. In case of EEG, they simply measure electrical activity using electrodes placed on the scalp.
 
 \npar
 
@@ -51,10 +50,6 @@ Note that no central lobe exists; the C letter is only used for identification p
 
 \mijnfiguur{width=0.7\textwidth}{1020labels}{Placement of the 32 electrodes in this thesis.}
 
-%Two different types of EEG channels exist, monopolar and dipolar. A monopolar channel records the potential difference of a signal, compared to a neutral electrode, usually connected to an ear lobe of mastoid. A bipolar channel, on the otherhand, is obtained by subtracting two monopolar EEG signals, which improves Sound to Noise ratio (SNR) \nomenclature{SNR}{Sound to Noise Ratio} by removing shared artifacts\cite{MonoBiPolar}. 
-
-%\npar 
-
 In the frequency domain, brain waves are usually split up into different bands\cite{EmotionRelativePower,WavesSite}, each band has a different medical interpretation. These wavebands \label{wavebands} are:
 \begin{enumerate}
 \item \textbf{Alpha:} 8-13Hz, indicate how relaxed and/or inactive the brain is.
@@ -81,7 +76,7 @@ Even though EEG is used in this thesis, alternative methods to measure brain act
 
 \end{itemize} 
 
-In addition to brain activity, other physiological signals are also available. The most known signal is the heart rate, which measures the number of contractions per minute. Respiration rate gives to number of breaths a human takes in one minute\citep{DEAP}.. Another physiological signal is the galvanic skin response. The galvanic skin response measure the electrical characteristics of the skin\citep{GSR, DEAP}. In addition to the electrical characteristics, the temperature of the skin can also be measured. The last used physiological signal in this thesis is the plethysmograph. A plethysmograph measures changes in volume within an organ\citep{DEAP}, which can be used to extract a subject's blood pressure. 
+In addition to brain activity, other physiological signals are also used. The most known signal is the heart rate, which measures the number of contractions per minute. Respiration rate gives to number of breaths a human takes in one minute\citep{DEAP}. Another physiological signal is the galvanic skin response. The galvanic skin response measures the electrical characteristics of the skin\citep{GSR, DEAP}. In addition to the electrical characteristics, the temperature of the skin can also be measured. A plethysmograph is another physiological signal, that measures changes in volume within an organ\citep{DEAP}. A plethysmograph can be used to extract a subject's blood pressure and heart rate.
 
 \section{Machine learning}
 Machine learning is the missing link between the EEG data the emotion recognition. Machine learning is a very broad domain. As a result, this discussion will be limited to an introduction of the basic machine learning concepts with the focus on the application of machine learning and machine learning techniques. 
@@ -108,7 +103,7 @@ $\vdots$                        & $\vdots$
 \caption{total area of different houses and their corresponding asking prices.\label{mlexampleTable}}
 \end{table}
 
-One possible way of predicting the asking price of a house is machine learning. Machine learning works in several steps, first you train the machine learning algorithm with a list of asking prices and the corresponding area of the house. This process is called training or fitting and gives the machine learning component an idea to what price corresponds to a house with a certain area. Once trained, the algorithm's output will look like Figure \ref{mlexample}. The black dots represent the data points from Table\ref{mlexampleTable}. The blue line represents the predicted price for different area. The predicted price is simply defined by the total area of the house multiplied by some constant and some constant.
+One possible way of predicting the asking price of a house is machine learning. Machine learning works in several steps, first you train the machine learning algorithm with a list of asking prices and the corresponding area of the house. This process is called training or fitting and gives the machine learning component an idea to what price corresponds to a house with a certain area. Once trained, the algorithm's output will look like Figure \ref{mlexample}. The black dots represent the data points from Table\ref{mlexampleTable}. The blue line represents the predicted price for different area. The predicted price is simply defined by the total area of the house multiplied by some weight.
 
 \mijnfiguur{width=0.9\textwidth}{mlexample}{The price of a house is determined by its total area.}
 
@@ -142,16 +137,14 @@ The function on the right corresponds to an overfit; the function fits or 'goes 
 
 One should be careful for these problems, when designing a machine learning algorithm, because an algorithm should also perform well on unseen samples. One way to check if the algorithm is overfitting, is to take a part of the dataset and label is test set. This set is then neglected during training and only used in the end to evaluate the algorithms performance.
 
-\subsection{Machine learning for emotion recognition}
+\subsection{Feature Selection}
+Feature selection is a technique to select features that perform well, while trying to remove irrelevant features\citep{rfPaper}. The advantages of having a smaller features set is twofold. First having fewer features, will lower the risk of overfitting\citep{rfPaper}. Second, knowing which features are important can help in gaining insight in the processing of emotion by the brain. 
 
-Machine learning can be used for emotion recognition to find patterns in features extracted from physiological signals\citep{DEAP,ExtendedPaper}. The output of the machine learning algorithm is a prediction of the subject's emotional state. The general process of machine learning is as follows, the process starts with gathering EEG data, from which features are extracted. These features are then fed to a machine learning algorithm, which outputs a prediction. This is shown in Figure \ref{eegtopred}
+\npar
 
-\mijnfiguur{width=0.9\textwidth}{eegtopred}{The basic setup for emotion recognition with machine learning. In the first step, physiological signals are gathered. Next: features are extracted and passed to a machine learning algorithm. The output of the machine algorithm is a prediction of the emotional state, in the valence/arousal space. }
+The idea behind feature selection is depicted in Figure \ref{}. 
 
-To recognise emotion in the brain, features need to be extracted from the physiological signals. In this thesis, two categories of physiological features are observed: non-EEG features and EEG features. Non-EEG features are physiological signals like heart rate, skin conductivity, respiration rate, etc. EEG features, on the other hand, are features extracted from the EEG measurements of the subjects. 
-
-\section{Feature Selection}
-%TODO 
+The different feature selection approaches are briefly introduced. A more detailed explanation is given in \ref{FSSel}. The first one is to simple use a statistical metric and remove all features with low correlation to the output. Another approach is to look at the weights of a model. When a machine learning model gives a large weight to a feature, then that feature is considered more important than a feature with an assigned weight close to zero. Embedded methods also exist, they rely on the build in feature selection mechanisms of some machine learning algorithms.
 
 \section{Problem statement}
 
@@ -190,3 +183,11 @@ The second goal is finding features for emotion recognition in a cross-person se
 \npar 
 
 Both goals are tackled by comparing a large range of different feature selection methods combined with a huge feature set. Additionally, the accuracy on the DEAP dataset, a dataset designed to compare different emotion recognition studies\citep{DEAP}. This will ensure that the result obtained in this thesis can serve as a benchmark for later studies. This is important as performance of emotion recognition algorithms based on physiological signals often varies a lot for different datasets\citep{PhytoEm}.
+
+\npar
+
+Machine learning can be used for emotion recognition to find patterns in features extracted from physiological signals\citep{DEAP,ExtendedPaper}. The output of the machine learning algorithm is a prediction of the subject's emotional state. The general process of machine learning is as follows, the process starts with gathering EEG data, from which features are extracted. These features are then fed to a machine learning algorithm, which outputs a prediction. This is shown in Figure \ref{eegtopred}
+
+\mijnfiguur{width=0.9\textwidth}{eegtopred}{The basic setup for emotion recognition with machine learning. In the first step, physiological signals are gathered. Next: features are extracted and passed to a machine learning algorithm. The output of the machine algorithm is a prediction of the emotional state, in the valence/arousal space. }
+
+To recognise emotion in the brain, features need to be extracted from the physiological signals. In this thesis, two categories of physiological features are observed: non-EEG features and EEG features. Non-EEG features are physiological signals like heart rate, skin conductivity, respiration rate, etc. EEG features, on the other hand, are features extracted from the EEG measurements of the subjects. 
