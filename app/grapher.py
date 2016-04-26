@@ -5,11 +5,12 @@ import Classificators
 from main.PERS.PersScript import PersScript
 from main.PERS.RFPers import RFPers
 from personLoader import load,dump
-
+from sklearn import datasets, linear_model
+import random
 
 font = {'family': 'normal',
         'weight': 'bold',
-        'size': 32}
+        'size': 25}
 
 matplotlib.rc('font', **font)
 
@@ -247,5 +248,49 @@ def phyeegall():
             'Arousal RF acc for different feat sets'
             )
 
+def linear_regression_example():
+    X = []
+    Y = []
+
+    for i in range(100):
+        x = 70 + i * 3
+        y = x * 4 + random.randint(-200,200)
+
+        X.append([x])
+        Y.append(y)
+
+
+
+
+    # Create linear regression object
+    regr = linear_model.LinearRegression()
+
+    # Train the model using the training sets
+    regr.fit(X,Y)
+
+    # Plot outputs
+    fig, ax = plt.subplots()
+    fig.set_size_inches(15, 9)
+    ax.scatter(X,Y, color='black')
+    ax.plot(X, regr.predict(X), color='blue',
+             linewidth=3)
+
+    ax.set_xlabel('total area of the house (m²)')
+    ax.set_ylabel('asking price ( x 1000 EUR )')
+    ax.set_title("predicting the asking price of a house")
+
+    ax.set_xticks(100 + (np.arange(7) * 50))
+
+    fig.savefig("../results/plots/mlexample.png")
+    plt.close()
+
+    for i in range(5):
+        print(str(X[i]) + ';' + str(Y[i]))
+
 if __name__ == '__main__':
-    phyeegall()
+    linear_regression_example()
+
+
+
+
+

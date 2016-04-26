@@ -1,19 +1,23 @@
 \chapter{Introduction}
-{\samenvatting This chapters introduces the masterthesis. It starts by explaining what a brain computer interface is and how it works. After that, emotion recognition is explained and basic concepts of machine learning are introduced. The last section of this chapter covers the goal of the thesis.}
+{\samenvatting This chapters introduces the masterthesis. It starts by explaining what a brain computer interface is and how it works. After that, emotion recognition is explained and basic concepts of machine learning are introduced. The last section of this chapter covers the goal of the thesis.} %TODO 
 
 
 \section{Brain computer interfaces}
 
-A Brain Computer Interface (BCI)\nomenclature{BCI}{Brain Computer Interface}, creates a direct link between the brain and the computer\cite{LangModel}, that enables a subject to control the computer using only his mind. A BCI is usually composed of two components. The first component is the extraction component, which extracts brain signals from the brain. The second component is a decoder that interprets signals translates them to control signals.
+A Brain Computer Interface (BCI)\nomenclature{BCI}{Brain Computer Interface}, creates a direct link between the brain and the computer\cite{LangModel}, that enables a subject to control the computer using only his mind. This means that physical actions like moving a mouse or typing on a keyboard are no longer needed to control a computer. A BCI is usually composed of two components. The first component is the extraction component, which extracts brain signals from the brain. The second component is a decoder that interprets signals translates them to device commands.
 
 \mijnfiguur{width=0.9\textwidth}{bcicomponents}{The basic components of a BCI system\citep{bcicomps}}
 
 \subsection{Electroencephalography (EEG)}
-Different technologies exist to record brain activity. The most convenient method is electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery. In the case of EEG, they simply measure electrical activity using electrodes placed on the scalp.
+Different technologies exist to record brain activity. The most convenient method is electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery. In case of EEG, they simply measure electrical activity using electrodes placed on the scalp.
 
 \npar
 
-EEG measures electrical activity with electrodes that are placed on the scalp. To ensure that experiments are replicable, standards for locations of electrodes have been developed. One of these systems is the 10/20 system, an internationally recognized method to describe the location of scalp electrodes\cite{TenTwentyManual}. The numbers 10 and 20 refer to the distances between the electrodes, which are either 10\% or 20\% of the total front-back or left-right distance of the scalp. Each site is identified with a letter that determines the lobe and a number that determines the hemisphere location.
+EEG is a technique that measures electrical activity with electrodes that are placed on the scalp. To ensure that experiments are replicable, standards for locations of electrodes have been developed. One of these systems is the 10/20 system, an internationally recognized method to describe the location of scalp electrodes\cite{TenTwentyManual}. The numbers 10 and 20 refer to the distances between the electrodes, which are either 10\% or 20\% of the total front-back or left-right distance of the scalp, this is depicted in Figure \ref{1020ElectrodePlacementSystem}. 
+
+\mijnfiguur{width=0.8\textwidth}{1020ElectrodePlacementSystem}{The electrode placement of a 23 channel system\cite{1020Site}.}
+
+Each site is identified with a letter that determines the lobe and a number that determines the hemisphere location.
 \begin{itemize}
 \item \textbf{F:} Frontal
 \item \textbf{T:} Temporal
@@ -21,14 +25,9 @@ EEG measures electrical activity with electrodes that are placed on the scalp. T
 \item \textbf{P:} Parietal
 \item \textbf{O:} Occipital
 \end{itemize}
-Note that no central lobe exists; the C letter is only used for identification purposes. The letter z indicates that the electrode is placed on the central line. Even numbers are use for the right hemisphere, while odd numbers are used for the left hemisphere. Figure \ref{1020ElectrodePlacementSystem} shows a picture of a 23 channel 10/20 system.
+Note that no central lobe exists; the C letter is only used for identification purposes. The letter z indicates that the electrode is placed on the central line. Even numbers are use for the right hemisphere, while odd numbers are used for the left hemisphere. Note that the 10/20 system does not require a fixed number of channels. Some experiments may use a different set of channels, but they all follow the same naming convention. This thesis uses a 32 channel EEG cap. The corresponding electrode locations are shown in Figure \ref{1020labels}
 
-\mijnfiguur{width=0.8\textwidth}{1020ElectrodePlacementSystem}{The electrode placement of a 23 channel system\cite{1020Site}.}
-
-Note that the 10/20 system does not require a fixed number of channels, some experiments may use a different set of channels, but they all follow the same naming convention. This thesis uses a 32 channel EEG cap. The corresponding electrode locations are shown in Figure \ref{1020labels}
-
-\mijnfiguur{width=0.5\textwidth}{1020labels}{Placement of the 32 electrodes in this thesis.}
-
+\mijnfiguur{width=0.7\textwidth}{1020labels}{Placement of the 32 electrodes in this thesis.}
 
 Electrical activity in the brain is generated when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighbouring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significant enough, it is measured by the EEG surface electrodes. EEG can thus only capture synchronized activity of many, many neurons\cite{ExtendedPaper}, which explains its low spatial resolution capabilities. EEG measurements consist of electrical potentials of different channels, measures over time, like shown in Figure \ref{eegexample}.
 
@@ -53,7 +52,7 @@ In the frequency domain, brain waves are usually split up into different bands\c
 
 \npar
 
-EEG was used in this thesis because it is a convenient method that has been used for a lot of research. Some alternative methods to measure brain activity are:
+As mentioned before, EEG is used in this thesis, because it is a convenient method. Alternative methods to measure brain activity are:
 \begin{itemize}
 
 \item Magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} use magnetic fields to measure brain activity\citep{meg}. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile.
@@ -93,15 +92,29 @@ One possible definition for machine learning is: "the science of getting compute
 
 \npar
 
-To further explain how machine learning works, have a look at the following example. Suppose one has a price list of houses that are for sale combined with their total area. Logic sense dictates us that a bigger house will have a higher price than a smaller house. The total area is a characteristic of the house that helps us in predicting the price. In the context of machine learning, the characteristic 'total area', will be called a feature as the asking price of a house is correlated to the total area. 
+To further explain how machine learning works, have a look at the following example. Suppose one has a price list of houses that are for sale combined with their total area, shown in Table \ref{mlexampleTable}. Logic sense dictates us that a bigger house will have a higher price than a smaller house. The total area is a characteristic of the house that helps us in determining the price. In the context of machine learning, the characteristic 'total area', will be called a feature as the asking price of a house is correlated to the total area.
 
-\npar
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\textbf{Area of the house ($m^{2}$)} & \textbf{Price ( x 1000 EUR)} \\
+70                              & 312                          \\
+73                              & 429                          \\
+76                              & 174                          \\
+79                              & 410                          \\
+82                              & 334                          \\
+$\vdots$                        & $\vdots$
+\end{tabular}
+\caption{total area of a house and the corresponding asking price.\label{mlexampleTable}}
+\end{table}
+\clearpage
 
-One possible way of predicting the asking price of a house is machine learning. Machine learning works in several steps, first you need to train your machine learning algorithm with a list of asking prices and the corresponding area of the house. This process is called training or fitting and gives the machine learning component an idea to what the corresponding price is for an area. The outcome might be a coefficient, suppose one square meter is worth 1000 Euro, than the predicted asking price will be 1000 x the total area.
+One possible way of predicting the asking price of a house is machine learning. Machine learning works in several steps, first you need to train your machine learning algorithm with a list of asking prices and the corresponding area of the house. This process is called training or fitting and gives the machine learning component an idea to what the price is for a house with a certain area.
+Once trained, the machine learning algorithm will look like Figure \ref{mlexample}. The black dots represent data points, while the blue line is the predicted price for those points. As you can see the asking price is simply determined by the total area of the house multiplied by some constant.
 
-\npar
+\mijnfiguur{width=0.9\textwidth}{mlexample}{The price of a house is determined by its total area.}
 
-Even though, this might already give some reasonable results, the algorithm will probably not be accurate enough for real life usage. This is due to the fact that the area of the house is only one feature that determines the price. Other features, like the number of bedrooms or the location of the house, were not taken into consideration. Adding additional features, gives more insight into the data, e.g. a house with 5 bedrooms is more expensive than a house with only 3 bedrooms. Having more features is thus likely to improve the performance of the machine learning algorithm.
+As you can see there is sometimes a big difference between the predicted value and the actual value. This is due to the fact that the area of the house is only one feature that determines the price. Other features, like the number of bedrooms or the location of the house, were not taken into consideration. Adding additional features, gives more insight into the data, e.g. a house with 5 bedrooms is more expensive than a house with only 3 bedrooms. Having more features is thus likely to improve the performance of the machine learning algorithm.
 
 \npar
 
