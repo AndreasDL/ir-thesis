@@ -446,3 +446,5 @@ class RFPers():
 
         self.genReport(results)
 
+if __name__ == '__main__':
+    RFPers('ALL', 1, 30, Classificators.ContArousalClassificator)

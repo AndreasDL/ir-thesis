@@ -1,5 +1,5 @@
 \chapter{Introduction}
-{\samenvatting This chapters introduces the masterthesis. It starts by explaining what a brain computer interface is and how it works. After that, emotion recognition is explained and basic concepts of machine learning are introduced. The last section of this chapter covers the goal of the thesis.} %TODO 
+{\samenvatting This chapters introduces the masterthesis. It starts by introducing the basic concepts of emotion recognition based on physiological signals, machine learning. Then it explains the problem statement and the goal of the thesis, followed by an overview of the next chapters.}
 
 \section{Emotion recognition}
 
@@ -185,9 +185,21 @@ The second goal is finding features for emotion recognition in a cross-person se
 Both goals are tackled by comparing a large range of different feature selection methods combined with a huge feature set. Additionally, the accuracy on the DEAP dataset, a dataset designed to compare different emotion recognition studies\citep{DEAP}. This will ensure that the result obtained in this thesis can serve as a benchmark for later studies. This is important as performance of emotion recognition algorithms based on physiological signals often varies a lot for different datasets\citep{PhytoEm}.
 
 \npar
-
+%TODO opkuisen
 Machine learning can be used for emotion recognition to find patterns in features extracted from physiological signals\citep{DEAP,ExtendedPaper}. The output of the machine learning algorithm is a prediction of the subject's emotional state. The general process of machine learning is as follows, the process starts with gathering EEG data, from which features are extracted. These features are then fed to a machine learning algorithm, which outputs a prediction. This is shown in Figure \ref{eegtopred}
 
 \mijnfiguur{width=0.9\textwidth}{eegtopred}{The basic setup for emotion recognition with machine learning. In the first step, physiological signals are gathered. Next: features are extracted and passed to a machine learning algorithm. The output of the machine algorithm is a prediction of the emotional state, in the valence/arousal space. }
 
 To recognise emotion in the brain, features need to be extracted from the physiological signals. In this thesis, two categories of physiological features are observed: non-EEG features and EEG features. Non-EEG features are physiological signals like heart rate, skin conductivity, respiration rate, etc. EEG features, on the other hand, are features extracted from the EEG measurements of the subjects. 
+
+\section{Overview}
+The next chapter gives an overview of the dataset, features and feature selection methods that are used in this thesis. It also gives an overview of similar state of the art studies.
+
+%TODO 
+\npar
+
+Chapter 3 ...
+
+Chapter 4 ...
+
+Chapter ... gives an overview of future research that is possible.

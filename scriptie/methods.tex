@@ -62,16 +62,16 @@ The used SAM figures are shown in Figure \ref{SAM}. The first row gives the vale
 
 \section{Features}
 \label{featuresExplained}
-Usually, good features are needed to train a machine learning algorithm. In the context of this thesis, good features should be correlated with the subject's emotional state. Two categories of features are observed: EEG features and non-EEG features. Both categories are covered in the following sections.
+Machine learning algorithms require good features to perform well\footnote{Note that there are some exceptions, for instance some types neural networks are capable of 'designing' their own features\citep{nnfeat}. But these algorithms were not used in this thesis.}. In the context of this thesis, good features should be correlated with the subject's emotional state. Two categories of features are observed in this work: EEG features and non-EEG features. Both categories are covered in the following sections.
 
 \subsection{EEG-features}
-EEG features are extracted from the electroencephalography measurements from the subject's scalp. The power spectral density (PSD) \nomenclature{PSD}{Power Spectral Density} of a signal gives the distribution of the signal's energy in the frequency domain. By calculating the spectral density for different wavebands of the signal, one can determine how much power of each waveband is in the signal.
+EEG features are extracted from the electroencephalography measurements from the subject's scalp. From these signals a lot of different signals can be extracted. The power spectral density (PSD) \nomenclature{PSD}{Power Spectral Density} of a signal gives the distribution of the signal's energy in the frequency domain. By calculating the spectral density for different frequency bands of the signal, one can determine how much power of each frequency band is in the signal.
 
 \npar
 
 Differential entropy (DE)\nomenclature{DE}{Differential Entropy} is defined as follows \citep{killyPaper} \\
 \begin{center}
-$ - \int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2}} exp(\frac{(x-\mu)^2}{2\sigma^2}) log(\frac{1}{\sqrt{2\pi\sigma^2}}) exp(\frac{(x-\mu)^2}{2\sigma^2})dx$
+$DE_{channel} = - \int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2}} exp(\frac{(x-\mu)^2}{2\sigma^2}) log(\frac{1}{\sqrt{2\pi\sigma^2}}) exp(\frac{(x-\mu)^2}{2\sigma^2})dx$
 \end{center}
 According to \citep{diffEnt}, the differential entropy of a certain band is equivalent to the logarithmic power spectral density for a fixed length EEG sequence, which simplifies the calculations significantly.
 \begin{center}
@@ -80,7 +80,7 @@ $DE_{channel} = log(PSD_{channel})$
 
 \npar
 
-The most known feature for valence recognition is the frontal asymmetry of the alpha power\cite{GivenPaper}. The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The asymmetry can be calculated in different ways. First, one can calculate the differential asymmetry (DASM) \nomenclature{DASM}{Differential Asymmetry}, where the left alpha power is subtracted from the right alpha power.
+The most used feature for valence recognition is the frontal asymmetry of the alpha power\cite{GivenPaper}. The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The asymmetry can be calculated in different ways. First, one can calculate the differential asymmetry (DASM) \nomenclature{DASM}{Differential Asymmetry}, where the left alpha power is subtracted from the right alpha power.
 
 \begin{center}
 $DASM = DE_{left} - DE_{right}$
@@ -92,23 +92,23 @@ Another way to measure the asymmetry is by division. The Rational Asymmetry (RAS
 $RASM = \frac{DE_{left}}{DE_{right}}$
 \end{center}
 
-With $DE_{left}$ and $DE_{right}$ being the left and right differential entropy respectively. Another reported feature in literature is the caudality, or the asymmetry in fronto-posterior direction\cite{caudality}, meaning the difference in power between the front and the back of the scalp. This can again be calculated in two ways. The first method is the differential Caudality (DCAU) \nomenclature{DCAU}{Differential Caudality} is defined as: \\
+With $DE_{left}$ and $DE_{right}$ being the left and right differential entropy respectively. Another reported feature in literature is the caudality, or the asymmetry in fronto-posterior direction\cite{caudality}, meaning the difference in power between the front and the back of the scalp. This can again be calculated in two ways. The first method is the differential Caudality (DCAU) \nomenclature{DCAU}{Differential Caudality}, defined as: \\
 
 \begin{center}
 $DCAU = DE_{front} - DE_{post}$
 \end{center}
 
-Another way to determine the Caudality is the Rational Caudality (RCAU) \nomenclature{RCAU}{Rational Caudality}, which is defined as:
+The second method to determine the Caudality is the Rational Caudality (RCAU) \nomenclature{RCAU}{Rational Caudality}, which is defined as:
 
 \begin{center}
 $RCAU = \frac{DE_{front}}{DE_{post}}$
 \end{center}
 
-With $DE_{front}$ and $DE_{post}$ being the frontal and posterior power respectively. Arousal is usually determined, by looking at the different wavebands\citep{ExtendedPaper}. Each waveband has their own medical interpretation, see \ref{wavebands}. Alpha power corresponds to a more relaxed brain, while Beta power corresponds to a more active brain. The alpha / beta ratio therefore seems a good indicator for the arousal state of a person.
+With $DE_{front}$ and $DE_{post}$ being the frontal and posterior power respectively. Arousal is usually determined, by looking at the different frequency bands\citep{ExtendedPaper}. Each frequency and has their own medical interpretation, see \ref{wavebands}. Alpha power corresponds to a more relaxed brain, while Beta power corresponds to a more active brain. The alpha / beta ratio therefore seems a good indicator for the arousal state of a person.
 
 \npar
 
-The Alpha/ Beta ratio is limited to comparing two wavebands. Other frequently used features are fractions of PSD. Where the fractions of waveband power is determined for a channel, given by:
+The Alpha/ Beta ratio is limited to comparing two frequency bands. Other frequently used features are fractions of PSD. The fractions of frequency band power is determined for a channel, given by:
 
 \begin{center}
 $frac_{band,channel} = \frac{power_{band,channel}}{power_{total,channel}}$
@@ -117,7 +117,7 @@ $frac_{band,channel} = \frac{power_{band,channel}}{power_{total,channel}}$
 These fractions give insight in the distributions of wavebands at different channel locations.
 
 \subsection{non-EEG features}
-The aforementioned EEG features are just one class of physiological features, the DEAP dataset contains several non-EEG, physiological measurements\citep{DEAP}. For each of these measurements the average, standard deviation, variation, median, minimum, maximum and the standard deviation are calculated.
+The aforementioned EEG features are just one class of physiological features, the DEAP dataset contains several non-EEG, physiological measurements\citep{DEAP}. For each of these measurements the average, standard deviation, variation, median, minimum and maximum are calculated.
 
 \npar
 
@@ -143,7 +143,40 @@ The heart rate extraction is done in two steps. First the plethysmograph signal 
 
 \npar
 
-The combination of a local minima and maxima correspond to a heart beat, therefore the time between two consecutive local minima or maxima correspond to the time between two heart beats, known as the interbeat interval. Getting the average heart rate from the interbeat interval is straight forward. Lastly, the skin temperature of the subject is also available.
+The combination of a local minimum and maximum correspond to a heart beat\citep{DEAP}. Therefore, the time between two consecutive local minima or maxima correspond to the time between two heart beats, known as the interbeat interval. Getting the average heart rate from the interbeat interval is straight forward. Lastly, the skin temperature of the subject is also available.
+
+\subsection{Overview}
+
+The following table gives an overview of the different features and the amount of them used. The 32 EEG channels can be found in Table \ref{DEAPSignals}. There are 6 frequency bands: Alpha, Beta, Gamma, Delta, Theta and All. All refers to taking the total power of a channel. Note that the fractions only have 5 frequency bands, as the percentage of all power would always be 100$%$. 
+
+\begin{table}[]
+\centering
+\begin{tabular}{lllll}
+\textbf{name}           & \textbf{type} & \textbf{number of channels}   & number of frequency bands & total number \\
+\textbf{PSD}            & eeg           & 32                            & 6                         & 192          \\
+\textbf{DE}             & eeg           & 32                            & 6                         & 192          \\
+\textbf{DASM}           & eeg           & 13                            & 6                         & 78           \\
+\textbf{RASM}           & eeg           & 13                            & 6                         & 78           \\
+\textbf{DCAU}           & eeg           & 11                            & 6                         & 66           \\
+\textbf{RCAU}           & \textbf{eeg}  & 11                            & 6                         & 66           \\
+\textbf{Frac}           & eeg           & 32                            & 5                         & 160          \\
+\textbf{Alpha / Beta}   & eeg           & 32                            & 1                         & 32           \\
+Total                   &               &                               &                           & 864          \\
+                        &               &                               &                           &              \\
+\textbf{name}           & \textbf{type} & \textbf{number of statistics} &                           &              \\
+\textbf{HR}             & non-eeg       & 6                             &                           &              \\
+\textbf{plethysmograph} & non-eeg       & 6                             &                           &              \\
+\textbf{GSR}            & non-eeg       & 6                             &                           &              \\
+\textbf{ST}             & non-eeg       & 6                             &                           &              \\
+\textbf{RSP}            & non-eeg       & 6                             &                           &              \\
+\textbf{Total}          &               & 30                            &                           &              \\
+                        &               &                               &                           &              \\
+\textbf{Overall Total}  & \textbf{894}  &                               &                           &             
+\end{tabular}
+\caption{An overview of the different features that were compared in this thesis.\label{featOverviewTable}}
+\end{table}
+
+The feature set has a size of 894, which is huge considering that there are only 40 samples for each person. %TODO
 
 \section{Emotion recognition Studies}
 This section will give a overview of similar studies and their conclusions. Some of these studies also did some research on cross-subject emotion recognition, but as the research for emotion recognition is still in its infancy\citep{emorecoghard} and subject independent features are hard to find \citep{DEAP} and as a result, the research is generally speaking, more focussed on person specific emotion recognition.
