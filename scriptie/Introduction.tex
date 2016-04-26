@@ -1,9 +1,24 @@
 \chapter{Introduction}
 {\samenvatting This chapters introduces the masterthesis. It starts by explaining what a brain computer interface is and how it works. After that, emotion recognition is explained and basic concepts of machine learning are introduced. The last section of this chapter covers the goal of the thesis.} %TODO 
 
+\section{Emotion recognition}
 
-\section{Brain computer interfaces}
+Psychology makes a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. The expression consists of many parts, including the facial expression, body language and voice concern\citep{EMSpeech}. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. This makes emotion recognition based on physiological signals more robust to social masking\citep{PhytoEm}, the process where an individual masks or hides their emotions to conform to social pressure. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion.
 
+\subsection{Valence/Arousal classification model for emotion}
+\label{valarrdomspace}
+
+Before emotions can be recognized, an objective class model describing different emotions is needed. A simple way of achieving this is using several discrete emotions, e.g. anger, joy, sad and pleasure. A more convienent model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, which places emotions in a two dimensional space. The main advantage of using a continuous multidimensional model, is that all emotions are modelled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
+
+\npar
+
+ Arousal indicates how active a person is and ranges from inactive/bored to active/excited. The valence indicates if the emotion is perceived as positive or negative. Even though arousal and valence describe emotions quite well, a third dimension, dominance, can also be added. The third dimension, dominance, indicates how strong the emotional feeling was and ranges from a weak feeling to an empowered, overwhelming feeling. The dominance component can aid to filter out samples of strong feelings, since feelings with low dominance are less likely to show significant effects.
+
+\mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane\citep{ValArrFig}}
+
+\subsection{Getting the physiological signals}
+
+%TODO
 A Brain Computer Interface (BCI)\nomenclature{BCI}{Brain Computer Interface}, creates a direct link between the brain and the computer\cite{LangModel}, that enables a subject to control the computer using only his mind. This means that physical actions like moving a mouse or typing on a keyboard are no longer needed to control a computer. A BCI is usually composed of two components. The first component is the extraction component, which extracts brain signals from the brain. The second component is a decoder that interprets signals translates them to device commands.
 
 \mijnfiguur{width=0.9\textwidth}{bcicomponents}{The basic components of a BCI system\citep{bcicomps}}
@@ -62,26 +77,11 @@ As mentioned before, EEG is used in this thesis, because it is a convenient meth
 
 \item Computed tomography (CT) \nomenclature{CT}{Computed Tomography}\citep{CT}: uses X-rays to create an image of the brain. 
 
-\item Positron emission tomography (PET) \nomenclature{Positron Emission Tomography}\citep{PET}: this methods uses trace amounts of short-lived radioactive material. When this material undergoes decay, a positron is emitted that is picked up by a detector.
+\item Positron emission tomography (PET) \nomenclature{PET}{Positron Emission Tomography}\citep{PET}: this methods uses trace amounts of short-lived radioactive material. When this material undergoes decay, a positron is emitted that is picked up by a detector.
 
 \item Near infrared spectroscopy (NIRS) \nomenclature{NIRS}{Near Infrared Spectroscopy}\citep{NIRS}: an optical technique to measure blood oxygenation in the brain. This technique works by shining light in the near infrared part of the spectrum through the skull and measuring how much remerging light is attenuated.
 
 \end{itemize} 
-
-\section{Emotion recognition}
-
-Psychology makes a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. The expression consists of many parts, including the facial expression, body language and voice concern\citep{EMSpeech}. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. This makes emotion recognition based on physiological signals more robust to social masking\citep{PhytoEm}, the process where an individual masks or hides their emotions to conform to social pressure. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion.
-
-\subsection{Valence/Arousal classification model for emotion}
-\label{valarrdomspace}
-
-Before emotions can be recognized, an objective class model describing different emotions is needed. A simple way of achieving this is using several discrete emotions, e.g. anger, joy, sad and pleasure. A more convienent model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, which places emotions in a two dimensional space. The main advantage of using a continuous multidimensional model, is that all emotions are modelled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
-
-\npar
-
- Arousal indicates how active a person is and ranges from inactive/bored to active/excited. The valence indicates if the emotion is perceived as positive or negative. Even though arousal and valence describe emotions quite well, a third dimension, dominance, can also be added. The third dimension, dominance, indicates how strong the emotional feeling was and ranges from a weak feeling to an empowered, overwhelming feeling. The dominance component can aid to filter out samples of strong feelings, since feelings with low dominance are less likely to show significant effects.
-
-\mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane\citep{ValArrFig}}
 
 \section{Machine learning}
 Machine learning is the missing link between the EEG data the emotion recognition. Machine learning is a very broad domain. As a result, this discussion will be limited to an introduction of the basic machine learning concepts with the focus on the application of machine learning and machine learning techniques. 
@@ -90,7 +90,7 @@ Machine learning is the missing link between the EEG data the emotion recognitio
 
 One possible definition for machine learning is: "the science of getting computers to act without being explicitly programmed"\citep{MLDef}. To do so, machine learning uses pattern recognition to find patterns or structure in the data. A simple example of machine learning is the Optical Character Recognition (OCR)\nomenclature{OCR}{Optical Character Recognition}, where a computer recognises characters in pictures\citep{OCR}.
 
-\npar
+\mijnfiguur{width=0.3\textwidth}{OCR}{In optical character recognition, a computer uses machine learning to find characters in an image\cite{OCRFigRef}.}
 
 To further explain how machine learning works, have a look at the following example. Suppose one has a price list of houses that are for sale combined with their total area, shown in Table \ref{mlexampleTable}. Logic sense dictates us that a bigger house will have a higher price than a smaller house. The total area is a characteristic of the house that helps us in determining the price. In the context of machine learning, the characteristic 'total area', will be called a feature as the asking price of a house is correlated to the total area.
 
@@ -105,26 +105,44 @@ To further explain how machine learning works, have a look at the following exam
 82                              & 334                          \\
 $\vdots$                        & $\vdots$
 \end{tabular}
-\caption{total area of a house and the corresponding asking price.\label{mlexampleTable}}
+\caption{total area of different houses and their corresponding asking prices.\label{mlexampleTable}}
 \end{table}
-\clearpage
 
-One possible way of predicting the asking price of a house is machine learning. Machine learning works in several steps, first you need to train your machine learning algorithm with a list of asking prices and the corresponding area of the house. This process is called training or fitting and gives the machine learning component an idea to what the price is for a house with a certain area.
-Once trained, the machine learning algorithm will look like Figure \ref{mlexample}. The black dots represent data points, while the blue line is the predicted price for those points. As you can see the asking price is simply determined by the total area of the house multiplied by some constant.
+One possible way of predicting the asking price of a house is machine learning. Machine learning works in several steps, first you train the machine learning algorithm with a list of asking prices and the corresponding area of the house. This process is called training or fitting and gives the machine learning component an idea to what price corresponds to a house with a certain area. Once trained, the algorithm's output will look like Figure \ref{mlexample}. The black dots represent the data points from Table\ref{mlexampleTable}. The blue line represents the predicted price for different area. The predicted price is simply defined by the total area of the house multiplied by some constant and some constant.
 
 \mijnfiguur{width=0.9\textwidth}{mlexample}{The price of a house is determined by its total area.}
 
-As you can see there is sometimes a big difference between the predicted value and the actual value. This is due to the fact that the area of the house is only one feature that determines the price. Other features, like the number of bedrooms or the location of the house, were not taken into consideration. Adding additional features, gives more insight into the data, e.g. a house with 5 bedrooms is more expensive than a house with only 3 bedrooms. Having more features is thus likely to improve the performance of the machine learning algorithm.
+The blue line looks reasonable, but there is sometimes a big difference between the predicted value and the actual value. This is due to the fact that the area of the house is only one feature that determines the price. Other features, like the number of bedrooms or the location of the house, were not taken into consideration. Adding additional features, gives more insight into the data, e.g. a house with 5 bedrooms is more expensive than a house with only 3 bedrooms. Having more features is thus likely to improve the performance of the machine learning algorithm.
 
 \npar
 
-Machine learning algorithms are responsible for finding the relation between features and the predicted value. There are many of these machine learning algorithms. One way to group these algorithms is to look at their produced output\citep{prml}. In the asking price examples above, the output is a price, which is (more or less) a continuous value. Machine learning problems that require the output of a continuous value, are called regression problems. In the OCR example above, a picture of a character is classified as a character. This means that OCR is a classification problem, as there are only a limited number of characters in an alphabet.
+There are many machine learning algorithms. One way to group these algorithms is to look at the produced output. In the asking price examples above, the output is a price, which is (more or less) a continuous value. Machine learning problems that require the output of a continuous value, are called regression problems\citep{prml}. In the OCR example above, a picture of a character is classified as a character. This means that OCR is a classification problem, as there are only a limited number of characters in an alphabet\citep{prml}.
 
 \npar
 
-Another way to group algorithms is based on their training data\citep{prml}. In the asking price examples above, the training data consists of labelled results; the correct asking price is given for each area. This type of machine learning, where the correct outputs for the train data are given, is referred to as supervised machine learning\citep{prml}. The alternative is unsupervised machine learning\citep{prml}, which often results in finding groups of similar data points (clustering), without knowing the actual labels. Note that the combination of supervised and unsupervised data, known as semi supervised learning, is also possible\citep{semiSup}. Imagine a dataset with 5000 webpages that need to be grouped into 10 distinct categories, e.g. science, nature, cooking, ... . Only 100 of the 5000 pages in the train set are labelled. An approach to solve this problem could be to first cluster the pages in similar groups using unsupervised learning. As soon as a group contains a single labelled page, all pages in the group can be labelled accordingly, as clustering returns groups of similar samples. Semi supervised learning has the advantage that one can also use unlabelled data, which is often easier and cheaper to obtain, unlike labelled data which is usually quite rare; if there was a fast and easy way to label the data then there would not be a need for machine learning.
+Another way to group algorithms is based on their training data\citep{prml}. In the asking price examples above, the training data consists of labelled results. The training data is called labelled because the correct asking price is given for each area. This type of machine learning, where the correct outputs for the train data are given, is referred to as supervised machine learning\citep{prml}. The alternative is unsupervised machine learning\citep{prml}, which often results in finding groups of similar data points (clustering), without knowing the actual labels. Note that the combination of supervised and unsupervised data, known as semi supervised learning, is also possible\citep{semiSup}. Imagine a dataset with 5000 webpages that need to be grouped into 10 distinct categories, e.g. science, nature, cooking, ... . Only 100 of the 5000 pages in the train set are labelled. An approach to solve this problem could be to first cluster the pages in similar groups using unsupervised learning. As soon as a group contains a single labelled page, all pages in the group can be labelled accordingly, as clustering returns groups of similar samples. Semi supervised learning has the advantage that one can also use unlabelled data, which is often easier and cheaper to obtain, unlike labelled data which is usually quite rare; if there was a fast and easy way to label the data then there would not be a need for machine learning.
+
+\subsection{Over and underfitting}
+
+Over and underfitting is a common problem in many machine learning projects\citep{prml}. An algorithm that 'overfits the data' is able to recognise seen sample points very well. However when the algorithm is tested on unseen points, the performance might be a lot lower than expected.
+
+\mijnfiguur{width=0.9\textwidth}{overunderfitting}{Overfitting versus underfitting\cite{overunderfittingFig}.}
+
+Suppose the example in Figure \ref{overunderfitting}, where one tries to find a good function to fit the given data points. Looking at the three proposed functions, one can easily see that the middle figure corresponds to the most logical generator function\footnote{A generator function is the } of the red points. 
 
 \npar
+
+The figure on the left corresponds to an underfit, where the proposed function is not able to capture sufficient detail of the points. The function is not complex enough to approach the generator function. As a result the best fit will always contain a relatively big error. This is often referred to as a high bias problem. 
+
+\npar
+
+The function on the right corresponds to an overfit; the function fits or 'goes through' each point exactly, which will a very low error for these data points. However, one can see that the behaviour of the hypothesis function in between data points is not what one would expect. This is the result of a too complex function that tries really hard to fit all the points exactly, which results in low performance for unseen points. This is often referred to as a high variance problem.
+
+\npar
+
+One should be careful for these problems, when designing a machine learning algorithm, because an algorithm should also perform well on unseen samples. One way to check if the algorithm is overfitting, is to take a part of the dataset and label is test set. This set is then neglected during training and only used in the end to evaluate the algorithms performance.
+
+\subsection{Machine learning for emotion recognition}
 
 Machine learning can be used for emotion recognition to find patterns in features extracted from physiological signals\citep{DEAP,ExtendedPaper}. The output of the machine learning algorithm is a prediction of the subject's emotional state. The general process of machine learning is as follows, the process starts with gathering EEG data, from which features are extracted. These features are then fed to a machine learning algorithm, which outputs a prediction.
 
@@ -136,31 +154,17 @@ To recognise emotion in the brain, features need to be extracted from the physio
 
 EEG features, on the other hand, are features extracted from the EEG measurements of the subjects. Unfortunately, the literature does not fully agree on a specific set of features nor does it agree on what channels and/or waveband are most important for emotion recognition. This problem is addressed in this thesis, by ranking a large set of features using different features selection methods. However the literature does agree on certain things; the right hemisphere of a subject is generally speaking, more active during negative emotions than the left hemisphere, which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The features are discussed in more depth in \ref{featuresExplained}.
 
-\subsection{Over and underfitting / high bias and high variance}
 
-Over and underfitting is a common problem in many machine learning projects\citep{prml}. An algorithm that 'overfits the data' is able to recognise seen sample points very well. However when the algorithm is tested on unseen points, the performance might be a lot lower than expected.
 
-\mijnfiguur{width=0.9\textwidth}{overunderfitting}{Overfitting versus underfitting\cite{overunderfittingFig}.}
+%TODO problem statement
 
-Suppose the example in Figure \ref{overunderfitting}, where one tries to find a good function to fit the given data points. Looking at the three proposed functions, one can easily see that the middle figure corresponds to the most logical generator function of the red points. 
 
-\npar
 
-The figure on the left corresponds to an underfit, where the proposed function is not able to capture sufficient detail of the points. The function is not complex enough to approach the generator function. This is known as a high bias problem. A high bias problem has a high training error, as the function is not able to fit the points sufficiently, this is visible in Figure \ref{highbias}.
 
-\mijnfiguur{width=0.75\textwidth}{highbias}{A high bias function is not complex enough to approach the generator function closely.}
 
-The function on the right corresponds to an overfit; the function fits or 'goes through' each point exactly, but one can see that the behaviour of the hypothesis function in between data points is not what one would expect. This problem is known as a high variance problem. A high variance problem occurs when the train error is close to zero, so the algorithm fits the points well, but the test error is quite dramatic, which means that the algorithm will perform very badly when it gets new points. 
 
-\mijnfiguur{width=0.75\textwidth}{highvariance}{A High variance function is too complex and fits the data point too closely.}
 
-Another way to explain the bias variance trade-off is by an example. Suppose you have a dart board, as shown in Figure \ref{BiasVariance}. Suppose the situation on the top left corner, this corresponds to a world class player that has perfect aim, and very little variation on his precision. The situation on the left bottom corresponds to a player that has very little variation on his precision, but that is consistently aiming too high. He is, in other words, biased to hit higher than needed. The pictures on the right side are different, there the person may or may not have a biased aim, but it is clear that he has a lot of variation in the precision of his aim.
 
-\npar
-
-In the context of machine learning, the low bias corresponds to having a hypothesis set that is close to the generator function, which allows you to get quite close. However you still have to pick the right function from that set, which is hard to do if you don't have enough data. If you are not able to take the best solution from the hypothesis set, you have a high variance problem; the solution is right in front of you, but you are not able to reach it precisely.
-
-\mijnfiguur{width=0.6\textwidth}{BiasVariance}{The bias variance explained using the dartboard example found at \cite{biasvarianceFig}}
 
 \section{Goal of the thesis}
 The first goal is finding relevant features for emotion recognition in a person specific setting. This is already quite challenging as there are fuzzy boundaries and individual variation of emotion\citep{emorecoghard}. To do so, the output of different feature selection methods is compared. In a successful scenario, good features are found that, once given to a machine learning algorithm, can accurately predict the emotions of one person. In this stage some attention will also be spend on comparing non-EEG and EEG features to see which feature set contains the most information.
