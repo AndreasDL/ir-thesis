@@ -150,33 +150,12 @@ Machine learning can be used for emotion recognition to find patterns in feature
 
 To recognise emotion in the brain, features need to be extracted from the physiological signals. In this thesis, two categories of physiological features are observed: non-EEG features and EEG features. Non-EEG features are physiological signals like heart rate, skin conductivity, respiration rate, etc. EEG features, on the other hand, are features extracted from the EEG measurements of the subjects. 
 
+\section{Feature Selection}
+%TODO 
+
 \section{Problem statement}
 
-
-Unfortunately, the literature does not fully agree on a specific set of features nor does it agree on what channels and/or waveband are most important for emotion recognition. This problem is addressed in this thesis, by ranking a large set of features using different features selection methods. However the literature does agree on certain things; the right hemisphere of a subject is generally speaking, more active during negative emotions than the left hemisphere, which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The features are discussed in more depth in \ref{featuresExplained}.
-
-
-
-%TODO problem statement
-
-
-
-
-
-
-
-
-
-\section{Goal of the thesis}
-The first goal is finding relevant features for emotion recognition in a person specific setting. This is already quite challenging as there are fuzzy boundaries and individual variation of emotion\citep{emorecoghard}. To do so, the output of different feature selection methods is compared. In a successful scenario, good features are found that, once given to a machine learning algorithm, can accurately predict the emotions of one person. In this stage some attention will also be spend on comparing non-EEG and EEG features to see which feature set contains the most information.
-
-\npar
-
-The second goal is finding features for emotion recognition in a cross-person setting. In this setting the features should generalise well across different persons, thus the algorithm should be able to recognize emotions from unseen persons. The comparison for non-EEG and EEG features will also be done here. Emotion recognition is harder in a cross-subject setting, since physiological signals are very personal\citep{DEAP}.
-
-\npar
-
-The main problem is that there are already a lot of features known, but, as is often the case with EEG data, training data is expensive and limited. Using a lot of features will thus quickly result in overfitting. Using fewer features, does not only limit the risk of overfitting, it might speed up the algorithm and preparation time. Mounting EEG electrodes is a time consuming activity, using fewer electrodes limits this time.
+A lot of different physiological features are reported in the literature. Unfortunately, the literature does not fully agree on a specific set of features nor does it agree on what channels and/or waveband are most important for emotion recognition. The features that  are reported in different studies are often quite different, as you can see in Table \ref{diffFeat}.
 
 \begin{table}[]
 \centering
@@ -193,12 +172,21 @@ The main problem is that there are already a lot of features known, but, as is o
 \end{tabular}
 \end{table}
 
-Another point to note is that even though a simple limited subset of features might solve the overfitting problem, it will likely result in a performance drop as optimal features might have been left out. This problem is even more severe in a cross person setting, when considering that EEG data is person specific\citep{DEAP}, features that work good for one person, might not work for another person. Finding a good set of features that work for all persons is a non trivial problem. One solution to this problem could be to use a large pool of possible features from which a limited and person specific set of good features is selected. This allows the machine learning to use good features, while keeping the set of features limited in size. Another solution is to use dimensionality reduction, to project the feature space to a lower dimension, but this has the disadvantage that bad features still have influence and thus might confuse the classifier. 
+\npar
+
+Another, related, problem with physiological signals is that they are very personal by nature. Features that work well for one person might not work well for another person\citep{DEAP}. Having a set of features that works for all persons, might help in making an emotion recognition system more robust against personal differences. 
 
 \npar
 
-Additionally, a lot of different features are reported in the literature, as you can see in Table \ref{diffFeat}. This thesis tries to overcome this problem, by comparing a large set of features with different feature selection methods to the features reported in literature.
+The last problem is that is hard to compare the performance of different physiological feature studies, as they do not share the same dataset. 
 
+\section{Goal of the thesis}
+The first goal is finding relevant features for emotion recognition in a person specific setting. This is already quite challenging as there are fuzzy boundaries and individual variation of emotion\citep{emorecoghard}. To do so, the output of different feature selection methods is compared. In a successful scenario, good features are found that, once given to a machine learning algorithm, can accurately predict the emotions of one person. In this stage some attention will also be spend on comparing non-EEG and EEG features to see which features contain most information.
 
+\npar
 
+The second goal is finding features for emotion recognition in a cross-person setting. In this setting the features should generalise well across different persons, thus the algorithm should be able to recognize emotions from unseen persons. The comparison for non-EEG and EEG features will also be done here. Emotion recognition is harder in a cross-subject setting, since physiological signals are very personal\citep{DEAP}.
 
+\npar 
+
+Both goals are tackled by comparing a large range of different feature selection methods combined with a huge feature set. Additionally, the accuracy on the DEAP dataset, a dataset designed to compare different emotion recognition studies\citep{DEAP}. This will ensure that the result obtained in this thesis can serve as a benchmark for later studies. This is important as performance of emotion recognition algorithms based on physiological signals often varies a lot for different datasets\citep{PhytoEm}.
