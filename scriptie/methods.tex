@@ -1,21 +1,14 @@
 \chapter{Methods}
-{\samenvatting This chapter starts by giving an overview of the features found in literature for emotion recognition. Then an overview of some emotion recognition studies is given. The chapter ends by explaining the different feature selection methods.}
-
-%Most muscle and eye artifacts have a frequency around 1.2Hz. Artifacts caused by nearby power lines, have a frequency around 50Hz\cite{ExtendedPaper}. To remove most of this noise, a bandpass filter is usually applied to filter out frequencies below 4Hz and above 40-45Hz. %TODO to methods chapter
-
-%\subsection{Person specific classification versus cross-subject classification}
-%There exists two types of BCI applications. The first type is a person specific BCI, where the BCI interface is calibrated for a single subject. The second type is a general BCI interface that works 'cross-subject', meaning that it should be able to work for different persons. It is much harder to achieve good results for a cross-subject BCI, as EEG data is very personal from nature\citep{DEAP}. While transfer learning has provided good results in imaginary motion recognition in the past, little research has been done for transfer learning in the context of emotion recognition. Person specific classifiers are often used, due to the fact that finding person independent EEG features is still an ongoing topic of research\citep{DEAP}.
-%data
+{\samenvatting This chapter starts by giving an overview of the features found in literature for emotion recognition. Then an overview of some emotion recognition studies is given. The chapter ends by explaining the different feature selection methods.} %TODO 
 
 \subsection{Dataset}
-One of the most used datasets in the context of emotion recognition is the Dataset for Emotion Analysis using Physiological Signals (DEAP)\nomenclature{DEAP}{Dataset for Emotion Analysis using Physiological Signals}\cite{DEAP}. This dataset consists of several parts, the first part is a rating of 120 music videos by 14 - 16 persons. Each video is rated for valence, arousal and dominance on a scale ranging from 1 to 9 using self-assessment manikins (see later). This part of the dataset is not used during this thesis, because it contains no EEG recordings.
+One of the most used datasets in the context of emotion recognition is the Dataset for Emotion Analysis using Physiological Signals (DEAP)\nomenclature{DEAP}{Dataset for Emotion Analysis using Physiological Signals}\cite{DEAP}. This dataset consists of several parts, the first part is a rating of 120 music videos by 14 - 16 persons. Each video is rated for valence, arousal and dominance on a scale ranging from 1 to 9 using self-assessment manikins (see later). This part of the dataset is not used during this thesis, because it contains no recordings of physiological signals.
 
 \npar
 
-The next part of the dataset is the physiological experiment that contains emotional reactions of 32 subjects. The emotional reactions were triggered using music video excerpts; each subject watched 40 one-minute videos, while several physiological signals were recorded. These physiological signals consist of 32 channel 512Hz EEH and peripheral physiological signals. More concretely, this dataset contains following signals:
+The next part of the dataset is the physiological experiment that contains emotional reactions of 32 subjects. The emotional reactions were triggered using music video excerpts; each subject watched 40 one-minute videos, while several physiological signals were recorded. These physiological signals consist of 32 channel 512Hz EEG and peripheral physiological signals. More concretely, this dataset contains following signals:
 \begin{table}[H]
 \centering
-\label{DEAPSignals}
 \begin{tabular}{l|ll|l|ll}
 \textbf{Channel} & \textbf{Name} & \textbf{Category} & \textbf{Channel} & \textbf{Name}    & \textbf{Category} \\ \hline
 \textbf{1}       & Fp1           & EEG               & \textbf{21}      & F8               & EEG               \\
@@ -39,12 +32,12 @@ The next part of the dataset is the physiological experiment that contains emoti
 \textbf{19}      & Fz            & EEG               & \textbf{39}      & plethysmograph   & non-EEG           \\
 \textbf{20}      & F4            & EEG               & \textbf{40}      & temperature      & non-EEG          
 \end{tabular}
-\caption{The available signals in the DEAP dataset}
+\caption{The available signals in the DEAP dataset\label{DEAPSignals}.}
 \end{table}
 
 \npar
 
-There also exists a preprocessed version of the physiological experiment database, where the EEG recordings were downsampled to 128Hz and noise and EOG artifact removal was performed. This dataset is used during this thesis.
+There also exists a preprocessed version of the physiological experiment database, where the EEG recordings were downsampled to 128Hz and noise and EOG artifact removal was performed. Additionally most muscle and eye artifacts have a frequency around 1.2Hz. Artifacts caused by nearby power lines, have a frequency around 50Hz\cite{ExtendedPaper}. A bandpass filter was usually applied to filter out frequencies below 4Hz and above 40-45Hz.
 
 \npar
 
@@ -147,7 +140,7 @@ The combination of a local minimum and maximum correspond to a heart beat\citep{
 
 \subsection{Overview}
 
-The following table gives an overview of the different features and the amount of them used. The 32 EEG channels can be found in Table \ref{DEAPSignals}. There are 6 frequency bands: Alpha, Beta, Gamma, Delta, Theta and All. All refers to taking the total power of a channel. Note that the fractions only have 5 frequency bands, as the percentage of all power would always be 100$%$. 
+The following table gives an overview of the different features and their amount. The 32 EEG channels can be found in Table \ref{DEAPSignals}. There are 6 frequency bands: Alpha, Beta, Gamma, Delta, Theta and All. All refers to taking the total power of a channel. Note that the fractions only have 5 frequency bands, as the percentage of all power would always be 100$\%$. 
 
 \begin{table}[]
 \centering
@@ -176,10 +169,15 @@ Total                   &               &                               &       
 \caption{An overview of the different features that were compared in this thesis.\label{featOverviewTable}}
 \end{table}
 
-The feature set has a size of 894, which is huge considering that there are only 40 samples for each person. %TODO
+The feature set has a size of 894, which is huge considering that there are only 40 samples for each person. Using this many features in combination with the low sample count, will quickly result in overfitting\citep{prml}. To solve this problem, one can either increase the number of samples or decrease the number of features. Increasing the number of samples is hard. EEG data requires several recordings of subjects that need to spend the right amount of time. Reducing the feature set in size is another possibility. Two methods exists, dimension reduction and feature selection. Dimension reduction methods create combinations of features, while feature selection methods select a subset of the features. In case of feature selection, bad features are, in contrast to dimension reduction methods, neglected completely. %TODO ref
 
-\section{Emotion recognition Studies}
-This section will give a overview of similar studies and their conclusions. Some of these studies also did some research on cross-subject emotion recognition, but as the research for emotion recognition is still in its infancy\citep{emorecoghard} and subject independent features are hard to find \citep{DEAP} and as a result, the research is generally speaking, more focussed on person specific emotion recognition.
+\npar
+
+This is even more problematic in cross-subject emotion recognition. It is not possible to simply take a limited subset of features, since physiological signals are very personal by nature \citep{DEAP}. Selecting features that work for one person, might not work well on different persons.
+
+
+\section{State of the art}
+This section will give a overview of similar studies and their conclusions. Some of these studies also did some research on cross-subject emotion recognition. Since emotion recognition is still in its infancy\citep{emorecoghard} and subject independent features are hard to find \citep{DEAP}. Research is more focussed on person specific emotion recognition.
 
 \subsection{DEAP method}
 The first method of emotion recognition is the DEAP method, described in the DEAP paper\citep{DEAP}, the paper that introduces the DEAP dataset used in this thesis. The research found that Valence shows the strongest correlations with the EEG signals. Additionally the study found correlations in all frequency bands, with an increase in power for the lower range wavebands for an increase in valence. These effects occur in the occipital regions of the brain, above the visual cortices, which might indicate that the subject is focussing on a pleasurable sound. A central decrease in beta power was observed together with a occipital and right temporal increase in power for positive emotions. The research conclude that these observed correlations concur with other neurological studies, but that the absolute value of the correlations are seldom bigger than $0.1$ for a cross person setting, which indicates that cross person emotion recognition is a non trivial problem. The absolute values of the person specific correlations were around $0.5$.
@@ -200,7 +198,7 @@ $G(f_1, ..., f_n) = argmax_c p(C=c) \prod\limits_{i=1}^n p(F_i=f_i|C=c)$ \\
 
 With F being the set of features and C the classes. $p(F_i=f_i|C=c)$ is estimated by assuming Gaussian distributions of features and modelling these from the training set.
 
-\subsection{Stable Emotion Recognition over Time}
+\subsection{Stable emotion recognition over time}
 
 In \citep{killyPaper}, research is done to find EEG patterns for emotion recognition that are stable over time. EEG patterns are not only subject dependent, they are also dependent on the subjects mood and thus might vary in time. The paper starts by researching different EEG features: PSD, DE, DASM, RASM, DCAU, RCAU, these features are explained in \ref{featuresExplained} and are tested on the DEAP dataset. Afterwards, they develop a new dataset, where subjects have repeated trial sessions with some time in between.
 
@@ -262,7 +260,7 @@ This study\citep{emorecoghard} uses EEG features to recognize 4 different discre
 
 Their main results were that the DASM features worked better that the RASM features and even better than using the corresponding 24 PSD features. They also did research to person independent EEG features and found that their accuracy remained consistent. Note that while these results sound promising, they were unfortunately not performed on the DEAP dataset; performance of emotion recognition algorithms is known to vary a lot between datasets\citep{PhytoEm}.
 
-\section{Comparing selected methods for feature extraction and classification}
+\subsection{Comparing selected methods for feature extraction and classification}
 
 The paper\citep{PhytoEm} classifies four distinct emotions (joy, anger, sadness and pleasure) triggered by songs that were selected for each subject. The songs were selected by the subject himself, to help him in triggering memories that trigger the desired emotions. The four emotions are mapped in the valence-arousal model. The used features were typical statistical values of physiological signals (Skin Conductivity (SC)\nomenclature{SC}{Skin conductivity}, Electrocardiogram (ECG), Electromygraphy (EMG) and Respiration rate (RSP). They compared several techniques: Analysis of Variance (ANOVA) \nomenclature{ANOVA}{Analysis of Variance} where the best d features were taken. Sequential forward selection (SFS) \nomenclature{SFS}{Sequential Forward Selection}, where the algorithm starts with an empty feature set and then introduces a new feature in each iteration. Sequential backward selection (SBS) \nomenclature{SBS}{Sequential Backward Selection} where a feature is removed in each iteration, were also tested. These feature selection methods were also compared to two dimensionality reduction methods: PCA and Fisher projection. The difference between dimensionality reduction and feature selection is that dimensionality reduction methods consider all information in the feature space, whereas feature selection methods take a subset of the information.
 
@@ -274,7 +272,7 @@ The newly formed feature space was then fed to three different classifiers: K-ne
 
 The paper also concludes that joy was characterized by a faster heart rate, while sadness was identified by low SC and EMG signals. There was also a higher breathing rate for negative valence emotions. They reported limited similarities for the selected features between subjects.
 
-\subsection{Research component in this thesis}
+\subsection{Contribution of this thesis}
 
 It is clear that from the aforementioned papers, some research has already been done for emotion recognition. The contribution of this thesis is threefold, first compare a bigger ranger of feature selection methods on a bigger set of physiological features. Second, compare EEG features to non-EEG features to see how much information can be retrieved from the EEG signals compared to the non-EEG signals, which are usually easier to obtain. Third, perform the feature selection methods in a cross-subject setting to see which feature generalise well across subjects. It is also important to note that the feature selection will be performed on the DEAP dataset, so that it can serve as a benchmark. This is important as performance of emotion recognition algorithms based on physiological signals often varies a lot for different datasets\citep{PhytoEm}.
 
@@ -282,10 +280,14 @@ It is clear that from the aforementioned papers, some research has already been 
 \label{FSSel}
 Feature selection is the process of selecting good features from a set of features. The need for this is twofold: first reducing the number of features, is a protection mechanism against overfitting\citep{rfPaper}. This is important when a smaller dataset is used. Second, reducing the number of features can speedup the learning process of a learning algorithm as fewer parameters need to be optimized. Additionally, in the context of research, looking at which features are important might give more insight in how emotion is processed by the brain, i.e. knowing what feature are relevant can help neuroscientists understand the working of the brain better. There is also a practical use of feature selection, limiting the physiological signals to fewer channels, can help the setup time. Mounting an EEG cap to a subject is a time consuming process. Using fewer electrodes can make the system more convenient to use as it would save time.
 
-\subsection{Independent Metrics}
-These feature selection methods select features based on statistical tests or another machine-learning independent metric. 
+\npar
 
-\subsubsection{Pearson Correlation}
+Several approaches for feature selection exists: filter methods, wrapper methods and embedded methods. What follows is an explanation of how each approach works, combined with used methods in this thesis.
+
+\subsection{Filter methods}
+Filter feature selection methods use an independent metric or statistical test to filter out features with low importance. The most simple example of to simple look at the correlation between each feature and the output. Afterwards, all features with low correlation can be removed.
+
+\subsubsection{Pearson correlation}
 The Pearson correlation coefficient measures the linear relationship between two variables. The output is a value r, that lies between -1 and 1, corresponding to perfect negative correlation and perfect positive correlation respectively. A correlation value of 0 means that there is no correlation.
 
 \npar
@@ -313,7 +315,7 @@ The Pearson correlation coefficient is fast and simple to calculate, but has som
 
 In the context of this thesis, whether the correlation is positive or negative is not important; a learning algorithm needs features that have a significant correlation. As a result the absolute value of the r value is reported as this allows for a more convenient comparison of correlations.
 
-\subsubsection{Normalized Mutual Information}
+\subsubsection{Normalized mutual information}
 Mutual information is a more robust option for correlation estimation. The mutual information, I, of two variables $X$ and $Y$ is defined as \citep{mutPaper}:
 \begin{center}
 $I(X,Y) = \sum\limits_{y\in Y} \sum\limits_{x\in X} p(x,y)log(\frac{p(x,y)}{^(x)p(y)}$
@@ -335,7 +337,7 @@ $H(Y) = \sum\limits_{i\in Y} p_ilog(\frac{1}{p_i}) = - \sum\limits_i p_ilog(p_i)
 
 \end{center}
 
-\subsubsection{Distance Correlation}
+\subsubsection{Distance correlation}
 The Pearson correlation coefficient might give a correlation of zero for dependent variables, as shown in Figure \ref{pearson}.
 
 \mijnfiguur{width=0.7\textwidth}{pearson}{Pearson correlation coefficients for different sets of (x,y) points. Note that many coefficients are zero, while there clearly is some correlation. Source: Wikipedia}
@@ -374,7 +376,7 @@ $dCor(X,Y) = \frac{dCov(X,Y)}{\sqrt{dVar(X)dVar(Y)}}$
 \end{center}
 With $dCov(X,Y)$ being the aforementioned distance covariance, $dVar(X)$ and $dVar(Y)$ are the distance standard deviations. The distance correlation has the disadvantage that is much slower than mutual information or Pearson correlation, but in return, the distance correlation is able to detect more complex relationships between two variables.
 
-\subsubsection{Analysis of Variance}
+\subsubsection{Analysis of variance}
 
 Analysis of variance (ANOVA) is a statistical test to analyse differences between groups. The idea is that the total variance, found in the samples consists of two parts. The first part is the variance within a single group, the second part is the variance between groups. 
 
@@ -386,18 +388,13 @@ Suppose you want to test the influence of caffeine on the reaction speed\footnot
 
 If the variance within each group is much larger than the variance in between the groups, one concludes that the groups are similar. The reaction time is thus dependent on the person and not on the caffeine. However should the variance between the groups be much bigger than the variance within each group, than one concludes that the variance in reaction time is caused by the caffeine and not by personal difference.
 
-\subsection{Machine Learning Methods}
+%TODO wrappers
+\subsection{Wrapper methods}
 These methods select features by applying an arbitrary machine learning technique and looking at the coefficients of the features. The idea is that features with high coefficients have more influence on the end results than features with a lower coefficients and are therefore more important. Again absolute values are used.
 
-\subsubsection{Linear Regression}
+\subsubsection{Linear regression}
 
 A first method is simple linear regression, where a linear combination of features is searched that produces a good estimate of the output value. Linear regression can achieve good results given that the data doesn't contain a lot of noise and the features are (relatively) independent. When the set of features contains correlated features, the model becomes unstable. As a result, small changes in input data might lead to huge differences in output coefficients. for example assume the 'real output' is given by $Y = X_1 + X_2$ and the dataset contains output in the form of $Y = X_1 + X_2 + \epsilon$ with $\epsilon$ being some random noise. Further more assume that $X_1$ and $X_2$ are linearly correlated, meaning that $X_1 \approx X_2$. The suspected output of the model should be $Y = X_1 + X_2$, but since noise is added the algorithm might end up with arbitrary combinations of $X_1$ and $X_2$, e.g. $Y = -X_1 + 3X_2$. the result will rate one feature much higher than another one, while in reality they are of equal importance. This is due to the noise; by maximizing the performance, the algorithm will minimize the influence of noise on the output, which result in unstable behaviour.
-
-\subsubsection{Lasso Regression}
-Lasso regression uses L1 regularization, that adds a penalty $\alpha\sum\limits_{i=1}^{n} |w_i|$ to the loss function. the result is that the coefficients of weak features are forced to zero, as each non-zero feature adds to the penalty. This form is regularization is thus quite aggressive, it removes weak features completely. The problem with this is, again, stability; coefficients can vary significantly, even for small changes in training data, when there are correlated features.
-
-\subsubsection{Ridge Regression}
-Ridge regression uses L2 regularization, which add a L2 norm penalty to the loss function, given by $\alpha\sum\limits_{i=1}^{n} w_i^2$. Where the L1 norm forces the coefficients to zero, the L2 regularization forces the coefficients to be spread out more equally. The result is that correlated features tend to get similar coefficients, as this minimizes the loss function, which in turn results in a more stable model. 
 
 \subsubsection{SVM}
 
@@ -421,7 +418,22 @@ Back in the original feature space the separation boundary might look like Figur
 
 \mijnfiguur{width=0.5\textwidth}{SVM5}{Separation boundary in the original feature space.} 
 
-\subsubsection{Random Forests}
+\subsubsection{Linear discriminant analysis}
+Linear Discriminant Analysis (LDA)\nomenclature{LDA}{Linear Disciminant Analysis}, is a machine learning technique often used in combination with CSP\cite{ErrorPotentials,svmldacomp,currTrends}. LDA looks for a projection of the data where the data is linearly separable, as shown in Figure \ref{lda}. Looking at the coefficients of the LDA model, one can again determine the importance of the different features.
+
+\mijnfiguur{width=0.7\textwidth}{lda}{LDA finds a projection of the data where the separation of the data is clear.}
+
+%TODO embedded 
+\subsection{Embedded methods}
+Embedded feature selection methods are methods that are build-in for some machine learning algorithms.
+
+\subsubsection{Lasso regression}
+Lasso regression uses L1 regularization, that adds a penalty $\alpha\sum\limits_{i=1}^{n} |w_i|$ to the loss function. the result is that the coefficients of weak features are forced to zero, as each non-zero feature adds to the penalty. This form is regularization is thus quite aggressive, it removes weak features completely. The problem with this is, again, stability; coefficients can vary significantly, even for small changes in training data, when there are correlated features.
+
+\subsubsection{Ridge regression}
+Ridge regression uses L2 regularization, which add a L2 norm penalty to the loss function, given by $\alpha\sum\limits_{i=1}^{n} w_i^2$. Where the L1 norm forces the coefficients to zero, the L2 regularization forces the coefficients to be spread out more equally. The result is that correlated features tend to get similar coefficients, as this minimizes the loss function, which in turn results in a more stable model. \\
+
+\subsubsection{Random forests}
 A random forest (RF) \nomenclature{RF}{Random Forests} is an efficient learning algorithm based on model bagging and aggregation ideas\citep{rfPaper}. The Random forests work by creating different decision trees. On their own, decision trees are very prone to overfitting. Random forests solve this problem by creating an aggregation of trees. 
 
 \npar
@@ -487,14 +499,6 @@ It is clear that feature A and B are very important when it comes to predicting 
 
 This problem does not occur for random forest though, as combinations of features are also 'tested' in the sense that a tree might split on them in different stages. Once the combination of features occurs randomly in a decision tree, the impurity will drop significantly, which will result in higher importance rankings.
 
-\subsection{Dimensionality Reduction methods}
-The algorithms described below perform a dimensionality reduction, often by projecting a high dimensional to a lower dimensional features space. Looking at coefficients of these trained models, indicate what features are important.
-
-\subsubsection{Linear Discriminant Analysis}
-Linear Discriminant Analysis (LDA)\nomenclature{LDA}{Linear Disciminant Analysis}, is a machine learning technique often used in combination with CSP\cite{ErrorPotentials,svmldacomp,currTrends}. LDA looks for a projection of the data where the data is linearly separable, as shown in Figure \ref{lda}. Looking at the coefficients of the LDA model, one can again determine the importance of the different features.
-
-\mijnfiguur{width=0.7\textwidth}{lda}{LDA finds a projection of the data where the separation of the data is clear.}
-
 \subsubsection{Principal Component Analysis}
 Principal Component Analysis (PCA) \nomenclature{PCA}{Principal Component Analysis} is a technique to do dimension reduction. Intuitively, PCA can be seen as fitting an n-dimensional ellipsoid to the data. The Principal components are then the axes of the ellipsoid. Less variation in one direction, corresponds to a smaller axis. Removing that axis, will only remove a small fraction of the information, as there is only little variation in that direction. This is shown in Figure \ref{ellipsoid}, where the ellipsoid covers a three dimensional features space. The ellipsoid has three axes: a,b and c. Intuitively, one can see that there is more variation (information) in the c ans b direction, while the a axis is relatively small.
 
@@ -506,6 +510,9 @@ Removing the a axis by projecting the data on the plane given by vectors b and c
 
 The major disadvantage of PCA is that the algorithm is unsupervised, meaning that it does not look at the corresponding labels of the given samples. Suppose the difference between two classes was clearly given by looking at the a axis in Figure \ref{ellipsoid}. PCA would, in that case, result in a total loss of all information.
 
+\section{Used approach in this thesis}
+
+%TODO approach in this thesis
 \subsubsection{Advanced RF feature selection}
 One advanced method for feature selection is the two-step method using random forest, described in \citep{rfPaper}. The paper states that there are two possible motivations for feature selection. The first motivation is to do interpretation, find out which features are important and use them for research. In the context of BCI, feature interpretation could help neuroscientist find out which parts of the brain are affected by an emotion, for example. The second motivation is to improve machine learning techniques, having fewer features will not only speed up training and prediction times, it also reduces the complexity, which often has a good influence on the generalisation property of a machine learning algorithm. Additionally in the context of BCI research and EEG data gathering, using fewer electrodes means less preprocessing time; mounting 32 electrodes to the brain of a subject is a time consuming task.
 

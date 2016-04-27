@@ -117,7 +117,7 @@ There are many machine learning algorithms. One way to group these algorithms is
 
 Another way to group algorithms is based on their training data\citep{prml}. In the asking price examples above, the training data consists of labelled results. The training data is called labelled because the correct asking price is given for each area. This type of machine learning, where the correct outputs for the train data are given, is referred to as supervised machine learning\citep{prml}. The alternative is unsupervised machine learning\citep{prml}, which often results in finding groups of similar data points (clustering), without knowing the actual labels. Note that the combination of supervised and unsupervised data, known as semi supervised learning, is also possible\citep{semiSup}. Imagine a dataset with 5000 webpages that need to be grouped into 10 distinct categories, e.g. science, nature, cooking, ... . Only 100 of the 5000 pages in the train set are labelled. An approach to solve this problem could be to first cluster the pages in similar groups using unsupervised learning. As soon as a group contains a single labelled page, all pages in the group can be labelled accordingly, as clustering returns groups of similar samples. Semi supervised learning has the advantage that one can also use unlabelled data, which is often easier and cheaper to obtain, unlike labelled data which is usually quite rare; if there was a fast and easy way to label the data then there would not be a need for machine learning.
 
-\subsection{Over and underfitting}
+\subsection{Over- and underfitting}
 
 Over and underfitting is a common problem in many machine learning projects\citep{prml}. An algorithm that 'overfits the data' is able to recognise seen sample points very well. However when the algorithm is tested on unseen points, the performance might be a lot lower than expected.
 
@@ -137,7 +137,7 @@ The function on the right corresponds to an overfit; the function fits or 'goes 
 
 One should be careful for these problems, when designing a machine learning algorithm, because an algorithm should also perform well on unseen samples. One way to check if the algorithm is overfitting, is to take a part of the dataset and label is test set. This set is then neglected during training and only used in the end to evaluate the algorithms performance.
 
-\subsection{Feature Selection}
+\subsection{Feature selection}
 Feature selection is a technique to select features that perform well, while trying to remove irrelevant features\citep{rfPaper}. The advantages of having a smaller features set is twofold. First having fewer features, will lower the risk of overfitting\citep{rfPaper}. Second, knowing which features are important can help in gaining insight in the processing of emotion by the brain. 
 
 \npar
