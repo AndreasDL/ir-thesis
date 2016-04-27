@@ -1,12 +1,12 @@
 \chapter{Methods}
-{\samenvatting This chapter starts by giving an overview of the features found in literature for emotion recognition. Then an overview of some emotion recognition studies is given. The chapter ends by explaining the different feature selection methods.} %TODO 
+{\samenvatting This chapter starts by explaining the used dataset and features. Next some state of the art methods are briefly discussed, to give an idea of similar research. After that the contributions of this thesis are explained. Next different feature selection methods are explained. The last part of this section explains the used approach in this thesis.}
 
-\subsection{Dataset}
-One of the most used datasets in the context of emotion recognition is the Dataset for Emotion Analysis using Physiological Signals (DEAP)\nomenclature{DEAP}{Dataset for Emotion Analysis using Physiological Signals}\cite{DEAP}. This dataset consists of several parts, the first part is a rating of 120 music videos by 14 - 16 persons. Each video is rated for valence, arousal and dominance on a scale ranging from 1 to 9 using self-assessment manikins (see later). This part of the dataset is not used during this thesis, because it contains no recordings of physiological signals.
+\section{Dataset}
+One of the most used datasets in the context of emotion recognition is the Dataset for Emotion Analysis using Physiological Signals (DEAP)\nomenclature{DEAP}{Dataset for Emotion Analysis using Physiological Signals}\cite{DEAP}. This dataset consists of several parts, the first part is a rating of 120 music videos by 14 - 16 persons. Each video is rated for valence, arousal and dominance on a scale ranging from 1 to 9 using self-assessment manikins (see later). This part of the dataset is not used during this thesis, because it contains no physiological signals.
 
 \npar
 
-The next part of the dataset is the physiological experiment that contains emotional reactions of 32 subjects. The emotional reactions were triggered using music video excerpts; each subject watched 40 one-minute videos, while several physiological signals were recorded. These physiological signals consist of 32 channel 512Hz EEG and peripheral physiological signals. More concretely, this dataset contains following signals:
+The next part of the dataset is the physiological experiment that contains emotional reactions of 32 subjects. The emotional reactions were triggered using music video excerpts. Each subject watched 40 one-minute videos, while several physiological signals were recorded. These physiological signals consist of 32 channel 512Hz EEG signals combined with peripheral physiological signals like respiration rate, skin temperature, etc. More concretely, this dataset contains following signals:
 \begin{table}[H]
 \centering
 \begin{tabular}{l|ll|l|ll}
@@ -30,32 +30,32 @@ The next part of the dataset is the physiological experiment that contains emoti
 \textbf{17}      & Fp2           & EEG               & \textbf{37}      & GSR              & non-EEG           \\
 \textbf{18}      & AF4           & EEG               & \textbf{38}      & respiration belt & non-EEG           \\
 \textbf{19}      & Fz            & EEG               & \textbf{39}      & plethysmograph   & non-EEG           \\
-\textbf{20}      & F4            & EEG               & \textbf{40}      & temperature      & non-EEG          
+\textbf{20}      & F4            & EEG               & \textbf{40}      & skin temperature & non-EEG          
 \end{tabular}
 \caption{The available signals in the DEAP dataset\label{DEAPSignals}.}
 \end{table}
 
 \npar
 
-There also exists a preprocessed version of the physiological experiment database, where the EEG recordings were downsampled to 128Hz and noise and EOG artifact removal was performed. Additionally most muscle and eye artifacts have a frequency around 1.2Hz. Artifacts caused by nearby power lines, have a frequency around 50Hz\cite{ExtendedPaper}. A bandpass filter was usually applied to filter out frequencies below 4Hz and above 40-45Hz.
+There also exists a preprocessed version of the physiological experiment database, where the EEG recordings were downsampled to 128Hz and noise and EOG artifact removal was performed. Additionally, given that most muscle and eye artifacts have a frequency around 1.2Hz and artifacts caused by nearby power lines, have a frequency around 50Hz\cite{ExtendedPaper}. A bandpass filter was applied to filter out frequencies below 4Hz and above 40-45Hz. This thesis uses the preprocessed version of the DEAP as this is the most practical version to use.
 
 \npar
 
-Additionally facial video for 22 of the 32 subjects was recorded, so research in facial expressions is also possible with this dataset. These videos are also rated on 4 scales: arousal, valence, dominance and liking. The liking component indicates how much the person liked the video excerpt and should not be confused with the valence component; it inquires information about the participants' tastes, not their feelings, i.e. a person can like a video that triggers angry or sad emotions. However strong correlations were observed\citep{DEAP}. The liking rates are neglected, since they are not part of the emotion space.
+Additionally facial video for 22 of the 32 subjects was recorded, so research in facial expressions is also possible with this dataset. All videos are rated on 4 scales: arousal, valence, dominance and liking. The liking component indicates how much each person liked each video excerpt. It should not be confused with the valence component, as it inquires information about the participants' tastes, not their feelings,. For instance, a person can like a video that triggers angry or sad emotions. However strong correlations between the liking and valence ratings were observed\citep{DEAP}. The liking rates are mentioned here for completeness and are not used in this work as they are not part of the emotion space.
 
 \npar
 
-For assessment of these scales, the self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins}, were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scales with pictures. Each picture corresponds to a discrete value. The user can click anywhere in between the different figures, which makes the scales continuous. All dimensions are given by a continuous value between 1 and 9. In this thesis, a preprocessing step scaled and translated these values to ensure they range between 0 and 1, a more convenient interval.
+For assessment of these scales self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins} were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scales with pictures. Each picture corresponds to a discrete value. The user can click anywhere in between the different figures, which makes the scales continuous. All dimensions are given by a continuous value between 1 and 9.
 
 \npar
 
-The used SAM figures are shown in Figure \ref{SAM}. The first row gives the valence scale, ranging from sad to happy. The second row shows the arousal scale, ranging from bored to excited. The last row represents the different dominance levels. The left figure represents a submissive emotion, while the right figure corresponds with a dominant feeling.
+The used SAM figures are shown in Figure \ref{SAM}. The first row gives the valence scale, ranging from sad to happy. The second row shows the arousal scale, ranging from bored to excited. The last row represents the different dominance levels. The left figure represents a submissive experience, while the right figure corresponds with a dominant experience.
 
 \mijnfiguur{width=0.5\textwidth}{SAM}{The images used for the SAM\cite{DEAP}.}
 
 \section{Features}
 \label{featuresExplained}
-Machine learning algorithms require good features to perform well\footnote{Note that there are some exceptions, for instance some types neural networks are capable of 'designing' their own features\citep{nnfeat}. But these algorithms were not used in this thesis.}. In the context of this thesis, good features should be correlated with the subject's emotional state. Two categories of features are observed in this work: EEG features and non-EEG features. Both categories are covered in the following sections.
+Machine learning algorithms require good features to perform well\footnote{There are some exceptions, for instance some types neural networks are capable of 'designing' their own features\citep{nnfeat}. But these algorithms were not used in this thesis.}. In the context of this thesis, good features should be correlated with the subject's emotional state. Two categories of features are observed in this work: EEG features and non-EEG features. Both categories are covered in the following sections.
 
 \subsection{EEG-features}
 EEG features are extracted from the electroencephalography measurements from the subject's scalp. From these signals a lot of different signals can be extracted. The power spectral density (PSD) \nomenclature{PSD}{Power Spectral Density} of a signal gives the distribution of the signal's energy in the frequency domain. By calculating the spectral density for different frequency bands of the signal, one can determine how much power of each frequency band is in the signal.
@@ -73,7 +73,7 @@ $DE_{channel} = log(PSD_{channel})$
 
 \npar
 
-The most used feature for valence recognition is the frontal asymmetry of the alpha power\cite{GivenPaper}. The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere which is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The asymmetry can be calculated in different ways. First, one can calculate the differential asymmetry (DASM) \nomenclature{DASM}{Differential Asymmetry}, where the left alpha power is subtracted from the right alpha power.
+The most used feature for valence recognition is the frontal asymmetry of the alpha power\cite{GivenPaper}. The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere. The left hemisphere is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The asymmetry can be calculated in different ways. First, one can calculate the differential asymmetry (DASM) \nomenclature{DASM}{Differential Asymmetry}, where the left alpha power is subtracted from the right alpha power.
 
 \begin{center}
 $DASM = DE_{left} - DE_{right}$
@@ -85,7 +85,7 @@ Another way to measure the asymmetry is by division. The Rational Asymmetry (RAS
 $RASM = \frac{DE_{left}}{DE_{right}}$
 \end{center}
 
-With $DE_{left}$ and $DE_{right}$ being the left and right differential entropy respectively. Another reported feature in literature is the caudality, or the asymmetry in fronto-posterior direction\cite{caudality}, meaning the difference in power between the front and the back of the scalp. This can again be calculated in two ways. The first method is the differential Caudality (DCAU) \nomenclature{DCAU}{Differential Caudality}, defined as: \\
+With $DE_{left}$ and $DE_{right}$ being the left and right differential entropy respectively. Another reported feature in literature is the caudality, or the asymmetry in fronto-posterior direction\cite{caudality}. Caudality measures the difference in power between the front and the back of the scalp. This can again be calculated in two ways. The first method is the differential Caudality (DCAU) \nomenclature{DCAU}{Differential Caudality}, defined as: \\
 
 \begin{center}
 $DCAU = DE_{front} - DE_{post}$
@@ -110,7 +110,7 @@ $frac_{band,channel} = \frac{power_{band,channel}}{power_{total,channel}}$
 These fractions give insight in the distributions of wavebands at different channel locations.
 
 \subsection{non-EEG features}
-The aforementioned EEG features are just one class of physiological features, the DEAP dataset contains several non-EEG, physiological measurements\citep{DEAP}. For each of these measurements the average, standard deviation, variation, median, minimum and maximum are calculated.
+The aforementioned EEG features are just one class of physiological features, the DEAP dataset contains several other physiological measurements\citep{DEAP}. For each of these measurements the average, standard deviation, variation, median, minimum and maximum are calculated.
 
 \npar
 
@@ -118,29 +118,27 @@ The Galvanic Skin Response \nomenclature{GSR}{Galvanic Skin Response} uses two e
 
 \npar
 
-The respiration belt (RSP)\nomenclature{RSP}{Respiration Belt}, indicates the user's respiration rate. Slow respiration is linked to relaxation (low arousal), while fast and irregular respiration patterns corresponds to anger or fear, both emotions with low valence and high arousal\citep{DEAP}.
+The respiration belt (RSP)\nomenclature{RSP}{Respiration Belt}, indicates the user's respiration rate. Slow respiration is linked to relaxation (low arousal). Fast and irregular respiration patterns corresponds to anger or fear, both emotions have low valence and high arousal\citep{DEAP}.
 
 \npar
 
-A plethysmograph is a measurement of the volume of blood in the subject's left thumb. This can be use to determine the blood pressure. Blood pressure offers valuable insight into the emotional state of a person as it correlates with emotion; stress is known to increase blood pressure\citep{DEAP}.
+A plethysmograph is a measurement of the volume of blood in the subject's left thumb. This can be used to determine the blood pressure of a subject. Blood pressure offers valuable insight into the emotional state of a person. For instance, stress is known to increase blood pressure\citep{DEAP}.
 
 \npar
 
-The heart rate is not directly available in the DEAP dataset, but can be extracted from the plethysmograph, by looking at local minima and maxima\citep{DEAP}. This is clearly visible when looking at the plethysmograph's output, shown in Figure \ref{before}.
+The heart rate is not directly available in the DEAP dataset. fortunately, it can be extracted from the plethysmograph, by looking at local minima and maxima\citep{DEAP}. This is visible when looking at the plethysmograph's output, shown in Figure \ref{before}.
 
 \mijnfiguur{width=0.9\textwidth}{before}{The plethysmograph before smoothing.}
 
-The heart rate extraction is done in two steps. First the plethysmograph signal is smoothed, by filtering out the high frequency components to avoid noise being selected as a local optima. In the second stage the local optima are located, this is shown in Figure \ref{extrema}
+The heart rate extraction is done in two steps. In the first step the plethysmograph's output is smoothed to filter out high frequency components. This is done to avoid that noise is selected as a local optima. In the second step the local extrema are located, as shown in Figure \ref{extrema}
 
 \mijnfiguur{width=0.9\textwidth}{extrema}{The local optima in the plethysmograph.}
-
-\npar
 
 The combination of a local minimum and maximum correspond to a heart beat\citep{DEAP}. Therefore, the time between two consecutive local minima or maxima correspond to the time between two heart beats, known as the interbeat interval. Getting the average heart rate from the interbeat interval is straight forward. Lastly, the skin temperature of the subject is also available.
 
 \subsection{Overview}
 
-The following table gives an overview of the different features and their amount. The 32 EEG channels can be found in Table \ref{DEAPSignals}. There are 6 frequency bands: Alpha, Beta, Gamma, Delta, Theta and All. All refers to taking the total power of a channel. Note that the fractions only have 5 frequency bands, as the percentage of all power would always be 100$\%$. 
+The following table gives an overview of the different features and their amount. The 32 EEG channels can be found in Table \ref{DEAPSignals}. There are 6 frequency bands: Alpha, Beta, Gamma, Delta, Theta and All. All refers to taking the total power of a channel. Note that the fractions only have 5 different frequency bands, as the percentage of all power would always be 100$\%$. 
 
 \begin{table}[]
 \centering
@@ -154,7 +152,7 @@ The following table gives an overview of the different features and their amount
 \textbf{RCAU}           & \textbf{eeg}  & 11                            & 6                         & 66           \\
 \textbf{Frac}           & eeg           & 32                            & 5                         & 160          \\
 \textbf{Alpha / Beta}   & eeg           & 32                            & 1                         & 32           \\
-Total                   &               &                               &                           & 864          \\
+\textbf{EEG Total}      &               &                               &                           & 864          \\
                         &               &                               &                           &              \\
 \textbf{name}           & \textbf{type} & \textbf{number of statistics} &                           &              \\
 \textbf{HR}             & non-eeg       & 6                             &                           &              \\
@@ -162,19 +160,18 @@ Total                   &               &                               &       
 \textbf{GSR}            & non-eeg       & 6                             &                           &              \\
 \textbf{ST}             & non-eeg       & 6                             &                           &              \\
 \textbf{RSP}            & non-eeg       & 6                             &                           &              \\
-\textbf{Total}          &               & 30                            &                           &              \\
+\textbf{non-EEG Total}  &               & 30                            &                           &              \\
                         &               &                               &                           &              \\
 \textbf{Overall Total}  & \textbf{894}  &                               &                           &             
 \end{tabular}
 \caption{An overview of the different features that were compared in this thesis.\label{featOverviewTable}}
 \end{table}
 
-The feature set has a size of 894, which is huge considering that there are only 40 samples for each person. Using this many features in combination with the low sample count, will quickly result in overfitting\citep{prml}. To solve this problem, one can either increase the number of samples or decrease the number of features. Increasing the number of samples is hard. EEG data requires several recordings of subjects that need to spend the right amount of time. Reducing the feature set in size is another possibility. Two methods exists, dimension reduction and feature selection. Dimension reduction methods create combinations of features, while feature selection methods select a subset of the features. In case of feature selection, bad features are, in contrast to dimension reduction methods, neglected completely. %TODO ref
+The feature set has a size of 894, which is huge considering that there are only 40 samples for each person. Using this many features in combination with the low sample count, will quickly result in overfitting\citep{prml}. To solve this problem, one can either increase the number of samples or decrease the number of features. Increasing the number of samples is hard. EEG data requires several recordings of subjects and is usually hard to obtain. Reducing the feature set in size is another possibility. Two methods exists, dimension reduction and feature selection. The difference between dimensionality reduction and feature selection is that dimensionality reduction methods consider all information in the feature space. Feature selection methods take a subset of the information\citep{PhytoEm}.
 
 \npar
 
-This is even more problematic in cross-subject emotion recognition. It is not possible to simply take a limited subset of features, since physiological signals are very personal by nature \citep{DEAP}. Selecting features that work for one person, might not work well on different persons.
-
+This problem is even more severe in cross-subject emotion recognition. It is not possible to simply take a limited subset of features, since physiological signals are very personal by nature \citep{DEAP}. Selecting features that work for one person, might not work well on different persons.
 
 \section{State of the art}
 This section will give a overview of similar studies and their conclusions. Some of these studies also did some research on cross-subject emotion recognition. Since emotion recognition is still in its infancy\citep{emorecoghard} and subject independent features are hard to find \citep{DEAP}. Research is more focussed on person specific emotion recognition.
@@ -262,11 +259,15 @@ Their main results were that the DASM features worked better that the RASM featu
 
 \subsection{Comparing selected methods for feature extraction and classification}
 
-In this comparitive study four distrinct emotions (joy, anger,sadness and pleasure) were classified \citep{PhytoEm}. The emotions were triggered by songs that were selected for each subject. The songs were selected by the subject himself. The subjects were instructed to select songs that trigger memories that in turn, trigger the desired emotions. The four emotional stats were mapped in the valence-arousal model. The used features were typical statistical values of physiological signals (Skin Conductivity (SC)\nomenclature{SC}{Skin conductivity}, Electrocardiogram (ECG), Electromygraphy (EMG) and Respiration rate (RSP). They compared several techniques: Analysis of Variance (ANOVA) \nomenclature{ANOVA}{Analysis of Variance} where the best d features were taken. Sequential forward selection (SFS) \nomenclature{SFS}{Sequential Forward Selection}, where the algorithm starts with an empty feature set and then introduces a new feature in each iteration. Sequential backward selection (SBS) \nomenclature{SBS}{Sequential Backward Selection} where a feature is removed in each iteration, were also tested. These feature selection methods were also compared to two dimensionality reduction methods: PCA and Fisher projection. The difference between dimensionality reduction and feature selection is that dimensionality reduction methods consider all information in the feature space, whereas feature selection methods take a subset of the information.
+In this comparitive study four distrinct emotions (joy, anger,sadness and pleasure) were classified \citep{PhytoEm}. The emotions were triggered by songs that were selected for each subject. The subjects were instructed to select songs themselves, that trigger memories. These memories should in turn, trigger the desired emotions. The four emotional states were mapped in the valence-arousal model. The used features were typical statistical values of physiological signals (Skin Conductivity (SC)\nomenclature{SC}{Skin conductivity}, Electrocardiogram (ECG), Electromygraphy (EMG) and Respiration rate (RSP). 
+
+\npar 
+
+Several feature selection techniques were compared. The first one is the analysis of Variance (ANOVA) \nomenclature{ANOVA}{Analysis of Variance} where the best D features were taken. Sequential forward selection (SFS) \nomenclature{SFS}{Sequential Forward Selection}, where the algorithm starts with an empty feature set and then introduces a new feature in each iteration. Sequential backward selection (SBS) \nomenclature{SBS}{Sequential Backward Selection} is an alternative, where a feature is removed in each iteration. These feature selection methods were also compared to two dimensionality reduction methods: PCA and Fisher projection. 
 
 \npar
 
-The newly formed feature space was then fed to three different classifiers: K-nearest neighbors, Multilayer perceptron and Linear discriminant function. The results indicated that is was easier to classify arousal than valence, which indicate that non-eeg features might be features for arousal classification. SFS in combination with fisher seemed to give the best classification performance, closely followed by LDF and ANOVA, a less computationally intensive method.
+The newly formed feature space was then fed to three different classifiers: K-nearest neighbors, Multilayer perceptron and Linear discriminant function. The results indicated that it is easier to classify arousal than valence. This might indicate that non-eeg features might be features for arousal classification, since this work only contains non-EEG features. SFS in combination with fisher seemed to give the best classification performance, closely followed by LDF and ANOVA, a less computationally intensive method.
 
 \npar
 
@@ -274,21 +275,21 @@ The paper also concludes that joy was characterized by a faster heart rate, whil
 
 \subsection{Advanced RF feature selection}
 \label{rfmethod}
-One advanced method for feature selection is the two-step method using random forest\citep{rfPaper}. There are two possible motivations for feature selection. The first motivation is to do interpretation, find out which features are important and use them for research. In the context of BCI, feature interpretation could help neuroscientist find out which parts of the brain are affected by an emotion, for example. The second motivation is to improve machine learning techniques, having fewer features will not only speed up training and prediction times, it also reduces the complexity, which often has a good influence on the generalisation property of a machine learning algorithm. Additionally in the context of BCI research and EEG data gathering, using fewer electrodes means less preprocessing time; mounting 32 electrodes to the brain of a subject is a time consuming task.
+One advanced method for feature selection is the two-step method using random forest\citep{rfPaper}. There are two possible motivations for feature selection. The first motivation is to do interpretation, find out which features are important and use them for research. In the context of BCI, feature interpretation could help neuroscientist find out which parts of the brain are affected by emotion, for example. The second motivation is to improve machine learning techniques. Having fewer features will not only speed up training and prediction times, it also reduces the complexity. Reducing complexity often has a good influence on the generalisation property of a machine learning algorithm\citep{prml}. Additionally in the context of EEG data gathering, using fewer electrodes means less preprocessing time; mounting 32 electrodes to the brain of a subject is a time consuming task.
 
 \npar
 
-The selection procedure itself consists of two steps, in the first step data is fitted to a random forest and the importance values for each feature are determined, by taking the average and standard deviation of the importances over all trees. All features are then ranked based on their importance ranking, before features with small importance are cancelled. 
+The selection procedure itself consists of two steps. In the first step, data is fitted to a random forest and the importance values for each feature are determined. The importance values are then averaged and the standard deviation of the importances over all trees is calculated. All features are then ranked based on their importance ranking. Next features with small importance values are cancelled. 
 
 \npar
 
-Then, depending on the motivation of feature selection, one of two possible second steps is performed. For feature interpretation the second step starts by fitting a random forest using a single feature. The OOB is then averaged over multiple runs. The runs are needed because a random forest has an element of randomness; fitting the same data twice to a random forest, will not give you the same random forest. To get an accurate estimate of the performance of a random forest, it might be a good idea to fit the data several times. The average OOB score and its standard deviation is then used to determine an initial OOB score.
+Then, depending on the motivation of feature selection, one of two possible second steps is performed. For feature interpretation the second step starts by fitting a random forest using a single feature. The OOB is then averaged over multiple runs. The runs are needed because a random forest has an element of randomness; fitting the same data twice to a random forest, will not give you the same random forest. To get an accurate estimate of the performance of a random forest, fitting the data several times is required. The average OOB score and its standard deviation is then used to determine an initial OOB score.
 
 \begin{center}
 $OOB_{init} = AVG(OOB) - STD(OOB)$
 \end{center}
 
-The standard deviation is used to avoid noisy results, a result is only regarded as better, when it is better from a statistical point of view. Next features are added iteratively, when a larger features set has a better average OOB score (taking the standard deviation into account), the feature set is replaced by the larger feature set. Note that the whole set of features is always considered; it is not possible to leave a feature out and include the next feature.
+The standard deviation is used to avoid noisy results. This means that a result is only regarded as better, when it is better from a statistical point of view. Next features are added iteratively, when a larger features set has a better average OOB score (taking the standard deviation into account), the feature set is replaced by the larger feature set. Note that the whole set of features is always considered; it is not possible to leave a feature out and include the next feature.
 
 \npar
 
@@ -540,34 +541,3 @@ Removing the a axis by projecting the data on the plane given by vectors b and c
 \npar
 
 The major disadvantage of PCA is that the algorithm is unsupervised, meaning that it does not look at the corresponding labels of the given samples. Suppose the difference between two classes was clearly given by looking at the a axis in Figure \ref{ellipsoid}. PCA would, in that case, result in a total loss of all information.
-
-\section{Used approach in this thesis}
-
-This thesis compares the aforementioned features and the aforementioned feature selection methods. For this a two stepped algorithm, inspired by the advanced rf method, explained in \ref{rfmethod}. In short, the first step is to rank all the features and only take the top X of the features. This threshold is applied to limit computation times. The next step is to iteratively build a model. This approach is depicted in Figure \ref{flow}.
-
-\mijnfiguur{width=0.9\textwidth}{flow}{The used approach of this thesis.}
-
-As you can see in Figure \ref{flow}, the approach starts by separating a test set to evaluate the final performance of the algorithm. Next the aforementioned feature selection methods are applied to the train set. A top $X$ of the features is then kept.
-
-\npar
-
-In the next step different models are build. This is done iteratively by starting with an empty feature set. In the add step, a feature is added to this set and the cross validation error is determined. Cross validation is a technique that separates the data in N folds, as shown in Figure \ref{CVscheme}. Next the algorithm is trained on N-1 blocks and tested on the remaining blocks. This is done N times and the average of the performance is then reported as cross validation error. 
-
-%CV fig
-\mijnfiguur{width=0.55\textwidth}{CVscheme}{Cross validation}
-
-The advantage of using a cross validation scheme is that it gives a pretty good estimation of the generalisation of the algorithm, while still using all train data. Note that the test set, displayed in red is not used here. The test set is kept completely separate to ensure that a fair estimate of the generalisation is achieved.
-
-\npar
-
-Next the average of the cross validation errors and the standard deviation is calculated. The average cross validation minus the standard deviation is b
-then compared to the previous best performance. If the performance is better, the feature is kept in the feature set. If the performance is not better, the feature is neglected. 
-
-\npar
-
-In the final step the performance of the test set is determined by the accuracy metric. Accuracy is chosen as metric, because this metric gives a clear and intuitive measurement of performance.
-
-\npar
-
-The goal of this thesis is to compare the selected features from the different feature selection methods. Additionally a model is build with these features that gives an indication how good the selected features can perform. Note that several models are used to get the performance. This is done, because a different method, might interact better with a different features.
-

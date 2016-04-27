@@ -117,7 +117,6 @@
 % titelblad (voor kaft)
 \includepdf[pages={1}, offset=75 - 75]{voorblad.pdf}
 
-%\includepdf[pages={1}, offset=75 - 75]{voorblad.pdf}
 %\afterpage{\blankpage} \clearpage
 %\includepdf[pages={1}, offset=75 - 75]{voorblad.pdf}
 
@@ -125,10 +124,10 @@
 \pagestyle{empty}
 
 % voorwoord met dankwoord en toelating tot bruikleen (ondertekend)
-%\include{preface}
+%\include{preface} %TODO
 
 % abstract
-%\include{abstract}
+%\include{abstract} %TODO
 
 \pagestyle{fancy}
 \frontmatter
@@ -157,6 +156,8 @@
 % hier worden de hoofdstukken ingevoegd (\includes)
 \include{Introduction}
 \include{methods}
+\include{results}
+\include{conclusion}
 
 \include{futureResearch}
 

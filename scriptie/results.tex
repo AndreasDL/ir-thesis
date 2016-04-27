@@ -1,0 +1,33 @@
+\chapter{Results}
+{\samenvatting todo}
+
+\section{Used approach in this thesis}
+
+This thesis compares the aforementioned features and the aforementioned feature selection methods. For this a two stepped algorithm, inspired by the advanced rf method, explained in \ref{rfmethod}. In short, the first step is to rank all the features and only take the top X of the features. This threshold is applied to limit computation times. The next step is to iteratively build a model. This approach is depicted in Figure \ref{flow}.
+
+\mijnfiguur{width=0.9\textwidth}{flow}{The used approach of this thesis.}
+
+As you can see in Figure \ref{flow}, the approach starts by separating a test set to evaluate the final performance of the algorithm. Next the aforementioned feature selection methods are applied to the train set. A top $X$ of the features is then kept.
+
+\npar
+
+In the next step different models are build. This is done iteratively by starting with an empty feature set. In the add step, a feature is added to this set and the cross validation error is determined. Cross validation is a technique that separates the data in N folds, as shown in Figure \ref{CVscheme}. Next the algorithm is trained on N-1 blocks and tested on the remaining blocks. This is done N times and the average of the performance is then reported as cross validation error. 
+
+%CV fig
+\mijnfiguur{width=0.55\textwidth}{CVscheme}{Cross validation}
+
+The advantage of using a cross validation scheme is that it gives a pretty good estimation of the generalisation of the algorithm, while still using all train data. Note that the test set, displayed in red is not used here. The test set is kept completely separate to ensure that a fair estimate of the generalisation is achieved.
+
+\npar
+
+Next the average of the cross validation errors and the standard deviation is calculated. The average cross validation minus the standard deviation is b
+then compared to the previous best performance. If the performance is better, the feature is kept in the feature set. If the performance is not better, the feature is neglected. 
+
+\npar
+
+In the final step the performance of the test set is determined by the accuracy metric. Accuracy is chosen as metric, because this metric gives a clear and intuitive measurement of performance.
+
+\npar
+
+The goal of this thesis is to compare the selected features from the different feature selection methods. Additionally a model is build with these features that gives an indication how good the selected features can perform. Note that several models are used to get the performance. This is done, because a different method, might interact better with a different features.
+
