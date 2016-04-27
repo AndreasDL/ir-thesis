@@ -66,7 +66,7 @@ Differential entropy (DE)\nomenclature{DE}{Differential Entropy} is defined as f
 \begin{center}
 $DE_{channel} = - \int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2}} exp(\frac{(x-\mu)^2}{2\sigma^2}) log(\frac{1}{\sqrt{2\pi\sigma^2}}) exp(\frac{(x-\mu)^2}{2\sigma^2})dx$
 \end{center}
-According to \citep{diffEnt}, the differential entropy of a certain band is equivalent to the logarithmic power spectral density for a fixed length EEG sequence, which simplifies the calculations significantly.
+It is proven that the differential entropy of a certain band is equivalent to the logarithmic power spectral density for a fixed length EEG sequence\citep{diffEnt}. This simplifies the calculations significantly.
 \begin{center}
 $DE_{channel} = log(PSD_{channel})$
 \end{center}
@@ -262,7 +262,7 @@ Their main results were that the DASM features worked better that the RASM featu
 
 \subsection{Comparing selected methods for feature extraction and classification}
 
-The paper\citep{PhytoEm} classifies four distinct emotions (joy, anger, sadness and pleasure) triggered by songs that were selected for each subject. The songs were selected by the subject himself, to help him in triggering memories that trigger the desired emotions. The four emotions are mapped in the valence-arousal model. The used features were typical statistical values of physiological signals (Skin Conductivity (SC)\nomenclature{SC}{Skin conductivity}, Electrocardiogram (ECG), Electromygraphy (EMG) and Respiration rate (RSP). They compared several techniques: Analysis of Variance (ANOVA) \nomenclature{ANOVA}{Analysis of Variance} where the best d features were taken. Sequential forward selection (SFS) \nomenclature{SFS}{Sequential Forward Selection}, where the algorithm starts with an empty feature set and then introduces a new feature in each iteration. Sequential backward selection (SBS) \nomenclature{SBS}{Sequential Backward Selection} where a feature is removed in each iteration, were also tested. These feature selection methods were also compared to two dimensionality reduction methods: PCA and Fisher projection. The difference between dimensionality reduction and feature selection is that dimensionality reduction methods consider all information in the feature space, whereas feature selection methods take a subset of the information.
+In this comparitive study four distrinct emotions (joy, anger,sadness and pleasure) were classified \citep{PhytoEm}. The emotions were triggered by songs that were selected for each subject. The songs were selected by the subject himself. The subjects were instructed to select songs that trigger memories that in turn, trigger the desired emotions. The four emotional stats were mapped in the valence-arousal model. The used features were typical statistical values of physiological signals (Skin Conductivity (SC)\nomenclature{SC}{Skin conductivity}, Electrocardiogram (ECG), Electromygraphy (EMG) and Respiration rate (RSP). They compared several techniques: Analysis of Variance (ANOVA) \nomenclature{ANOVA}{Analysis of Variance} where the best d features were taken. Sequential forward selection (SFS) \nomenclature{SFS}{Sequential Forward Selection}, where the algorithm starts with an empty feature set and then introduces a new feature in each iteration. Sequential backward selection (SBS) \nomenclature{SBS}{Sequential Backward Selection} where a feature is removed in each iteration, were also tested. These feature selection methods were also compared to two dimensionality reduction methods: PCA and Fisher projection. The difference between dimensionality reduction and feature selection is that dimensionality reduction methods consider all information in the feature space, whereas feature selection methods take a subset of the information.
 
 \npar
 
@@ -274,7 +274,7 @@ The paper also concludes that joy was characterized by a faster heart rate, whil
 
 \subsection{Advanced RF feature selection}
 \label{rfmethod}
-One advanced method for feature selection is the two-step method using random forest, described in \citep{rfPaper}. The paper states that there are two possible motivations for feature selection. The first motivation is to do interpretation, find out which features are important and use them for research. In the context of BCI, feature interpretation could help neuroscientist find out which parts of the brain are affected by an emotion, for example. The second motivation is to improve machine learning techniques, having fewer features will not only speed up training and prediction times, it also reduces the complexity, which often has a good influence on the generalisation property of a machine learning algorithm. Additionally in the context of BCI research and EEG data gathering, using fewer electrodes means less preprocessing time; mounting 32 electrodes to the brain of a subject is a time consuming task.
+One advanced method for feature selection is the two-step method using random forest\citep{rfPaper}. There are two possible motivations for feature selection. The first motivation is to do interpretation, find out which features are important and use them for research. In the context of BCI, feature interpretation could help neuroscientist find out which parts of the brain are affected by an emotion, for example. The second motivation is to improve machine learning techniques, having fewer features will not only speed up training and prediction times, it also reduces the complexity, which often has a good influence on the generalisation property of a machine learning algorithm. Additionally in the context of BCI research and EEG data gathering, using fewer electrodes means less preprocessing time; mounting 32 electrodes to the brain of a subject is a time consuming task.
 
 \npar
 
@@ -455,7 +455,6 @@ Linear Discriminant Analysis (LDA)\nomenclature{LDA}{Linear Disciminant Analysis
 
 \mijnfiguur{width=0.7\textwidth}{lda}{LDA finds a projection of the data where the separation of the data is clear.}
 
-%TODO embedded 
 \subsection{Embedded methods}
 Embedded feature selection methods are methods that are build-in for some machine learning algorithms.
 
