@@ -57,3 +57,12 @@ $E^{CSP} = WE^{orig}$
 \npar
 
 Since CSP filters create simple linear combination of incoming channels, they can also be used as feature selection mechanism,albeit in a limited fashion. The result of a CSP transformation are again a set of EEG channels, where each channel is a combination of the previous channels. The first and last row of the resulting matrix $W$ shows the coefficients for which the variance is maximized between the two signals. Looking at those coefficients, one can determine which channels are of more importance than other and thus which channel locations have the most influence on emotion.
+
+
+
+%TODO opkuisen
+Machine learning can be used for emotion recognition to find patterns in features extracted from physiological signals\citep{DEAP,ExtendedPaper}. The output of the machine learning algorithm is a prediction of the subject's emotional state. The general process of machine learning is as follows, the process starts with gathering EEG data, from which features are extracted. These features are then fed to a machine learning algorithm, which outputs a prediction. This is shown in Figure \ref{eegtopred}
+
+\mijnfiguur{width=0.9\textwidth}{eegtopred}{The basic setup for emotion recognition with machine learning. In the first step, physiological signals are gathered. Next: features are extracted and passed to a machine learning algorithm. The output of the machine algorithm is a prediction of the emotional state, in the valence/arousal space. }
+
+To recognise emotion in the brain, features need to be extracted from the physiological signals. In this thesis, two categories of physiological features are observed: non-EEG features and EEG features. Non-EEG features are physiological signals like heart rate, skin conductivity, respiration rate, etc. EEG features, on the other hand, are features extracted from the EEG measurements of the subjects. 

@@ -7,7 +7,7 @@ Human-to-machine communication, where humans communicate with machines or comput
 
 \npar 
 
-Emotion recognition tries to recognise a subject's emotional state. Psychology makes a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper}. Expression consists of many parts, including facial expression, body language and voice concern\citep{EMSpeech}. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. This makes emotion recognition based on physiological signals more robust to social masking\citep{PhytoEm}. Social masking is the process where an individual masks or hides their emotions to conform to social pressure. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion.
+Emotion recognition is the proces of recognizing a subject's emotional state. In psychology a clear distinction between physiological behavior and the conscious experience of an emotion, called expression\cite{ExtendedPaper} is made. Expression consists of many parts, including facial expression, body language and voice concern\citep{EMSpeech}. Unlike expression, the physiological aspect of an emotion, e.g. heart rate, skin conductance and pupil dilation, is much harder to control. This makes emotion recognition based on physiological signals more robust to social masking\citep{PhytoEm}. Social masking is the process where an individual masks or hides their emotions to conform to social pressure. To really know one's emotions, it seems, one has to research the physiological aspect of the emotion.
 
 \npar
 
@@ -20,17 +20,17 @@ The valence-arousal model consists of two dimensions. Arousal indicates how acti
 
 \mijnfiguur{width=0.45\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane\citep{ValArrFig}}
 
-\subsection{Recording of physiological signals}
+\subsection{Physiological signals}
 
-Now that the classification model is defined, the collection of physiological signals will be explained. As mentioned before it is possible to do automatic emotion recognition based on physiological signals. Physiological signals consists of two subgroups, brain activity and other signals, e.g. heart rate, respiration rate, etc. Different technologies exist to record brain activity. The most convenient method is electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery. In case of EEG, they simply measure electrical activity using electrodes placed on the scalp.
+Now that the classification model is defined, the different physiological signals will be explained. As mentioned before, these signals are used to do automatic emotion recognition. Physiological signals can be divided in two subgroups: brain activity and other signals, e.g. heart rate, respiration rate, etc. Different technologies exist to record brain activity. The most convenient method is electroencephalography (EEG)\nomenclature{EEG}{Electroencephalography}, since it is a non-invasive method. Non-invasive methods, in contrast to invasive methods require no surgery. In case of EEG, they simply measure electrical activity using electrodes placed on the scalp.
 
 \npar
 
-Electrical activity in the brain is generated when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighbouring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significant enough, it is measured by the EEG surface electrodes. EEG can thus only capture synchronized activity of many, many neurons\cite{ExtendedPaper}, which explains its low spatial resolution capabilities. EEG measurements consist of electrical potentials of different channels, measures over time, like shown in Figure \ref{eegexample}.
+Electrical activity in the brain is generated when an incoming signal arrives in a neuron. This triggers some sodium ions to move inside the cell, which in turn, causes a voltage rise\cite{ExtendedPaper}. When this increase in voltage reaches a threshold, an action potential is triggered in the form of a wave of electrical discharge that travels to neighbouring neurons. When this reaction occurs simultaneously in a lot of neurons, the change in electrical potential becomes significant enough, it is measured by the EEG surface electrodes. EEG can thus only capture synchronized activity of many, many neurons\cite{ExtendedPaper}. This explains why EEG signals have low spatial resolution capabilities. EEG measurements consist of electrical potentials of different channels, measured over time, like shown in Figure \ref{eegexample}.
 
 \mijnfiguur{width=0.9\textwidth}{eegexample}{EEG measurements is a trace electrical potentials of different channels over time.\citep{EEGExampleFig}}
 
-Signals originating from the cortex, close to the skull, are easier to measure, while signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally, other artifacts like eye and muscle movement add a lot of noise to the signal, which explains why EEG signals are very noisy by nature. Noise removal techniques are therefor advised\citep{noiseRem}. Note that even though EEG data contains a lot of noise and has a low spatial resolution, it still provides significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
+Signals originating from the cortex, close to the skull, are easier to measure, while signals originating deeper in the brain cannot be observed directly. Even for signals originating close to the cortex, EEG is far from precise as the bone between the the cortex and electrodes distorts the signal. Additionally, other artifacts like eye and muscle movement add a lot of noise to the signal. This explains why EEG signals are very noisy by nature. Noise removal techniques are therefor advised\citep{noiseRem}. Note that even though EEG data contains a lot of noise and has a low spatial resolution, it still provides significant insight into the electrical activity of the cortex while offering excellent temporal resolution\cite{GivenPaper}.
 
 \npar
 
@@ -46,11 +46,11 @@ Each site is identified with a letter that determines the lobe and a number that
 \item \textbf{P:} Parietal
 \item \textbf{O:} Occipital
 \end{itemize}
-Note that no central lobe exists; the C letter is only used for identification purposes. The letter z indicates that the electrode is placed on the central line. Even numbers are use for the right hemisphere, while odd numbers are used for the left hemisphere. Note that the 10/20 system does not require a fixed number of channels. Some experiments may use a different set of channels, but they all follow the same naming convention. This thesis uses a 32 channel EEG cap. The corresponding electrode locations are shown in Figure \ref{1020labels}
+Note that no central lobe exists; the C letter is only used for identification purposes. The letter z indicates that the electrode is placed on the central line. Even numbers are used for the right hemisphere, while odd numbers are used for the left hemisphere. Note that the 10/20 system does not require a fixed number of channels. Some experiments may use a different set of channels, but they all follow the same naming convention. In this work, a 32 channel EEG cap is used. The corresponding electrode locations are shown in Figure \ref{1020labels}
 
 \mijnfiguur{width=0.7\textwidth}{1020labels}{Placement of the 32 electrodes in this thesis.}
 
-In the frequency domain, brain waves are usually split up into different bands\cite{EmotionRelativePower,WavesSite}, each band has a different medical interpretation. These wavebands \label{wavebands} are:
+In the frequency domain, brain waves are usually split up into different bands\cite{EmotionRelativePower,WavesSite}, with a different medical interpretation for each band. These wavebands \label{wavebands} are:
 \begin{enumerate}
 \item \textbf{Alpha:} 8-13Hz, indicate how relaxed and/or inactive the brain is.
 \item \textbf{Beta:} 13-30HZ, indicate a more active and focused state of mind.
@@ -76,14 +76,14 @@ Even though EEG is used in this thesis, alternative methods to measure brain act
 
 \end{itemize} 
 
-In addition to brain activity, other physiological signals are also used. The most known signal is the heart rate, which measures the number of contractions per minute. Respiration rate gives to number of breaths a human takes in one minute\citep{DEAP}. Another physiological signal is the galvanic skin response. The galvanic skin response measures the electrical characteristics of the skin\citep{GSR, DEAP}. In addition to the electrical characteristics, the temperature of the skin can also be measured. A plethysmograph is another physiological signal, that measures changes in volume within an organ\citep{DEAP}. A plethysmograph can be used to extract a subject's blood pressure and heart rate.
+In addition to brain activity, other physiological signals are also used in this work. The most known signal is the heart rate, which measures the number of contractions per minute. Respiration rate gives to number of breaths a human takes in one minute\citep{DEAP}. Another physiological signal is the galvanic skin response. The galvanic skin response measures the electrical characteristics of the skin\citep{GSR, DEAP}. In addition to the electrical characteristics, the temperature of the skin can also be measured. A plethysmograph is another physiological signal, that measures changes in volume within an organ\citep{DEAP}. A plethysmograph can be used to measure a subject's blood pressure and heart rate.
 
 \section{Machine learning}
-Machine learning is the missing link between the EEG data the emotion recognition. Machine learning is a very broad domain. As a result, this discussion will be limited to an introduction of the basic machine learning concepts with the focus on the application of machine learning and machine learning techniques. 
+Machine learning is the missing link between the physiological signals and the emotion recognition. It is, in short, an input output model, that takes physiological signals and maps them to an emotional state. Machine learning is a very broad domain. As a result, this discussion will be limited to an introduction of the basic machine learning concepts with the focus on the application of machine learning and machine learning techniques used in this thesis. 
 
 \npar
 
-One possible definition for machine learning is: "the science of getting computers to act without being explicitly programmed"\citep{MLDef}. To do so, machine learning uses pattern recognition to find patterns or structure in the data. A simple example of machine learning is the Optical Character Recognition (OCR)\nomenclature{OCR}{Optical Character Recognition}, where a computer recognises characters in pictures\citep{OCR}.
+A possible definition for machine learning is: "the science of getting computers to act without being explicitly programmed"\citep{MLDef}. To do so, machine learning uses pattern recognition to find patterns or structure in the data. A simple example of machine learning is the Optical Character Recognition (OCR)\nomenclature{OCR}{Optical Character Recognition}, where a computer recognises characters in pictures\citep{OCR}. An example of OCR is shown in Figure \ref{OCR}.
 
 \mijnfiguur{width=0.3\textwidth}{OCR}{In optical character recognition, a computer uses machine learning to find characters in an image\cite{OCRFigRef}.}
 
@@ -107,7 +107,7 @@ One possible way of predicting the asking price of a house is machine learning. 
 
 \mijnfiguur{width=0.9\textwidth}{mlexample}{The price of a house is determined by its total area.}
 
-The blue line looks reasonable, but there is sometimes a big difference between the predicted value and the actual value. This is due to the fact that the area of the house is only one feature that determines the price. Other features, like the number of bedrooms or the location of the house, were not taken into consideration. Adding additional features, gives more insight into the data, e.g. a house with 5 bedrooms is more expensive than a house with only 3 bedrooms. Having more features is thus likely to improve the performance of the machine learning algorithm.
+Even though, the blue line looks reasonable, there is sometimes a big difference between the predicted value and the actual value. This is due to the fact that the area of the house is only one feature that determines the price. Other features, like the number of bedrooms or the location of the house, were not taken into consideration. Adding additional features, gives more insight into the data, e.g. a house with 5 bedrooms is more expensive than a house with only 3 bedrooms. Having more features is thus likely to improve the performance of the machine learning algorithm.
 
 \npar
 
@@ -115,45 +115,39 @@ There are many machine learning algorithms. One way to group these algorithms is
 
 \npar
 
-Another way to group algorithms is based on their training data\citep{prml}. In the asking price examples above, the training data consists of labelled results. The training data is called labelled because the correct asking price is given for each area. This type of machine learning, where the correct outputs for the train data are given, is referred to as supervised machine learning\citep{prml}. The alternative is unsupervised machine learning\citep{prml}, which often results in finding groups of similar data points (clustering), without knowing the actual labels. Note that the combination of supervised and unsupervised data, known as semi supervised learning, is also possible\citep{semiSup}. Imagine a dataset with 5000 webpages that need to be grouped into 10 distinct categories, e.g. science, nature, cooking, ... . Only 100 of the 5000 pages in the train set are labelled. An approach to solve this problem could be to first cluster the pages in similar groups using unsupervised learning. As soon as a group contains a single labelled page, all pages in the group can be labelled accordingly, as clustering returns groups of similar samples. Semi supervised learning has the advantage that one can also use unlabelled data, which is often easier and cheaper to obtain, unlike labelled data which is usually quite rare; if there was a fast and easy way to label the data then there would not be a need for machine learning.
+Another way to group algorithms is based on their training data\citep{prml}. In the asking price examples above, the training data consists of labelled results. Labelled training data corresponds to data where the correct output (in this case the asking price) is given for each input (the area). This type of machine learning is referred to as supervised machine learning\citep{prml}. The alternative is unsupervised machine learning\citep{prml}. Unsupervised learning often results in finding groups of similar data points (clustering), without knowing the actual labels. Note that the combination of supervised and unsupervised data, known as semi-supervised learning, is also possible\citep{semiSup}. Imagine a dataset with 5000 webpages that need to be grouped into 10 distinct categories, e.g. science, nature, cooking, ... . Only 100 of the 5000 pages in the train set are labelled. An approach to solve this problem could be to first cluster the pages in similar groups using unsupervised learning. As soon as a group contains a single labelled page, all pages in the group can be labelled accordingly. This is possible because clustering returns groups of similar samples. Semi supervised learning has the advantage that one can also use unlabelled data, which is often easier and cheaper to obtain, unlike labelled data which is usually quite rare; if there was a fast and easy way to label the data then there would not be a need for machine learning.
 
 \subsection{Over- and underfitting}
 
-Over and underfitting is a common problem in many machine learning projects\citep{prml}. An algorithm that 'overfits the data' is able to recognise seen sample points very well. However when the algorithm is tested on unseen points, the performance might be a lot lower than expected.
+Over and underfitting is a common problem in many machine learning projects\citep{prml}. Suppose the example in Figure \ref{overunderfitting}, where one tries to find a good function to fit the given data points. Looking at the three proposed functions, one can easily see that the middle figure corresponds to the most logical generator function<\footnote{A generator function is a theoretical concept to describe the 'actual' function that generated the outputs.} of the red points.
 
 \mijnfiguur{width=0.9\textwidth}{overunderfitting}{Overfitting versus underfitting\cite{overunderfittingFig}.}
 
-Suppose the example in Figure \ref{overunderfitting}, where one tries to find a good function to fit the given data points. Looking at the three proposed functions, one can easily see that the middle figure corresponds to the most logical generator function\footnote{A generator function is the } of the red points. 
+\npar
+
+The figure on the left corresponds to an underfit, where the proposed function is not able to capture sufficient detail of the points. The function is not complex enough to approach the generator function. As a result the best fit will always contain a relatively big error.
 
 \npar
 
-The figure on the left corresponds to an underfit, where the proposed function is not able to capture sufficient detail of the points. The function is not complex enough to approach the generator function. As a result the best fit will always contain a relatively big error. This is often referred to as a high bias problem. 
+The function on the right corresponds to an overfit. The function fits or 'goes through' each point exactly, which will a very low error for these data points. However, one can see that the behaviour of the hypothesis function in between data points is not what one would expect. This is the result of using a too complex function to fit the data. As a results, all sample points are matched exactly, which results in a very low error for these points. However, the problems arise when the algorithm is test on unseen points. The algorithm will have a much higher error for those points. 
 
-\npar
+\npar 
 
-The function on the right corresponds to an overfit; the function fits or 'goes through' each point exactly, which will a very low error for these data points. However, one can see that the behaviour of the hypothesis function in between data points is not what one would expect. This is the result of a too complex function that tries really hard to fit all the points exactly, which results in low performance for unseen points. This is often referred to as a high variance problem.
-
-\npar
-
-One should be careful for these problems, when designing a machine learning algorithm, because an algorithm should also perform well on unseen samples. One way to check if the algorithm is overfitting, is to take a part of the dataset and label is test set. This set is then neglected during training and only used in the end to evaluate the algorithms performance.
+Part of a good machine learning algorithm is finding the right tradeoff between overfitting and underfitting. In case of the aforementioned overfitting, it would be better to lower the performance of the algorithm on the sample datapoints, to gain performance on the 'unseen' datapoints. Different techniques exist to estimate how good an algorithm performs on unseen points. Often a part of the sample points is put in a test set that is neglected during training. After the algorithm is designed, the performance on the test set will indicate how well the algorithm generalises. It is only the performance of the test set that gives a fair estimation of the performance of a machine learning algorithm.
 
 \subsection{Feature selection}
-Feature selection is a technique to select features that perform well, while trying to remove irrelevant features\citep{rfPaper}. The advantages of having a smaller features set is twofold. First having fewer features, will lower the risk of overfitting\citep{rfPaper}. Second, knowing which features are important can help in gaining insight in the processing of emotion by the brain. 
+Feature selection is a technique that aims at selecting the features that perform well, while trying to remove irrelevant features\citep{rfPaper}. The advantages of having a smaller features set are twofold. First having fewer features, will lower the risk of overfitting\citep{rfPaper}. Second, knowing which features are important makes it possible for humans to interpret the machine learning model. In this thesis, knowing which features are relevant might help in gaining insight in the processing of emotion by the brain. 
 
 \npar
 
-The idea behind feature selection is depicted in Figure \ref{}. 
-
-The different feature selection approaches are briefly introduced. A more detailed explanation is given in \ref{FSSel}. The first one is to simple use a statistical metric and remove all features with low correlation to the output. Another approach is to look at the weights of a model. When a machine learning model gives a large weight to a feature, then that feature is considered more important than a feature with an assigned weight close to zero. Embedded methods also exist, they rely on the build in feature selection mechanisms of some machine learning algorithms.
+There exist several approaches to do feature selection. The first one is to simple use a statistical metric and remove all features with low correlation to the output. Another approach is to look at the weights of a model. When a machine learning model gives a large weight to a feature, then that feature is considered more important than a feature with an assigned weight close to zero. Embedded methods also exist, they rely on the build in feature selection mechanisms of some machine learning algorithms. A more thorough  overview of the different feature selection techniques is given in Section \ref{FSSel}. 
 
 \section{Problem statement}
 
-A lot of different physiological features are reported in the literature. Unfortunately, the literature does not fully agree on a specific set of features nor does it agree on what channels and/or waveband are most important for emotion recognition. The features that  are reported in different studies are often quite different, as you can see in Table \ref{diffFeat}.
+A lot of different physiological features are reported in the literature. Unfortunately, the literature does not fully agree on a specific set of features nor does it agree on what EEG channels and/or frequency bands are most important for emotion recognition. The features that are reported in different studies are often quite different, as you can see in Table \ref{diffFeat} below.
 
-\begin{table}[]
+\begin{table}[H]
 \centering
-\caption{Six different papers on emotion recognition, six different feature sets}
-\label{diffFeat}
 \begin{tabular}{ll}
 \textbf{study} & \textbf{features used}                         \\
 \citep{ref4}     & Alpha and beta power                           \\
@@ -163,43 +157,35 @@ A lot of different physiological features are reported in the literature. Unfort
 \citep{ExtendedPaper}	&	alpha/beta ratio, Fpz beta and alpha band power \\
 \citep{killyPaper} & PSD, RCAU, DCAU, DASM, RASM, DE \\
 \end{tabular}
+\caption{Six different papers on emotion recognition, six different feature sets\label{diffFeat}.}
 \end{table}
 
 \npar
 
-Another, related, problem with physiological signals is that they are very personal by nature. Features that work well for one person might not work well for another person\citep{DEAP}. Having a set of features that works for all persons, might help in making an emotion recognition system more robust against personal differences. 
+Another related problem with physiological signals is that they are very personal by nature. Features that work well for one person might not work well for another person\citep{DEAP}. Finding a set of features that works well for all persons is hard, but it might make the system more robust against personal differences. 
 
 \npar
 
-The last problem is that is hard to compare the performance of different physiological feature studies, as they do not share the same dataset. 
+The last problem is that is hard to compare the performance of different physiological feature studies, as they do not share the same dataset.
 
 \section{Goal of the thesis}
-The first goal is finding relevant features for emotion recognition in a person specific setting. This is already quite challenging as there are fuzzy boundaries and individual variation of emotion\citep{emorecoghard}. To do so, the output of different feature selection methods is compared. In a successful scenario, good features are found that, once given to a machine learning algorithm, can accurately predict the emotions of one person. In this stage some attention will also be spend on comparing non-EEG and EEG features to see which features contain most information.
+The first goal is finding relevant features for emotion recognition in a person specific setting. This is already quite challenging as there are fuzzy boundaries and individual variation of emotion\citep{emorecoghard}. To do so, the output of different feature selection methods is compared. In a successful scenario, good features are found. These features could be used by a machine learning algorithm to accurately predict the emotions of one person. Some attention will also be spend on comparing non-EEG and EEG features to see which whether it is useful or not to include EEG and/or non-EEG signals in the emotion recognition.
 
 \npar
 
-The second goal is finding features for emotion recognition in a cross-person setting. In this setting the features should generalise well across different persons, thus the algorithm should be able to recognize emotions from unseen persons. The comparison for non-EEG and EEG features will also be done here. Emotion recognition is harder in a cross-subject setting, since physiological signals are very personal\citep{DEAP}.
+The second goal is finding features for emotion recognition in a cross-person setting. In this setting features should generalise well across different persons, thus the algorithm should be able to recognize emotions from unseen persons. The comparison for non-EEG and EEG features will also be done here. Emotion recognition is harder in a cross-subject setting, since physiological signals are very personal\citep{DEAP}.
 
 \npar 
 
-Both goals are tackled by comparing a large range of different feature selection methods combined with a huge feature set. Additionally, the accuracy on the DEAP dataset, a dataset designed to compare different emotion recognition studies\citep{DEAP}. This will ensure that the result obtained in this thesis can serve as a benchmark for later studies. This is important as performance of emotion recognition algorithms based on physiological signals often varies a lot for different datasets\citep{PhytoEm}.
+Both goals are tackled by comparing a large range of different feature selection methods combined with a huge feature set. Additionally, the accuracy on the DEAP, a dataset designed to compare different emotion recognition studies\citep{DEAP} will be reported. This will ensure that the results obtained in this thesis can serve as a benchmark for future research. This is important as performance of emotion recognition algorithms based on physiological signals often varies a lot for different datasets\citep{PhytoEm}.
 
+\npar 
+
+The contents of this thesis are as follows. The next chapter gives an overview of the dataset, features and feature selection methods that are used in this thesis. It also gives an overview of similar state of the art emotion recognition studies.
+ 
 \npar
-%TODO opkuisen
-Machine learning can be used for emotion recognition to find patterns in features extracted from physiological signals\citep{DEAP,ExtendedPaper}. The output of the machine learning algorithm is a prediction of the subject's emotional state. The general process of machine learning is as follows, the process starts with gathering EEG data, from which features are extracted. These features are then fed to a machine learning algorithm, which outputs a prediction. This is shown in Figure \ref{eegtopred}
-
-\mijnfiguur{width=0.9\textwidth}{eegtopred}{The basic setup for emotion recognition with machine learning. In the first step, physiological signals are gathered. Next: features are extracted and passed to a machine learning algorithm. The output of the machine algorithm is a prediction of the emotional state, in the valence/arousal space. }
-
-To recognise emotion in the brain, features need to be extracted from the physiological signals. In this thesis, two categories of physiological features are observed: non-EEG features and EEG features. Non-EEG features are physiological signals like heart rate, skin conductivity, respiration rate, etc. EEG features, on the other hand, are features extracted from the EEG measurements of the subjects. 
-
-\section{Overview}
-The next chapter gives an overview of the dataset, features and feature selection methods that are used in this thesis. It also gives an overview of similar state of the art studies.
-
+!!(TODO)\\
 %TODO 
-\npar
-
-Chapter 3 ...
-
-Chapter 4 ...
-
-Chapter ... gives an overview of future research that is possible.
+Chapter 3 will give an overview of the obtained results in this thesis
+Chapter 4 states the conclusion
+Chapter 5 gives an overview of future research that is possible.
