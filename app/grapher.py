@@ -48,6 +48,7 @@ def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../resu
 
     ax.set_xlabel(xLbl)
     ax.set_ylabel(yLbl)
+
     plt.savefig(fname)
 
     plt.show()
@@ -141,17 +142,24 @@ def svm_rbf_accs():
         test_accs.append(m)
 
     test_accs = np.array(test_accs)
-    test_accs = test_accs[:,np.array([0,1,2,3,4,5,6,7,9,10,11])]
+    #test_accs = test_accs[:,np.array([0,1,2,3,4,5,6,7,9,10,11])]
 
-    avgs = np.average(test_accs,axis=0)
+    sort_indices = np.array([0,1,2,9, 3,6,10, 4,5,7,11])
+    colors = ['b','b','b','b', 'r','r','r', 'g','g','g','g']
+    names = np.array(['R', 'MI', 'dC', 'LR', 'L1', 'L2', 'SVM', 'RF', 'STD', 'ANOVA', 'LDA', 'PCA'])
+    names = names[sort_indices]
+    test_accs = test_accs[:, sort_indices]
+
+    avgs = np.average(test_accs, axis=0)
     stds = np.std(test_accs, axis=0)
 
     genPlot(avgs,
             stds,
-            ['R', 'MI', 'dC', 'LR', 'L1', 'L2', 'SVM', 'RF', 'ANOVA', 'LDA', 'PCA'],
+            names,
             'valence Accs RBF SVM',
             'model',
-            'test acc'
+            'test acc',
+            colors
     )
 
     # get testaccs
@@ -169,17 +177,19 @@ def svm_rbf_accs():
         test_accs.append(m)
 
     test_accs = np.array(test_accs)
-    test_accs = test_accs[:, np.array([0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11])]
+    test_accs = test_accs[:, sort_indices]
+    #test_accs = test_accs[:, np.array([0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11])]
 
     avgs = np.average(test_accs, axis=0)
     stds = np.std(test_accs, axis=0)
 
     genPlot(avgs,
             stds,
-            ['R', 'MI', 'dC', 'LR', 'L1', 'L2', 'SVM', 'RF', 'ANOVA', 'LDA', 'PCA'],
+            names,
             'arousal Accs RBF SVM',
             'model',
-            'test acc'
+            'test acc',
+            colors
             )
 
 def phyeegall():
@@ -218,7 +228,8 @@ def phyeegall():
             lbls,
             'Valence RF acc for different feat sets',
             'feature Set',
-            'test acc'
+            'test acc',
+            ['b','r','g']
             )
 
     test_accs = []
@@ -255,7 +266,8 @@ def phyeegall():
             lbls,
             'Arousal RF acc for different feat sets',
             'feature Set',
-            'test acc'
+            'test acc',
+            ['b', 'r', 'g']
             )
 
 def linear_regression_example():
@@ -298,9 +310,7 @@ def linear_regression_example():
         print(str(X[i]) + ';' + str(Y[i]))
 
 if __name__ == '__main__':
-    svm_rbf_accs()
     phyeegall()
-
 
 
 
