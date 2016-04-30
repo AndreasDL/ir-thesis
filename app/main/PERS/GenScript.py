@@ -207,241 +207,245 @@ class GenScript():
         return np.array(persons_x), np.array(persons_y)
 
     def getMetrics(self):
-        X, y_cont = self.fixStructure(self.X, self.y_cont)
-        y_disc = np.array(y_cont)
-        y_disc[y_disc <= 5] = 0
-        y_disc[y_disc > 5] = 1
 
-        metrics = []
+        metrics = load("all_metrics", path=self.ddpad)
+        if metrics == None:
+            X, y_cont = self.fixStructure(self.X, self.y_cont)
+            y_disc = np.array(y_cont)
+            y_disc[y_disc <= 5] = 0
+            y_disc[y_disc > 5] = 1
 
-        #pearson
-        corr = []
-        for index in range(len(X[0])):
-            corr.append( pearsonr(X[:, index], y_cont)[0] )
-        metrics.append(corr)
+            metrics = []
 
-        #Mut inf
-        #dcorr
-        mi = []
-        dcorr = []
-        for feature in np.transpose(X):
-            # normalized mutual information
-            c_xy = np.histogram2d(feature, y_cont, 2)[0]
-            entX = entropy(feature, y_cont)
-            entY = entropy(feature, y_cont)
-            nMutInf = mutual_info_score(None, None, contingency=c_xy) / float(np.sqrt(entX * entY))
-            mi.append(nMutInf)
+            #pearson
+            corr = []
+            for index in range(len(X[0])):
+                corr.append( pearsonr(X[:, index], y_cont)[0] )
+            metrics.append(corr)
 
-            # Distance Correlation
-            dc, dr, dvx, dvy = self.dcov_all(feature, y_cont)
-            dcorr.append(dr)
+            #Mut inf
+            #dcorr
+            mi = []
+            dcorr = []
+            for feature in np.transpose(X):
+                # normalized mutual information
+                c_xy = np.histogram2d(feature, y_cont, 2)[0]
+                entX = entropy(feature, y_cont)
+                entY = entropy(feature, y_cont)
+                nMutInf = mutual_info_score(None, None, contingency=c_xy) / float(np.sqrt(entX * entY))
+                mi.append(nMutInf)
 
-        metrics.append(mi)
-        metrics.append(dcorr)
+                # Distance Correlation
+                dc, dr, dvx, dvy = self.dcov_all(feature, y_cont)
+                dcorr.append(dr)
 
-        #Linear Regression
-        lr = LinearRegression(n_jobs=-1)
-        lr.fit(X, y_cont)
-        metrics.append(lr.coef_)
+            metrics.append(mi)
+            metrics.append(dcorr)
 
-        #Lasso Regression
-        alphas = [0.03, 0.1, 0.3, 1, 3, 10]
-        best_alpha = 0.01
-        best_acc = 0
-        for train_index, test_index in KFold(len(y_cont), n_folds=5):
-            X_train, X_test = X[train_index], X[test_index]
-            y_train, y_test = y_cont[train_index], y_cont[test_index]
+            #Linear Regression
+            lr = LinearRegression(n_jobs=-1)
+            lr.fit(X, y_cont)
+            metrics.append(lr.coef_)
 
-            lasso = Lasso(alpha=best_alpha)
-            lasso.fit(X_train, y_train)
-            pred = lasso.predict(X_test)
-            best_acc += self.accuracy(pred, y_cont)
-        best_acc /= float(5)
-
-        for alpha in alphas:
-            acc = 0
+            #Lasso Regression
+            alphas = [0.03, 0.1, 0.3, 1, 3, 10]
+            best_alpha = 0.01
+            best_acc = 0
             for train_index, test_index in KFold(len(y_cont), n_folds=5):
                 X_train, X_test = X[train_index], X[test_index]
                 y_train, y_test = y_cont[train_index], y_cont[test_index]
 
-                lasso = Lasso(alpha=alpha)
+                lasso = Lasso(alpha=best_alpha)
                 lasso.fit(X_train, y_train)
                 pred = lasso.predict(X_test)
-                acc += self.accuracy(pred, y_test)
+                best_acc += self.accuracy(pred, y_cont)
+            best_acc /= float(5)
 
-            acc /= float(5)
-            if acc > best_acc:
-                best_acc = acc
-                best_alpha = alpha
+            for alpha in alphas:
+                acc = 0
+                for train_index, test_index in KFold(len(y_cont), n_folds=5):
+                    X_train, X_test = X[train_index], X[test_index]
+                    y_train, y_test = y_cont[train_index], y_cont[test_index]
 
-        lasso = Lasso(alpha=best_alpha)
-        lasso.fit(X, y_cont)
-        metrics.append(lasso.coef_)
+                    lasso = Lasso(alpha=alpha)
+                    lasso.fit(X_train, y_train)
+                    pred = lasso.predict(X_test)
+                    acc += self.accuracy(pred, y_test)
 
-        #Ridge Regression
-        alphas = [0.03, 0.1, 0.3, 1, 3, 10]
-        best_alpha = 0.01
-        best_acc = 0
-        for train_index, test_index in KFold(len(y_cont), n_folds=5):
-            X_train, X_test = X[train_index], X[test_index]
-            y_train, y_test = y_cont[train_index], y_cont[test_index]
+                acc /= float(5)
+                if acc > best_acc:
+                    best_acc = acc
+                    best_alpha = alpha
 
-            ridge = Ridge(alpha=best_alpha)
-            ridge.fit(X_train, y_train)
-            pred = ridge.predict(X_test)
-            best_acc += self.accuracy(pred, y_test)
-        best_acc /= float(5)
+            lasso = Lasso(alpha=best_alpha)
+            lasso.fit(X, y_cont)
+            metrics.append(lasso.coef_)
 
-        for alpha in alphas:
-            acc = 0
+            #Ridge Regression
+            alphas = [0.03, 0.1, 0.3, 1, 3, 10]
+            best_alpha = 0.01
+            best_acc = 0
             for train_index, test_index in KFold(len(y_cont), n_folds=5):
                 X_train, X_test = X[train_index], X[test_index]
                 y_train, y_test = y_cont[train_index], y_cont[test_index]
 
-                ridge = Ridge(alpha=alpha)
+                ridge = Ridge(alpha=best_alpha)
                 ridge.fit(X_train, y_train)
-                pred = lasso.predict(X_test)
-                acc += self.accuracy(pred, y_test)
+                pred = ridge.predict(X_test)
+                best_acc += self.accuracy(pred, y_test)
+            best_acc /= float(5)
 
-            acc /= float(5)
-            if acc > best_acc:
-                best_acc = acc
-                best_alpha = alpha
+            for alpha in alphas:
+                acc = 0
+                for train_index, test_index in KFold(len(y_cont), n_folds=5):
+                    X_train, X_test = X[train_index], X[test_index]
+                    y_train, y_test = y_cont[train_index], y_cont[test_index]
 
-        ridge = Ridge(alpha=best_alpha)
-        ridge.fit(X, y_cont)
-        metrics.append(ridge.coef_)
+                    ridge = Ridge(alpha=alpha)
+                    ridge.fit(X_train, y_train)
+                    pred = lasso.predict(X_test)
+                    acc += self.accuracy(pred, y_test)
 
-        #SVM
-        clf = SVC(kernel='linear')
-        clf.fit(X, y_disc)
-        svm_weights = (clf.coef_ ** 2).sum(axis=0)
-        svm_weights /= float(svm_weights.max())
-        metrics.append(svm_weights)
+                acc /= float(5)
+                if acc > best_acc:
+                    best_acc = acc
+                    best_alpha = alpha
 
-        #Random Forests
-        #rf importances
-        #grow forest
-        forest = RandomForestClassifier(
-            n_estimators=2000,
-            max_features='auto',
-            criterion='gini',
-            n_jobs=-1,
-        )
-        forest.fit(X,y_disc)
-        importances = forest.feature_importances_
-        std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis = 0)
-        metrics.append(importances)
-        metrics.append(std)
+            ridge = Ridge(alpha=best_alpha)
+            ridge.fit(X, y_cont)
+            metrics.append(ridge.coef_)
 
-        #ANOVA
-        anova = SelectKBest(f_regression, k=self.threshold)
-        anova.fit(X,y_disc)
-        selected_features = anova.get_support()
-        metrics.append(selected_features)
+            #SVM
+            clf = SVC(kernel='linear')
+            clf.fit(X, y_disc)
+            svm_weights = (clf.coef_ ** 2).sum(axis=0)
+            svm_weights /= float(svm_weights.max())
+            metrics.append(svm_weights)
 
-        #Linear Discriminant Analysis
-        lda = LinearDiscriminantAnalysis(n_components=1)
-        lda.fit(X,y_disc)
-        metrics.append(lda.coef_[0])
-
-        #Principal Component Analysis
-        pca = PCA(n_components=1)
-        pca.fit(X)
-        metrics.append(pca.components_[0])
-
-        #absolute values
-        metrics = np.absolute(np.array(metrics))
-
-        dump(metrics, 'all_metrics', path=self.ddpad)
-
-        return np.array(metrics)
-    def getAccs(self):
-
-        # Train / testset
-        X, X_test, y, y_test = train_test_split(self.X, self.y_disc,test_size=8, random_state=17)
-        X = np.array(X)
-        X_test = np.array(X_test)
-        y = np.array(y)
-        y_test = np.array(y_test)
-
-        to_ret = []
-        for modindex, model in enumerate([
-            SVC(kernel='rbf'),
-            RandomForestClassifier(
+            #Random Forests
+            #rf importances
+            #grow forest
+            forest = RandomForestClassifier(
                 n_estimators=2000,
                 max_features='auto',
                 criterion='gini',
                 n_jobs=-1,
             )
-        ]):
-            model_to_ret = []
-            for mindex, metric in enumerate(self.results):
-                print('model' + str(modindex) + ' - metric' + str(mindex))
-                featNames = np.array(self.featExtr.getFeatureNames()) #take clean copy
+            forest.fit(X,y_disc)
+            importances = forest.feature_importances_
+            std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis = 0)
+            metrics.append(importances)
+            metrics.append(std)
 
-                #sort features
-                indices = np.array(np.argsort(metric)[::-1])
-                #take top threshold
-                indices = indices[:self.threshold]
+            #ANOVA
+            anova = SelectKBest(f_regression, k=self.threshold)
+            anova.fit(X,y_disc)
+            selected_features = anova.get_support()
+            metrics.append(selected_features)
 
-                #old struct
-                if mindex == 0:
-                    X, y = self.fixStructure(X, y)
-                    X_test, y_test = self.fixStructure(X_test, y_test)
+            #Linear Discriminant Analysis
+            lda = LinearDiscriminantAnalysis(n_components=1)
+            lda.fit(X,y_disc)
+            metrics.append(lda.coef_[0])
 
-                #Filter features
-                X_model = np.array(X[:,indices])
-                X_model_test = np.array(X_test[:,indices])
-                featNames = featNames[indices]
+            #Principal Component Analysis
+            pca = PCA(n_components=1)
+            pca.fit(X)
+            metrics.append(pca.components_[0])
 
-                best_feat, best_featNames = [], []
-                all_scores, all_stds = [],[]
-                best_score, best_std = 0, 0
-                for i in range(self.threshold):
-                    to_keep = best_feat[:]
-                    to_keep.append(i)
+            #absolute values
+            metrics = np.absolute(np.array(metrics))
 
-                    X_temp = np.array(X_model[:,to_keep])
+            dump(metrics, 'all_metrics', path=self.ddpad)
 
-                    # get scores
-                    run_scores = []
+        return np.array(metrics)
+    def getAccs(self):
+        to_ret = load('accs_all', path=self.ddpad)
+        if to_ret == None:
+            # Train / testset
+            X, X_test, y, y_test = train_test_split(self.X, self.y_disc,test_size=8, random_state=17)
+            X = np.array(X)
+            X_test = np.array(X_test)
+            y = np.array(y)
+            y_test = np.array(y_test)
 
-                    X_temp, y = self.reverseFixStructure(X_temp, y)
-                    for tr, te in KFold(n=len(X_temp), n_folds=5, shuffle=True, random_state=17):
-                        X_t,  y_t  = self.fixStructure(X_temp[tr], y[tr])
-                        X_te, y_te = self.fixStructure(X_temp[te], y[te])
-                        model.fit(X_t, y_t)
-                        run_scores.append(self.accuracy(model.predict(X_te), y_te))
+            to_ret = []
+            for modindex, model in enumerate([
+                SVC(kernel='rbf'),
+                RandomForestClassifier(
+                    n_estimators=2000,
+                    max_features='auto',
+                    criterion='gini',
+                    n_jobs=-1,
+                )
+            ]):
+                model_to_ret = []
+                for mindex, metric in enumerate(self.results):
+                    print('model' + str(modindex) + ' - metric' + str(mindex))
+                    featNames = np.array(self.featExtr.getFeatureNames()) #take clean copy
 
-                    X_temp, y = self.fixStructure(X_temp, y)
+                    #sort features
+                    indices = np.array(np.argsort(metric)[::-1])
+                    #take top threshold
+                    indices = indices[:self.threshold]
 
-                    new_score = np.average(run_scores)
-                    new_std = np.std(run_scores)
+                    #old struct
+                    if mindex == 0:
+                        X, y = self.fixStructure(X, y)
+                        X_test, y_test = self.fixStructure(X_test, y_test)
 
-                    all_scores.append(new_score)
-                    all_stds.append(new_std)
+                    #Filter features
+                    X_model = np.array(X[:,indices])
+                    X_model_test = np.array(X_test[:,indices])
+                    featNames = featNames[indices]
 
-                    # better?
-                    if new_score - new_std > best_score - best_std:
-                        best_score = new_score
-                        best_std = new_std
-                        best_feat = to_keep
-                        best_featNames.append(featNames[i])
+                    best_feat, best_featNames = [], []
+                    all_scores, all_stds = [],[]
+                    best_score, best_std = 0, 0
+                    for i in range(self.threshold):
+                        to_keep = best_feat[:]
+                        to_keep.append(i)
 
-                #get test score => old struct :D
-                model.fit(X_model[:,best_feat], y)
+                        X_temp = np.array(X_model[:,to_keep])
 
-                X_model_test = np.array(X_model_test[:,best_feat])
-                test_acc = self.accuracy(model.predict(X_model_test), y_test)
+                        # get scores
+                        run_scores = []
 
-                model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices, test_acc])
-            to_ret.append(model_to_ret)
+                        X_temp, y = self.reverseFixStructure(X_temp, y)
+                        for tr, te in KFold(n=len(X_temp), n_folds=5, shuffle=True, random_state=17):
+                            X_t,  y_t  = self.fixStructure(X_temp[tr], y[tr])
+                            X_te, y_te = self.fixStructure(X_temp[te], y[te])
+                            model.fit(X_t, y_t)
+                            run_scores.append(self.accuracy(model.predict(X_te), y_te))
 
-            X, y = self.reverseFixStructure(X, y)
-            X_test, y_test = self.reverseFixStructure(X_test, y_test)
+                        X_temp, y = self.fixStructure(X_temp, y)
 
-        dump(to_ret, 'accs_all', path = self.ddpad)
+                        new_score = np.average(run_scores)
+                        new_std = np.std(run_scores)
+
+                        all_scores.append(new_score)
+                        all_stds.append(new_std)
+
+                        # better?
+                        if new_score - new_std > best_score - best_std:
+                            best_score = new_score
+                            best_std = new_std
+                            best_feat = to_keep
+                            best_featNames.append(featNames[i])
+
+                    #get test score => old struct :D
+                    model.fit(X_model[:,best_feat], y)
+
+                    X_model_test = np.array(X_model_test[:,best_feat])
+                    test_acc = self.accuracy(model.predict(X_model_test), y_test)
+
+                    model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices, test_acc])
+                to_ret.append(model_to_ret)
+
+                X, y = self.reverseFixStructure(X, y)
+                X_test, y_test = self.reverseFixStructure(X_test, y_test)
+
+            dump(to_ret, 'accs_all', path = self.ddpad)
 
         return to_ret
 
@@ -517,12 +521,9 @@ class GenScript():
         for metric in range(12):
             avg_metric_results = []
             std_metric_results = []
-            for model in range(5):
-                model_results = []
-                for person in range(32):
-                    model_results.append(self.accs[person][model][metric][7])
-                avg_metric_results.append(np.average(model_results))
-                std_metric_results.append(np.std(model_results))
+            for model in range(2):
+                avg_metric_results.append(np.average(self.accs[model][metric][7]))
+                std_metric_results.append(np.std(self.accs[model][metric][7]))
             avgs.append(avg_metric_results)
             stds.append(std_metric_results)
 
@@ -582,12 +583,9 @@ class GenScript():
         for metric in range(12):
             avg_metric_last = []
             std_metric_last = []
-            for model in range(5):
-                lastIndexes = []
-                for person in range(32):
-                    lastIndexes.append(self.accs[person][model][metric][0][-1])
-                avg_metric_last.append(np.average(lastIndexes))
-                std_metric_last.append(np.std(lastIndexes))
+            for model in range(2):
+                avg_metric_last.append(np.average(self.accs[model][metric][0][-1]))
+                std_metric_last.append(np.std(self.accs[model][metric][0][-1]))
             avg_lasts.append(avg_metric_last)
             std_lasts.append(std_metric_last)
 
@@ -607,31 +605,28 @@ class GenScript():
 
         featnames = np.array(self.featExtr.getFeatureNames())
 
-        for person, personData in enumerate(self.accs):
-            h = open(self.rpad + "selectedFeat" + tail + '_' + str(person) + '.csv', 'w')
+        h = open(self.rpad + "selectedFeat" + tail + '_all.csv', 'w')
+        model = self.accs[0]
+        for metricName, metric in zip(metricnames,model):
+            h.write(metricName + ';')
 
-            model =personData[0]
-            for metricName, metric in zip(metricnames,model):
-                h.write(metricName + ';')
+            for feat in metric[1]:
+                h.write(feat + ';')
 
-                feats = featnames[metric[6]]
-                for feat in feats:#sorted(feats):
-                    h.write(feat + ';')
-
-                h.write('\n')
+            h.write('\n')
         h.close()
 
 
         h = open(self.rpad + "test_accs.csv",'w')
-        for person, personData in enumerate(self.accs):
-            model =personData[1]
 
-            h.write(str(person) + ';')
-            for metric in model:
-                h.write(str(metric[7]) + ';')
-            h.write('\n')
+        model = self.accs[0]
+
+        for metric in model:
+            h.write(str(metric[7]) + ';')
+        h.write('\n')
 
         h.close()
+
     def genPlot(self,avgs, stds, lbls, title):
 
         fname = self.rpad + 'accComp_' + str(title) + '.png'
@@ -697,7 +692,7 @@ class GenScript():
         self.results = self.getMetrics()
         self.genReport()
 
-        self.getAccs()
+        self.accs = self.getAccs()
 
         self.genAccReport()
         self.genFinalReport()

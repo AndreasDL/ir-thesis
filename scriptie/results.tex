@@ -45,7 +45,25 @@ In this work, the parameter was fixed to 30 for all feature selection methods fo
 
 \npar
 
-A second parameter of this model is a model to estimate the performance. For this, two different models were compared. The first model is an SVM with a radial basis functions kernel. This model was chose because it has proven itself in multiple emotion recognition studies. Additionally, SVM are capable to handle small dataset, which gives this method an advantage in this experiment. The next model is a random forest with 2000 estimators. This model was mainly chosen, because feature selection with random forest deliver good results, according to literature\citep{rfPaper}. Using the same algorithm in both feature selection and building phase, means that the algorithm can select its own features. In other words features that work well for a certain algorithm are more likely to be chosen.
+A second parameter of this model is a model to estimate the performance. For this, two different models were compared. The first model is an SVM with a radial basis functions kernel. This model was chose because it has proven itself in multiple emotion recognition studies. Additionally, SVM are capable to handle small dataset, which gives this method an advantage in this experiment. The next model is a random forest with 2000 estimators. This model was mainly chosen, because feature selection with random forest deliver good results, according to literature\citep{rfPaper}. Using the same algorithm in both feature selection and building phase, means that the algorithm can select its own features. In other words features that work well for the specific algorithm are more likely to be chosen as this is done by the same algorithm.
 
-\npar
+\subsection{Comparing the different models}
+
+\subsection{Comparing the different feature selection methods}
+
+When looking at the accuracies of the different feature selection models in combination with the SVM, it becomes quickly clear that the results are statistically equivalent. 
+
+
+
+
+
+The next section will only focus on the RF feature selection method, as this method is a proven method in literature \citep{rfPaper}, that is robust against noise and 
+
+
+\subsection{Chosen features}
+%freq table
+%regions
+
+%EEG/non-EEG/all => p value
+\subsection{Certain <-> borderdist}
 

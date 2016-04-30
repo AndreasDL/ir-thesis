@@ -17,7 +17,7 @@ from personLoader import load, dump
 import numpy as np
 
 from multiprocessing import Pool
-POOL_SIZE = 5
+POOL_SIZE = 2
 
 
 class PersScript():
@@ -653,7 +653,7 @@ class PersScript():
         data = [
             [
                 [] for i in range(len(self.accs[0][0]))
-            ] for j in range(len(self.accs))
+            ] for j in range(len(self.accs[0]))
         ]
 
         for person_index, person in enumerate(self.accs):

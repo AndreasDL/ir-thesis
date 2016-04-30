@@ -475,6 +475,7 @@ Lasso regression uses L1 regularization, that adds a penalty $\alpha\sum\limits_
 Ridge regression uses L2 regularization, which add a L2 norm penalty to the loss function, given by $\alpha\sum\limits_{i=1}^{n} w_i^2$. Where the L1 norm forces the coefficients to zero, the L2 regularization forces the coefficients to be spread out more equally. The result is that correlated features tend to get similar coefficients, as this minimizes the loss function, which in turn results in a more stable model. The disadvantage of ridge regression is that bad features still have low weights. This means that they still have an influence on the output.
 
 \subsubsection{Random forests}
+\label{rfexpl}
 A random forest (RF) \nomenclature{RF}{Random Forests} is an efficient learning algorithm based on model bagging and aggregation ideas\citep{rfPaper}. The Random forests work by creating different decision trees. On their own, decision trees are very prone to overfitting. Random forests solve this problem by creating an aggregation of trees. 
 
 \npar
