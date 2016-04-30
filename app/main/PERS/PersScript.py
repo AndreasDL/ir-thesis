@@ -397,7 +397,7 @@ class PersScript():
 
             to_ret = []
 
-            for model in [
+            for model_index, model in enumerate([
                 #SVC(kernel='linear'),
                 SVC(kernel='rbf'),
 
@@ -413,7 +413,7 @@ class PersScript():
                     criterion='gini',
                     n_jobs=-1,
                 )
-            ]:
+            ]):
                 model_to_ret = []
                 for metric in self.results[person-1]:
                     featNames = np.array(self.featExtr.getFeatureNames()) #take clean copy
@@ -457,14 +457,29 @@ class PersScript():
                             best_featNames.append(featNames[i])
 
                     #get test score
-                    test_model = SVC(kernel='rbf', probability=True)
-                    test_model.fit(X_model[:,best_feat], y)
+                    if model_index == 0:
+                        test_model = SVC(kernel='rbf', probability=True)
+                        test_model.fit(X_model[:,best_feat], y)
 
-                    X_model_test = np.array(X_model_test[:,best_feat])
-                    test_pred = test_model.predict(X_model_test)
-                    test_prob = test_model.predict_proba(X_model_test)
+                        X_model_test = np.array(X_model_test[:,best_feat])
+                        test_pred = test_model.predict(X_model_test)
+                        test_prob = test_model.predict_proba(X_model_test)
 
-                    test_acc = self.accuracy(test_model.predict(X_model_test), y_test)
+                        test_acc = self.accuracy(test_model.predict(X_model_test), y_test)
+                    else:
+                        test_model = RandomForestClassifier(
+                            n_estimators=2000,
+                            max_features='auto',
+                            criterion='gini',
+                            n_jobs=-1
+                        )
+                        test_model.fit(X_model[:, best_feat], y)
+
+                        X_model_test = np.array(X_model_test[:, best_feat])
+                        test_pred = test_model.predict(X_model_test)
+                        test_prob = test_model.predict_proba(X_model_test)
+
+                        test_acc = self.accuracy(test_model.predict(X_model_test), y_test)
 
                     model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices, test_acc, test_pred, test_prob, y_test, y_test_cont])
                 to_ret.append(model_to_ret)

@@ -192,6 +192,9 @@ def svm_rbf_accs():
             colors
             )
 
+    print(names)
+
+
 def phyeegall():
     # get testaccs
     test_accs = []
@@ -311,6 +314,7 @@ def linear_regression_example():
 
 if __name__ == '__main__':
     phyeegall()
+    svm_rbf_accs()
 
 
 

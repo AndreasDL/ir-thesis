@@ -371,13 +371,7 @@ class GenScript():
 
             to_ret = []
             for modindex, model in enumerate([
-                SVC(kernel='rbf'),
-                RandomForestClassifier(
-                    n_estimators=2000,
-                    max_features='auto',
-                    criterion='gini',
-                    n_jobs=-1,
-                )
+                SVC(kernel='rbf')
             ]):
                 model_to_ret = []
                 for mindex, metric in enumerate(self.results):
@@ -457,7 +451,7 @@ class GenScript():
 
         #accuracies
         f.write("model;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;\n")
-        for model, modelName in zip(self.accs, ["SVMRBF", 'RF']):
+        for model, modelName in zip(self.accs, ["SVMRBF"]):
             f.write(modelName + ';')
 
             t = []
@@ -472,7 +466,7 @@ class GenScript():
         f.write('\n\n\n')
 
         #features
-        for modelIndex, (model, modelName) in enumerate(zip(self.accs, ["SVMRBF", 'RF'])):
+        for modelIndex, (model, modelName) in enumerate(zip(self.accs, ["SVMRBF"])):
             f.write(modelName + '\n\n')
             f.write("matric;features used;\n")
             for metricIndex, (metric, metricName) in enumerate(zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA'])):
@@ -486,7 +480,7 @@ class GenScript():
 
         f.close()
 
-        for model, modelName in zip(tekst, ["SVMRBF","RF"]):
+        for model, modelName in zip(tekst, ["SVMRBF"]):
             g = open(self.rpad + "finFeat" + str(modelName) + ".csv", 'w')
 
             for metric, metricName in zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA']):
@@ -521,14 +515,14 @@ class GenScript():
         for metric in range(12):
             avg_metric_results = []
             std_metric_results = []
-            for model in range(2):
+            for model in range(1):
                 avg_metric_results.append(np.average(self.accs[model][metric][7]))
                 std_metric_results.append(np.std(self.accs[model][metric][7]))
             avgs.append(avg_metric_results)
             stds.append(std_metric_results)
 
         metricnames =  ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF', 'RFSTD', 'ANOVA','LDA', 'PCA']
-        modelnames  = ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"]
+        modelnames  = ["SVMRBF"]
 
         tail = ''
         if self.classifier.name == "ContArousalClasses":
@@ -549,7 +543,7 @@ class GenScript():
         #header line
         f.write("metricName;")
         for name in modelnames:
-            f.write(name + ';;')
+            f.write(name + ';')
         f.write('\n')
 
         for metIndex, (metricname, avg_metric, std_metric) in enumerate(zip(metricnames,avgs, stds)):
@@ -583,7 +577,7 @@ class GenScript():
         for metric in range(12):
             avg_metric_last = []
             std_metric_last = []
-            for model in range(2):
+            for model in range(1):
                 avg_metric_last.append(np.average(self.accs[model][metric][0][-1]))
                 std_metric_last.append(np.std(self.accs[model][metric][0][-1]))
             avg_lasts.append(avg_metric_last)
