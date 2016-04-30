@@ -1,13 +1,20 @@
 \chapter{Results}
 {\samenvatting todo}
+\section{Person specific}
+At first research was done in a person specific setting. This means that that algorithm was trained on several samples from a single person, before it was tested on the same person.
+This section will go over the results.
 
-\section{Used approach in this thesis}
+\npar
 
-This thesis compares the aforementioned features and the aforementioned feature selection methods. For this a two stepped algorithm, inspired by the advanced rf method, explained in \ref{rfmethod}. In short, the first step is to rank all the features and only take the top X of the features. This threshold is applied to limit computation times. The next step is to iteratively build a model. This approach is depicted in Figure \ref{flow}.
+The first step was to transform the continuous valence and arousal values to classes. This was done by performing a simple binary classification. Given that the dimension range from 1 to 9, all labels with a valence or arousal below 5 were reported as low valence or arousal respectively. The remaining valence or arousal were placed in the high valence or arousal respectively.
+
+\section{Used approach}
+
+This thesis compares the aforementioned features and the aforementioned feature selection methods. For this a two stepped algorithm, inspired by the advanced random forest method, explained in Section \ref{rfmethod}, was used. In short, the first step is to rank all the features and only take the top X of the features. This threshold is applied to limit computation times and throw out features that have very low importance. The next step is to iteratively build a model by selecting features out of the remaining feature set. This approach is depicted in Figure \ref{flow}.
 
 \mijnfiguur{width=0.9\textwidth}{flow}{The used approach of this thesis.}
 
-As you can see in Figure \ref{flow}, the approach starts by separating a test set to evaluate the final performance of the algorithm. Next the aforementioned feature selection methods are applied to the train set. A top $X$ of the features is then kept.
+As you can see in Figure \ref{flow}, the approach starts by separating a test set to evaluate the final performance of the algorithm. This test set contained 10 of the 40 samples. Next, the aforementioned feature selection methods are applied to the train set. A top $X$ of the features is then kept.
 
 \npar
 
@@ -16,12 +23,12 @@ In the next step different models are build. This is done iteratively by startin
 %CV fig
 \mijnfiguur{width=0.55\textwidth}{CVscheme}{Cross validation}
 
-The advantage of using a cross validation scheme is that it gives a pretty good estimation of the generalisation of the algorithm, while still using all train data. Note that the test set, displayed in red is not used here. The test set is kept completely separate to ensure that a fair estimate of the generalisation is achieved.
+The advantage of using a cross validation scheme is that it gives a pretty good estimation of the generalisation of the algorithm, while still using all train data. This step is important because it ensure that the chosen features have good generalisation properties. Good feature should perform well on unseen samples. Note that the test set, displayed in red is not used during cross validation. The test set is kept completely separate to ensure that a fair estimate of the generalisation is achieved.
 
 \npar
 
 Next the average of the cross validation errors and the standard deviation is calculated. The average cross validation minus the standard deviation is b
-then compared to the previous best performance. If the performance is better, the feature is kept in the feature set. If the performance is not better, the feature is neglected. 
+then compared to the previous best performance. If the performance is better, the feature is kept in the feature set. If the performance is not better, the feature is neglected. The standard deviation is included to increase the stability of the algorithm. By making sure that the new model performs better in a statistical way, one can avoid that small differences in averages lead to a different model.
 
 \npar
 
@@ -29,15 +36,16 @@ In the final step the performance of the test set is determined by the accuracy 
 
 \npar
 
-The goal of this thesis is to compare the selected features from the different feature selection methods. Additionally a model is build with these features that gives an indication how good the selected features can perform. Note that several models are used to get the performance. This is done, because a different method, might interact better with a different features.
+%params
+The first parameter of this flow is the threshold parameter, indicated in the figure as $X$. This threshold cancels features with low importance, by simply taking the best $X$ features from the feature ranking. Assigning a high value to the threshold will increase calculation times as more features are available for the building phase. The performance of the model, will not be better, since a lot of the additional features will have low importance values. Setting a low threshold is also not good, as this might cancel out important features. 
 
-%uitleggen cont / disc
+\npar
 
-%results valence
-%verschillende modellen => weinig invloed
-% wat geselecteerd?
-% stabiel tussen verschillende personen 
-% acc ?
+In this work, the parameter was fixed to 30 for all feature selection methods for the following reasons. First, considering that there are 30 samples in the feature set, having 30 features is already more than enough. Note that a well-known rule of thumb is to have at least 10 times more samples than features\citep{rot1,rot2}\footnote{Note that this is just a rule of thumb, and therefore not proven theoretically. In practice however, it turns out to work quite well.}. Second, looking at the features that were selected during training, one can see that usually around 5-7 features remain. The last selected feature usually has a rank around 20, meaning that the last 10 available features in the building phase are rarely used.
 
+\npar
 
-% results arousal
+A second parameter of this model is a model to estimate the performance. For this, two different models were compared. The first model is an SVM with a radial basis functions kernel. This model was chose because it has proven itself in multiple emotion recognition studies. Additionally, SVM are capable to handle small dataset, which gives this method an advantage in this experiment. The next model is a random forest with 2000 estimators. This model was mainly chosen, because feature selection with random forest deliver good results, according to literature\citep{rfPaper}. Using the same algorithm in both feature selection and building phase, means that the algorithm can select its own features. In other words features that work well for a certain algorithm are more likely to be chosen.
+
+\npar
+

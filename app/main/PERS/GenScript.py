@@ -52,6 +52,10 @@ class GenScript():
 
         self.rpad = self.ddpad + "results/"
 
+        self.X = [[[[] for i in range(len(self.featExtr.featureExtrs))] for j in range(40)] for k in  range(self.stopperson)]
+        self.y_cont = [[[] for j in range(40)] for k in range(self.stopperson)]
+        self.y_disc = [[[] for j in range(40)] for k in range(self.stopperson)]
+
     def addEEGFeatures(self):
 
         # EEG
@@ -170,26 +174,7 @@ class GenScript():
 
         return acc / float(len(predictions))
 
-    def getPers(self,person):
-        # load person data
-        y_cont = load('cont_y_p' + str(person), path=self.ddpad)
-        if y_cont == None:
-            print('[Warn] Rebuilding cache -  person ' + str(person))
-            personLdr = personLoader.NoTestsetLoader(self.classifier, self.featExtr)
-
-            X, y_cont = personLdr.load(person)
-
-            dump(X, 'X_p' + str(person), path=self.ddpad)
-            dump(y_cont, 'cont_y_p' + str(person), path=self.ddpad)
-        else:
-            X = load('X_p' + str(person), path=self.ddpad)
-
-        # manual Feature standardization
-        X = X - np.average(X, axis=0)
-        X = np.true_divide(X, np.std(X, axis=0))
-
-        return [X, y_cont]
-    def fixStructure(all_X, all_y_disc):
+    def fixStructure(self,all_X, all_y_disc):
         # structure of X
         X, y_disc = [], []
         for person_x, person_y in zip(all_X, all_y_disc):
@@ -201,7 +186,7 @@ class GenScript():
         y_disc = np.array(y_disc)
 
         return np.array(X), np.array(y_disc)
-    def reverseFixStructure(X, y_disc):
+    def reverseFixStructure(self,X, y_disc):
         persons_x, persons_y = [], []
         person_x, person_y = [], []
         for index, (video, label) in enumerate(zip(X, y_disc)):
@@ -371,108 +356,92 @@ class GenScript():
         dump(metrics, 'all_metrics', path=self.ddpad)
 
         return np.array(metrics)
-    def getAccs(self, person):
-        print('gettings accs for person ' + str(person))
+    def getAccs(self):
 
-        to_ret = load('accs_p' + str(person), path = self.ddpad)
-        if to_ret == None:
+        # Train / testset
+        X, X_test, y, y_test = train_test_split(self.X, self.y_disc,test_size=8, random_state=17)
+        X = np.array(X)
+        X_test = np.array(X_test)
+        y = np.array(y)
+        y_test = np.array(y_test)
 
-            # load person data
-            # load all features & keep them in memory
-            y = load('cont_y_p' + str(person), path=self.ddpad)
-            if y == None:
-                print('[Warn] Rebuilding cache -  person ' + str(person))
-                personLdr = personLoader.NoTestsetLoader(self.classifier, self.featExtr)
+        to_ret = []
+        for modindex, model in enumerate([
+            SVC(kernel='rbf'),
+            RandomForestClassifier(
+                n_estimators=2000,
+                max_features='auto',
+                criterion='gini',
+                n_jobs=-1,
+            )
+        ]):
+            model_to_ret = []
+            for mindex, metric in enumerate(self.results):
+                print('model' + str(modindex) + ' - metric' + str(mindex))
+                featNames = np.array(self.featExtr.getFeatureNames()) #take clean copy
 
-                X, y = personLdr.load(person)
+                #sort features
+                indices = np.array(np.argsort(metric)[::-1])
+                #take top threshold
+                indices = indices[:self.threshold]
 
-                dump(X, 'X_p' + str(person), path=self.ddpad)
-                dump(y, 'cont_y_p' + str(person), path=self.ddpad)
-            else:
-                X = load('X_p' + str(person), path=self.ddpad)
+                #old struct
+                if mindex == 0:
+                    X, y = self.fixStructure(X, y)
+                    X_test, y_test = self.fixStructure(X_test, y_test)
 
-            y = np.array(y)
-            y[y <= 5] = 0
-            y[y >  5] = 1
+                #Filter features
+                X_model = np.array(X[:,indices])
+                X_model_test = np.array(X_test[:,indices])
+                featNames = featNames[indices]
 
-            # manual Feature standardization
-            X = X - np.average(X, axis=0)
-            X = np.true_divide(X, np.std(X, axis=0))
+                best_feat, best_featNames = [], []
+                all_scores, all_stds = [],[]
+                best_score, best_std = 0, 0
+                for i in range(self.threshold):
+                    to_keep = best_feat[:]
+                    to_keep.append(i)
 
-            #train test set
-            # Train / testset
-            X, X_test, y, y_test = train_test_split(X,y,test_size=10, random_state=17)
+                    X_temp = np.array(X_model[:,to_keep])
 
-            to_ret = []
-            #RandomForestClassifier(
-            #    n_estimators=1000,
-            #    max_features='auto',
-            #    criterion='gini',
-            #    n_jobs=-1,
-            #)
-            for model in [
-                SVC(kernel='linear'),
-                SVC(kernel='rbf'),
+                    # get scores
+                    run_scores = []
 
-                KNN(n_neighbors=3),
-                KNN(n_neighbors=5),
-                KNN(n_neighbors=7),
+                    X_temp, y = self.reverseFixStructure(X_temp, y)
+                    for tr, te in KFold(n=len(X_temp), n_folds=5, shuffle=True, random_state=17):
+                        X_t,  y_t  = self.fixStructure(X_temp[tr], y[tr])
+                        X_te, y_te = self.fixStructure(X_temp[te], y[te])
+                        model.fit(X_t, y_t)
+                        run_scores.append(self.accuracy(model.predict(X_te), y_te))
 
-                #lda needs two features
-            ]:
-                model_to_ret = []
-                for metric in self.results[person-1]:
-                    featNames = np.array(self.featExtr.getFeatureNames()) #take clean copy
+                    X_temp, y = self.fixStructure(X_temp, y)
 
-                    #sort features
-                    indices = np.array(np.argsort(metric)[::-1])
-                    #take top threshold
-                    indices = indices[:self.threshold]
+                    new_score = np.average(run_scores)
+                    new_std = np.std(run_scores)
 
-                    #apply
-                    X_model = np.array(X[:,indices])
-                    X_model_test = np.array(X_test[:,indices])
-                    featNames = featNames[indices]
+                    all_scores.append(new_score)
+                    all_stds.append(new_std)
 
-                    best_feat, best_featNames = [], []
-                    all_scores, all_stds = [],[]
-                    best_score, best_std = 0, 0
-                    for i in range(self.threshold):
-                        to_keep = best_feat[:]
-                        to_keep.append(i)
+                    # better?
+                    if new_score - new_std > best_score - best_std:
+                        best_score = new_score
+                        best_std = new_std
+                        best_feat = to_keep
+                        best_featNames.append(featNames[i])
 
-                        X_temp = np.array(X_model[:,to_keep])
+                #get test score => old struct :D
+                model.fit(X_model[:,best_feat], y)
 
-                        # get scores
-                        run_scores = []
-                        for tr, te in KFold(n=len(X_temp), n_folds=5, shuffle=True, random_state=17):
-                            model.fit(X_temp[tr], y[tr])
-                            run_scores.append(self.accuracy(model.predict(X_temp[te]), y[te]))
+                X_model_test = np.array(X_model_test[:,best_feat])
+                test_acc = self.accuracy(model.predict(X_model_test), y_test)
 
-                        new_score = np.average(run_scores)
-                        new_std = np.std(run_scores)
+                model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices, test_acc])
+            to_ret.append(model_to_ret)
 
-                        all_scores.append(new_score)
-                        all_stds.append(new_std)
+            X, y = self.reverseFixStructure(X, y)
+            X_test, y_test = self.reverseFixStructure(X_test, y_test)
 
-                        # better?
-                        if new_score - new_std > best_score - best_std:
-                            best_score = new_score
-                            best_std = new_std
-                            best_feat = to_keep
-                            best_featNames.append(featNames[i])
-
-                    #get test score
-
-                    model.fit(X_model[:,best_feat], y)
-
-                    X_model_test = np.array(X_model_test[:,best_feat])
-                    test_acc = self.accuracy(model.predict(X_model_test), y_test)
-
-                    model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices, test_acc])
-                to_ret.append(model_to_ret)
-
-            dump(to_ret, 'accs_p' + str(person), path = self.ddpad)
+        dump(to_ret, 'accs_all', path = self.ddpad)
 
         return to_ret
 
@@ -480,42 +449,40 @@ class GenScript():
         #self.accs[person][model][metric] = [best_feat, best_featNames, best_score, best_std, all_score, all_std]
 
         tekst = []
-        for person in range(len(self.accs)):
-            f = open(self.rpad + "Accresults" + str(person) + ".csv", 'w')
+        f = open(self.rpad + "Accresults.csv", 'w')
 
-            #accuracies
-            f.write("model;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;\n")
-            for model, modelName in zip(self.accs[person], ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"]):
-                f.write(modelName + ';')
+        #accuracies
+        f.write("model;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;\n")
+        for model, modelName in zip(self.accs, ["SVMRBF", 'RF']):
+            f.write(modelName + ';')
 
-                t = []
-                for metric in model:
-                    t.append([])
-                    f.write(str(metric[2]) + '(' + str(metric[3]) + ');')
+            t = []
+            for metric in model:
+                t.append([])
+                f.write(str(metric[2]) + '(' + str(metric[3]) + ');')
+            f.write('\n')
+
+            tekst.append(t)
+
+
+        f.write('\n\n\n')
+
+        #features
+        for modelIndex, (model, modelName) in enumerate(zip(self.accs, ["SVMRBF", 'RF'])):
+            f.write(modelName + '\n\n')
+            f.write("matric;features used;\n")
+            for metricIndex, (metric, metricName) in enumerate(zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA'])):
+                f.write(metricName + ';')
+                for featName in metric[1]:
+                    f.write(featName + ';')
                 f.write('\n')
 
-                if person == 0:
-                    tekst.append(t)
-
-
+                tekst[modelIndex][metricIndex].append(metric[1])
             f.write('\n\n\n')
 
-            #features
-            for modelIndex, (model, modelName) in enumerate(zip(self.accs[person], ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"])):
-                f.write(modelName + '\n\n')
-                f.write("matric;features used;\n")
-                for metricIndex, (metric, metricName) in enumerate(zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA'])):
-                    f.write(metricName + ';')
-                    for featName in metric[1]:
-                        f.write(featName + ';')
-                    f.write('\n')
+        f.close()
 
-                    tekst[modelIndex][metricIndex].append(metric[1])
-                f.write('\n\n\n')
-
-            f.close()
-
-        for model, modelName in zip(tekst, ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"]):
+        for model, modelName in zip(tekst, ["SVMRBF","RF"]):
             g = open(self.rpad + "finFeat" + str(modelName) + ".csv", 'w')
 
             for metric, metricName in zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA']):
@@ -533,18 +500,17 @@ class GenScript():
     def genReport(self):
 
         # self.results[person][metric][feature] = value
-        for person, persData in enumerate(self.results):
-            f = open(self.rpad + "results" + str(person) + ".csv", 'w')
-            f.write('Person: ' + str(person) + '\nfeatName;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;\n')
+        f = open(self.rpad + "resultsall.csv", 'w')
+        f.write('featName;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;\n')
 
-            for index, featName in zip(range(len(persData[0])), self.featExtr.getFeatureNames()):  # all metrics
-                f.write(featName + ";")
-                for value in persData[:, index]:
-                    f.write(str(value) + ';')
-                f.write('\n')
-            f.write('\n\n\n')
+        for index, featName in zip(range(len(self.results)), self.featExtr.getFeatureNames()):  # all metrics
+            f.write(featName + ";")
+            for value in self.results[:, index]:
+                f.write(str(value) + ';')
+            f.write('\n')
+        f.write('\n\n\n')
 
-            f.close()
+        f.close()
 
     def genFinalReport(self):
         avgs, stds = [], []
@@ -701,23 +667,37 @@ class GenScript():
 
     def run(self):
 
-        pool = Pool(processes=POOL_SIZE)
-        data = pool.map(self.getPers, range(1, self.stopperson + 1))
-        pool.close()
-        pool.join()
+        for person in range(1, self.stopperson + 1):
+            # load person data
+            y_cont = load('cont_y_p' + str(person), path=self.ddpad)
+            if y_cont == None:
+                print('[Warn] Rebuilding cache -  person ' + str(person))
+                personLdr = personLoader.NoTestsetLoader(self.classifier, self.featExtr)
 
-        data = np.array(data)
-        self.X = data[:,0]
-        self.y_cont = data[:,1]
+                X, y_cont = personLdr.load(person)
 
-        self.getMetrics()
+                dump(X, 'X_p' + str(person), path=self.ddpad)
+                dump(y_cont, 'cont_y_p' + str(person), path=self.ddpad)
+            else:
+                X = load('X_p' + str(person), path=self.ddpad)
 
+            # manual Feature standardization
+            X = X - np.average(X, axis=0)
+            X = np.true_divide(X, np.std(X, axis=0))
+
+            self.X[person - 1] = np.array(X)
+            self.y_cont[person - 1] = np.array(y_cont)
+
+
+            y_disc = np.array(y_cont)
+            y_disc[y_disc <= 5] = 0
+            y_disc[y_disc > 5 ] = 1
+            self.y_disc[person - 1] = y_disc
+
+        self.results = self.getMetrics()
         self.genReport()
 
-        pool = Pool(processes=POOL_SIZE)
-        self.accs = pool.map(self.getAccs, range(1, self.stopperson + 1))
-        pool.close()
-        pool.join()
+        self.getAccs()
 
         self.genAccReport()
         self.genFinalReport()

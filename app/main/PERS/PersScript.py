@@ -52,6 +52,9 @@ class PersScript():
 
         self.rpad = self.ddpad + "results/"
 
+        self.metricnames =  ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF', 'RFSTD', 'ANOVA','LDA', 'PCA']
+        self.modelnames  = ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"]
+
     def addEEGFeatures(self):
 
         # EEG
@@ -375,8 +378,7 @@ class PersScript():
                 X = load('X_p' + str(person), path=self.ddpad)
 
             y = np.array(y)
-            y[y <= 5] = 0
-            y[y >  5] = 1
+
 
             # manual Feature standardization
             X = X - np.average(X, axis=0)
@@ -384,24 +386,33 @@ class PersScript():
 
             #train test set
             # Train / testset
-            X, X_test, y, y_test = train_test_split(X,y,test_size=10, random_state=17)
+            X, X_test, y, y_test_cont = train_test_split(X,y,test_size=10, random_state=17)
+
+            y[y <= 5] = 0
+            y[y >  5] = 1
+
+            y_test = np.array(y_test_cont)
+            y_test[y_test <= 5] = 0
+            y_test[y_test > 5] = 1
 
             to_ret = []
-            #RandomForestClassifier(
-            #    n_estimators=1000,
-            #    max_features='auto',
-            #    criterion='gini',
-            #    n_jobs=-1,
-            #)
+
             for model in [
-                SVC(kernel='linear'),
+                #SVC(kernel='linear'),
                 SVC(kernel='rbf'),
 
-                KNN(n_neighbors=3),
-                KNN(n_neighbors=5),
-                KNN(n_neighbors=7),
+                #KNN(n_neighbors=3),
+                #KNN(n_neighbors=5),
+                #KNN(n_neighbors=7),
 
                 #lda needs two features
+
+                RandomForestClassifier(
+                    n_estimators=1000,
+                    max_features='auto',
+                    criterion='gini',
+                    n_jobs=-1,
+                )
             ]:
                 model_to_ret = []
                 for metric in self.results[person-1]:
@@ -446,13 +457,16 @@ class PersScript():
                             best_featNames.append(featNames[i])
 
                     #get test score
-
-                    model.fit(X_model[:,best_feat], y)
+                    test_model = SVC(kernel='rbf', probability=True)
+                    test_model.fit(X_model[:,best_feat], y)
 
                     X_model_test = np.array(X_model_test[:,best_feat])
-                    test_acc = self.accuracy(model.predict(X_model_test), y_test)
+                    test_pred = test_model.predict(X_model_test)
+                    test_prob = test_model.predict_proba(X_model_test)
 
-                    model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices, test_acc])
+                    test_acc = self.accuracy(test_model.predict(X_model_test), y_test)
+
+                    model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices, test_acc, test_pred, test_prob, y_test, y_test_cont])
                 to_ret.append(model_to_ret)
 
             dump(to_ret, 'accs_p' + str(person), path = self.ddpad)
@@ -527,8 +541,7 @@ class PersScript():
             avgs.append(avg_metric_results)
             stds.append(std_metric_results)
 
-        metricnames =  ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF', 'RFSTD', 'ANOVA','LDA', 'PCA']
-        modelnames  = ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"]
+
 
         tail = ''
         if self.classifier.name == "ContArousalClasses":
@@ -548,11 +561,11 @@ class PersScript():
 
         #header line
         f.write("metricName;")
-        for name in modelnames:
+        for name in self.metricnames:
             f.write(name + ';;')
         f.write('\n')
 
-        for metIndex, (metricname, avg_metric, std_metric) in enumerate(zip(metricnames,avgs, stds)):
+        for metIndex, (metricname, avg_metric, std_metric) in enumerate(zip(self.metricnames,avgs, stds)):
             if metIndex == 8: #RF STD
                 continue
             else:
@@ -565,7 +578,7 @@ class PersScript():
                 #create plot
                 self.genPlot(avg_metric,
                              std_metric,
-                             modelnames,
+                             self.modelnames,
                              tail + metricname
                              )
 
@@ -573,7 +586,7 @@ class PersScript():
 
         g = open(self.rpad + "lastIndex" + tail + '.csv', 'w')
         g.write("metricName;")
-        for name in modelnames:
+        for name in self.modelnames:
             g.write(name + ';')
         g.write('\n')
 
@@ -593,7 +606,7 @@ class PersScript():
             std_lasts.append(std_metric_last)
 
 
-        for metIndex, (metricname, avg_last, std_last) in enumerate(zip(metricnames, avg_lasts, std_lasts)):
+        for metIndex, (metricname, avg_last, std_last) in enumerate(zip(self.metricnames, avg_lasts, std_lasts)):
             if metIndex == 8:  # RF STD
                 continue
             else:
@@ -612,7 +625,7 @@ class PersScript():
             h = open(self.rpad + "selectedFeat" + tail + '_' + str(person) + '.csv', 'w')
 
             model =personData[0]
-            for metricName, metric in zip(metricnames,model):
+            for metricName, metric in zip(self.metricnames,model):
                 h.write(metricName + ';')
 
                 feats = featnames[metric[6]]
@@ -633,6 +646,54 @@ class PersScript():
             h.write('\n')
 
         h.close()
+
+    def probVsDim(self):
+
+
+        data = [
+            [
+                [] for i in range(len(self.accs[0][0]))
+            ] for j in range(len(self.accs))
+        ]
+
+        for person_index, person in enumerate(self.accs):
+            for model_index, model in enumerate(person):
+                for metric_index, metric in enumerate(model):
+                    #[best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices, test_acc, test_pred, test_prob, y_test, y_test_cont]
+                    for (pred_lbl, probs, test_lbl, value) in zip(metric[-4], metric[-3], metric[-2], metric[-1]):
+                        if pred_lbl == test_lbl:
+                            data[model_index][metric_index].append((
+                                probs[pred_lbl],
+                                np.abs(value - 5)
+                                ))
+
+        dump(data, "corrData", path=self.ddpad)
+
+        f = open(self.rpad + "corrs.csv", 'w')
+
+        # header line
+        f.write('model;')
+        for name in self.metricnames:
+            f.write(name + ';')
+        f.write('\n')
+
+        #much efficiency wow </sarcasm>
+        modelNames = ['SVM','RF']
+        for model_index, model in enumerate(data):
+            f.write(modelNames[model_index] + ';')
+
+            for metric in model:
+                probs = []
+                dists = []
+                for tup in metric:
+                    probs.append(tup[0])
+                    dists.append(tup[1])
+
+                corr = pearsonr(dists, probs)[0]
+                f.write(str(corr) + ';')
+
+            f.write('\n')
+        f.close()
 
     def genPlot(self,avgs, stds, lbls, title):
 
@@ -682,11 +743,13 @@ class PersScript():
         pool.join()
 
         self.genAccReport()
-        self.genFinalReport()
+
+        self.probVsDim()
+        #self.genFinalReport()
 
 if __name__ == '__main__':
-    PersScript("EEG", 32, 30, Classificators.ContValenceClassificator()).run()
     PersScript("PHY", 32, 30, Classificators.ContValenceClassificator()).run()
+    PersScript("EEG", 32, 30, Classificators.ContValenceClassificator()).run()
     PersScript("ALL", 32, 30, Classificators.ContValenceClassificator()).run()
 
     PersScript("EEG", 32, 30, Classificators.ContArousalClassificator()).run()
