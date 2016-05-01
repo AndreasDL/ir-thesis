@@ -36,20 +36,18 @@ def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../resu
             color=color,
             ecolor="k",
             yerr=std,
-            label=str(i) + ' - ' + lbls[i]
+            label=str(i) + " - " + lbls[i]
         )
 
     plt.xticks(range(0, len(avgs), 1))
     plt.xlim([-0.2, len(avgs)])
-    # ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.25),
-    #          ncol=4, fancybox=True, shadow=True)
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.1),
+        ncol=4, fancybox=True, shadow=True)
 
     ax.set_xlabel(xLbl)
     ax.set_ylabel(yLbl)
 
     plt.savefig(fname)
-
-    plt.show()
     plt.clf()
     plt.close()
 
@@ -198,24 +196,24 @@ def phyeegall():
     test_accs = []
 
     all = []
-    model = PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), "../dumpedData/persScript/")
+    model = PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), "D:/dumpedData/persScript/")
     model.run()
     for person in model.accs:
-        all.append(person[1][7][7])
+        all.append(person[0][7][7])
     test_accs.append(all)
 
     all = []
-    model = PersScript("EEG", 32, 30, Classificators.ContValenceClassificator(), "../dumpedData/persScript/")
+    model = PersScript("EEG", 32, 30, Classificators.ContValenceClassificator(), "D:/dumpedData/persScript/")
     model.run()
     for person in model.accs:
-        all.append(person[1][7][7])
+        all.append(person[0][7][7])
     test_accs.append(all)
 
     all = []
-    model = PersScript("PHY", 32, 30, Classificators.ContValenceClassificator(), "../dumpedData/persScript/")
+    model = PersScript("PHY", 32, 30, Classificators.ContValenceClassificator(), "D:/dumpedData/persScript/")
     model.run()
     for person in model.accs:
-        all.append(person[1][7][7])
+        all.append(person[0][7][7])
     test_accs.append(all)
 
     test_accs = np.array(test_accs)
@@ -236,24 +234,24 @@ def phyeegall():
     test_accs = []
 
     all = []
-    model = PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(), "../dumpedData/persScript/")
+    model = PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(), "D:/dumpedData/persScript/")
     model.run()
     for person in model.accs:
-        all.append(person[1][7][7])
+        all.append(person[0][7][7])
     test_accs.append(all)
 
     all = []
-    model = PersScript("EEG", 32, 30, Classificators.ContArousalClassificator(), "../dumpedData/persScript/")
+    model = PersScript("EEG", 32, 30, Classificators.ContArousalClassificator(), "D:/dumpedData/persScript/")
     model.run()
     for person in model.accs:
-        all.append(person[1][7][7])
+        all.append(person[0][7][7])
     test_accs.append(all)
 
     all = []
-    model = PersScript("PHY", 32, 30, Classificators.ContArousalClassificator(), "../dumpedData/persScript/")
+    model = PersScript("PHY", 32, 30, Classificators.ContArousalClassificator(), "D:/dumpedData/persScript/")
     model.run()
     for person in model.accs:
-        all.append(person[1][7][7])
+        all.append(person[0][7][7])
     test_accs.append(all)
 
     test_accs = np.array(test_accs)
@@ -335,7 +333,6 @@ def genPiePlot(x,y,fname):
     plt.savefig(fname[:-5] + "legend.png")
     plt.close()
 
-
 def pieplots():
     #x = np.char.array(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
     #y = np.array([234, 64, 54, 10, 0, 1, 0, 9, 2, 1, 7, 7])
@@ -358,7 +355,7 @@ def pieplots():
     plt.close()
 
 if __name__ == '__main__':
-    pieplots()
+    phyeegall()
 
 
 

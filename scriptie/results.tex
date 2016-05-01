@@ -8,7 +8,7 @@ This section will go over the results.
 
 The first step was to transform the continuous valence and arousal values to classes. This was done by performing a simple binary classification. Given that the dimension range from 1 to 9, all labels with a valence or arousal below 5 were reported as low valence or arousal respectively. The remaining valence or arousal were placed in the high valence or arousal respectively.
 
-\section{Used approach}
+\subsection{Used approach}
 
 This thesis compares the aforementioned features and the aforementioned feature selection methods. For this a two stepped algorithm, inspired by the advanced random forest method, explained in Section \ref{rfmethod}, was used. In short, the first step is to rank all the features and only take the top X of the features. This threshold is applied to limit computation times and throw out features that have very low importance. The next step is to iteratively build a model by selecting features out of the remaining feature set. This approach is depicted in Figure \ref{flow}.
 
@@ -44,12 +44,10 @@ The first parameter of this flow is the threshold parameter, indicated in the fi
 In this work, the parameter was fixed to 30 for all feature selection methods for the following reasons. First, considering that there are 30 samples in the feature set, having 30 features is already more than enough. Note that a well-known rule of thumb is to have at least 10 times more samples than features\citep{rot1,rot2}\footnote{Note that this is just a rule of thumb, and therefore not proven theoretically. In practice however, it turns out to work quite well.}. Second, looking at the features that were selected during training, one can see that usually around 5-7 features remain. The last selected feature usually has a rank around 20, meaning that the last 10 available features in the building phase are rarely used.
 
 \npar
-
+ %TODO weg ?
 A second parameter of this model is a model to estimate the performance. For this, two different models were compared. The first model is an SVM with a radial basis functions kernel. This model was chose because it has proven itself in multiple emotion recognition studies. Additionally, SVM are capable to handle small dataset, which gives this method an advantage in this experiment. The next model is a random forest with 2000 estimators. This model was mainly chosen, because feature selection with random forest deliver good results, according to literature\citep{rfPaper}. Using the same algorithm in both feature selection and building phase, means that the algorithm can select its own features. In other words features that work well for the specific algorithm are more likely to be chosen as this is done by the same algorithm.
 
-\subsection{Comparing the different models}
-
-\subsection{Comparing the different feature selection methods}
+\subsection{Performance}
 
 When looking at the accuracies of the different feature selection models in combination with the SVM, it becomes quickly clear that the results are statistically equivalent. 
 
@@ -102,8 +100,13 @@ One can easily see that the amount of asymmetry features is always the highest, 
 
 \npar
 
-For arousal one can thus conclude that the different feature selection methods agree mostly on what set of feature categories is relevant. The most import features are the asymmetry features, followed by the power features. The non-EEG features are rarely chose and do not seem to be of importance here. It is also important to note that the fractions of frequency bands is not as important as previously thought. Literature suggested that the fractions of the alpha versus the beta frequency band would give an indication for the arousal of a subject. The main argument for this was the fact that arousal measures how active a person is feeling. A large fraction of alpha and beta power means that the brain is in a relaxed state or in an active and focussed state respectively. Looking at these fractions was therefore supposed to give insight in the arousal. These results indicate that the asymmetry and power features are more relevant.
+For arousal one can thus conclude that the different feature selection methods agree mostly on what set of feature categories is relevant. The most import features are the asymmetry features, followed by the power features. The non-EEG features are rarely chose and do not seem to be of importance here. It is also important to note that the fractions of frequency bands is not as important as previously thought. Literature suggested that the fractions of the alpha versus the beta frequency band would give an indication for the arousal of a subject. The main argument for this was the fact that arousal measures how active a person is feeling. A large fraction of alpha and beta power means that the brain is in a relaxed state or in an active and focussed state respectively. Looking at these fractions was therefore supposed to give insight in the arousal level of a subject. These results indicate that the asymmetry and power features are more relevant.
 
+\npar
+
+The results for valence are depicted in Figure \ref{valencepies} and the corresponding legend in Figure \ref{valencepieslegend}. The selected features are similar to the selected features for arousal recognition. The most valuable features are again the asymmetry and power features. These results were expected, most of the emotion recognition studies agree that the asymmetry features give insight in the valence level of a subject. Again we see that some less advanced methods value the power features more.
+
+\clearpage
 \begin{figure}[!tbp]
   \centering
   \caption{Selection features for arousal classification.\label{arousalpies}}
@@ -167,14 +170,92 @@ For arousal one can thus conclude that the different feature selection methods a
     \caption{Legend\label{arousalpieslegend}}
   \end{minipage}
 \end{figure}
+
 \clearpage
 
-
-
-
-%freq table
-%regions
+\begin{figure}[!tbp]
+  \centering
+  \caption{Selection features for valence classification.\label{valencepies}}
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceALLpearsonR}
+    \caption{Pearson correlation}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceALLMutInf}
+    \caption{Mutual information}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceALLdCorr}
+    \caption{Distance Correlation}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceALLANOVA}
+    \caption{ANOVA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceALLLR}
+    \caption{Linear regression}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceALLSVM}
+    \caption{SVM}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceALLLDA}
+    \caption{LDA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceALLL1}
+    \caption{Lasso regression}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceALLL2}
+    \caption{Ridge regression}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceALLRF}
+    \caption{Random forests}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceALLPCA} %TODO 
+    \caption{PCA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{legend}
+    \caption{Legend\label{valencepieslegend}}
+  \end{minipage}
+\end{figure}
+\clearpage
 
 %EEG/non-EEG/all => p value
-\subsection{Certain <-> borderdist}
+The fact that the non-EEG features are rarely chose indicates that they are less important. In an attempt to further investigate the difference between EEG features and non-EEG features, the performance of three different feature sets was compared. The first feature set is the previously used features set with all possible features. The second and third feature sets contained only EEG and non-EEG features respectively. The feature selection was done with random forest, as this method has shown good results in similar feature selection methods. Additionally, this method is advanced enough to find combinations of features that perform well, as explained in Section \ref{rfexpl}.
+
+\npar
+
+The resulting performances of these different features sets is displayed in Figure \ref{arousalphyeegall} for arousal and in Figure \ref{valencephyeegall} for valence.
+
+\mijnfiguur{width=0.75\textwidth}{arousalphyeegall}{The performance of arousal prediction for all, EEG and non-EEG features.}
+
+\mijnfiguur{width=0.75\textwidth}{valencephyeegall}{The performance of valence prediction for all, EEG and non-EEG features.}
+
+It is clear that for both valence and arousal, the average test performances are lower in case only non-EEG features are used. However the difference was not significant. %TODO p-value
+The scores of the model with all possible feature and the model with EEG features are so quite similar. This is due to the fact that the model of all possible features mainly uses EEG-features, as shown in the aforementioned results. 
+
+%regions
+%TODO
+
+\subsection{Correlation probability versus level of valence / arousal}
+%TODO
+
 
