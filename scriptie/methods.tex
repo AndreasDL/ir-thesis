@@ -114,7 +114,7 @@ The aforementioned EEG features are just one class of physiological features, th
 
 \npar
 
-The Galvanic Skin Response \nomenclature{GSR}{Galvanic Skin Response} uses two electrodes on the middle and index finger of the subjects left hand to measure the skin resistance. It has been reported that the mean value of the GSR is related to the level of arousal\citep{GSR, DEAP}.
+The Galvanic Skin Response \nomenclature{GSR}{Galvanic Skin Response} uses two electrodes on the middle and index finger of the subjects left hand to measure the skin resistance. The skin resistance is one way to measure the perspiration of a subject. It has been reported that the mean value of the GSR is related to the level of arousal\citep{GSR, DEAP}.
 
 \npar
 
@@ -469,6 +469,7 @@ Linear Discriminant Analysis (LDA)\nomenclature{LDA}{Linear Disciminant Analysis
 Embedded feature selection methods are methods that are build-in for some machine learning algorithms.
 
 \subsubsection{Lasso regression}
+\label{lassoregression}
 Lasso regression uses L1 regularization, that adds a penalty $\alpha\sum\limits_{i=1}^{n} |w_i|$ to the loss function. the result is that the coefficients of weak features are forced to zero, as each non-zero feature adds to the penalty. This form is regularization is thus quite aggressive, it removes weak features completely and selects the good features. The problem with this is, similar to linear regression, stability. Coefficients can vary significantly, even for small changes in training data, when there are correlated features.
 
 \subsubsection{Ridge regression}

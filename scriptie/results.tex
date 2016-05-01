@@ -53,13 +53,125 @@ A second parameter of this model is a model to estimate the performance. For thi
 
 When looking at the accuracies of the different feature selection models in combination with the SVM, it becomes quickly clear that the results are statistically equivalent. 
 
-%TODO \mijnfiguur{width=0.55\textwidth}{CVscheme}{Cross validation}
+The corresponding feature selection method for each bar in Figure \ref{accComp_arousalSVM} and Figure \ref{accComp_valenceSVM} are shown in Table \ref{accCompLbl} below.
+
+\mijnfiguur{width=0.9\textwidth}{accComp_arousalSVM}{Comparison of different feature selection methods for arousal recognition. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
+
+\mijnfiguur{width=0.9\textwidth}{accComp_valenceSVM}{Comparison of different feature selection methods for valence recognition. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll|ll}
+\textbf{number} & \textbf{Feature selection method} & Number & Feature selection method \\
+\textbf{0}      & Pearson                           & \textbf{6}      & LDA                      \\
+\textbf{1}      & Mutual information                & \textbf{7}      & Lasso regression         \\
+\textbf{2}      & Distance correlation              & \textbf{8}      & Ridge regression         \\
+\textbf{3}      & ANOVA                             & \textbf{9}      & Random forests           \\
+\textbf{4}      & Linear regression                 & \textbf{10}     & PCA                      \\
+\textbf{5}      & SVM                      &        &                         
+\end{tabular}
+\caption{The different feature selection methods and their labels\label{accCompLbl}.}
+\end{table}
+
+From a statistical point of view, all these methods are equivalent in performance. However it is important to note that some of these methods %TODO
+
+%The next discussion will focus mainly on the random forest for feature selection. this is done for three reasons. First, this method is the most proven method in literature. Second, the selected features agree with most of the literature. Third, this method is the most advanced, meaning that it is one of the few methods that is able to find combinations of features that work well. 
+
+\clearpage
+
+\subsection{Selected features}
+
+To compare which features where chosen, the feature set was divided into 9 categories:
+\begin{enumerate}
+\item \textbf{Power features:} PSD and FE features of a single channel
+\item \textbf{Asymmetry features:} DASM, RASM, DCAU and RCAU features that represent a the (a)symmetry between two channels.
+\item \textbf{Fractions:} Alpha/beta and fractions of different power ratios of a channels.
+
+\item \textbf{Heart rate:} the statistical values of the heart rate.
+\item \textbf{Galvanic skin response:} the statistical values of the GSR.
+\item \textbf{Respiration:} the statistical values of the respiration.
+\item \textbf{Bloop pressure:} the statistical values of the plethysmograph.
+\item \textbf{Skin temp:} the statistical values of the skin temperature.
+\end{enumerate} 
+
+The results for arousal are depicted in Figure \ref{arousalpies}, the legend is shown in Figure \ref{arousalpieslegend}. When looking at the different selected features for the different feature seleciton methods, it becomes clear that the most valuable features are the asymmetry features combined with the power features.
+
+\npar
+
+One can easily see that the amount of asymmetry features is always the highest, except in case of linear, mutual information and lasso regression. This can be explained by the fact that these methods are not very advanced. Additionally, lasso regression is very prone to noise, as explained earlier in Section \ref{lassoregression}. 
+
+\npar
+
+For arousal one can thus conclude that the different feature selection methods agree mostly on what set of feature categories is relevant. The most import features are the asymmetry features, followed by the power features. The non-EEG features are rarely chose and do not seem to be of importance here. It is also important to note that the fractions of frequency bands is not as important as previously thought. Literature suggested that the fractions of the alpha versus the beta frequency band would give an indication for the arousal of a subject. The main argument for this was the fact that arousal measures how active a person is feeling. A large fraction of alpha and beta power means that the brain is in a relaxed state or in an active and focussed state respectively. Looking at these fractions was therefore supposed to give insight in the arousal. These results indicate that the asymmetry and power features are more relevant.
+
+\begin{figure}[!tbp]
+  \centering
+  \caption{Selection features for arousal classification.\label{arousalpies}}
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalALLpearsonR}
+    \caption{Pearson correlation}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalALLMutInf}
+    \caption{Mutual information}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalALLdCorr}
+    \caption{Distance Correlation}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalALLANOVA}
+    \caption{ANOVA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalALLLR}
+    \caption{Linear regression}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalALLSVM}
+    \caption{SVM}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalALLLDA}
+    \caption{LDA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalALLL1}
+    \caption{Lasso regression}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalALLL2}
+    \caption{Ridge regression}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalALLRF}
+    \caption{Random forests}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalALLPCA} %TODO 
+    \caption{PCA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{legend}
+    \caption{Legend\label{arousalpieslegend}}
+  \end{minipage}
+\end{figure}
+\clearpage
 
 
-The next section will only focus on the RF feature selection method, as this method is a proven method in literature \citep{rfPaper}. Random forest themselves are known to be robust against noise. Additionally the method is able to detect groups of features that perform well, as explained in Section \ref{rfexpl}.
 
 
-\subsection{Chosen features}
 %freq table
 %regions
 

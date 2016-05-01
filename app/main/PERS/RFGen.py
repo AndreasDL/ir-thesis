@@ -206,7 +206,7 @@ class RFGen():
 
         #get importances
         forest = PersTree(
-            n_trees=N_ESTIMATORS
+            n_trees=self.n_estimators
         )
 
         forest.fit(X,y)
@@ -218,7 +218,7 @@ class RFGen():
         # genPlot(importances, stds, 'step1 importances'))
         # sort features
         indices_to_keep = np.array(np.argsort(importances)[::-1])
-        featureNames = featureNames[indices_to_keep]
+        featureNames = np.array(featureNames)[indices_to_keep]
 
         #keep upper %threshold
         indices_to_keep = indices_to_keep[:int(len(indices_to_keep)*threshold)]
@@ -285,7 +285,7 @@ class RFGen():
 
         scores = []
         stds   = []
-        for i in range(2):
+        for i in range(1):
             methodScores = []
             methodSTDs   = []
             f.write(str(result[i][1]) + ';' + str(result[i][2]) + ';' + str(result[i][0]) + ';')
@@ -293,12 +293,12 @@ class RFGen():
                 f.write(str(name) + ';')
 
             f.write('\n')
-            genPlot(result[0][4], result[0][5], 'method' + str(i) + ' oob score ')
+            self.genPlot(result[0][4], result[0][5], 'method' + str(i) + ' oob score ')
 
             methodScores.append(result[i][1])
             methodSTDs.append(result[i][2])
 
-            genPlot(methodScores, methodSTDs, 'method' + str(i) + 'scores')
+            self.genPlot(methodScores, methodSTDs, 'method' + str(i) + 'scores')
             scores.append(methodScores)
             stds.append(methodSTDs)
 
@@ -308,7 +308,7 @@ class RFGen():
             f.write("predScore;predStd;predCount;predFeat;\n")
         f.close()
 
-        genDuoPlot(scores[0], stds[0], scores[1], stds[1], 'interpretation vs perdiction scores')
+        self.genDuoPlot(scores[0], stds[0], scores[1], stds[1], 'interpretation vs perdiction scores')
 
     def fixStructure(self,all_X, all_y_disc):
         # structure of X
@@ -391,17 +391,11 @@ class RFGen():
             X = X[:, indices]
             X, y_disc = self.reverseFixStructure(X, y_disc)
 
-            # step 2 - interpretation
-            featCount_inter, score_inter, std_inter, avgs, stds = self.step2_interpretation(X, y_disc, featureNames)
-            indices_inter = indices[:featCount_inter]
-            featureNames_inter = featureNames[indices_inter]
-
             # step 2 - prediction
             indices_pred, score_pred, std_pred = self.step2_prediction(X, y_disc, featureNames)
             featureNames_pred = featureNames[indices_pred]
 
             results = [
-                [featCount_inter, score_inter, std_inter, featureNames_inter, avgs, stds],
                 [len(indices_pred), score_pred, std_pred, featureNames_pred]
             ]
 

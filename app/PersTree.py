@@ -3,7 +3,7 @@ import numpy as np
 import random
 
 from multiprocessing import Pool
-POOL_SIZE = 3
+POOL_SIZE = 1
 
 class PersTree():
     def __init__(self,n_trees):

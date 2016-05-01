@@ -8,12 +8,10 @@ from personLoader import load,dump
 from sklearn import datasets, linear_model
 import random
 
-font = {'family': 'normal',
-        'weight': 'bold',
-        'size': 25}
-
-matplotlib.rc('font', **font)
-
+#font = {'family': 'normal',
+#        'weight': 'bold',
+#        'size': 25}
+#matplotlib.rc('font', **font)
 
 def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../results/plots/"):
 
@@ -130,11 +128,12 @@ def svm_rbf_accs():
     #get testaccs
     test_accs = []
 
-    model = PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), "../dumpedData/persScript/")
+    model = PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), "D:/dumpedData/persScript/")
+    print('warn getting data from D')
     model.run()
 
     for person in model.accs:
-        model = person[1]
+        model = person[0]
 
         m = []
         for metric in model:
@@ -156,7 +155,7 @@ def svm_rbf_accs():
     genPlot(avgs,
             stds,
             names,
-            'valence Accs RBF SVM',
+            'Accuracies of valence SVM models',
             'model',
             'test acc',
             colors
@@ -165,11 +164,11 @@ def svm_rbf_accs():
     # get testaccs
     test_accs = []
 
-    model = PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(), "../dumpedData/persScript/")
+    model = PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(), "D:/dumpedData/persScript/")
     model.run()
 
     for person in model.accs:
-        model = person[1]
+        model = person[0]
 
         m = []
         for metric in model:
@@ -186,14 +185,13 @@ def svm_rbf_accs():
     genPlot(avgs,
             stds,
             names,
-            'arousal Accs RBF SVM',
+            'Accuracy of arousal SVM models',
             'model',
             'test acc',
             colors
             )
 
     print(names)
-
 
 def phyeegall():
     # get testaccs
@@ -312,9 +310,55 @@ def linear_regression_example():
     for i in range(5):
         print(str(X[i]) + ';' + str(Y[i]))
 
+def genPiePlot(x,y,fname):
+    colors = ['yellowgreen', 'red', 'gold', 'lightskyblue', 'white', 'lightcoral', 'blue', 'pink', 'darkgreen', 'yellow', 'grey', 'violet', 'magenta',
+              'cyan']
+
+    patches, texts = plt.pie(y, colors=colors, startangle=90, radius=1.2)
+    labels = []
+    for _x,_y in zip(x,y):
+        labels.append(str(_x) + ' - ' + str(_y))
+
+    sort_legend = False
+    if sort_legend:
+        patches, labels, dummy = zip(*sorted(zip(patches, labels, y),
+                                             key=lambda x: x[2],
+                                             reverse=True))
+
+    #plt.legend(patches, labels, loc='left center', bbox_to_anchor=(-0.1, 1.),
+    #           fontsize=8)
+
+    plt.savefig(fname, bbox_inches='tight')
+    plt.clf()
+
+    plt.legend(patches, x, fontsize=23)
+    plt.savefig(fname[:-5] + "legend.png")
+    plt.close()
+
+
+def pieplots():
+    #x = np.char.array(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
+    #y = np.array([234, 64, 54, 10, 0, 1, 0, 9, 2, 1, 7, 7])
+    #genPiePlot(x,y)
+
+    labels = ['fractions', 'power', 'asymmetry', 'heart rate', 'GSR', 'respiration', 'blood pressure', 'skin temp']
+
+
+
+    f = open('../results/freqs.csv')
+    f.readline()
+    for line in f:
+        (dim,featset,brol,fs,frac,power,asym,hr,gsr,rsp,bp,st) = line.split(',')
+
+        fname = '../results/plots/' + dim+featset+fs + '.png'
+
+        fracs = [frac,power,asym,hr,gsr,rsp,bp,st]
+
+        genPiePlot(labels,fracs,fname)
+    plt.close()
+
 if __name__ == '__main__':
-    phyeegall()
-    svm_rbf_accs()
+    pieplots()
 
 
 
