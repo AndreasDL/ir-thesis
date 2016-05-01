@@ -29,10 +29,9 @@ def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../resu
         if bar_colors != None:
             color = bar_colors[i]
 
-
         ax.bar(
             i,
-            avg,
+            float(avg),
             color=color,
             ecolor="k",
             yerr=std,
@@ -41,7 +40,8 @@ def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../resu
 
     plt.xticks(range(0, len(avgs), 1))
     plt.xlim([-0.2, len(avgs)])
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.1),
+    plt.ylim([-1,1])
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.15),
         ncol=4, fancybox=True, shadow=True)
 
     ax.set_xlabel(xLbl)
@@ -353,9 +353,37 @@ def pieplots():
 
         genPiePlot(labels,fracs,fname)
     plt.close()
+    f.close()
+
+def corrs():
+    names = np.array(['pearson R', 'Mutual information', 'Distance correlation',
+                      'Linear regression', 'Lasso regression', 'Ridge regression',
+                      'SVM', 'Random forest', 'STD',
+                      'ANOVA', 'LDA', 'PCA']
+                     )
+    sort_indices = np.array([0, 1, 2, 9, 3, 6, 10, 4, 5, 7]) #TODO PCA
+    names = names[sort_indices]
+
+    f = open('../results/corrs.csv')
+    f.readline()
+    for line in f:
+        line = line.split(',')
+
+        dim, featset = line[0], line[1]
+
+
+
+        vals = np.array(line[2:])
+        vals = vals[sort_indices]
+
+        genPlot(vals,[0 for val in vals],names,'correlation predict probability and level of '+ str(dim),'FS method','test accuracy')
+
+
+
+    f.close()
 
 if __name__ == '__main__':
-    phyeegall()
+    corrs()
 
 
 

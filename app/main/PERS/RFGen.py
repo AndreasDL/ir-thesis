@@ -399,9 +399,7 @@ class RFGen():
                 [len(indices_pred), score_pred, std_pred, featureNames_pred]
             ]
 
-            print('Interpretation - score: ' + str(results[0][1]) + ' (' + str(results[0][2]) + ') with ' + str(results[0][0]) +
-                  '  prediction - score: ' + str(results[1][1]) + ' (' + str(results[1][2]) + ') with ' + str(results[1][0])
-                  )
+            print('  prediction - score: ' + str(results[0][1]) + ' (' + str(results[0][2]) + ') with ' + str(results[0][0]))
 
             dump(results, 'results')
 
