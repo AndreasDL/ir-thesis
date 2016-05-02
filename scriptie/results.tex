@@ -58,7 +58,7 @@ The corresponding feature selection method for each bar in Figure \ref{accComp_a
 \begin{table}[H]
 \centering
 \begin{tabular}{ll|ll}
-\textbf{number} & \textbf{Feature selection method} & \textbf{Number} & \textbf{Feature selection method} \\
+\textbf{Number} & \textbf{Feature selection method} & \textbf{Number} & \textbf{Feature selection method} \\
 \textbf{0}      & Pearson                           & \textbf{6}      & LDA                      \\
 \textbf{1}      & Mutual information                & \textbf{7}      & Lasso regression         \\
 \textbf{2}      & Distance correlation              & \textbf{8}      & Ridge regression         \\
@@ -81,13 +81,27 @@ It might be interesting to look at the prediction probability a model gives to i
 
 \npar
 
-To investigate this, the Pearson correlation coefficient R is plotted for the model build with the corresponding feature selection methods. The Pearson correlations for arousal are depicted in Figure \ref{arousal_corrs}. It is clear that overall the correlations are quite low. In case of ridge regression, the correlation is even negative, meaning that the model is more certain of examples that lie closer to the separation boundary, which is undesired. The correlation for random forest is the highest, followed by linear regression. Note that linear regression might not be the best method as it is known to be unstable. Small changes in the input might lead to different importance values, as discussed in Section \ref{LRBad}.
+To investigate this, the Pearson correlation coefficient R is plotted for the model build with the corresponding feature selection methods. The Pearson correlations for arousal are depicted in Figure \ref{arousal_corrs}. The legend can be found in Table \ref{corrsCompLbl}. It is clear that overall the correlations are quite low. In case of ridge regression, the correlation is even negative, meaning that the model is more certain of examples that lie closer to the separation boundary, which is undesired. The correlation for random forest is the highest, followed by linear regression. Note that linear regression might not be the best method as it is known to be unstable. Small changes in the input might lead to different importance values, as discussed in Section \ref{LRBad}.
 
-\mijnfiguur{width=.9\textwidth}{arousal_corrs}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of arousal and the separation boundary.}
+\begin{table}[H]
+\centering
+\begin{tabular}{ll|ll}
+\textbf{Number} & \textbf{Feature selection method} & \textbf{Number} & \textbf{Feature selection method} \\
+\textbf{0}      & Pearson                           & \textbf{6}      & LDA                      \\
+\textbf{1}      & Mutual information                & \textbf{7}      & Lasso regression         \\
+\textbf{2}      & Distance correlation              & \textbf{8}      & Ridge regression         \\
+\textbf{3}      & ANOVA                             & \textbf{9}      & Random forests           \\
+\textbf{4}      & Linear regression                 & \textbf{10}     & PCA                      \\
+\textbf{5}      & SVM                      &        &                         
+\end{tabular}
+\caption{The different feature selection methods and their labels\label{corrsCompLbl}.}
+\end{table}
 
-The Pearson correlation coefficients for the valence classification are depicted in Figure \ref{valence_corrs}. Again the correlation for the random forest is highest, followed by the distance correlation.
+\mijnfiguur{width=1.\textwidth}{arousal_corrs}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of arousal and the separation boundary.}
 
-\mijnfiguur{width=.9\textwidth}{valence_corrs}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of valence and the separation boundary.}
+The Pearson correlation coefficients for the valence classification are depicted in Figure \ref{valence_corrs}. The legend can be found in Table \ref{corrsCompLbl}. Again the correlation for the random forest is highest, followed by the distance correlation.
+
+\mijnfiguur{width=1.\textwidth}{valence_corrs}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of valence and the separation boundary.}
 
 Even though one cannot statistically prove that the random forest is the best method in means of performance and the aforementioned certainty correlation, these results are quite positive for random forest. 
 
@@ -106,7 +120,7 @@ To compare which features where chosen, the feature set was divided into 9 categ
 \item \textbf{Skin temp:} the statistical values of the skin temperature.
 \end{enumerate} 
 
-The results for arousal are depicted in Figure \ref{arousalpies}, the legend is shown in Figure \ref{arousalpieslegend}. When looking at the different selected features for the different feature seleciton methods, it becomes clear that the most valuable features are the asymmetry features combined with the power features.
+The results for arousal are depicted in Figure \ref{arousalpies}, the legend is shown in Figure \ref{arousalpieslegend}. In these plots, a pie chart is shown that gives the distribution all the selected features for all persons combined. When looking at the different selected features for the different feature seleciton methods, it becomes clear that the most valuable features are the asymmetry features combined with the power features.
 
 \npar
 
@@ -124,65 +138,65 @@ The results for valence are depicted in Figure \ref{valencepies} and the corresp
 \begin{figure}[!tbp]
   \centering
   \caption{Selection features for arousal classification.\label{arousalpies}}
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalALLpearsonR}
     \caption{Pearson correlation}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalALLMutInf}
     \caption{Mutual information}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalALLdCorr}
     \caption{Distance Correlation}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalALLANOVA}
     \caption{ANOVA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalALLLR}
     \caption{Linear regression}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalALLSVM}
     \caption{SVM}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalALLLDA}
     \caption{LDA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalALLL1}
     \caption{Lasso regression}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalALLL2}
     \caption{Ridge regression}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalALLRF}
     \caption{Random forests}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalALLPCA} %TODO 
     \caption{PCA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{legend}
     \caption{Legend\label{arousalpieslegend}}
-  \end{minipage}
+  \end{subfigure}
 \end{figure}
 
 \clearpage
@@ -190,65 +204,65 @@ The results for valence are depicted in Figure \ref{valencepies} and the corresp
 \begin{figure}[!tbp]
   \centering
   \caption{Selection features for valence classification.\label{valencepies}}
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceALLpearsonR}
     \caption{Pearson correlation}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceALLMutInf}
     \caption{Mutual information}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceALLdCorr}
     \caption{Distance Correlation}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceALLANOVA}
     \caption{ANOVA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceALLLR}
     \caption{Linear regression}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceALLSVM}
     \caption{SVM}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceALLLDA}
     \caption{LDA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceALLL1}
     \caption{Lasso regression}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceALLL2}
     \caption{Ridge regression}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceALLRF}
     \caption{Random forests}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceALLPCA} %TODO 
     \caption{PCA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{legend}
     \caption{Legend\label{valencepieslegend}}
-  \end{minipage}
+  \end{subfigure}
 \end{figure}
 \clearpage
 
@@ -258,80 +272,84 @@ The fact that the non-EEG features are rarely chose indicates that they are less
 
 The resulting performances of these different features sets is displayed in Figure \ref{arousalphyeegall} for arousal and in Figure \ref{valencephyeegall} for valence.
 
-\mijnfiguur{width=0.75\textwidth}{arousalphyeegall}{The performance of arousal prediction for all, EEG and non-EEG features.}
+\mijnfiguur{width=1.\textwidth}{arousalphyeegall}{The performance of arousal prediction for all, EEG and non-EEG features.}
 
-\mijnfiguur{width=0.75\textwidth}{valencephyeegall}{The performance of valence prediction for all, EEG and non-EEG features.}
+\mijnfiguur{width=1.\textwidth}{valencephyeegall}{The performance of valence prediction for all, EEG and non-EEG features.}
 
 It is clear that for both valence and arousal, the average test performances are lower in case only non-EEG features are used. However the difference was not significant. %TODO p-value
 
 \npar 
 
-Next for each of the three feature sets, a comparison of the selected features was made. This will give more insight into which EEG and which non-EEG features are important. As you can see on Figure \ref{arousalEEGpies} for arousal and Figure \ref{valenceEEGpies}, the features are again mostly asymmetry features, followed by the power features. The fraction only give limited insight. The EEG and ALL set have similar performances, because they both use very similar features.
+Next for each of the three feature sets, a comparison of the selected features was made. This will give more insight into which EEG and which non-EEG features are important. As you can see on Figure \ref{arousalEEGpies} for arousal and Figure \ref{valenceEEGpies}, displayed on the following pages, the features are again mostly asymmetry features, followed by the power features. The fraction only give limited insight. The EEG and ALL set have similar performances, because they both use very similar features.
 
-%TODO EEG only
+\npar
+
+In case that only non-EEG features are used, the selected features are from different categories. This is shown in Figure \ref{arousalnon-EEGpies} for arousal and Figure \ref{valencenon-EEGpies} for valence. Heart rate seems to be the most valuable feature for arousal. Additionally, the first selected feature for arousal is often the GSR, which measure how much perspiration a person has.
+For valence though, there is no clear winner overall. However heart rate and GSR are often picked as the first feature.
+
 \clearpage
 \begin{figure}[!tbp]
   \centering
   \caption{Selection features for arousal classification, using only EEG features.\label{arousalEEGpies}}
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalEEGpearsonR}
     \caption{Pearson correlation}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalEEGMutInf}
     \caption{Mutual information}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalEEGdCorr}
     \caption{Distance Correlation}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalEEGANOVA}
     \caption{ANOVA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalEEGLR}
     \caption{Linear regression}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalEEGSVM}
     \caption{SVM}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalEEGLDA}
     \caption{LDA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalEEGL1}
     \caption{Lasso regression}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalEEGL2}
     \caption{Ridge regression}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalEEGRF}
     \caption{Random forests}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalEEGPCA} %TODO 
     \caption{PCA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{EEGlegend}
     \caption{Legend\label{arousalpieslegend}}
-  \end{minipage}
+  \end{subfigure}
 \end{figure}
 
 \clearpage
@@ -339,135 +357,133 @@ Next for each of the three feature sets, a comparison of the selected features w
 \begin{figure}[!tbp]
   \centering
   \caption{Selection features for valence classification, using only EEG features.\label{valenceEEGpies}}
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceEEGpearsonR}
     \caption{Pearson correlation}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceEEGMutInf}
     \caption{Mutual information}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceEEGdCorr}
     \caption{Distance Correlation}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceEEGANOVA}
     \caption{ANOVA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceEEGLR}
     \caption{Linear regression}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceEEGSVM}
     \caption{SVM}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceEEGLDA}
     \caption{LDA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceEEGL1}
     \caption{Lasso regression}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceEEGL2}
     \caption{Ridge regression}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceEEGRF}
     \caption{Random forests}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valenceEEGPCA} %TODO 
     \caption{PCA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{EEGlegend}
     \caption{Legend\label{valencepieslegend}}
-  \end{minipage}
+  \end{subfigure}
 \end{figure}
 \clearpage
 %regions
 %TODO
 
-
-%TODO valence only
 \clearpage
 \begin{figure}[!tbp]
   \centering
   \caption{Selection features for arousal classification, using only non-EEG features.\label{arousalnon-EEGpies}}
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalnon-EEGpearsonR}
     \caption{Pearson correlation}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalnon-EEGMutInf}
     \caption{Mutual information}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalnon-EEGdCorr}
     \caption{Distance Correlation}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalnon-EEGANOVA}
     \caption{ANOVA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalnon-EEGLR}
     \caption{Linear regression}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalnon-EEGSVM}
     \caption{SVM}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalnon-EEGLDA}
     \caption{LDA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalnon-EEGL1}
     \caption{Lasso regression}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalnon-EEGL2}
     \caption{Ridge regression}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalnon-EEGRF}
     \caption{Random forests}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalnon-EEGPCA} %TODO 
     \caption{PCA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{non-EEGlegend}
     \caption{Legend\label{arousalpieslegend}}
-  \end{minipage}
+  \end{subfigure}
 \end{figure}
 
 \clearpage
@@ -475,64 +491,64 @@ Next for each of the three feature sets, a comparison of the selected features w
 \begin{figure}[!tbp]
   \centering
   \caption{Selection features for valence classification, using only non-EEG features.\label{valencenon-EEGpies}}
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valencenon-EEGpearsonR}
     \caption{Pearson correlation}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valencenon-EEGMutInf}
     \caption{Mutual information}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valencenon-EEGdCorr}
     \caption{Distance Correlation}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valencenon-EEGANOVA}
     \caption{ANOVA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valencenon-EEGLR}
     \caption{Linear regression}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valencenon-EEGSVM}
     \caption{SVM}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valencenon-EEGLDA}
     \caption{LDA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valencenon-EEGL1}
     \caption{Lasso regression}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valencenon-EEGL2}
     \caption{Ridge regression}
-  \end{minipage}
+  \end{subfigure}
   
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valencenon-EEGRF}
     \caption{Random forests}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valencenon-EEGPCA} %TODO 
     \caption{PCA}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[b]{0.3\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{non-EEGlegend}
     \caption{Legend\label{valencepieslegend}}
-  \end{minipage}
+  \end{subfigure}
 \end{figure}
 \clearpage

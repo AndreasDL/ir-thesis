@@ -1,10 +1,12 @@
+from sklearn.ensemble import RandomForestClassifier
+
 import personLoader
 from personLoader import load, dump
 import featureExtractor as FE
 import Classificators
 
 from PersTree import PersTree
-from sklearn.cross_validation import KFold
+from sklearn.cross_validation import KFold, train_test_split
 
 import numpy as np
 import datetime
@@ -143,10 +145,10 @@ class RFGen():
         self.featExtr.addFE(FE.MedianHRExtractor())
         self.featExtr.addFE(FE.VarHRExtractor())
 
-    def genPlot(self,avgs, stds, title, fpad="../../results/plots/"):
+    def genPlot(self,avgs, stds, title):
 
         #st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
-        fname = fpad + str(title) + '.png'
+        fname = self.rpad + str(title) + '.png'
 
         # Plot the feature importances of the forest
         plt.figure()
@@ -163,10 +165,9 @@ class RFGen():
         plt.savefig(fname)
         plt.clf()
         plt.close()
-    def genDuoPlot(self,avgs1, stds1, avgs2,stds2, title, fpad="../../results/plots/"):
+    def genDuoPlot(self,avgs1, stds1, avgs2,stds2, title):
 
-        #st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H%M%S')
-        fname = fpad + str(title) + '.png'
+        fname = self.rpad + str(title) + '.png'
 
         # Plot the feature importances of the forest
         fig, ax = plt.subplots()
@@ -279,8 +280,7 @@ class RFGen():
         #]
 
         st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d%H%M%S')
-        f = open('../../results/RF_general' + str(st) + ".csv", 'w')
-        f.write("interScore;interStd;interCount;interFeat;\n")
+        f = open(self.rpad + 'rfgen' + str(st) + ".csv", 'w')
         f.write("interScore;interStd;interCount;interFeat;\n")
 
         scores = []
@@ -347,18 +347,18 @@ class RFGen():
         results = load('results')
         if results == None:
 
-            all_y_disc = load('all_pers_y')
+            all_y_disc = load('all_pers_y', self.ddpad)
             if all_y_disc == None:
                 print("[warn] rebuilding cache")
                 all_X, all_y_disc = personLoader.PersonsLoader(
-                    classificator=Classificators.ContValenceClassificator(), #will return disc values anyway!
+                    classificator=Classificators.ContValenceClassificator(),
                     featExtractor=self.featExtr,
                     stopPerson = self.stopperson
                 ).load()
-                dump(all_y_disc, 'all_pers_y')
-                dump(all_X, 'all_pers_X')
+                dump(all_y_disc, 'all_pers_y', self.ddpad)
+                dump(all_X, 'all_pers_X', self.ddpad)
             else:
-                all_X = load('all_pers_X')
+                all_X = load('all_pers_X', self.ddpad)
 
             all_X = np.array(all_X)
             all_y_disc = np.array(all_y_disc)
@@ -369,16 +369,19 @@ class RFGen():
             X = X - np.average(X, axis=0)
             X = np.true_divide(X, np.std(X, axis=0))
 
+            # Train / testset
+            X, X_test, y_disc, y_test = train_test_split(X,y_disc,test_size=10, random_state=17)
+
             # back to orig struct
             X, y_disc = self.reverseFixStructure(X,y_disc)
 
             # step 1 determine importances using RF forest
-            temp = load("step1")
+            temp = load("step1",path=self.ddpad)
             indices_step1, featureNames_step1 = None, None
             if temp == None:
                 indices_step1, featureNames_step1 = self.step1(X, y_disc, self.featExtr.getFeatureNames(), self.threshold)
                 dump({'indicices': indices_step1,
-                      'featNames': featureNames_step1}, "step1")
+                      'featNames': featureNames_step1}, "step1", self.ddpad)
             else:
                 indices_step1 = temp['indicices']
                 featureNames_step1 = temp['featNames']
@@ -395,13 +398,34 @@ class RFGen():
             indices_pred, score_pred, std_pred = self.step2_prediction(X, y_disc, featureNames)
             featureNames_pred = featureNames[indices_pred]
 
+            forest = RandomForestClassifier(
+                n_estimators=self.n_estimators,
+                max_features='auto',
+                criterion='gini',
+                n_jobs=-1,
+                oob_score=True,
+                bootstrap=True
+            )
+            test_accs = []
+            test_probs = []
+
+            for i in range(self.runs):
+                forest.fit(X,y_disc)
+                preds = forest.predict(X_test)
+                test_accs.append(self.accuracy(preds),y_test)
+                test_probs.append(forest.predict_proba(X_test), y_test)
+
+            test_accs = np.array(test_accs)
+            test_probs = np.array(test_probs)
+            preds = np.array(preds)
+
             results = [
-                [len(indices_pred), score_pred, std_pred, featureNames_pred]
+                [len(indices_pred), score_pred, std_pred, featureNames_pred, test_accs, np.average(test_accs), np.std(test_accs), y_test, preds ]
             ]
 
             print('  prediction - score: ' + str(results[0][1]) + ' (' + str(results[0][2]) + ') with ' + str(results[0][0]))
 
-            dump(results, 'results')
+            dump(results, 'results', self.ddpad)
 
         self.genReport(results)
 

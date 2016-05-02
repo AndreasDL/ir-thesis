@@ -8,10 +8,12 @@ from personLoader import load,dump
 from sklearn import datasets, linear_model
 import random
 
-#font = {'family': 'normal',
+font = {'family': 'normal',
 #        'weight': 'bold',
-#        'size': 15}
-#matplotlib.rc('font', **font)
+        'size': 25}
+matplotlib.rc('font', **font)
+matplotlib.rcParams['axes.titlesize'] = 25
+matplotlib.rcParams['axes.labelsize'] = 25
 
 def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../results/plots/"):
 
@@ -19,7 +21,6 @@ def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../resu
 
     # Plot the feature importances of the forest
     fig, ax = plt.subplots()
-
     fig.set_size_inches(15,9)
 
     plt.title(title)
@@ -39,10 +40,11 @@ def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../resu
         )
 
     plt.xticks(range(0, len(avgs), 1))
+    plt.yticks(np.arange(0,10,0.1))
     plt.xlim([-0.2, len(avgs)])
-    plt.ylim([-1,1])
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.25),
-        ncol=3, fancybox=True, shadow=True)
+    plt.ylim([0,1])
+    #ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.5),
+    #    ncol=3, fancybox=True, shadow=True)
 
     ax.set_xlabel(xLbl)
     ax.set_ylabel(yLbl)
@@ -383,7 +385,8 @@ def corrs():
     f.close()
 
 if __name__ == '__main__':
-    pieplots()
+    svm_rbf_accs()
+
 
 
 
