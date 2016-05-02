@@ -47,20 +47,18 @@ In this work, the parameter was fixed to 30 for all feature selection methods fo
  %TODO weg ?
 A second parameter of this model is a model to estimate the performance. For this, two different models were compared. The first model is an SVM with a radial basis functions kernel. This model was chose because it has proven itself in multiple emotion recognition studies. Additionally, SVM are capable to handle small dataset, which gives this method an advantage in this experiment. The next model is a random forest with 2000 estimators. This model was mainly chosen, because feature selection with random forest deliver good results, according to literature\citep{rfPaper}. Using the same algorithm in both feature selection and building phase, means that the algorithm can select its own features. In other words features that work well for the specific algorithm are more likely to be chosen as this is done by the same algorithm.
 
+\clearpage
+
 \subsection{Performance}
 
 When looking at the accuracies of the different feature selection models in combination with the SVM, it becomes quickly clear that the results are statistically equivalent. 
 
 The corresponding feature selection method for each bar in Figure \ref{accComp_arousalSVM} and Figure \ref{accComp_valenceSVM} are shown in Table \ref{accCompLbl} below.
 
-\mijnfiguur{width=0.9\textwidth}{accComp_arousalSVM}{Comparison of different feature selection methods for arousal recognition. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
-
-\mijnfiguur{width=0.9\textwidth}{accComp_valenceSVM}{Comparison of different feature selection methods for valence recognition. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
-
 \begin{table}[H]
 \centering
 \begin{tabular}{ll|ll}
-\textbf{number} & \textbf{Feature selection method} & Number & Feature selection method \\
+\textbf{number} & \textbf{Feature selection method} & \textbf{Number} & \textbf{Feature selection method} \\
 \textbf{0}      & Pearson                           & \textbf{6}      & LDA                      \\
 \textbf{1}      & Mutual information                & \textbf{7}      & Lasso regression         \\
 \textbf{2}      & Distance correlation              & \textbf{8}      & Ridge regression         \\
@@ -71,11 +69,27 @@ The corresponding feature selection method for each bar in Figure \ref{accComp_a
 \caption{The different feature selection methods and their labels\label{accCompLbl}.}
 \end{table}
 
-From a statistical point of view, all these methods are equivalent in performance. However it is important to note that some of these methods %TODO
+\mijnfiguur{width=1.\textwidth}{accComp_arousalSVM}{Comparison of different feature selection methods for arousal recognition. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
 
-%The next discussion will focus mainly on the random forest for feature selection. this is done for three reasons. First, this method is the most proven method in literature. Second, the selected features agree with most of the literature. Third, this method is the most advanced, meaning that it is one of the few methods that is able to find combinations of features that work well. 
+\mijnfiguur{width=1.\textwidth}{accComp_valenceSVM}{Comparison of different feature selection methods for valence recognition. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
 
-\clearpage
+From a statistical point of view, the performance of these methods is equivalent. However, some differences can be observed when looking at the prediction probabilities. The current model is a classification model, meaning that it divides the valence and arousal into two classes: high and low. The classes are determined by a binary separation. Both valence and arousal range between 1 and 9, so every value between 5 is regarded as a low valence/ arousal. All values above 5 are regarded as high valence/arousal.
+
+\npar
+
+It might be interesting to look at the prediction probability a model gives to its output and the distance of the arousal/valence level to this separation boundary. It is expected that a samples with a valence rating of 9 should be easier to predict that one with a valence rating of 5 or 6. This should be reflected in the prediction probability, i.e. a model should be more certain of extreme valence/ arousal values that lie further away from the separation boundary.
+
+\npar
+
+To investigate this, the Pearson correlation coefficient R is plotted for the model build with the corresponding feature selection methods. The Pearson correlations for arousal are depicted in Figure \ref{arousal_corrs}. It is clear that overall the correlations are quite low. In case of ridge regression, the correlation is even negative, meaning that the model is more certain of examples that lie closer to the separation boundary, which is undesired. The correlation for random forest is the highest, followed by linear regression. Note that linear regression might not be the best method as it is known to be unstable. Small changes in the input might lead to different importance values, as discussed in Section \ref{LRBad}.
+
+\mijnfiguur{width=.9\textwidth}{arousal_corrs}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of arousal and the separation boundary.}
+
+The Pearson correlation coefficients for the valence classification are depicted in Figure \ref{valence_corrs}. Again the correlation for the random forest is highest, followed by the distance correlation.
+
+\mijnfiguur{width=.9\textwidth}{valence_corrs}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of valence and the separation boundary.}
+
+Even though one cannot statistically prove that the random forest is the best method in means of performance and the aforementioned certainty correlation, these results are quite positive for random forest. 
 
 \subsection{Selected features}
 
@@ -238,8 +252,7 @@ The results for valence are depicted in Figure \ref{valencepies} and the corresp
 \end{figure}
 \clearpage
 
-%EEG/non-EEG/all => p value
-The fact that the non-EEG features are rarely chose indicates that they are less important. In an attempt to further investigate the difference between EEG features and non-EEG features, the performance of three different feature sets was compared. The first feature set is the previously used features set with all possible features. The second and third feature sets contained only EEG and non-EEG features respectively. The feature selection was done with random forest, as this method has shown good results in similar feature selection methods. Additionally, this method is advanced enough to find combinations of features that perform well, as explained in Section \ref{rfexpl}.
+The fact that the non-EEG features are rarely chose indicates that they are less important. In an attempt to further investigate the difference between EEG features and non-EEG features, the performance of three different feature sets was compared. The first feature set is the previously used features set with all possible features. The second and third feature sets contained only EEG and non-EEG features respectively. The feature selection was done with random forest, as this method had the best average performance, as well as the best correlations. 
 
 \npar
 
@@ -250,13 +263,276 @@ The resulting performances of these different features sets is displayed in Figu
 \mijnfiguur{width=0.75\textwidth}{valencephyeegall}{The performance of valence prediction for all, EEG and non-EEG features.}
 
 It is clear that for both valence and arousal, the average test performances are lower in case only non-EEG features are used. However the difference was not significant. %TODO p-value
-The scores of the model with all possible feature and the model with EEG features are so quite similar. This is due to the fact that the model of all possible features mainly uses EEG-features, as shown in the aforementioned results. 
 
+\npar 
+
+Next for each of the three feature sets, a comparison of the selected features was made. This will give more insight into which EEG and which non-EEG features are important. As you can see on Figure \ref{arousalEEGpies} for arousal and Figure \ref{valenceEEGpies}, the features are again mostly asymmetry features, followed by the power features. The fraction only give limited insight. The EEG and ALL set have similar performances, because they both use very similar features.
+
+%TODO EEG only
+\clearpage
+\begin{figure}[!tbp]
+  \centering
+  \caption{Selection features for arousal classification, using only EEG features.\label{arousalEEGpies}}
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalEEGpearsonR}
+    \caption{Pearson correlation}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalEEGMutInf}
+    \caption{Mutual information}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalEEGdCorr}
+    \caption{Distance Correlation}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalEEGANOVA}
+    \caption{ANOVA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalEEGLR}
+    \caption{Linear regression}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalEEGSVM}
+    \caption{SVM}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalEEGLDA}
+    \caption{LDA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalEEGL1}
+    \caption{Lasso regression}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalEEGL2}
+    \caption{Ridge regression}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalEEGRF}
+    \caption{Random forests}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalEEGPCA} %TODO 
+    \caption{PCA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{EEGlegend}
+    \caption{Legend\label{arousalpieslegend}}
+  \end{minipage}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[!tbp]
+  \centering
+  \caption{Selection features for valence classification, using only EEG features.\label{valenceEEGpies}}
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceEEGpearsonR}
+    \caption{Pearson correlation}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceEEGMutInf}
+    \caption{Mutual information}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceEEGdCorr}
+    \caption{Distance Correlation}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceEEGANOVA}
+    \caption{ANOVA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceEEGLR}
+    \caption{Linear regression}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceEEGSVM}
+    \caption{SVM}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceEEGLDA}
+    \caption{LDA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceEEGL1}
+    \caption{Lasso regression}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceEEGL2}
+    \caption{Ridge regression}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceEEGRF}
+    \caption{Random forests}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valenceEEGPCA} %TODO 
+    \caption{PCA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{EEGlegend}
+    \caption{Legend\label{valencepieslegend}}
+  \end{minipage}
+\end{figure}
+\clearpage
 %regions
 %TODO
 
-\subsection{Correlation probability versus level of valence / arousal}
-%TODO
 
+%TODO valence only
+\clearpage
+\begin{figure}[!tbp]
+  \centering
+  \caption{Selection features for arousal classification, using only non-EEG features.\label{arousalnon-EEGpies}}
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalnon-EEGpearsonR}
+    \caption{Pearson correlation}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalnon-EEGMutInf}
+    \caption{Mutual information}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalnon-EEGdCorr}
+    \caption{Distance Correlation}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalnon-EEGANOVA}
+    \caption{ANOVA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalnon-EEGLR}
+    \caption{Linear regression}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalnon-EEGSVM}
+    \caption{SVM}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalnon-EEGLDA}
+    \caption{LDA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalnon-EEGL1}
+    \caption{Lasso regression}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalnon-EEGL2}
+    \caption{Ridge regression}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalnon-EEGRF}
+    \caption{Random forests}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{arousalnon-EEGPCA} %TODO 
+    \caption{PCA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{non-EEGlegend}
+    \caption{Legend\label{arousalpieslegend}}
+  \end{minipage}
+\end{figure}
 
+\clearpage
 
+\begin{figure}[!tbp]
+  \centering
+  \caption{Selection features for valence classification, using only non-EEG features.\label{valencenon-EEGpies}}
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valencenon-EEGpearsonR}
+    \caption{Pearson correlation}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valencenon-EEGMutInf}
+    \caption{Mutual information}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valencenon-EEGdCorr}
+    \caption{Distance Correlation}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valencenon-EEGANOVA}
+    \caption{ANOVA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valencenon-EEGLR}
+    \caption{Linear regression}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valencenon-EEGSVM}
+    \caption{SVM}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valencenon-EEGLDA}
+    \caption{LDA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valencenon-EEGL1}
+    \caption{Lasso regression}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valencenon-EEGL2}
+    \caption{Ridge regression}
+  \end{minipage}
+  
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valencenon-EEGRF}
+    \caption{Random forests}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{valencenon-EEGPCA} %TODO 
+    \caption{PCA}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{non-EEGlegend}
+    \caption{Legend\label{valencepieslegend}}
+  \end{minipage}
+\end{figure}
+\clearpage

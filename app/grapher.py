@@ -10,7 +10,7 @@ import random
 
 #font = {'family': 'normal',
 #        'weight': 'bold',
-#        'size': 25}
+#        'size': 15}
 #matplotlib.rc('font', **font)
 
 def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../results/plots/"):
@@ -41,8 +41,8 @@ def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../resu
     plt.xticks(range(0, len(avgs), 1))
     plt.xlim([-0.2, len(avgs)])
     plt.ylim([-1,1])
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.15),
-        ncol=4, fancybox=True, shadow=True)
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.25),
+        ncol=3, fancybox=True, shadow=True)
 
     ax.set_xlabel(xLbl)
     ax.set_ylabel(yLbl)
@@ -376,14 +376,14 @@ def corrs():
         vals = np.array(line[2:])
         vals = vals[sort_indices]
 
-        genPlot(vals,[0 for val in vals],names,'correlation predict probability and level of '+ str(dim),'FS method','test accuracy')
+        genPlot(vals,[0 for val in vals],names,'Correlation predict probability and level of '+ str(dim),'FS method','Pearson correlation')
 
 
 
     f.close()
 
 if __name__ == '__main__':
-    corrs()
+    pieplots()
 
 
 
