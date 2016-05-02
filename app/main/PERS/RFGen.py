@@ -360,6 +360,8 @@ class RFGen():
             else:
                 all_X = load('all_pers_X', self.ddpad)
 
+            print(all_y_disc) #DISC should be cont!
+
             all_X = np.array(all_X)
             all_y_disc = np.array(all_y_disc)
 

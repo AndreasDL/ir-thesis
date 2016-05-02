@@ -331,8 +331,10 @@ def genPiePlot(x,y,fname):
     plt.savefig(fname, bbox_inches='tight')
     plt.clf()
 
-    plt.legend(patches, x, fontsize=23)
-    plt.savefig(fname[:-5] + "legend.png")
+    plt.legend(patches, x, fontsize=23, ncol=3, bbox_to_anchor=(1.,1.))
+    fig = matplotlib.pyplot.gcf()
+    fig.set_size_inches(18.5, 10.5)
+    fig.savefig(fname[:-5] + "legend.png", dpi=100)
     plt.close()
 
 def pieplots():
@@ -384,8 +386,25 @@ def corrs():
 
     f.close()
 
+def regions():
+    f = open('../results/regions.csv')
+
+
+    for line in f:
+        what = line.split(',')[0]
+        hdr  = f.readline().split(',')
+        type = hdr[0]
+        hdr = hdr[1:-1]
+        vals = f.readline().split(',')[1:-1]
+
+        fname = '../results/plots/' + what + type + ".png"
+
+        genPiePlot(hdr, vals, fname)
+
+    f.close()
+
 if __name__ == '__main__':
-    svm_rbf_accs()
+    regions()
 
 
 

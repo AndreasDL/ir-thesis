@@ -418,10 +418,7 @@ For valence though, there is no clear winner overall. However heart rate and GSR
   \end{subfigure}
 \end{figure}
 \clearpage
-%regions
-%TODO
 
-\clearpage
 \begin{figure}[!tbp]
   \centering
   \caption{Selection features for arousal classification, using only non-EEG features.\label{arousalnon-EEGpies}}
@@ -552,3 +549,68 @@ For valence though, there is no clear winner overall. However heart rate and GSR
   \end{subfigure}
 \end{figure}
 \clearpage
+
+Another component of this work is to dig into the EEG features and find out which channels are most important. This was done by taking the Random forest as a feature selection model and looking at the models that were build. By simply looking at the frequency of the different EEG channels in these models, pie charts were constructed. Two frequencies were observed, the first one looks at which channels originate from the power features. This is displayed in Figure\ref{arousalchannel} for arousal and Figure \ref{valencechannel} for valence.
+
+\begin{figure}[H]
+\centering
+
+  \begin{subfigure}[b]{.5\textwidth}
+    \includegraphics[width=\textwidth]{arousalchannel}
+    \caption{The different selected channels for arousal.\label{arousalchannel}}
+  \end{subfigure}
+\hfill
+  \begin{subfigure}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{channellegend}
+    \caption{Each color and its corresponding EEG channel.\label{channellegend}}
+  \end{subfigure}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \begin{subfigure}[b]{.5\textwidth}
+    \includegraphics[width=\textwidth]{valencechannel}
+    \caption{The different selected channels for valence.\label{valencechannel}}
+  \end{subfigure}
+\hfill
+  \begin{subfigure}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{channellegend}
+    \caption{Each color and its corresponding EEG channel.\label{channellegend}}
+  \end{subfigure}
+\end{figure}
+
+
+At first it seems that there is no agreement on the channels, one possible reason for this, might be that electrodes are not placed exactly. Eventhough the 10/20 system defines the different locations quite well, it is still possible that small variation in the locations exists. Grouping the channels might give a more clear view of the important regions of the brain.
+
+\npar
+To do so, the channels were grouped as follows: 
+\begin{table}[H]
+\centering
+\begin{tabular}{ll|ll|ll|ll}
+\textbf{channel} & \textbf{region} & \textbf{channel} & \textbf{region} & \textbf{channel} & \textbf{region}      & \textbf{channel} & \textbf{region}     \\
+\textbf{Fp1}     & front left      & \textbf{CP5}     & back left       & \textbf{Fp2}     & front right & \textbf{C4}      & back right \\
+\textbf{AF3}     & front left      & \textbf{CP1}     & back left       & \textbf{AF4}     & front right & \textbf{T8}      & back right \\
+\textbf{F3}      & front left      & \textbf{P3}      & back left       & \textbf{Fz}      & midline     & \textbf{CP6}     & back right \\
+\textbf{F7}      & front left      & \textbf{P7}      & back left       & \textbf{F4}      & front right & \textbf{CP2}     & back right \\
+\textbf{FC5}     & front left      & \textbf{PO3}     & back left       & \textbf{F8}      & front right & \textbf{P4}      & back right \\
+\textbf{FC1}     & front left      & \textbf{O1}      & back left       & \textbf{FC6}     & front right & \textbf{P8}      & back right \\
+\textbf{C3}      & back left       & \textbf{Oz}      & midline         & \textbf{FC2}     & front right & \textbf{PO4}     & back right \\
+\textbf{T7}      & back left       & \textbf{Pz}      & midline         & \textbf{Cz}      & midline     & \textbf{O2}      & back right
+\end{tabular}
+\caption{The region for each EEG channel\label{my-label}}
+\end{table}
+
+These Region are also depicted in Figure \ref{regions}.
+\mijnfiguur{width=.8\textwidth}{regions}{All EEG channels were grouped in 4 regions: left-front (blue), right-front (red), left-back(black), right-back (purple) and midline (yellow).} %TODO cleanup
+The resulting distribution are shown in figure 
+
+%todo figs
+
+%table
+
+
+Looking at the pie plots, one can see that there is no clear region used. It seems that for both valence and arousal, power value of all channels might be of importance. Another explanation might be that the selected features are overfitting. With as little as 30 samples, to rank the features, on can easily pick a feature that works well be coincidence. 
+
+%DCAU and RCAU FEATURES! 
+
+

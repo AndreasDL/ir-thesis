@@ -82,7 +82,7 @@ class PSDExtractor(AFeatureExtractor):
         if not (freqBand in startFreq and freqBand in stopFreq):
             print("Error Wrong waveband selection for frequencyPower. you selected:", freqBand)
             exit(-1)
-        self.usedFeqBand = freqBand
+        self.usedFreqBand = freqBand
 
     def extract(self, video):
 
@@ -93,8 +93,8 @@ class PSDExtractor(AFeatureExtractor):
             channel = video[channelIndex]
 
             #bandpass filter to get waveband
-            low  = startFreq[self.usedFeqBand] / nyq
-            high = stopFreq[ self.usedFeqBand] / nyq
+            low  = startFreq[self.usedFreqBand] / nyq
+            high = stopFreq[ self.usedFreqBand] / nyq
             b, a = butter(6, [low, high], btype='band')
             sample = lfilter(b, a, channel)
 
@@ -127,7 +127,7 @@ class DEExtractor(AFeatureExtractor):
         if not (freqBand in startFreq and freqBand in stopFreq):
             print("Error Wrong waveband selection for frequencyPower. you selected:", freqBand)
             exit(-1)
-        self.usedFeqBand = freqBand
+        self.usedFreqBand = freqBand
 
 
 
@@ -139,8 +139,8 @@ class DEExtractor(AFeatureExtractor):
             channel = video[channelIndex]
 
             #bandpass filter to get waveband
-            low  = startFreq[self.usedFeqBand] / nyq
-            high = stopFreq[ self.usedFeqBand] / nyq
+            low  = startFreq[self.usedFreqBand] / nyq
+            high = stopFreq[ self.usedFreqBand] / nyq
             b, a = butter(6, [low, high], btype='band')
             sample = lfilter(b, a, channel)
 
@@ -158,11 +158,16 @@ class DEExtractor(AFeatureExtractor):
 
 class DASMExtractor(AFeatureExtractor):
     #DE left - DE right
-    def __init__(self,left_channels, right_channels,freqBand,featName='AlphaBeta'):
+    def __init__(self,left_channels, right_channels,freqBand,featName=''):
         AFeatureExtractor.__init__(self,featName)
 
         self.leftDEExtractor = DEExtractor(left_channels,freqBand,featName)
         self.rightDEExtractor = DEExtractor(right_channels,freqBand,featName)
+
+        self.usedChannelIndexes= left_channels[:]
+        self.usedChannelIndexes.extend(right_channels[:])
+
+        self.usedFreqBand = freqBand
 
     def extract(self,video):
         leftDE  = self.leftDEExtractor.extract(video)
@@ -171,11 +176,16 @@ class DASMExtractor(AFeatureExtractor):
         return leftDE - rightDE
 class RASMExtractor(AFeatureExtractor):
     #DE left / DE right
-    def __init__(self,left_channels, right_channels,freqBand,featName='AlphaBeta'):
+    def __init__(self,left_channels, right_channels,freqBand,featName=''):
         AFeatureExtractor.__init__(self,featName)
 
         self.leftDEExtractor = DEExtractor(left_channels,freqBand,featName)
         self.rightDEExtractor = DEExtractor(right_channels,freqBand,featName)
+
+        self.usedChannelIndexes = left_channels[:]
+        self.usedChannelIndexes.extend(right_channels[:])
+
+        self.usedFreqBand = freqBand
 
     def extract(self,video):
         leftDE  = self.leftDEExtractor.extract(video)
@@ -191,6 +201,9 @@ class DCAUExtractor(AFeatureExtractor):
         self.frontalDEExtractor = DEExtractor(frontal_channels,freqBand,featName)
         self.posteriorDEExtractor = DEExtractor(posterior_channels,freqBand,featName)
 
+        self.usedChannelIndexes = frontal_channels[:]
+        self.usedChannelIndexes.extend(posterior_channels[:])
+        self.usedFreqBand = freqBand
     def extract(self,video):
         frontalDE  = self.frontalDEExtractor.extract(video)
         posteriorDE = self.posteriorDEExtractor.extract(video)
@@ -203,8 +216,13 @@ class RCAUExtractor(AFeatureExtractor):
 
         self.frontalDEExtractor = DEExtractor(frontal_channels,freqBand,featName)
         self.posteriorDEExtractor = DEExtractor(posterior_channels,freqBand,featName)
+        self.usedFreqBand = freqBand
 
-    def extract(self,video):
+        self.usedChannelIndexes = frontal_channels[:]
+        self.usedChannelIndexes.extend(posterior_channels[:])
+
+
+def extract(self,video):
         frontalDE  = self.frontalDEExtractor.extract(video)
         posteriorDE = self.posteriorDEExtractor.extract(video)
 
@@ -249,11 +267,11 @@ class BandFracExtractor(AFeatureExtractor):
     def __init__(self,channels,freqBand,featName):
         AFeatureExtractor.__init__(self,featName)
         self.usedChannelIndexes = channels
-        self.freqBand = freqBand
+        self.usedFreqBand = freqBand
 
     def extract(self, video):
         all_power = float(np.sum(PSDExtractor(self.usedChannelIndexes, 'all').extract(video)))
-        bnd_power = float(np.sum(PSDExtractor(self.usedChannelIndexes, self.freqBand).extract(video)))
+        bnd_power = float(np.sum(PSDExtractor(self.usedChannelIndexes, self.usedFreqBand).extract(video)))
 
         return bnd_power / all_power
 

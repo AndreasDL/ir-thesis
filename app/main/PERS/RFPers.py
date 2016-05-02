@@ -435,6 +435,45 @@ class RFPers():
         return to_ret
 
     def run(self):
+        '''
+        for fe in self.featExtr.featureExtrs:
+            if type(fe) not in [
+                    FE.AvgExtractor, FE.AVGHeartRateExtractor, FE.STDExtractor   , FE.STDInterBeatExtractor,
+                    FE.MinExtractor, FE.MinHRExtractor       , FE.MaxExtractor   , FE.MaxHRExtractor,
+                    FE.VarExtractor, FE.VarHRExtractor       , FE.MedianExtractor, FE.MedianHRExtractor
+            ]:
+
+                print(fe.featureName + ";",end='')
+
+                if len(fe.usedChannelIndexes) > 1 :
+                    print(';',end='')
+
+                for c in fe.usedChannelIndexes:
+                    print(FE.all_channels[c] + ',' , end='')
+
+                if len(fe.usedChannelIndexes) == 1:
+                    print(';',end='')
+
+                print(';',end='')
+
+                freqband = 'alpha, beta'
+
+                if type(fe) != FE.AlphaBetaExtractor:
+                    freqband = fe.usedFreqBand
+
+                print(freqband)
+            else:
+                print(fe.featureName + ";;;")
+
+        for i in FE.all_channels:
+            print(i)
+
+        for left, right in zip(FE.all_left_channel_names, FE.all_right_channel_names):
+            print(left + ',' + right)
+
+        exit()
+        '''
+
 
         results = load('data_results', path=self.ddpad)
         if results == None:
@@ -447,4 +486,4 @@ class RFPers():
         self.genReport(results)
 
 if __name__ == '__main__':
-    RFPers('ALL', 1, 30, Classificators.ContArousalClassificator)
+    RFPers('ALL', 1, 30, Classificators.ContArousalClassificator()).run()
