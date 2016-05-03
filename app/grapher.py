@@ -52,8 +52,8 @@ def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../resu
         plt.xlim([-0.2, len(avgs)])
         plt.ylim([-1,1])
 
-    #ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.5),
-    #    ncol=3, fancybox=True, shadow=True)
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.2),
+        ncol=3, fancybox=True, shadow=True)
 
     ax.set_xlabel(xLbl)
     ax.set_ylabel(yLbl)
@@ -287,7 +287,6 @@ def phyeegall():
     print(avgs)
     print(stds)
 
-
 def linear_regression_example():
     X = []
     Y = []
@@ -342,8 +341,9 @@ def genPiePlot(x,y,fname):
                                              key=lambda x: x[2],
                                              reverse=True))
 
-    #plt.legend(patches, labels, loc='left center', bbox_to_anchor=(-0.1, 1.),
-    #           fontsize=8)
+    #plt.legend(patches, labels, loc='lower center', bbox_to_anchor=(0, .5),
+    #           fontsize=12)
+
     fig = matplotlib.pyplot.gcf()
     fig.set_size_inches(18.5, 18.5)
     plt.savefig(fname, bbox_inches='tight', dpi=100)
@@ -543,6 +543,27 @@ def phyeegall_gen():
             ['b', 'r', 'g']
             )
     print(test_accs)
+
+def pieplotsgen():
+    # x = np.char.array(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
+    # y = np.array([234, 64, 54, 10, 0, 1, 0, 9, 2, 1, 7, 7])
+    # genPiePlot(x,y)
+
+    labels = ['fractions', 'power', 'asymmetry', 'heart rate', 'GSR', 'respiration', 'blood pressure', 'skin temp']
+
+    f = open('../results/freqsgen.csv')
+    f.readline()
+    for line in f:
+        line = line.strip('\n')
+        (dim, featset, brol, fs, frac, power, asym, hr, gsr, rsp, bp, st) = line.split(',')
+
+        fname = '../results/plots/' + dim + featset + fs + 'gen.png'
+
+        fracs = [frac, power, asym, hr, gsr, rsp, bp, st]
+
+        genPiePlot(labels, fracs, fname)
+    plt.close()
+    f.close()
 
 if __name__ == '__main__':
     phyeegall_gen()
