@@ -632,9 +632,84 @@ The resulting distributions are shown in Figure \ref{arousalzones} for arousal a
 
 Looking at the pie plots, one can see that there is no clear region used. The back left and right regions appear most often, but the difference with the front left and right is little. It seems that for both valence and arousal, power values of all different regions might be of importance. The distributions for the regions are the same for both valence and arousal, but they differ in terms of channels.
 
-%DASM RASM
+\npar
 
-%DCAU and RCAU FEATURES! 
+The same principle can be done for the asymmetry features, here a distinction was made between DASM and RASM features and the DCAU and RCAU features. The DASM and RASM features were divided in channel pairs located at the front and back of the brain. A specific list is given in Table \ref{ASMgroupTable} below.
+
+%table
+\begin{table}[H]
+\centering
+\begin{tabular}{ll|ll}
+\textbf{channel pair} & \textbf{group} & \textbf{channel pair} & \textbf{group} \\
+Fp1,Fp2               & front          & C3,C4                 & back           \\
+AF3,AF4               & front          & T7,T8                 & back           \\
+F3,F4                 & front          & CP5,CP6               & back           \\
+F7,F8                 & front          & CP1,CP2               & back           \\
+FC5,FC6               & front          & P3,P4                 & back           \\
+FC1,FC2               & front          & P7,P8                 & back           \\
+                      &                & PO3,PO4               & back          
+\end{tabular}
+\caption{the region for each DASM and RASM channel pair\label{ASMgroupTable}}
+\end{table}
+
+\begin{figure}[H]
+\centering
+  \begin{subfigure}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{arousalasymzonesASM}
+    \caption{Origin of the asymmetry features for arousal classification.\label{arousalasymzonesASM}}
+  \end{subfigure}
+\hfill
+  \begin{subfigure}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{valenceasymzonesASM}
+    \caption{Origin of the asymmetry features for valence classification.\label{valenceasymzonesASM}}
+  \end{subfigure}
+\\
+  \begin{subfigure}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{ASMlegend}
+    \caption{The corresponding zone for each color.\label{ASMlegend}}
+  \end{subfigure}
+\end{figure}
+
+For the DASM and RASM features, it is clear that the asymmetry should be measured at the front of the scalp for arousal. For valence however, features are selected from the front and the back of the scalp.
+
+\npar
+
+The caudality features also measure asymmetry, but in the front-back direct. Here, the channel pairs were grouped in three groups: left, right and Fz/PZ, since the Fz/Pz channel pair lies on the central line. The specific grouping is shown in Table \ref{CAUgroupTable} below.
+
+%table
+\begin{table}[H]
+\centering
+\begin{tabular}{ll|ll}
+\textbf{channel pair} & \textbf{group} & \textbf{channel pair} & \textbf{group} \\
+FC5,CP5               & left           & FC6,CP6               & right          \\
+FC1,CP1               & left           & FC2,CP2               & right          \\
+F3,P3                 & left           & F4,P4                 & right          \\
+F7,P7                 & left           & F8,P8                 & right          \\
+Fp1,O1                & left           & Fp2,O2                & right          \\
+Fz,Pz                 & Fz/Pz          &                       &                \\
+\end{tabular}
+\caption{the region for each DASM and RASM channel pair\label{CAUgroupTable}}
+\end{table}
+
+\begin{figure}[H]
+\centering
+  \begin{subfigure}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{arousalasymzonesCAU}
+    \caption{Origin of the asymmetry features for arousal classification.\label{arousalasymzonesASM}}
+  \end{subfigure}
+\hfill
+  \begin{subfigure}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{valenceasymzonesCAU}
+    \caption{Origin of the asymmetry features for valence classification.\label{valenceasymzonesASM}}
+  \end{subfigure}
+\\
+  \begin{subfigure}[b]{.5\textwidth}
+    \includegraphics[width=\textwidth]{CAUlegend}
+    \caption{The corresponding zone for each color.\label{CAUlegend}}
+  \end{subfigure}
+\end{figure}
+
+For the arousal it seems that the caudality of the right of the brain might be of more interest. Valence uses, again, caudality features from all over the brain.
 
 \subsection{Stability}
 %TODO
@@ -674,8 +749,6 @@ The performance of the different algorithms is depicted in Figure \ref{accComp_a
 \subsection{Correlation probability and level of valence/arousal}
 
 \subsection{Selected features}
-%TODO
-!!TODO
 
 \subsection{Important EEG channels}
 

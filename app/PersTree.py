@@ -101,3 +101,18 @@ class PersTree():
 
         return acc / float(len(predictions))
 
+    def predict(self, X):
+        # voting
+        predictions = []
+
+        for sample in X:
+            preds = [0, 0]
+            for tree in self.trees:
+                pred = tree.predict(X)
+                preds[pred] += 1
+
+            final_pred = preds[0]
+            if preds[1] > final_pred:
+                final_pred = preds[1]
+            predictions.append(final_pred)
+    #todo predict proba

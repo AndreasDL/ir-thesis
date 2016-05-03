@@ -330,14 +330,15 @@ def genPiePlot(x,y,fname):
 
     #plt.legend(patches, labels, loc='left center', bbox_to_anchor=(-0.1, 1.),
     #           fontsize=8)
-
-    plt.savefig(fname, bbox_inches='tight')
+    fig = matplotlib.pyplot.gcf()
+    fig.set_size_inches(18.5, 10.5)
+    plt.savefig(fname, bbox_inches='tight', dpi=100)
     plt.clf()
 
     plt.legend(patches, x, fontsize=23, ncol=3, bbox_to_anchor=(1.,1.))
     fig = matplotlib.pyplot.gcf()
     fig.set_size_inches(18.5, 10.5)
-    fig.savefig(fname[:-5] + "legend.png", dpi=100)
+    fig.savefig(fname + "legend.png", dpi=100)
     plt.close()
 
 def pieplots():
@@ -346,8 +347,6 @@ def pieplots():
     #genPiePlot(x,y)
 
     labels = ['fractions', 'power', 'asymmetry', 'heart rate', 'GSR', 'respiration', 'blood pressure', 'skin temp']
-
-
 
     f = open('../results/freqs.csv')
     f.readline()
@@ -414,10 +413,25 @@ def zones():
     values = [6,6,4,8,8]
     genPiePlot(labels, values, "../results/plots/valencezones")
 
+    #arousal
+    labels = ['front', 'back']
+    values = [23, 13]
+    genPiePlot(labels, values, '../results/plots/arousalasymzonesASM')
+
+    labels = ['left','right', 'Fz/Pz']
+    values = [12,19,3]
+    genPiePlot(labels,values, '../results/plots/arousalasymzonesCau')
+
+    #valence
+    labels = ['front', 'back']
+    values = [20, 20]
+    genPiePlot(labels, values, '../results/plots/valenceasymzonesASM')
+
+    labels = ['left', 'right', 'Fz/Pz']
+    values = [11, 9, 11]
+    genPiePlot(labels, values, '../results/plots/valenceasymzonesCau')
 
 
-
-#general
 def svm_rbf_accs_gen():
     # get testaccs
     test_accs = []

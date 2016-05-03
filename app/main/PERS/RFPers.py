@@ -471,9 +471,11 @@ class RFPers():
         for left, right in zip(FE.all_left_channel_names, FE.all_right_channel_names):
             print(left + ',' + right)
 
+        for left, right in zip(FE.all_frontal_channel_names, FE.all_posterior_channel_names):
+            print(left + ',' + right)
+
         exit()
         '''
-
 
         results = load('data_results', path=self.ddpad)
         if results == None:
