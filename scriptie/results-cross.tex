@@ -1,0 +1,46 @@
+\chapter{Results - Person specific}
+{\samenvatting todo}
+
+In a later stage research was done to select features that work well in a cross person setting, meaning that the model was trained on one set of persons and then tested on another set, containing different persons. This part is more challenging as physiological signals are very person from nature \ref{DEAPSignals}.
+
+\section{Approach}
+
+To do so, the approach from Section \ref{approach} was modified slightly. The only difference is that the splits in test and train set as well as the cross validation was based on persons. This means that once a single sample from a person is placed in a set, all his other samples are added as well. Special care was taken to ensure that the random forest would also work correctly. The problem with random forest is that they create an out of bag sample, as explained in Section \ref{rfexpl}. Because this out of bag sample is used as a validation set, a custom random forest was created. This random forest would split the out of bag sample based on the different persons.
+
+\section{Performance}
+The performance of the different algorithms is depicted in Figure \ref{accComp_arousalSVM_gen} for arousal and Figure \ref{accComp_valenceSVM_gen} for valence. The legend, combined with an overview of the accuracy values is given in Table \ref{genacctable}. As you can see the performance in a cross subject setting is much lower. This is due to the personal aspect of physiological signals. These results are not surprising, when considering that a person specific classifier achieves a maximal accuracy around 70\%. Going from a person specific to a cross person classifier, corresponds to a drop in performance, as the physiological features are person specific. Improving the accuracy in a cross subject setting might be a topic for future research. 
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llll}
+\textbf{Number} & \textbf{feature selection method} & \textbf{avg test acc - arousal} & \textbf{avg test acc - valence} \\
+0               & pearsonR                          & 0.62187                             & 0.51875                             \\
+1               & MutInf                            & 0.59688                             & 0.56563                             \\
+2               & dCorr                             & 0.58125                             & 0.51875                             \\
+3               & LR                                & 0.61562                             & 0.55312                             \\
+4               & L1                                & 0.59688                             & 0.55312                             \\
+5               & L2                                & 0.58125                             & 0.55937                             \\
+6               & SVM                               & 0.60938                             & 0.5375                              \\
+7               & RF                                & 0.63438                             & 0.55312                             \\
+8               & ANOVA                             & 0.60312                             & 0.53438                             \\
+9               & LDA                               & 0.63438                             & 0.52812                             \\
+10              & PCA                               & 0.62187                             & 0.5375                             
+\end{tabular}
+\caption{The different feature selection methods and their labels\label{genacctable}.}
+\end{table}
+
+\mijnfiguur{width=1.\textwidth}{accComp_arousalSVM_gen}{Comparison of different feature selection methods for arousal recognition in a cross subject setting. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
+
+\mijnfiguur{width=1.\textwidth}{accComp_valenceSVM_gen}{Comparison of different feature selection methods for valence recognition in a cross subject setting. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
+
+\section{Correlation probability and level of valence/arousal}
+TODO
+%TODO
+
+\section{Selected features}
+
+\section{Important EEG channels}
+
+\section{Stability}
+TODO
+%TODO

@@ -38,7 +38,7 @@ def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../resu
             yerr=std,
             label=str(i) + " - " + lbls[i]
         )
-    type = 'corrs'
+    type = 'normal'
     if type == 'normal':
         #normal
         plt.xticks(range(0, len(avgs), 1))
@@ -523,6 +523,8 @@ def phyeegall_gen():
             ['b', 'r', 'g']
             )
 
+    print(test_accs)
+
     # get testaccs
     test_accs = []
     for set in lbls:
@@ -540,9 +542,10 @@ def phyeegall_gen():
             'test acc',
             ['b', 'r', 'g']
             )
+    print(test_accs)
 
 if __name__ == '__main__':
-    phyeegall()
+    phyeegall_gen()
 
 
 

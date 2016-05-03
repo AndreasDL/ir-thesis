@@ -449,7 +449,7 @@ class GenScript():
         f = open(self.rpad + "Accresults.csv", 'w')
 
         #accuracies
-        f.write("model;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;\n")
+        f.write("model;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;PCA\n")
         for model, modelName in zip(self.accs, ["SVMRBF"]):
             f.write(modelName + ';')
 
@@ -468,7 +468,7 @@ class GenScript():
         for modelIndex, (model, modelName) in enumerate(zip(self.accs, ["SVMRBF"])):
             f.write(modelName + '\n\n')
             f.write("matric;features used;\n")
-            for metricIndex, (metric, metricName) in enumerate(zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA'])):
+            for metricIndex, (metric, metricName) in enumerate(zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA', 'PCA'])):
                 f.write(metricName + ';')
                 for featName in metric[1]:
                     f.write(featName + ';')
@@ -482,7 +482,7 @@ class GenScript():
         for model, modelName in zip(tekst, ["SVMRBF"]):
             g = open(self.rpad + "finFeat" + str(modelName) + ".csv", 'w')
 
-            for metric, metricName in zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA']):
+            for metric, metricName in zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA','PCA']):
                 g.write(metricName + "\n")
                 g.write('person;usedFeatures;\n')
 
