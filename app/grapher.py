@@ -38,11 +38,20 @@ def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../resu
             yerr=std,
             label=str(i) + " - " + lbls[i]
         )
+    type = 'corrs'
+    if type == 'normal':
+        #normal
+        plt.xticks(range(0, len(avgs), 1))
+        plt.yticks(np.arange(0,10,0.1))
+        plt.xlim([-0.2, len(avgs)])
+        plt.ylim([0,1])
+    else:
+        #corrs
+        plt.xticks(range(0, len(avgs), 1))
+        plt.yticks(np.arange(-10,10,0.1))
+        plt.xlim([-0.2, len(avgs)])
+        plt.ylim([-1,1])
 
-    plt.xticks(range(0, len(avgs), 1))
-    plt.yticks(np.arange(0,10,0.1))
-    plt.xlim([-0.2, len(avgs)])
-    plt.ylim([0,1])
     #ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.5),
     #    ncol=3, fancybox=True, shadow=True)
 
@@ -131,8 +140,7 @@ def svm_rbf_accs():
     #get testaccs
     test_accs = []
 
-    model = PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), "D:/dumpedData/persScript/")
-    print('warn getting data from D')
+    model = PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), "../dumpedData/persScript/")
     model.run()
 
     for person in model.accs:
@@ -167,7 +175,7 @@ def svm_rbf_accs():
     # get testaccs
     test_accs = []
 
-    model = PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(), "D:/dumpedData/persScript/")
+    model = PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(), "../dumpedData/persScript/")
     model.run()
 
     for person in model.accs:
@@ -235,6 +243,8 @@ def phyeegall():
             'test acc',
             ['b','r','g']
             )
+    print(avgs)
+    print(stds)
 
     test_accs = []
 
@@ -273,6 +283,10 @@ def phyeegall():
             'test acc',
             ['b', 'r', 'g']
             )
+
+    print(avgs)
+    print(stds)
+
 
 def linear_regression_example():
     X = []
@@ -331,7 +345,7 @@ def genPiePlot(x,y,fname):
     #plt.legend(patches, labels, loc='left center', bbox_to_anchor=(-0.1, 1.),
     #           fontsize=8)
     fig = matplotlib.pyplot.gcf()
-    fig.set_size_inches(18.5, 10.5)
+    fig.set_size_inches(18.5, 18.5)
     plt.savefig(fname, bbox_inches='tight', dpi=100)
     plt.clf()
 
@@ -351,6 +365,7 @@ def pieplots():
     f = open('../results/freqs.csv')
     f.readline()
     for line in f:
+        line = line.strip('\n')
         (dim,featset,brol,fs,frac,power,asym,hr,gsr,rsp,bp,st) = line.split(',')
 
         fname = '../results/plots/' + dim+featset+fs + '.png'
@@ -367,7 +382,7 @@ def corrs():
                       'SVM', 'Random forest', 'STD',
                       'ANOVA', 'LDA', 'PCA']
                      )
-    sort_indices = np.array([0, 1, 2, 9, 3, 6, 10, 4, 5, 7]) #TODO PCA
+    sort_indices = np.array([0, 1, 2, 8, 3, 6, 9, 4, 5, 7, 10]) #TODO PCA
     names = names[sort_indices]
 
     f = open('../results/corrs.csv')
@@ -430,7 +445,6 @@ def zones():
     labels = ['left', 'right', 'Fz/Pz']
     values = [11, 9, 11]
     genPiePlot(labels, values, '../results/plots/valenceasymzonesCau')
-
 
 def svm_rbf_accs_gen():
     # get testaccs
@@ -528,8 +542,7 @@ def phyeegall_gen():
             )
 
 if __name__ == '__main__':
-    zones()
-
+    phyeegall()
 
 
 

@@ -426,7 +426,7 @@ class RFGen():
             forest.fit(X,y_disc)
             preds = forest.predict(X_test)
             test_accs.append(self.accuracy(preds,y_test_disc))
-            test_probs.append(forest.predict_proba(X_test))
+            #test_probs.append(forest.predict_proba(X_test)) #TODO
 
         test_accs = np.array(test_accs)
         test_probs = np.array(test_probs)

@@ -399,7 +399,7 @@ class PersScript():
 
             for model_index, model in enumerate([
                 #SVC(kernel='linear'),
-                SVC(kernel='rbf'),
+                SVC(kernel='rbf')
 
                 #KNN(n_neighbors=3),
                 #KNN(n_neighbors=5),
@@ -407,12 +407,12 @@ class PersScript():
 
                 #lda needs two features
 
-                RandomForestClassifier(
-                    n_estimators=1000,
-                    max_features='auto',
-                    criterion='gini',
-                    n_jobs=-1,
-                )
+                #RandomForestClassifier(
+                #    n_estimators=1000,
+                #    max_features='auto',
+                #    criterion='gini',
+                #    n_jobs=-1,
+                #)
             ]):
                 model_to_ret = []
                 for metric in self.results[person-1]:
@@ -495,7 +495,7 @@ class PersScript():
             f = open(self.rpad + "Accresults" + str(person) + ".csv", 'w')
 
             #accuracies
-            f.write("model;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;\n")
+            f.write("model;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;PCA\n")
             for model, modelName in zip(self.accs[person], ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"]):
                 f.write(modelName + ';')
 
@@ -515,7 +515,7 @@ class PersScript():
             for modelIndex, (model, modelName) in enumerate(zip(self.accs[person], ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"])):
                 f.write(modelName + '\n\n')
                 f.write("matric;features used;\n")
-                for metricIndex, (metric, metricName) in enumerate(zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA'])):
+                for metricIndex, (metric, metricName) in enumerate(zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA','P0CA'])):
                     f.write(metricName + ';')
                     for featName in metric[1]:
                         f.write(featName + ';')
@@ -529,7 +529,7 @@ class PersScript():
         for model, modelName in zip(tekst, ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"]):
             g = open(self.rpad + "finFeat" + str(modelName) + ".csv", 'w')
 
-            for metric, metricName in zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA']):
+            for metric, metricName in zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA','PCA']):
                 g.write(metricName + "\n")
                 g.write('person;usedFeatures;\n')
 
@@ -763,11 +763,11 @@ class PersScript():
         #self.genFinalReport()
 
 if __name__ == '__main__':
-    PersScript("PHY", 32, 30, Classificators.ContValenceClassificator()).run()
-    PersScript("EEG", 32, 30, Classificators.ContValenceClassificator()).run()
-    PersScript("ALL", 32, 30, Classificators.ContValenceClassificator()).run()
+    #PersScript("PHY", 32, 30, Classificators.ContValenceClassificator()).run()
+    #PersScript("EEG", 32, 30, Classificators.ContValenceClassificator()).run()
+    #PersScript("ALL", 32, 30, Classificators.ContValenceClassificator()).run()
 
-    PersScript("EEG", 32, 30, Classificators.ContArousalClassificator()).run()
+    #PersScript("EEG", 32, 30, Classificators.ContArousalClassificator()).run()
     PersScript("PHY", 32, 30, Classificators.ContArousalClassificator()).run()
     PersScript("ALL", 32, 30, Classificators.ContArousalClassificator()).run()
 

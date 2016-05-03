@@ -13,11 +13,12 @@ import matplotlib.pyplot as plt
 import personLoader
 import Classificators
 import featureExtractor as FE
+from PersTree import PersTree
 from personLoader import load, dump
 import numpy as np
 
 from multiprocessing import Pool
-POOL_SIZE = 2
+POOL_SIZE = 3
 
 
 class GenScript():
@@ -216,7 +217,6 @@ class GenScript():
             y_disc[y_disc > 5] = 1
 
             metrics = []
-
             #pearson
             corr = []
             for index in range(len(X[0])):
@@ -325,17 +325,16 @@ class GenScript():
             #Random Forests
             #rf importances
             #grow forest
-            forest = RandomForestClassifier(
-                n_estimators=2000,
-                max_features='auto',
-                criterion='gini',
-                n_jobs=-1,
-            )
+            forest = PersTree(n_trees=1000)
+
+            X, y_disc = self.reverseFixStructure(X, y_disc)
+
             forest.fit(X,y_disc)
-            importances = forest.feature_importances_
-            std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis = 0)
+            importances, stds = forest.getImportance()
             metrics.append(importances)
-            metrics.append(std)
+            metrics.append(stds)
+
+            X, y_disc = self.fixStructure(X,y_disc)
 
             #ANOVA
             anova = SelectKBest(f_regression, k=self.threshold)

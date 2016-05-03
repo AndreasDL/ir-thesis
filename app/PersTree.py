@@ -3,7 +3,7 @@ import numpy as np
 import random
 
 from multiprocessing import Pool
-POOL_SIZE = 1
+POOL_SIZE = 3
 
 class PersTree():
     def __init__(self,n_trees):
@@ -48,7 +48,7 @@ class PersTree():
             X_oob, y_oob = self.fixStructure(self.X[indices_oob], self.y[indices_oob])
 
             # train with bootstrap
-            self.trees[i].fit(X_bootstrap, y_bootstrap)
+            self.trees[i] = self.trees[i].fit(X_bootstrap, y_bootstrap)
 
             return [
                 self.accuracy(self.trees[i].predict(X_oob), y_oob),
