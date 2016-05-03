@@ -48,6 +48,10 @@ class RFGen():
 
         self.rpad = self.ddpad + "results/"
 
+        self.X = [[[[] for i in range(len(self.featExtr.featureExtrs))] for j in range(40)] for k in range(self.stopperson)]
+        self.y_cont = [[[] for j in range(40)] for k in range(self.stopperson)]
+        self.y_disc = [[[] for j in range(40)] for k in range(self.stopperson)]
+
     def addEEGFeatures(self):
 
         # EEG
@@ -202,7 +206,7 @@ class RFGen():
         plt.clf()
         plt.close()
 
-    def step1(self,X,y, featureNames, threshold, criterion='gini'):
+    def step1(self,X,y, featureNames, criterion='gini'):
         print('step1')
 
         #get importances
@@ -222,7 +226,7 @@ class RFGen():
         featureNames = np.array(featureNames)[indices_to_keep]
 
         #keep upper %threshold
-        indices_to_keep = indices_to_keep[:int(len(indices_to_keep)*threshold)]
+        indices_to_keep = indices_to_keep[:self.threshold]
 
         #filter indices
         importances = importances[indices_to_keep]
@@ -342,96 +346,105 @@ class RFGen():
 
         return np.array(persons_x), np.array(persons_y)
 
+    def accuracy(self, predictions, truths):
+        acc = 0
+        for pred, truth in zip(predictions, truths):
+            acc += (pred == truth)
+
+        return acc / float(len(predictions))
+
     def run(self):
 
-        results = load('results')
-        if results == None:
+        for person in range(1, self.stopperson + 1):
+            # load person data
+            y_cont = load('cont_y_p' + str(person), path=self.ddpad)
+            if y_cont == None:
+                print('[Warn] Rebuilding cache -  person ' + str(person))
+                personLdr = personLoader.NoTestsetLoader(self.classifier, self.featExtr)
 
-            all_y_disc = load('all_pers_y', self.ddpad)
-            if all_y_disc == None:
-                print("[warn] rebuilding cache")
-                all_X, all_y_disc = personLoader.PersonsLoader(
-                    classificator=Classificators.ContValenceClassificator(),
-                    featExtractor=self.featExtr,
-                    stopPerson = self.stopperson
-                ).load()
-                dump(all_y_disc, 'all_pers_y', self.ddpad)
-                dump(all_X, 'all_pers_X', self.ddpad)
+                X, y_cont = personLdr.load(person)
+
+                dump(X, 'X_p' + str(person), path=self.ddpad)
+                dump(y_cont, 'cont_y_p' + str(person), path=self.ddpad)
             else:
-                all_X = load('all_pers_X', self.ddpad)
-
-            print(all_y_disc) #DISC should be cont!
-
-            all_X = np.array(all_X)
-            all_y_disc = np.array(all_y_disc)
-
-            X, y_disc = self.fixStructure(all_X, all_y_disc)
+                X = load('X_p' + str(person), path=self.ddpad)
 
             # manual Feature standardization
             X = X - np.average(X, axis=0)
             X = np.true_divide(X, np.std(X, axis=0))
 
-            # Train / testset
-            X, X_test, y_disc, y_test = train_test_split(X,y_disc,test_size=10, random_state=17)
+            self.X[person - 1] = np.array(X)
+            self.y_cont[person - 1] = np.array(y_cont)
 
-            # back to orig struct
-            X, y_disc = self.reverseFixStructure(X,y_disc)
+            y_disc = np.array(y_cont)
+            y_disc[y_disc <= 5] = 0
+            y_disc[y_disc > 5] = 1
+            self.y_disc[person - 1] = y_disc
 
-            # step 1 determine importances using RF forest
-            temp = load("step1",path=self.ddpad)
-            indices_step1, featureNames_step1 = None, None
-            if temp == None:
-                indices_step1, featureNames_step1 = self.step1(X, y_disc, self.featExtr.getFeatureNames(), self.threshold)
-                dump({'indicices': indices_step1,
-                      'featNames': featureNames_step1}, "step1", self.ddpad)
-            else:
-                indices_step1 = temp['indicices']
-                featureNames_step1 = temp['featNames']
+        # Train / testset
+        X, X_test, y_cont, y_test_cont = train_test_split(self.X,self.y_cont,test_size=10, random_state=17)
 
-            featureNames = np.array(featureNames_step1)
-            indices = np.array(indices_step1)
+        X = np.array(X)
+        X_test = np.array(X_test)
+        y_cont = np.array(y_cont)
+        y_test_cont = np.array(y_test_cont)
 
-            # filter features (X) based on the results from step 1
-            X, y_disc = self.fixStructure(X, y_disc)
-            X = X[:, indices]
-            X, y_disc = self.reverseFixStructure(X, y_disc)
+        y_disc = np.array(y_cont)
+        y_disc[y_disc <= 5] = 0
+        y_disc[y_disc > 5] = 1
 
-            # step 2 - prediction
-            indices_pred, score_pred, std_pred = self.step2_prediction(X, y_disc, featureNames)
-            featureNames_pred = featureNames[indices_pred]
+        # step 1 determine importances using RF forest
+        temp = load("step1",path=self.ddpad)
+        indices_step1, featureNames_step1 = None, None
+        if temp == None:
+            indices_step1, featureNames_step1 = self.step1(X, y_disc, self.featExtr.getFeatureNames(), self.threshold)
+            dump({'indicices': indices_step1,
+                  'featNames': featureNames_step1}, "step1", self.ddpad)
+        else:
+            indices_step1 = temp['indicices']
+            featureNames_step1 = temp['featNames']
 
-            forest = RandomForestClassifier(
-                n_estimators=self.n_estimators,
-                max_features='auto',
-                criterion='gini',
-                n_jobs=-1,
-                oob_score=True,
-                bootstrap=True
-            )
-            test_accs = []
-            test_probs = []
+        featureNames = np.array(featureNames_step1)
+        indices = np.array(indices_step1)
 
-            for i in range(self.runs):
-                forest.fit(X,y_disc)
-                preds = forest.predict(X_test)
-                test_accs.append(self.accuracy(preds),y_test)
-                test_probs.append(forest.predict_proba(X_test), y_test)
+        # filter features (X) based on the results from step 1
+        X = X[:, indices]
 
-            test_accs = np.array(test_accs)
-            test_probs = np.array(test_probs)
-            preds = np.array(preds)
+        # step 2 - prediction
+        indices_pred, score_pred, std_pred = self.step2_prediction(X, y_disc, featureNames)
+        featureNames_pred = featureNames[indices_pred]
 
-            results = [
-                [len(indices_pred), score_pred, std_pred, featureNames_pred, test_accs, np.average(test_accs), np.std(test_accs), y_test, preds ]
-            ]
+        forest = PersTree(n_trees=self.n_estimators)
+        test_accs = []
+        test_probs = []
 
-            print('  prediction - score: ' + str(results[0][1]) + ' (' + str(results[0][2]) + ') with ' + str(results[0][0]))
+        y_test_disc = np.array(y_test_cont)
+        y_test_disc[y_test_disc <= 5] = 0
+        y_test_disc[y_test_disc > 5] = 1
 
-            dump(results, 'results', self.ddpad)
+        for i in range(self.runs):
+            forest.fit(X,y_disc)
+            preds = forest.predict(X_test)
+            test_accs.append(self.accuracy(preds,y_test_disc))
+            test_probs.append(forest.predict_proba(X_test))
+
+        test_accs = np.array(test_accs)
+        test_probs = np.array(test_probs)
+        preds = np.array(preds)
+
+        results = [
+            [len(indices_pred), score_pred, std_pred, featureNames_pred, test_accs, np.average(test_accs), np.std(test_accs), y_test_cont, preds ]
+        ]
+
+        print('  prediction - score: ' + str(results[0][1]) + ' (' + str(results[0][2]) + ') with ' + str(results[0][0]))
+
+        dump(results, 'results', self.ddpad)
 
         self.genReport(results)
 
 if __name__ == "__main__":
+    RFGen("PHY", 32, 1, Classificators.ContValenceClassificator(),n_estimators=10).run()
+
     RFGen("ALL", 32, 30, Classificators.ContValenceClassificator()).run()
     RFGen("EEG", 32, 30, Classificators.ContValenceClassificator()).run()
     RFGen("PHY", 32, 30, Classificators.ContValenceClassificator()).run()

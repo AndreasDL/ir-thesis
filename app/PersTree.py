@@ -32,10 +32,10 @@ class PersTree():
         for i in range(self.n_trees):
             # create bootstrap & oob set
             indices_bootstrap = []
-            for i in range(persCount):
+            for pi in range(persCount):
                 indices_bootstrap.append(random.randint(0, persCount - 1))
 
-            indices_oob = [i for i in range(persCount)]
+            indices_oob = [pi for pi in range(persCount)]
             for index in indices_bootstrap:
                 if index in indices_oob:
                     indices_oob.remove(index)

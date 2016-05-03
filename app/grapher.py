@@ -49,7 +49,10 @@ def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../resu
     ax.set_xlabel(xLbl)
     ax.set_ylabel(yLbl)
 
-    plt.savefig(fname)
+    fig = matplotlib.pyplot.gcf()
+    fig.set_size_inches(18.5, 10.5)
+    fig.savefig(fname, dpi=100)
+
     plt.clf()
     plt.close()
 
@@ -403,8 +406,115 @@ def regions():
 
     f.close()
 
+def zones():
+    labels = ['front left', 'front right', 'midline', 'back left', 'back right']
+    values = [6, 6, 4, 8, 8]
+    genPiePlot(labels, values, "../results/plots/arousalzones")
+
+    values = [6,6,4,8,8]
+    genPiePlot(labels, values, "../results/plots/valencezones")
+
+
+
+
+#general
+def svm_rbf_accs_gen():
+    # get testaccs
+    test_accs = []
+
+    model = PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), "../dumpedData/genScript/")
+    accs = load('accs_all',path=model.ddpad)[0]
+
+    for metric in accs:
+        test_accs.append(metric[7])
+
+    test_accs = np.array(test_accs)
+
+    sort_indices = np.array([0, 1, 2, 9, 3, 6, 10, 4, 5, 7, 11])
+    colors = ['b', 'b', 'b', 'b', 'r', 'r', 'r', 'g', 'g', 'g', 'g']
+    names = np.array(['R', 'MI', 'dC', 'LR', 'L1', 'L2', 'SVM', 'RF', 'STD', 'ANOVA', 'LDA', 'PCA'])
+    names = names[sort_indices]
+    test_accs = test_accs[sort_indices]
+
+    genPlot(test_accs,
+            [0 for acc in test_accs],
+            names,
+            'Accuracies of valence SVM models (cross subject)',
+            'model',
+            'test acc',
+            colors
+            )
+    # get testaccs
+    test_accs = []
+
+    model = PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(), "../dumpedData/genScript/")
+    accs = load('accs_all', path=model.ddpad)[0]
+
+    for metric in accs:
+        test_accs.append(metric[7])
+
+    test_accs = np.array(test_accs)
+
+    sort_indices = np.array([0, 1, 2, 9, 3, 6, 10, 4, 5, 7, 11])
+    colors = ['b', 'b', 'b', 'b', 'r', 'r', 'r', 'g', 'g', 'g', 'g']
+    names = np.array(['R', 'MI', 'dC', 'LR', 'L1', 'L2', 'SVM', 'RF', 'STD', 'ANOVA', 'LDA', 'PCA'])
+    names = names[sort_indices]
+    test_accs = test_accs[sort_indices]
+
+    genPlot(test_accs,
+            [0 for acc in test_accs],
+            names,
+            'Accuracy of arousal SVM models (cross subject)',
+            'model',
+            'test acc',
+            colors
+            )
+
+    print(names)
+
+def phyeegall_gen():
+    print('bullcrap alert! random forest not right here!!')
+
+    lbls = ['ALL', 'EEG', 'non-EEG']
+
+    # get testaccs
+    test_accs = []
+    for set in lbls:
+        model = PersScript(set, 32, 30, Classificators.ContValenceClassificator(), "../dumpedData/genScript/")
+        accs = load('accs_all',path=model.ddpad)[0]
+        test_accs.append(accs[7][7])
+
+    test_accs = np.array(test_accs)
+
+    genPlot(test_accs,
+            [0 for acc in test_accs],
+            lbls,
+            'Valence RF acc for different feat sets (cross subject)',
+            'feature Set',
+            'test acc',
+            ['b', 'r', 'g']
+            )
+
+    # get testaccs
+    test_accs = []
+    for set in lbls:
+        model = PersScript(set, 32, 30, Classificators.ContArousalClassificator(), "../dumpedData/genScript/")
+        accs = load('accs_all', path=model.ddpad)[0]
+        test_accs.append(accs[7][7])
+
+    test_accs = np.array(test_accs)
+
+    genPlot(test_accs,
+            [0 for acc in test_accs],
+            lbls,
+            'Arousal RF acc for different feat sets (cross subject)',
+            'feature Set',
+            'test acc',
+            ['b', 'r', 'g']
+            )
+
 if __name__ == '__main__':
-    regions()
+    zones()
 
 
 
