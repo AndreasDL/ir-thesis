@@ -8,7 +8,11 @@ In a later stage research was done to select features that work well in a cross 
 To do so, the approach from Section \ref{approach} was modified slightly. The only difference is that the splits in test and train set as well as the cross validation was based on persons. This means that once a single sample from a person is placed in a set, all his other samples are added as well. Special care was taken to ensure that the random forest would also work correctly. The problem with random forest is that they create an out of bag sample, as explained in Section \ref{rfexpl}. Because this out of bag sample is used as a validation set, a custom random forest was created. This random forest would split the out of bag sample based on the different persons.
 
 \section{Performance}
-The performance of the different algorithms is depicted in Figure \ref{accComp_arousalSVM_gen} for arousal and Figure \ref{accComp_valenceSVM_gen} for valence. The legend, combined with an overview of the accuracy values is given in Table \ref{genacctable}. As you can see the performance in a cross subject setting is much lower. This is due to the personal aspect of physiological signals. These results are not surprising, when considering that a person specific classifier achieves a maximal accuracy around 70\%. Going from a person specific to a cross person classifier, corresponds to a drop in performance, as the physiological features are person specific. Improving the accuracy in a cross subject setting might be a topic for future research. 
+The performance of the different algorithms is depicted in Figure \ref{accComp_arousalSVM_gen} for arousal and Figure \ref{accComp_valenceSVM_gen} for valence. The legend, combined with an overview of the accuracy values is given in Table \ref{genacctable}. As you can see the performance in a cross subject setting is lower. This is not surprising, considering that EEG data is very personal by nature. A person specific classifier, using the random forest's build-in feature selection method, achieves a test accuracy around of 70\% (stdev. of 14) for arousal and 73\% (stdev. of 13) for valence.
+
+\npar
+
+The performance of the cross-subject classifier is 63\% for arousal and 55\% for valence. This is a drop of 7 \% and 18 \%. It is interesting to note that the performance for the arousal classification is lower in a person specific setting, but remains more or less stable in a cross person setting. The performance of the valence classification takes a huge drop. This might indicate that the physiological reaction with respect to valence, might be more person specific. Another explanation might be that the experience of arousal might be more equal between persons. Being active or inactive is more defined in our language, than begin happy or sad. %TODO ?
 
 \begin{table}[H]
 \centering
@@ -349,6 +353,31 @@ To find out which non-EEG feature might be useful, the selected non-EEG features
 \clearpage
 
 \section{Important EEG channels}
+
+The features used in the model build with the random forest feature selection for arousal are:
+\begin{enumerate}
+\item DE P4, gamma band
+\item DE Cp1, gamma band
+\item RCAU Fp2, O2, all bands
+\item RCAU FC5, Cp5, all bands
+\item DCAU Fz, Pz, all bands
+\item fraction Cz, beta band
+\item fraction P7, beta band
+\end{enumerate}
+
+For beta the features are:
+\begin{enumerate}
+\item DCAU Fz,Pz, beta band
+\item DASM CP1,CP2, beta band
+\item DE Pz, gamma band
+\item DCAU Fz,Pz, gamma band
+\item frac Fz, delta band
+\item DE Fz, theta band
+\item DCAU F4,P4, gamma band
+\item frac P3, delta band
+\end{enumerate}
+
+In a cross person setting, the DCAU features seems to perform well. However these results should be treated with caution, as the test accuracy was only 63\% for arousal and 55\% for valence. This means that the classifier is not able to predict the emotional states well. One can also see that the gamma and beta bands contain the most valuable information.
 
 \section{Stability}
 TODO

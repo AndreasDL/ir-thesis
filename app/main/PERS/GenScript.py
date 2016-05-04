@@ -104,7 +104,7 @@ class GenScript():
                         left_channels=[left],
                         right_channels=[right],
                         freqBand=freqband,
-                        featName='DASM ' + FE.all_channels[left] + ',' + FE.all_channels[right]
+                        featName='DASM ' + FE.all_channels[left] + ',' + FE.all_channels[right] + '(' + str(freqband) + ')'
                     )
                 )
 
@@ -113,7 +113,7 @@ class GenScript():
                         left_channels=[left],
                         right_channels=[right],
                         freqBand=freqband,
-                        featName='RASM ' + FE.all_channels[left] + ',' + FE.all_channels[right]
+                        featName='RASM ' + FE.all_channels[left] + ',' + FE.all_channels[right] + '(' + str(freqband) + ')'
                     )
                 )
 
@@ -124,7 +124,7 @@ class GenScript():
                         frontal_channels=[front],
                         posterior_channels=[post],
                         freqBand=freqband,
-                        featName='DCAU ' + FE.all_channels[front] + ',' + FE.all_channels[post]
+                        featName='DCAU ' + FE.all_channels[front] + ',' + FE.all_channels[post] + '(' + str(freqband) + ')'
                     )
                 )
 
@@ -133,7 +133,7 @@ class GenScript():
                         frontal_channels=[front],
                         posterior_channels=[post],
                         freqBand=freqband,
-                        featName='RCAU ' + FE.all_channels[front] + ',' + FE.all_channels[post]
+                        featName='RCAU ' + FE.all_channels[front] + ',' + FE.all_channels[post] + '(' + str(freqband) + ')'
                     )
                 )
     def addPhyFeatures(self):
