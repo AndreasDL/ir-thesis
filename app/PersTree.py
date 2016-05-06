@@ -108,7 +108,7 @@ class PersTree():
         for sample in X:
             preds = [0, 0]
             for tree in self.trees:
-                pred = tree.predict(X)
+                pred = tree.predict(sample)
                 preds[pred] += 1
 
             final_pred = preds[0]
@@ -116,3 +116,17 @@ class PersTree():
                 final_pred = preds[1]
             predictions.append(final_pred)
     #todo predict proba
+
+    def predict_proda(self,X):
+        predictions = []
+
+        for sample in X:
+            pred_low  = 0.5
+            pred_high = 0.5
+            for tree in self.trees:
+                _low, _high = tree.predict_proba(sample)
+
+                pred_low  *= _low
+                pred_high *= _high
+
+            predictions.append((pred_low,pred_high))

@@ -57,6 +57,9 @@ class GenScript():
         self.y_cont = [[[] for j in range(40)] for k in range(self.stopperson)]
         self.y_disc = [[[] for j in range(40)] for k in range(self.stopperson)]
 
+        self.metricnames = ['pearsonR', 'MutInf', 'dCorr', 'LR', 'L1', 'L2', 'SVM', 'RF', 'RFSTD', 'ANOVA', 'LDA', 'PCA']
+        self.modelnames = ["SVMRBF"]
+
     def addEEGFeatures(self):
 
         # EEG
@@ -362,138 +365,175 @@ class GenScript():
         to_ret = load('accs_all', path=self.ddpad)
         if to_ret == None:
             # Train / testset
-            X, X_test, y, y_test = train_test_split(self.X, self.y_disc,test_size=8, random_state=17)
+            X, X_test, y, y_test_cont = train_test_split(self.X, self.y_cont,test_size=8, random_state=17)
             X = np.array(X)
             X_test = np.array(X_test)
             y = np.array(y)
-            y_test = np.array(y_test)
+            y_test_cont = np.array(y_test_cont)
+
+            y[y <= 5] = 0
+            y[y >  5] = 1
+
+            y_test = np.array(y_test_cont)
+            y_test[y_test <= 5] = 0
+            y_test[y_test > 5] = 1
 
             to_ret = []
-            for modindex, model in enumerate([
-                SVC(kernel='rbf')
-            ]):
-                model_to_ret = []
-                for mindex, metric in enumerate(self.results):
-                    print('model' + str(modindex) + ' - metric' + str(mindex))
-                    featNames = np.array(self.featExtr.getFeatureNames()) #take clean copy
+            model = SVC(kernel='rbf', probability=True)
+            for mindex, metric in enumerate(self.results):
+                print('model' + str(0) + ' - metric' + str(mindex))
+                featNames = np.array(self.featExtr.getFeatureNames()) #take clean copy
 
-                    #sort features
-                    indices = np.array(np.argsort(metric)[::-1])
-                    #take top threshold
-                    indices = indices[:self.threshold]
+                #sort features
+                indices = np.array(np.argsort(metric)[::-1])
+                #take top threshold
+                indices = indices[:self.threshold]
 
-                    #old struct
-                    if mindex == 0:
-                        X, y = self.fixStructure(X, y)
-                        X_test, y_test = self.fixStructure(X_test, y_test)
+                #old struct
+                if mindex == 0:
+                    X, y = self.fixStructure(X, y)
+                    junk, y_test_cont = self.fixStructure(np.array(X_test), y_test_cont)
+                    X_test, y_test = self.fixStructure(X_test, y_test)
 
-                    #Filter features
-                    X_model = np.array(X[:,indices])
-                    X_model_test = np.array(X_test[:,indices])
-                    featNames = featNames[indices]
 
-                    best_feat, best_featNames = [], []
-                    all_scores, all_stds = [],[]
-                    best_score, best_std = 0, 0
-                    for i in range(self.threshold):
-                        to_keep = best_feat[:]
-                        to_keep.append(i)
+                #Filter features
+                X_model = np.array(X[:,indices])
+                featNames = featNames[indices]
 
-                        X_temp = np.array(X_model[:,to_keep])
+                best_feat, best_featNames = [], []
+                all_scores, all_stds = [],[]
+                best_score, best_std = 0, 0
+                for i in range(self.threshold):
+                    to_keep = best_feat[:]
+                    to_keep.append(i)
 
-                        # get scores
-                        run_scores = []
+                    X_temp = np.array(X_model[:,to_keep])
 
-                        X_temp, y = self.reverseFixStructure(X_temp, y)
-                        for tr, te in KFold(n=len(X_temp), n_folds=5, shuffle=True, random_state=17):
-                            X_t,  y_t  = self.fixStructure(X_temp[tr], y[tr])
-                            X_te, y_te = self.fixStructure(X_temp[te], y[te])
-                            model.fit(X_t, y_t)
-                            run_scores.append(self.accuracy(model.predict(X_te), y_te))
+                    # get scores
+                    run_scores = []
 
-                        X_temp, y = self.fixStructure(X_temp, y)
+                    X_temp, y = self.reverseFixStructure(X_temp, y)
+                    for tr, te in KFold(n=len(X_temp), n_folds=5, shuffle=True, random_state=17):
+                        X_t,  y_t  = self.fixStructure(X_temp[tr], y[tr])
+                        X_te, y_te = self.fixStructure(X_temp[te], y[te])
+                        model.fit(X_t, y_t)
+                        run_scores.append(self.accuracy(model.predict(X_te), y_te))
 
-                        new_score = np.average(run_scores)
-                        new_std = np.std(run_scores)
+                    X_temp, y = self.fixStructure(X_temp, y)
 
-                        all_scores.append(new_score)
-                        all_stds.append(new_std)
+                    new_score = np.average(run_scores)
+                    new_std = np.std(run_scores)
 
-                        # better?
-                        if new_score - new_std > best_score - best_std:
-                            best_score = new_score
-                            best_std = new_std
-                            best_feat = to_keep
-                            best_featNames.append(featNames[i])
+                    all_scores.append(new_score)
+                    all_stds.append(new_std)
 
-                    #get test score => old struct :D
-                    model.fit(X_model[:,best_feat], y)
+                    # better?
+                    if new_score - new_std > best_score - best_std:
+                        best_score = new_score
+                        best_std = new_std
+                        best_feat = to_keep
+                        best_featNames.append(featNames[i])
 
-                    X_model_test = np.array(X_model_test[:,best_feat])
-                    test_acc = self.accuracy(model.predict(X_model_test), y_test)
+                #get test score => old struct :D
+                model.fit(X_model[:,best_feat], y)
 
-                    model_to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices, test_acc])
-                to_ret.append(model_to_ret)
+                X_model_test = np.array(X_test[:, best_feat])
+                test_pred = model.predict(X_model_test)
+                test_prob = model.predict_proba(X_model_test)
 
-                X, y = self.reverseFixStructure(X, y)
-                X_test, y_test = self.reverseFixStructure(X_test, y_test)
+                test_acc = self.accuracy(test_pred, y_test)
+
+                to_ret.append([best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices, test_acc, test_pred, test_prob, y_test,
+                     y_test_cont])
+
+            X, y = self.reverseFixStructure(X, y)
+            X_test, y_test = self.reverseFixStructure(X_test, y_test)
 
             dump(to_ret, 'accs_all', path = self.ddpad)
 
         return to_ret
 
-    def genAccReport(self):
-        #self.accs[person][model][metric] = [best_feat, best_featNames, best_score, best_std, all_score, all_std]
+    def probVsDim(self):
 
-        tekst = []
+        data = [ [] for j in range(len(self.accs)) ]
+
+        for metric_index, metric in enumerate(self.accs):
+            # [best_feat, best_featNames, best_score, best_std, all_scores, all_stds, indices, test_acc, test_pred, test_prob, y_test, y_test_cont]
+            for (pred_lbl, probs, test_lbl, value) in zip(metric[-4], metric[-3], metric[-2], metric[-1]):
+                if pred_lbl == test_lbl:
+                    data[metric_index].append([
+                            probs[pred_lbl],
+                            np.abs(value - 5)
+                        ])
+
+        dump(data, "corrData", path=self.ddpad)
+
+        f = open(self.rpad + "corrs.csv", 'w')
+
+        # header line
+        f.write('metric;')
+        for name in self.metricnames:
+            f.write(name + ';')
+        f.write('\n')
+
+        # much efficiency wow </sarcasm>
+        f.write('SVM' + ';')
+
+        for metric in data:
+            metric = np.array(metric)
+
+            probs = metric[:,0]
+            dists = metric[:,1]
+
+            corr = pearsonr(dists, probs)[0]
+            f.write(str(corr) + ';')
+
+            f.write('\n')
+        f.close()
+
+    def genAccReport(self):
+
         f = open(self.rpad + "Accresults.csv", 'w')
 
         #accuracies
         f.write("model;pearsonR;MutInf;dCorr;LR;L1;L2;SVM;RF;ANOVA;LDA;PCA\n")
-        for model, modelName in zip(self.accs, ["SVMRBF"]):
-            f.write(modelName + ';')
-
-            t = []
-            for metric in model:
-                t.append([])
-                f.write(str(metric[2]) + '(' + str(metric[3]) + ');')
-            f.write('\n')
-
-            tekst.append(t)
+        model = self.accs
+        modelName = 'SVMRBF'
 
 
+        f.write(modelName + ';')
+        tekst = []
+        for metric in model:
+            tekst.append([])
+            f.write(str(metric[2]) + '(' + str(metric[3]) + ');')
         f.write('\n\n\n')
 
         #features
-        for modelIndex, (model, modelName) in enumerate(zip(self.accs, ["SVMRBF"])):
-            f.write(modelName + '\n\n')
-            f.write("matric;features used;\n")
-            for metricIndex, (metric, metricName) in enumerate(zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA', 'PCA'])):
-                f.write(metricName + ';')
-                for featName in metric[1]:
-                    f.write(featName + ';')
-                f.write('\n')
+        f.write(modelName + '\n\n')
+        f.write("matric;features used;\n")
+        for metricIndex, (metric, metricName) in enumerate(zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA', 'PCA'])):
+            f.write(metricName + ';')
+            for featName in metric[1]:
+                f.write(featName + ';')
+            f.write('\n')
 
-                tekst[modelIndex][metricIndex].append(metric[1])
+            tekst[metricIndex].append(metric[1])
             f.write('\n\n\n')
-
         f.close()
 
-        for model, modelName in zip(tekst, ["SVMRBF"]):
-            g = open(self.rpad + "finFeat" + str(modelName) + ".csv", 'w')
+        g = open(self.rpad + "finFeat" + str(modelName) + ".csv", 'w')
+        for metric, metricName in zip(tekst, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA','PCA']):
+            g.write(metricName + "\n")
+            g.write('person;usedFeatures;\n')
 
-            for metric, metricName in zip(model, ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF','ANOVA','LDA','PCA']):
-                g.write(metricName + "\n")
-                g.write('person;usedFeatures;\n')
+            for person,data in enumerate(metric):
+                g.write(str(person) + ';')
+                for feat in data:
+                    g.write(str(feat) + ';')
+                g.write('\n')
 
-                for person,data in enumerate(metric):
-                    g.write(str(person) + ';')
-                    for feat in data:
-                        g.write(str(feat) + ';')
-                    g.write('\n')
-
-                g.write("\n\n\n'")
-            g.close()
+            g.write("\n\n\n'")
+        g.close()
     def genReport(self):
 
         # self.results[person][metric][feature] = value
@@ -508,17 +548,11 @@ class GenScript():
         f.write('\n\n\n')
 
         f.close()
-
     def genFinalReport(self):
         avgs, stds = [], []
         for metric in range(12):
-            avg_metric_results = []
-            std_metric_results = []
-            for model in range(1):
-                avg_metric_results.append(np.average(self.accs[model][metric][7]))
-                std_metric_results.append(np.std(self.accs[model][metric][7]))
-            avgs.append(avg_metric_results)
-            stds.append(std_metric_results)
+            avgs.append(np.average(self.accs[metric][7]))
+            stds.append(np.std(self.accs[metric][7]))
 
         metricnames =  ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF', 'RFSTD', 'ANOVA','LDA', 'PCA']
         modelnames  = ["SVMRBF"]
@@ -551,22 +585,14 @@ class GenScript():
             else:
                 #create acc overview
                 f.write(metricname + ';')
-                for avg_model, std_model in zip(avg_metric, std_metric):
-                    f.write(str(round(avg_model,5)) + ';' + str(round(std_model,5)) + ';')
+                f.write(str(round(avg_metric,5)) + ';' + str(round(std_metric,5)) + ';')
                 f.write('\n')
-
-                #create plot
-                self.genPlot(avg_metric,
-                             std_metric,
-                             modelnames,
-                             tail + metricname
-                             )
 
         f.close()
 
         g = open(self.rpad + "lastIndex" + tail + '.csv', 'w')
         g.write("metricName;")
-        for name in modelnames:
+        for name in self.metricnames:
             g.write(name + ';')
         g.write('\n')
 
@@ -574,13 +600,8 @@ class GenScript():
         avg_lasts = []
         std_lasts = []
         for metric in range(12):
-            avg_metric_last = []
-            std_metric_last = []
-            for model in range(1):
-                avg_metric_last.append(np.average(self.accs[model][metric][0][-1]))
-                std_metric_last.append(np.std(self.accs[model][metric][0][-1]))
-            avg_lasts.append(avg_metric_last)
-            std_lasts.append(std_metric_last)
+            avg_lasts.append(np.average(self.accs[metric][0][-1]))
+            std_lasts.append(np.std(self.accs[metric][0][-1]))
 
 
         for metIndex, (metricname, avg_last, std_last) in enumerate(zip(metricnames, avg_lasts, std_lasts)):
@@ -589,8 +610,7 @@ class GenScript():
             else:
                 # create acc overview
                 g.write(metricname + ';')
-                for l, s in zip(avg_last, std_last):
-                    g.write(str(l) + ' (' + str(s) + ')' + ';')
+                g.write(str(avg_last) + ' (' + str(std_last) + ')' + ';')
                 g.write('\n')
 
         g.close()
@@ -599,8 +619,7 @@ class GenScript():
         featnames = np.array(self.featExtr.getFeatureNames())
 
         h = open(self.rpad + "selectedFeat" + tail + '_all.csv', 'w')
-        model = self.accs[0]
-        for metricName, metric in zip(metricnames,model):
+        for metricName, metric in zip(self.metricnames, self.accs):
             h.write(metricName + ';')
 
             for feat in metric[1]:
@@ -611,15 +630,10 @@ class GenScript():
 
 
         h = open(self.rpad + "test_accs.csv",'w')
-
-        model = self.accs[0]
-
-        for metric in model:
-            h.write(str(metric[7]) + ';')
+        h.write(str(metric[7]) + ';')
         h.write('\n')
 
         h.close()
-
     def genPlot(self,avgs, stds, lbls, title):
 
         fname = self.rpad + 'accComp_' + str(title) + '.png'
@@ -687,6 +701,7 @@ class GenScript():
 
         self.accs = self.getAccs()
 
+        self.probVsDim()
         self.genAccReport()
         self.genFinalReport()
 
