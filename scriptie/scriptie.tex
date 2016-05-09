@@ -116,9 +116,8 @@
 
 % titelblad (voor kaft)
 \includepdf[pages={1}, offset=75 - 75]{voorblad.pdf}
-
-%\afterpage{\blankpage} \clearpage
-%\includepdf[pages={1}, offset=75 - 75]{voorblad.pdf}
+\afterpage{\blankpage} \clearpage
+\includepdf[pages={1}, offset=75 - 75]{voorblad.pdf}
 
 % geen paginanummering tot we aan de inhoudsopgave komen
 \pagestyle{empty}
@@ -129,6 +128,8 @@
 % abstract
 %\include{abstract} %TODO
 
+%\include{extendedAbstract} %TODO
+
 \pagestyle{fancy}
 \frontmatter
 
@@ -136,12 +137,9 @@
 \tableofcontents
 
 %afkortingen
+\makenomenclature
 \printnomenclature
-
-% eventueel: lijst van figuren en tabellen
-%\listoffigures
-%\listoftables
-
+%TODO
 
 % opmaak voor het eigenlijke boek; onderstaande lijnen
 % weglaten als de eerste regel van een nieuwe alinea moet
@@ -169,16 +167,17 @@
 % hier worden de appendices ingevoegd (\includes)
 
 
-%\include{references}
-
 \backmatter
 
-%\bibliographystyle{plainnat}
 \bibliographystyle{ieeetr}
 \bibliography{bibfile.bib}
 
+% eventueel: lijst van figuren en tabellen
+\listoffigures
+\listoftables
 
 % lege pagina (!!)
+\afterpage{\blankpage} \clearpage
 
 % kaft
 
