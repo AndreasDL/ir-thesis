@@ -45,25 +45,25 @@ The correlation between the prediction probability of a model and the distance o
 
 The Pearson correlation coefficients between the prediction probability and the distance to the separation are shown in Table \ref{corrsCompLblGen}. These values were also plotted in Figure \ref{arousal_corrs_gen} and Figure \ref{valence_corrs_gen} for arousal and valence respectively.
 
-%discussion
+\npar
 
+For arousal, the correlations are quite low, even negative. The distance correlation features, are more promising, but the disadvantage of this method is that it cannot find groups of good features. It might thus be overfitting on a few features that work well for this sample set. This is further supported when looking at the correlations for valence. Here the correlation is even negative.
 
 \begin{table}[H]
 \centering
 \begin{tabular}{llll}
-\textbf{Number} & \textbf{Feature}        & \textbf{arousal} & \textbf{valence} \\
-                & \textbf{selection method} & \textbf{correlation} & \textbf{correlation}\\ \hline
-0               & pearson              & 0.0329           & -0.0600 \\
-1               & mutual information   & 0.0234           & -0.1000 \\
-2               & distance correlation & 0.1563           & -0.1467 \\
-3               & ANOVA                & -0.0079          & 0.0446  \\
-4               & linear regression    & 0.0297           & 0.0058  \\
-5               & SVM                  & -0.0421          & 0.0356  \\
-6               & LDA                  & 0.0009           & 0.0764  \\
-7               & lasso regression     & 0.0725           & 0.0572  \\
-8               & ridge regression     & 0.0043           & -0.0141 \\
-9               & random forests       & -0.0272          & 0.0623  \\
-10              & PCA                  & -0.0611          & -0.0738
+\textbf{Number} & \textbf{FS Method}        & \textbf{corr. arousal} & \textbf{corr. valence} \\ \hline
+0               & Pearson              & 0.03295          & -0.05998         \\
+1               & mutual information   & 0.02339          & -0.09995         \\
+2               & distance correlation & 0.15635          & -0.14668         \\
+3               & ANOVA                & 0.00430          & -0.01410         \\
+4               & linear regression    & -0.00791         & 0.04455          \\
+5               & SVM                  & 0.00085          & 0.07638          \\
+6               & LDA                  & -0.02715         & 0.06226          \\
+7               & lasso regression     & 0.02972          & 0.00575          \\
+8               & ridge regression     & -0.04213         & 0.03564          \\
+9               & random forests       & 0.07254          & 0.05722          \\
+10              & PCA                  & -0.06113861835   & -0.07378720791  
 \end{tabular}
 \caption{The correlations between the prediction probability of the different feature selection methods and the distance to the separation boundary\label{corrsCompLblGen}.}
 \end{table}
@@ -222,7 +222,7 @@ The selected features are depicted in Figure \ref{arousalpiesgen} and \ref{valen
 \end{figure}
 \clearpage
 
-For arousal, it is clear that the EEG features are quite dominant. None the non-EEG features were selected. The EEG features themselves differ from selection method to selection method. One possible explanation for this is that the accuracies of the models are not great. The models are thus not fitting very well. This may cause unstable behaviour. The random forest method is the most advanced feature selection method and it gives a small preference to asymmetry features. This concurs with the finding in the personal specific setting. 
+For arousal, it is clear that the EEG features are quite dominant. None the non-EEG features were selected. The EEG features themselves differ from selection method to selection method. One possible explanation for this is that the accuracies of the models are not great. The models are thus not fitting very well. This may cause unstable behaviour. The random forest method is the most advanced feature selection method and it gives a small preference to asymmetry features. This concurs with the person specific findings.
 
 \npar
 

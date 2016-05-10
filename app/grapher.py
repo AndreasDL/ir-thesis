@@ -377,12 +377,13 @@ def pieplots():
     f.close()
 
 def corrs():
+    #here no RF STD in file!!
     names = np.array(['pearson R', 'Mutual information', 'Distance correlation',
                       'Linear regression', 'Lasso regression', 'Ridge regression',
-                      'SVM', 'Random forest', 'STD',
+                      'SVM', 'Random forest',
                       'ANOVA', 'LDA', 'PCA']
                      )
-    sort_indices = np.array([0, 1, 2, 8, 3, 6, 9, 4, 5, 7, 10]) #TODO PCA
+    sort_indices = np.array([0, 1, 2, 8, 3, 6, 9, 4, 5, 7, 10])  # TODO PCA
     names = names[sort_indices]
 
     f = open('../results/corrs.csv')
@@ -397,7 +398,7 @@ def corrs():
         vals = np.array(line[2:])
         vals = vals[sort_indices]
 
-        genPlot(vals,[0 for val in vals],names,'Correlation predict probability and level of '+ str(dim),'FS method','Pearson correlation', type='corrs')
+        genPlot(vals,[0 for val in vals],names,'Correlation predict probability and level of '+ str(dim) + ' (' + str(featset) + ')','FS method','Pearson correlation', type='corrs')
 
 
 
@@ -572,25 +573,26 @@ def corrs_gen():
                       'ANOVA', 'LDA', 'PCA']
                      )
 
-    sort_indices = np.array([0, 1, 2, 8, 3, 6, 9, 4, 5, 7, 10])  # TODO PCA
+    sort_indices = np.array([0, 1, 2, 9, 3, 6, 10, 4, 5, 7, 11])  # TODO PCA
     names = names[sort_indices]
+    print(names)
 
     f = open('../results/corrs_gen.csv')
     f.readline()
     for line in f:
         line = line.split(';')
-
+        print(line)
         dim, featset = line[0], line[1]
 
         vals = np.array(line[2:])
         vals = vals[sort_indices]
 
-        genPlot(vals, [0 for val in vals], names, 'Correlation predict probability and level of ' + str(dim), 'FS method', 'Pearson correlation', type='corrs')
+        genPlot(vals, [0 for val in vals], names, 'Correlation predict probability and level of ' + str(dim) + ' (' + str(featset) + ' )', 'FS method', 'Pearson correlation', type='corrs')
 
     f.close()
 
 if __name__ == '__main__':
-    corrs_gen()
+    corrs()
 
 
 

@@ -107,24 +107,27 @@ It might be interesting to look at the prediction probability of a model gives t
 
 \npar
 
-To investigate this, the Pearson correlation coefficient R is plotted for the model build with the corresponding feature selection methods. The Pearson correlations for arousal are depicted in Figure \ref{arousal_corrs} and Figure \ref{valence_corrs} for valence. The legend combined with the precise values, can be found in Table \ref{corrsCompLbl}. Overall, the correlations are quite low. In case of ridge regression, the correlation is even negative, meaning that the model is more certain of examples that lie closer to the separation boundary, which is undesired. The correlation for random forest is the highest, followed by linear regression. Note that linear regression is known to be unstable, small changes in the input might result in different importance values outputted by the linear regression method, as discussed in Section \ref{LRBad}.
+To investigate this, the Pearson correlation coefficient R is plotted for the model build with the corresponding feature selection methods. The Pearson correlations for arousal are depicted in Figure \ref{arousal_corrs} and Figure \ref{valence_corrs} for valence. The legend combined with the precise values, can be found in Table \ref{corrsCompLbl}. Overall, the correlations are quite low. Some correlations are even negative, meaning that the model is more certain of examples that lie closer to the separation boundary. The correlation for lasso regression is the highest. Note that lasso regression is known to be unstable. Small changes in the input might result in different importance values outputted by the linear regression method, as discussed in Section \ref{LRBad}.
+
+\npar
+%TODO?
+One reason for these low correlations might be that the used model is an SVM with a RBF kernel, which classifies samples based on distance between them. The prediction probability will therefore be higher when a new sample lies close to other labelled samples. If a large portion of train samples lies close to the separation boundary, the algorithm could be less certain about samples that lie further away.
 
 \begin{table}[H]
 \centering
 \begin{tabular}{llll}
-\textbf{Number} & \textbf{Feature}        & \textbf{arousal} & \textbf{valence} \\
-                & \textbf{selection method} & \textbf{correlation} & \textbf{correlation}\\ \hline
-0               & pearson              & 0.0380    & 0.0096          \\
-1               & mutual information   & -0.0906   & 0.0081          \\
-2               & distance correlation & 0.0890    & 0.0173          \\
-3               & ANOVA                & 0.0788    & -0.0175         \\
-4               & linear regression    & 0.0503    & 0.0947          \\
-5               & SVM                  & 0.1132    & 0.0269          \\
-6               & LDA                  & -0.0605   & 0.0288          \\
-7               & lasso regression     & 0.0528    & 0.1702          \\
-8               & ridge regression     & 0.0290    & 0.1025          \\
-9               & random forests       & 0.0043    & 0.1074          \\
-10              & PCA                  & 0.0218    & 0.0088         
+\textbf{Number} & \textbf{What}        & \textbf{arousal} & \textbf{valence}  \\ \hline
+0               & pearson              & 0.03797          & 0.00957  \\
+1               & mutual information   & -0.09065         & 0.00805  \\
+2               & distance correlation & 0.08906          & 0.01725  \\
+3               & ANOVA                & 0.07880          & -0.01745 \\
+4               & linear regression    & 0.05027          & 0.09465  \\
+5               & SVM                  & 0.11322          & 0.02691  \\
+6               & LDA                  & -0.06053         & 0.02876  \\
+7               & lasso regression     & 0.05280          & 0.17024  \\
+8               & ridge regression     & 0.02897          & 0.10253  \\
+9               & random forests       & 0.00439          & 0.10738  \\
+10              & PCA                  & 0.02182          & 0.00875 
 \end{tabular}
 \caption{The different feature selection methods and their labels\label{corrsCompLbl}.}
 \end{table}
@@ -296,7 +299,7 @@ The results for valence are depicted in Figure \ref{valencepies} and the corresp
 \end{figure}
 \clearpage
 
-The fact that the non-EEG features are almost never chosen might indicate that they are less important. In an attempt to further investigate the difference between EEG features and non-EEG features, the performance of three different feature sets was compared. The first feature set is the previously used feature set with all possible features. The second and third feature sets contained only EEG and non-EEG features respectively. The feature selection was done with random forest, as this method had the best average performance, as well as the best correlations between probability and level of valence and arousal. 
+The fact that the non-EEG features are almost never chosen might indicate that they are less important. In an attempt to further investigate the difference between EEG features and non-EEG features, the performance of three different feature sets was compared. The first feature set is the previously used feature set with all possible features. The second and third feature sets contained only EEG and non-EEG features respectively. The feature selection was done with random forest, as this method had the best average performance and is the most advanced. 
 
 \npar
 
