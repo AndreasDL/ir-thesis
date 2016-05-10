@@ -27,11 +27,11 @@
     version={4.0},
 ]{doclicense}
 
-\usepackage{nomencl}
-\makenomenclature
-
 \usepackage[nottoc]{tocbibind}
 \usepackage[numbers]{natbib}
+
+\usepackage[toc,nonumberlist]{glossaries}
+\makeglossaries
 
 % marges aanpassen
 % (opmerking: moet *voor* inclusie van fancyhdr package komen)
@@ -145,9 +145,9 @@
 \listoffigures
 \listoftables
 
-%afkortingen
-\makenomenclature
-\printnomenclature %TODO
+%afkortingen %TODO
+\glsaddall
+\printglossaries
 
 % opmaak voor het eigenlijke boek; onderstaande lijnen
 % weglaten als de eerste regel van een nieuwe alinea moet

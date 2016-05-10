@@ -1,0 +1,30 @@
+\ifglsentryexists{EEG}{}%
+{%
+\gls@defglossaryentry{EEG}%
+{%
+name={EEG},%
+sort={EEG},%
+type={main},%
+first={Electroencephalography\glsspace (EEG)},%
+firstplural={Electroencephalographys\glsspace (EEGs)},%
+text={EEG},%
+plural={EEGs},%
+description={Electroencephalography},%
+descriptionplural={Electroencephalography\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Electroencephalography},%
+longplural={Electroencephalographys},%
+short={EEG},%
+shortplural={EEGs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
