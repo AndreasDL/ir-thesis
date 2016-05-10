@@ -14,7 +14,7 @@ Emotion recognition is the proces of recognizing a subject's emotional state. In
 \label{valarrdomspace}
 Before emotions can be recognized, an objective class model describing different emotions is needed. A simple way of achieving this is using several discrete emotions, e.g. anger, joy, sad and pleasure. A more convienent model to classify emotions is the bipolar arousal-valence model\cite{ExtendedPaper,RealTimeEEGEmotion}, which places emotions in a two dimensional space. The main advantage of using a continuous multidimensional model, is that all emotions are modelled in its space, even when no particular discrete label can be used to define the current feeling. Figure \ref{ArousalValenceModel} shows the mapping of different emotions for this model. 
 
-\npar
+\clearpage
 
 The valence-arousal model consists of two dimensions. Arousal indicates how active a person is and ranges from inactive/bored to active/excited. The valence indicates if the emotion is perceived as positive or negative. Even though arousal and valence describe emotions quite well, a third dimension, dominance, can also be added. This third dimension indicates how strong the emotional feeling was and ranges from a weak feeling to an empowered, overwhelming feeling. The dominance component can aid to filter out samples of strong feelings, since feelings with low dominance are less likely to show significant effects.
 
@@ -64,15 +64,15 @@ In the frequency domain, brain waves are usually split up into different bands\c
 Even though EEG is used in this thesis, alternative methods to measure brain activity exist. What follows is an overview of some of these techniques.
 \begin{itemize}
 
-\item Magnetoencephalography (MEG)\nomenclature{MEG}{magnetoencephalography} use magnetic fields to measure brain activity\citep{meg}. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile.
+\item Magnetoencephalography (MEG)\newacronym{MEG}{MEG}{magnetoencephalography} use magnetic fields to measure brain activity\citep{meg}. Since MEG is more prone to noise from external magnetic signals, i.e. the earth's magnetic field and electromagnetic communication, a magnetic shielded room is required, making this method very expensive and not mobile.
 
-\item Functional magnetic resonance (fMRI) \nomenclature{fMRI}{Functional Magnetic Resonance}\citep{fMRI}: works by detecting changes in blood oxygenation and blood flow. An active area of the brain consumes more oxygen and has an increased blood flow.
+\item Functional magnetic resonance (fMRI) \newacronym{fMRI}{fMRI}{Functional Magnetic Resonance}\citep{fMRI}: works by detecting changes in blood oxygenation and blood flow. An active area of the brain consumes more oxygen and has an increased blood flow.
 
-\item Computed tomography (CT) \nomenclature{CT}{Computed Tomography}\citep{CT}: uses X-rays to create an image of the brain. 
+\item Computed tomography (CT) \newacronym{CT}{CT}{Computed Tomography}\citep{CT}: uses X-rays to create an image of the brain. 
 
-\item Positron emission tomography (PET) \nomenclature{PET}{Positron Emission Tomography}\citep{PET}: this methods uses trace amounts of short-lived radioactive material. When this material undergoes decay, a positron is emitted that is picked up by a detector.
+\item Positron emission tomography (PET) \newacronym{PET}{PET}{Positron Emission Tomography}\citep{PET}: this methods uses trace amounts of short-lived radioactive material. When this material undergoes decay, a positron is emitted that is picked up by a detector.
 
-\item Near infrared spectroscopy (NIRS) \nomenclature{NIRS}{Near Infrared Spectroscopy}\citep{NIRS}: an optical technique to measure blood oxygenation in the brain. This technique works by shining light in the near infrared part of the spectrum through the skull and measuring how much remerging light is attenuated.
+\item Near infrared spectroscopy (NIRS) \newacronym{NIRS}{NIRS}{Near Infrared Spectroscopy}\citep{NIRS}: an optical technique to measure blood oxygenation in the brain. This technique works by shining light in the near infrared part of the spectrum through the skull and measuring how much remerging light is attenuated.
 
 \end{itemize} 
 
@@ -83,7 +83,7 @@ Machine learning is the missing link between the physiological signals and the e
 
 \npar
 
-A possible definition for machine learning is: "the science of getting computers to act without being explicitly programmed"\citep{MLDef}. To do so, machine learning uses pattern recognition to find patterns or structure in the data. A simple example of machine learning is the Optical Character Recognition (OCR)\nomenclature{OCR}{Optical Character Recognition}, where a computer recognises characters in pictures\citep{OCR}. An example of OCR is shown in Figure \ref{OCR}.
+A possible definition for machine learning is: "the science of getting computers to act without being explicitly programmed"\citep{MLDef}. To do so, machine learning uses pattern recognition to find patterns or structure in the data. A simple example of machine learning is the Optical Character Recognition (OCR)\newacronym{OCR}{OCR}{Optical Character Recognition}, where a computer recognises characters in pictures\citep{OCR}. An example of OCR is shown in Figure \ref{OCR}.
 
 \mijnfiguur{width=0.3\textwidth}{OCR}{In optical character recognition, a computer uses machine learning to find characters in an image\cite{OCRFigRef}.}
 

@@ -2,7 +2,7 @@
 {\samenvatting This chapter starts by explaining the used dataset and features. Next some state of the art methods are briefly discussed, to give an idea of similar research. After that the contributions of this thesis are explained. Next different feature selection methods are explained. The last part of this section explains the used approach in this thesis.}
 
 \section{Dataset}
-One of the most used datasets in the context of emotion recognition is the Dataset for Emotion Analysis using Physiological Signals (DEAP)\nomenclature{DEAP}{Dataset for Emotion Analysis using Physiological Signals}\cite{DEAP}. This dataset consists of several parts, the first part is a rating of 120 music videos by 14 - 16\footnote{2 persons did not complete all the necessary ratings.} persons. Each video is rated for valence, arousal and dominance on a scale ranging from 1 to 9 using self-assessment manikins (see later). This part of the dataset is not used during this thesis, because it contains no physiological signals.
+One of the most used datasets in the context of emotion recognition is the Dataset for Emotion Analysis using Physiological Signals (DEAP)\newacronym{DEAP}{DEAP}{Dataset for Emotion Analysis using Physiological Signals}\cite{DEAP}. This dataset consists of several parts, the first part is a rating of 120 music videos by 14 - 16\footnote{2 persons did not complete all the necessary ratings.} persons. Each video is rated for valence, arousal and dominance on a scale ranging from 1 to 9 using self-assessment manikins (see later). This part of the dataset is not used during this thesis, because it contains no physiological signals.
 
 \npar
 
@@ -45,7 +45,7 @@ Additionally facial video for 22 of the 32 subjects was recorded, so research of
 
 \npar
 
-For assessment of these scales self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins} were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scales with pictures. Each picture corresponds to a discrete value. The user can click anywhere in between the different figures, which makes the scales continuous. All dimensions are given by a continuous value between 1 and 9.
+For assessment of these scales self-assessment manikins (SAM)\newacronym{SAM}{SAM}{self-assessment manikins} were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scales with pictures. Each picture corresponds to a discrete value. The user can click anywhere in between the different figures, which makes the scales continuous. All dimensions are given by a continuous value between 1 and 9.
 
 \clearpage
 
@@ -58,11 +58,11 @@ The used SAM figures are shown in Figure \ref{SAM}. The first row gives the vale
 Machine learning algorithms require good features to perform well\footnote{There are some exceptions, for instance some types neural networks are capable of 'designing' their own features\citep{nnfeat}. But these algorithms were not used in this thesis.}. In the context of this thesis, good features should be correlated with the subject's emotional state. Two categories of features are observed in this work: EEG features and non-EEG features. Both categories are covered in the following sections.
 
 \subsection{EEG-features}
-EEG features are extracted from the electroencephalography measurements from the subject's scalp. From these signals a lot of different signals can be extracted. The power spectral density (PSD) \nomenclature{PSD}{Power Spectral Density} of a signal gives the distribution of the signal's energy in the frequency domain. By calculating the spectral density for different frequency bands of the signal, one can determine how much power of each frequency band is in the signal.
+EEG features are extracted from the electroencephalography measurements from the subject's scalp. From these signals a lot of different signals can be extracted. The power spectral density (PSD) \newacronym{PSD}{PSD}{Power Spectral Density} of a signal gives the distribution of the signal's energy in the frequency domain. By calculating the spectral density for different frequency bands of the signal, one can determine how much power of each frequency band is in the signal.
 
 \npar
 
-Differential entropy (DE)\nomenclature{DE}{Differential Entropy} is defined as follows \citep{killyPaper} \\
+Differential entropy (DE)\newacronym{DE}{DE}{Differential Entropy} is defined as follows \citep{killyPaper} \\
 \begin{center}
 $DE_{channel} = - \int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2}} exp(\frac{(x-\mu)^2}{2\sigma^2}) log(\frac{1}{\sqrt{2\pi\sigma^2}}) exp(\frac{(x-\mu)^2}{2\sigma^2})dx$
 \end{center}
@@ -73,25 +73,25 @@ $DE_{channel} = log(PSD_{channel})$
 
 \npar
 
-The most used feature for valence recognition is the frontal asymmetry of the alpha power\cite{GivenPaper}. The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere. The left hemisphere is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The asymmetry can be calculated in different ways. First, one can calculate the differential asymmetry (DASM) \nomenclature{DASM}{Differential Asymmetry}, where the left alpha power is subtracted from the right alpha power.
+The most used feature for valence recognition is the frontal asymmetry of the alpha power\cite{GivenPaper}. The right hemisphere is generally speaking, more active during negative emotion than the left hemisphere. The left hemisphere is in turn more active during positive emotions\cite{RealTimeEEGEmotion,EEGDatasets,killyPaper}. The asymmetry can be calculated in different ways. First, one can calculate the differential asymmetry (DASM) \newacronym{DASM}{DASM}{Differential Asymmetry}, where the left alpha power is subtracted from the right alpha power.
 
 \begin{center}
 $DASM = DE_{left} - DE_{right}$
 \end{center}
 
-Another way to measure the asymmetry is by division. The Rational Asymmetry (RASM) \nomenclature{RASM}{Rational Asymmetry} does exactly this and is given by: \\
+Another way to measure the asymmetry is by division. The Rational Asymmetry (RASM) \newacronym{RASM}{RASM}{Rational Asymmetry} does exactly this and is given by: \\
 
 \begin{center}
 $RASM = \frac{DE_{left}}{DE_{right}}$
 \end{center}
 
-With $DE_{left}$ and $DE_{right}$ being the left and right differential entropy respectively. Another reported feature in literature is the caudality, or the asymmetry in fronto-posterior direction\cite{caudality}. Caudality measures the difference in power between the front and the back of the scalp. This can again be calculated in two ways. The first method is the differential Caudality (DCAU) \nomenclature{DCAU}{Differential Caudality}, defined as: \\
+With $DE_{left}$ and $DE_{right}$ being the left and right differential entropy respectively. Another reported feature in literature is the caudality, or the asymmetry in fronto-posterior direction\cite{caudality}. Caudality measures the difference in power between the front and the back of the scalp. This can again be calculated in two ways. The first method is the differential Caudality (DCAU) \newacronym{DCAU}{DCAU}{Differential Caudality}, defined as: \\
 
 \begin{center}
 $DCAU = DE_{front} - DE_{post}$
 \end{center}
 
-The second method to determine the Caudality is the Rational Caudality (RCAU) \nomenclature{RCAU}{Rational Caudality}, which is defined as:
+The second method to determine the Caudality is the Rational Caudality (RCAU) \newacronym{RCAU}{RCAU}{Rational Caudality}, which is defined as:
 
 \begin{center}
 $RCAU = \frac{DE_{front}}{DE_{post}}$
@@ -114,11 +114,11 @@ The aforementioned EEG features are just one class of physiological features, th
 
 \npar
 
-The Galvanic Skin Response \nomenclature{GSR}{Galvanic Skin Response} uses two electrodes on the middle and index finger of the subjects left hand to measure the skin resistance. The skin resistance is one way to measure the perspiration of a subject. It has been reported that the mean value of the GSR is related to the level of arousal\citep{GSR, DEAP}.
+The Galvanic Skin Response \newacronym{GSR}{GSR}{Galvanic Skin Response} uses two electrodes on the middle and index finger of the subjects left hand to measure the skin resistance. The skin resistance is one way to measure the perspiration of a subject. It has been reported that the mean value of the GSR is related to the level of arousal\citep{GSR, DEAP}.
 
 \npar
 
-The respiration belt (RSP)\nomenclature{RSP}{Respiration Belt}, indicates the user's respiration rate. Slow respiration is linked to relaxation (low arousal). Fast and irregular respiration patterns corresponds to anger or fear, both emotions have low valence and high arousal\citep{DEAP}.
+The respiration belt (RSP)\newacronym{RSP}{RSP}{Respiration Belt}, indicates the user's respiration rate. Slow respiration is linked to relaxation (low arousal). Fast and irregular respiration patterns corresponds to anger or fear, both emotions have low valence and high arousal\citep{DEAP}.
 
 \npar
 
@@ -208,7 +208,7 @@ EEG patterns are not only subject dependent, they are also dependent on the subj
 
 \npar
 
-Their machine learning set-up is as follows, first they perform feature extraction of the aforementioned features. Then feature smoothing is done using a Linear Dynamic system (LDS) \nomenclature{LDS}{Linear Dynamic System}, that can be expressed by:
+Their machine learning set-up is as follows, first they perform feature extraction of the aforementioned features. Then feature smoothing is done using a Linear Dynamic system (LDS) \newacronym{LDS}{LDS}{Linear Dynamic System}, that can be expressed by:
 \begin{center}
 $x_t = z_t + w_t$\\
 $z_t = Az_{t-1} + v_t$
@@ -217,7 +217,7 @@ $x_t$ denotes the observed variables or features, while $z_t$ denotes the hidden
 
 \npar
 
-The list of features at this point is too big and may contain uncorrelated features that might lead to performance degradation of the classifier. Two methods for this are compared, principal component analysis (PCA) and minimal redundancy maximal relevance (MRMR)\nomenclature{MRMR}{Minimal Redundancy Maximal Relevance}. 
+The list of features at this point is too big and may contain uncorrelated features that might lead to performance degradation of the classifier. Two methods for this are compared, principal component analysis (PCA) and minimal redundancy maximal relevance (MRMR)\newacronym{MRMR}{MRMR}{Minimal Redundancy Maximal Relevance}. 
 
 \npar
 
@@ -248,7 +248,7 @@ Note that incremental search methods exists and are often used in practice. Afte
 
 \clearpage
 
-For the classification, three conventional and one newly developed pattern classifiers were compared. k-nearest neighbors (KNN) \nomenclature{KNN}{k-nearest neightbors}, logistic regression (LR)\nomenclature{LR}{Logistic Regression}, Support Vector Machines (SVM) and Graph regularized Extreme Learning Machine (GELM) \nomenclature{GELM}{Graph regularized Extreme Learning Machine}. Extreme Learning Machine (ELM) \nomenclature{ELM}{Extreme Learning Machine} is a single layer feed forward neural network\citep{ELMpaper}. GELM is based on the idea that similar shapes should have similar properties and obtains better results for face recognition \citep{GELMpaper} and as the paper concludes, also for emotion classification.
+For the classification, three conventional and one newly developed pattern classifiers were compared. k-nearest neighbors (KNN) \newacronym{KNN}{KNN}{k-nearest neightbors}, logistic regression (LR)\newacronym{LR}{LR}{Logistic Regression}, Support Vector Machines (SVM) and Graph regularized Extreme Learning Machine (GELM) \newacronym{GELM}{GELM}{Graph regularized Extreme Learning Machine}. Extreme Learning Machine (ELM) \newacronym{ELM}{ELM}{Extreme Learning Machine} is a single layer feed forward neural network\citep{ELMpaper}. GELM is based on the idea that similar shapes should have similar properties and obtains better results for face recognition \citep{GELMpaper} and as the paper concludes, also for emotion classification.
 
 \npar
 
@@ -256,7 +256,7 @@ The study found then performed a study on the different features and concluded t
 
 \subsection{EEG-based emotion recognition in music listening}
 
-This study\citep{emorecoghard} uses EEG features to recognize 4 different discrete emotions (joy, anger, sadness, pleasure) induced by music. They compared four different feature sets on 6 different wavebands: RASM and DASM of 12 channelpairs, raw PSD of the 24 channels and PSD of 30 channels (including 6 midline channels). The compared set of wavebands consists of: alpha, beta, gamma, delta, tetha and all wavebands. These features were fed to two different classifiers, one Multilayer perceptron (MLP) \nomenclature{MLP}{Multilayer Perceptron} and an SVM. 
+This study\citep{emorecoghard} uses EEG features to recognize 4 different discrete emotions (joy, anger, sadness, pleasure) induced by music. They compared four different feature sets on 6 different wavebands: RASM and DASM of 12 channelpairs, raw PSD of the 24 channels and PSD of 30 channels (including 6 midline channels). The compared set of wavebands consists of: alpha, beta, gamma, delta, tetha and all wavebands. These features were fed to two different classifiers, one Multilayer perceptron (MLP) \newacronym{MLP}{MLP}{Multilayer Perceptron} and an SVM. 
 
 \npar
 
@@ -264,11 +264,11 @@ Their main results were that the DASM features worked better than the RASM featu
 
 \subsection{Comparing selected methods for feature extraction and classification}
 
-In this comparitive study four distrinct emotions (joy, anger,sadness and pleasure) were classified \citep{PhytoEm}. The emotions were triggered by songs that were selected for each subject. The subjects were instructed to select songs themselves, that trigger memories. These memories should in turn, trigger the desired emotions. The four emotional states were mapped in the valence-arousal model. The used features were typical statistical values of physiological signals (Skin Conductivity (SC)\nomenclature{SC}{Skin conductivity}, Electrocardiogram (ECG), Electromygraphy (EMG) and Respiration rate (RSP). 
+In this comparitive study four distrinct emotions (joy, anger,sadness and pleasure) were classified \citep{PhytoEm}. The emotions were triggered by songs that were selected for each subject. The subjects were instructed to select songs themselves, that trigger memories. These memories should in turn, trigger the desired emotions. The four emotional states were mapped in the valence-arousal model. The used features were typical statistical values of physiological signals (Skin Conductivity (SC)\newacronym{SC}{SC}{Skin conductivity}, Electrocardiogram (ECG), Electromygraphy (EMG) and Respiration rate (RSP). 
 
 \npar 
 
-Several feature selection techniques were compared. The first one is the analysis of Variance (ANOVA) \nomenclature{ANOVA}{Analysis of Variance} where the best D features were taken. Sequential forward selection (SFS) \nomenclature{SFS}{Sequential Forward Selection}, where the algorithm starts with an empty feature set and then introduces a new feature in each iteration. Sequential backward selection (SBS) \nomenclature{SBS}{Sequential Backward Selection} is an alternative, where a feature is removed in each iteration. These feature selection methods were also compared to two dimensionality reduction methods: PCA and Fisher projection. 
+Several feature selection techniques were compared. The first one is the analysis of Variance (ANOVA) \newacronym{ANOVA}{ANOVA}{Analysis of Variance} where the best D features were taken. Sequential forward selection (SFS) \newacronym{SFS}{SFS}{Sequential Forward Selection}, where the algorithm starts with an empty feature set and then introduces a new feature in each iteration. Sequential backward selection (SBS) \newacronym{SBS}{SBS}{Sequential Backward Selection} is an alternative, where a feature is removed in each iteration. These feature selection methods were also compared to two dimensionality reduction methods: PCA and Fisher projection. 
 
 \npar
 
@@ -465,7 +465,7 @@ Back in the original feature space the separation boundary might look like Figur
 \mijnfiguur{width=0.5\textwidth}{SVM5}{Separation boundary in the original feature space.} 
 
 \subsubsection{Linear discriminant analysis}
-Linear Discriminant Analysis (LDA)\nomenclature{LDA}{Linear Disciminant Analysis}, is a machine learning technique often used in combination with CSP\cite{ErrorPotentials,svmldacomp,currTrends}. LDA looks for a projection of the data where the data is linearly separable, as shown in Figure \ref{lda}. Looking at the coefficients of the LDA model, one can again determine the importance of the different features.
+Linear Discriminant Analysis (LDA)\newacronym{LDA}{LDA}{Linear Disciminant Analysis}, is a machine learning technique often used in combination with CSP\cite{ErrorPotentials,svmldacomp,currTrends}. LDA looks for a projection of the data where the data is linearly separable, as shown in Figure \ref{lda}. Looking at the coefficients of the LDA model, one can again determine the importance of the different features.
 
 \mijnfiguur{width=0.7\textwidth}{lda}{LDA finds a projection of the data where the separation of the data is clear.}
 
@@ -481,11 +481,11 @@ Ridge regression uses L2 regularization, which add a L2 norm penalty to the loss
 
 \subsubsection{Random forests}
 \label{rfexpl}
-A random forest (RF) \nomenclature{RF}{Random Forests} is an efficient learning algorithm based on model bagging and aggregation ideas\citep{rfPaper}. The Random forests work by creating different decision trees. On their own, decision trees are very prone to overfitting. Random forests solve this problem by creating an aggregation of trees. 
+A random forest (RF) \newacronym{RF}{RF}{Random Forests} is an efficient learning algorithm based on model bagging and aggregation ideas\citep{rfPaper}. The Random forests work by creating different decision trees. On their own, decision trees are very prone to overfitting. Random forests solve this problem by creating an aggregation of trees. 
 
 \npar
 
-The word random in random forest indicates that some randomness is included. Each tree in a random forest looks at a random subset of the samples and a random subset of the features. This principle is shown in Figure \ref{RF}. This random subset of samples is called the bootstrap sample and is selected out of N samples, by picking N samples with replacement. This results, on average, in 2/3 of the samples being selected (with some doubles). The other 1/3 of the samples are then used as out of bag (oob) \nomenclature{OOB}{Out of Bag} set. Averaging the performance of each tree on the out of bag set, offers an indication of the generalisation of the random forest.
+The word random in random forest indicates that some randomness is included. Each tree in a random forest looks at a random subset of the samples and a random subset of the features. This principle is shown in Figure \ref{RF}. This random subset of samples is called the bootstrap sample and is selected out of N samples, by picking N samples with replacement. This results, on average, in 2/3 of the samples being selected (with some doubles). The other 1/3 of the samples are then used as out of bag (oob) \newacronym{OOB}{OOB}{Out of Bag} set. Averaging the performance of each tree on the out of bag set, offers an indication of the generalisation of the random forest.
 
 \mijnfiguur{width=0.9\textwidth}{RF}{The structure of a random forest, found at \citep{rfPic}}
 
@@ -548,7 +548,7 @@ This problem does not occur for random forest though, as combinations of feature
 
 \subsubsection{Principal Component Analysis}
 \label{pcaExaplained}
-Principal Component Analysis (PCA) \nomenclature{PCA}{Principal Component Analysis} is a technique to do dimension reduction. Intuitively, PCA can be seen as fitting an n-dimensional ellipsoid to the data. The Principal components are then the axes of the ellipsoid. Less variation in one direction, corresponds to a smaller axis. Removing that axis, will only remove a small fraction of the information, as there is only little variation in that direction. This is shown in Figure \ref{ellipsoid}, where the ellipsoid covers a three dimensional features space. The ellipsoid has three axes: a,b and c. Intuitively, one can see that there is more variation (information) in the c ans b direction, while the a axis is relatively small.
+Principal Component Analysis (PCA) \newacronym{PCA}{PCA}{Principal Component Analysis} is a technique to do dimension reduction. Intuitively, PCA can be seen as fitting an n-dimensional ellipsoid to the data. The Principal components are then the axes of the ellipsoid. Less variation in one direction, corresponds to a smaller axis. Removing that axis, will only remove a small fraction of the information, as there is only little variation in that direction. This is shown in Figure \ref{ellipsoid}, where the ellipsoid covers a three dimensional features space. The ellipsoid has three axes: a,b and c. Intuitively, one can see that there is more variation (information) in the c ans b direction, while the a axis is relatively small.
 
 \mijnfiguur{width=0.7\textwidth}{ellipsoid}{Suppose a three-dimensional feature space, where all points lie in the ellipsoid in the left.}
 

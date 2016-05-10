@@ -99,3 +99,5 @@ dumpedData/
 .idea/
 
 dumpedData*
+scriptie/scriptie.glsdefs
+*.glsdefs
