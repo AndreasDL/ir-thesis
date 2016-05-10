@@ -47,7 +47,7 @@ Additionally facial video for 22 of the 32 subjects was recorded, so research of
 
 For assessment of these scales self-assessment manikins (SAM)\nomenclature{SAM}{self-assessment manikins} were used\cite{DEAP}. SAM visualizes the valence, arousal and dominance scales with pictures. Each picture corresponds to a discrete value. The user can click anywhere in between the different figures, which makes the scales continuous. All dimensions are given by a continuous value between 1 and 9.
 
-\npar
+\clearpage
 
 The used SAM figures are shown in Figure \ref{SAM}. The first row gives the valence scale, ranging from sad to happy. The second row shows the arousal scale, ranging from bored to excited. The last row represents the different dominance levels. The left figure represents a submissive experience, while the right figure corresponds with a dominant experience.
 
@@ -136,17 +136,17 @@ The heart rate extraction is done in two steps. In the first step the plethysmog
 
 The combination of a local minimum and maximum correspond to a heart beat\citep{DEAP}. Therefore, the time between two consecutive local minima or maxima correspond to the time between two heart beats, known as the interbeat interval. Getting the average heart rate from the interbeat interval is straight forward. Lastly, the skin temperature of the subject is also available.
 
+\clearpage
+
 \subsection{Overview}
 
 The following table gives an overview of the different features and their amount. The 32 EEG channels can be found in Table \ref{DEAPSignals}. There are 6 frequency bands: Alpha, Beta, Gamma, Delta, Theta and All. All refers to taking the total power of a channel. Note that the fractions only have 5 different frequency bands, as the percentage of all power would always be 100$\%$. 
 
-\clearpage
-
-\begin{table}[]
+\begin{table}[H]
 \centering
 \begin{tabular}{lllll}
 \textbf{Name}           & \textbf{Type} & \textbf{no. Channels}   & \textbf{no. Frequency bands} & \textbf{Total} \\
-\textbf{PSD}            & eeg           & 32                            & 6                         & 192          \\
+\textbf{PSD}            & EEG           & 32                            & 6                         & 192          \\
 \textbf{DE}             & eeg           & 32                            & 6                         & 192          \\
 \textbf{DASM}           & eeg           & 13                            & 6                         & 78           \\
 \textbf{RASM}           & eeg           & 13                            & 6                         & 78           \\
@@ -177,11 +177,11 @@ Reducing the feature set in size is another possibility. Two methods exists, dim
 
 \npar
 
-This problem is even more severe in cross-subject emotion recognition system. Here, it is not possible to simply take a limited subset of features. Physiological signals are very personal by nature \citep{DEAP}. Selecting features that work for one person, might therefore not work well on different persons.
+This problem is even more severe in cross-person emotion recognition system. Here, it is not possible to simply take a limited subset of features. Physiological signals are very personal by nature \citep{DEAP}. Selecting features that work for one person, might therefore not work well on different persons.
 
 \section{State of the art}
 \label{sota}
-This section will give an overview of similar studies and their conclusions. Some of these studies also did some research on cross-subject emotion recognition. Emotion recognition is still in its infancy\citep{emorecoghard} and subject independent features are hard to find \citep{DEAP}. Therefore, research is aimed more towards person specific emotion recognition systems.
+This section will give an overview of similar studies and their conclusions. Some of these studies also did some research on cross-person emotion recognition. Emotion recognition is still in its infancy\citep{emorecoghard} and subject independent features are hard to find \citep{DEAP}. Therefore, research is aimed more towards person specific emotion recognition systems.
 
 \subsection{DEAP method}
 The first method of emotion recognition is the DEAP method, described in the DEAP paper\citep{DEAP}, the paper that introduces the DEAP dataset used in this thesis. The research found that Valence shows the strongest correlations with the EEG signals. Additionally the study found correlations in all frequency bands, with an increase in power for the lower range wavebands for an increase in valence. These effects occur in the occipital regions of the brain, above the visual cortices. This might indicate that the subject is focussing on a pleasurable sound. A central decrease in beta power was observed together with a occipital and right temporal increase in power for positive emotions. The research conclude that these observed correlations concur with other neurological studies. The absolute value of the correlations are seldom bigger than $0.1$ for a cross person setting. This indicates that cross person emotion recognition is a non trivial problem. The absolute values of the person specific correlations were around $0.5$.
@@ -246,7 +246,7 @@ $max \varphi(D,R), \varphi=D-R$
 
 Note that incremental search methods exists and are often used in practice. After performing the dimensionality reduction, the samples from the DEAP data set are classified in high / low valence and high/low arousal, giving a total of four classes. All values close to the separation border are removed from the training data, as they might confuse the classifier. 
 
-\npar 
+\clearpage
 
 For the classification, three conventional and one newly developed pattern classifiers were compared. k-nearest neighbors (KNN) \nomenclature{KNN}{k-nearest neightbors}, logistic regression (LR)\nomenclature{LR}{Logistic Regression}, Support Vector Machines (SVM) and Graph regularized Extreme Learning Machine (GELM) \nomenclature{GELM}{Graph regularized Extreme Learning Machine}. Extreme Learning Machine (ELM) \nomenclature{ELM}{Extreme Learning Machine} is a single layer feed forward neural network\citep{ELMpaper}. GELM is based on the idea that similar shapes should have similar properties and obtains better results for face recognition \citep{GELMpaper} and as the paper concludes, also for emotion classification.
 
@@ -312,7 +312,7 @@ In the end the paper notes several observations, the step two-prediction method 
 
 \section{Contribution of this thesis}
 
-It is clear from the aforementioned papers, that some research has already been done for emotion recognition. The contribution of this thesis is threefold, first compare a bigger ranger of feature selection methods on a bigger set of physiological features. Second, compare EEG features to non-EEG features to see how much information can be retrieved from the EEG signals compared to the non-EEG signals, which are usually easier to obtain. Third, perform the feature selection methods in a cross-subject setting to see which feature generalise well across subjects. It is also important to note that the feature selection will be performed on the DEAP dataset, so that it can serve as a benchmark. This is important as performance of emotion recognition algorithms based on physiological signals often varies a lot for different datasets\citep{PhytoEm}.
+It is clear from the aforementioned papers, that some research has already been done for emotion recognition. The contribution of this thesis is threefold, first compare a bigger ranger of feature selection methods on a bigger set of physiological features. Second, compare EEG features to non-EEG features to see how much information can be retrieved from the EEG signals compared to the non-EEG signals, which are usually easier to obtain. Third, perform the feature selection methods in a cross-person setting to see which feature generalise well across subjects. It is also important to note that the feature selection will be performed on the DEAP dataset, so that it can serve as a benchmark. This is important as performance of emotion recognition algorithms based on physiological signals often varies a lot for different datasets\citep{PhytoEm}.
 
 \section{Feature selection methods}
 \label{FSSel}
@@ -439,6 +439,8 @@ These methods select features by applying an arbitrary machine learning techniqu
 \label{LRBad}
 
 A first method is simple linear regression, where a linear combination of features is searched that produce a good estimate of the output value. Linear regression can achieve good results when the data does not contain a lot of noise and the features are (relatively) independent. When the set of features contains correlated features, the model becomes unstable. As a result, small changes in input data might lead to huge differences in output coefficients. for example assume the 'real output' is given by $Y = X_1 + X_2$ and the dataset contains output in the form of $Y = X_1 + X_2 + \epsilon$ with $\epsilon$ being some random noise. Further more assume that $X_1$ and $X_2$ are linearly correlated, meaning that $X_1 \approx X_2$. The suspected output of the model should be $Y = X_1 + X_2$, but since noise is added the algorithm might end up with arbitrary combinations of $X_1$ and $X_2$, e.g. $Y = -X_1 + 3X_2$. the result will rate one feature much higher than another one, while in reality they are of equal importance. This is due to the noise. While maximizing the performance, the algorithm will minimize the influence of noise on the output, which results in unstable behaviour.
+
+\clearpage
 
 \subsubsection{SVM}
 

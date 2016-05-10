@@ -1,18 +1,18 @@
 \chapter{Results - Cross-subject}
 {\samenvatting This chapter focusses on features that work well for emotion recognition of different persons. The contents are as follows, first the difference with the person specific approach is explained. Next the performance of different feature selection methods is compared. Then the important features and EEG channels are discussed. This chapters ends with a discussion about the stability of the methods.}
 
-The second part of this work was to search for features that work well in a cross-subject setting, meaning that the model was trained on one set of persons and then tested on another set, containing different persons. This part is more challenging because physiological signals are very personal from nature \ref{DEAPSignals}.
+The second part of this work was to search for features that work well in a cross-person setting, meaning that the model was trained on one set of persons and then tested on another set, containing different persons. This part is more challenging because physiological signals are very personal from nature \ref{DEAPSignals}.
 
 \section{Approach}
 
 The approach from Section \ref{approach} was modified slightly. The main difference is that the splits in test and train set as well as the cross validation was based on persons. Once a single sample from a person is placed in a set, all his other samples are added as well. Special care was taken to ensure that the random forest would also work correctly. The problem with random forest is that it creates an out of bag sample, as explained in Section \ref{rfexpl}. Because this out of bag sample is used for validation, a custom random forest was created. This random forest splits the out of bag sample based on the different persons.
 
 \section{Performance}
-The performance of the different algorithms is depicted in Figure \ref{accComp_arousalSVM_gen} for arousal and Figure \ref{accComp_valenceSVM_gen} for valence. The legend, combined with an overview of the accuracy values is given in Table \ref{genacctable}. The performance in a cross-subject setting is lower than the aforementioned person specific results. This is not surprising, considering that EEG data is very personal by nature. A person specific classifier, using the random forest's build-in feature selection method, achieves a test accuracy around of 70\% (stdev. of 14) for arousal and 73\% (stdev. of 13) for valence.
+The performance of the different algorithms is depicted in Figure \ref{accComp_arousalSVM_gen} for arousal and Figure \ref{accComp_valenceSVM_gen} for valence. The legend, combined with an overview of the accuracy values is given in Table \ref{genacctable}. The performance in a cross-person setting is lower than the aforementioned person specific results. This is not surprising, considering that EEG data is very personal by nature. A person specific classifier, using the random forest's build-in feature selection method, achieves a test accuracy around of 70\% (stdev. of 14) for arousal and 73\% (stdev. of 13) for valence.
 
 \npar
 
-The performance of the cross-subject classifier is 63\% for arousal and 55\% for valence. This is a drop of 7 \% and 18 \%. The performance for the arousal classification is lower in a person specific setting, but remains relatively more stable stable in a cross person setting than valence classification. The performance of the valence classification, on the other hand, takes a huge drop. This might indicate that the physiological reactions with respect to valence, might be more person specific. Another explanation might be that users are more consistent when rating arousal, than rating values. This would mean that everyone has more of less the same idea of active and inactive, while happy and unhappy are less strictly defined.
+The performance of the cross-person classifier is 63\% for arousal and 55\% for valence. This is a drop of 7 \% and 18 \%. The performance for the arousal classification is lower in a person specific setting, but remains relatively more stable stable in a cross-person setting than valence classification. The performance of the valence classification, on the other hand, takes a huge drop. This might indicate that the physiological reactions with respect to valence, might be more person specific. Another explanation might be that users are more consistent when rating arousal, than rating values. This would mean that everyone has more of less the same idea of active and inactive, while happy and unhappy are less strictly defined.
 
 \begin{table}[H]
 \centering
@@ -33,9 +33,9 @@ The performance of the cross-subject classifier is 63\% for arousal and 55\% for
 \caption{The different feature selection methods and their labels\label{genacctable}.}
 \end{table}
 
-\mijnfiguur{width=1.\textwidth}{accComp_arousalSVM_gen}{Comparison of different feature selection methods for arousal recognition in a cross subject setting. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
+\mijnfiguur{width=1.\textwidth}{accComp_arousalSVM_gen}{Comparison of different feature selection methods for arousal recognition in a cross-person setting. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
 
-\mijnfiguur{width=1.\textwidth}{accComp_valenceSVM_gen}{Comparison of different feature selection methods for valence recognition in a cross subject setting. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
+\mijnfiguur{width=1.\textwidth}{accComp_valenceSVM_gen}{Comparison of different feature selection methods for valence recognition in a cross-person setting. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
 
 \section{Correlation probability and level of valence/arousal}
 
@@ -68,9 +68,9 @@ For arousal, the correlations are quite low, even negative. The distance correla
 \caption{The correlations between the prediction probability of the different feature selection methods and the distance to the separation boundary\label{corrsCompLblGen}.}
 \end{table}
 
-\mijnfiguur{width=1.\textwidth}{arousal_corrs_gen}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of arousal and the separation boundary in a cross-subject setting.}
+\mijnfiguur{width=1.\textwidth}{arousal_corrs_gen}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of arousal and the separation boundary in a cross-person setting.}
 
-\mijnfiguur{width=1.\textwidth}{valence_corrs_gen}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of valence and the separation boundary in a cross-subject setting.}
+\mijnfiguur{width=1.\textwidth}{valence_corrs_gen}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of valence and the separation boundary in a cross-person setting.}
 
 
 \section{Selected features}
@@ -233,9 +233,9 @@ Similar things can be observed for valence. Again, the asymmetry features are pr
 To further look at the difference between EEG and non-EEG features, the random forest selection method was again used three times. The first time, all features were available. The second and third time, only EEG and non-EEG features were available respectively. The results are shown in Figure \ref{arousalphyeegall_gen}, for arousal and Figure \ref{valencephyeegall_gen} for valence. The exact values are shown in Table \ref{phyeegallgenTable}.
 
 
-\mijnfiguur{width=1.\textwidth}{arousalphyeegall_gen}{The performance of arousal prediction for all, EEG and non-EEG features in a cross-subject setting.}
+\mijnfiguur{width=1.\textwidth}{arousalphyeegall_gen}{The performance of arousal prediction for all, EEG and non-EEG features in a cross-person setting.}
 
-\mijnfiguur{width=1.\textwidth}{valencephyeegall_gen}{The performance of valence prediction for all, EEG and non-EEG features in a cross-subject setting.}
+\mijnfiguur{width=1.\textwidth}{valencephyeegall_gen}{The performance of valence prediction for all, EEG and non-EEG features in a cross-person setting.}
 
 \begin{table}[H]
 \centering
@@ -248,7 +248,7 @@ To further look at the difference between EEG and non-EEG features, the random f
 \caption{The test accuracies for both arousal and valence, using different feature sets.\label{phyeegallgenTable}}
 \end{table}
 
-Comparing Table \ref{phyeegallgenTable} with Table \ref{phyeegalltable}, one can see that the difference in accuracy between non-EEG features and all and/or EEG features only is much smaller. This is an indication that the non-EEG features might work better in a cross subject setting. The reason that the feature selection methods select only EEG features might be due to the fact there are more EEG features available. Given that EEG features often contain a lot of noise, chances are that the selection methods are able to find EEG features that fit the limit sample set well. 
+Comparing Table \ref{phyeegallgenTable} with Table \ref{phyeegalltable}, one can see that the difference in accuracy between non-EEG features and all and/or EEG features only is much smaller. This is an indication that the non-EEG features might work better in a cross-person setting. The reason that the feature selection methods select only EEG features might be due to the fact there are more EEG features available. Given that EEG features often contain a lot of noise, chances are that the selection methods are able to find EEG features that fit the limit sample set well. 
 
 \npar
 
@@ -258,7 +258,7 @@ To find out which non-EEG feature might be useful, the selected non-EEG features
 
 \begin{figure}[!tbp]
   \centering
-  \caption{Selection features for arousal classification, using only non-EEG features in a cross-subject setting.\label{arousalnon-EEGpiesgen}}
+  \caption{Selection features for arousal classification, using only non-EEG features in a cross-person setting.\label{arousalnon-EEGpiesgen}}
   \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{arousalnon-EEGpearsonRgen}
     \caption{Pearson correlation}
@@ -324,7 +324,7 @@ To find out which non-EEG feature might be useful, the selected non-EEG features
 
 \begin{figure}[!tbp]
   \centering
-  \caption{Selection features for valence classification, using only non-EEG features in a cross-subject setting.\label{valencenon-EEGpiesgen}}
+  \caption{Selection features for valence classification, using only non-EEG features in a cross-person setting.\label{valencenon-EEGpiesgen}}
   \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{valencenon-EEGpearsonRgen}
     \caption{Pearson correlation}
@@ -412,7 +412,7 @@ For valence the features are:
 \item frac P3, delta band
 \end{enumerate}
 
-In a cross person setting, the DCAU features seem to perform well. These features are selected from front and posterior channels. However these results should be treated with caution, especially in case of valence, which only obtained a test accuracy of 55\%. If the classifier was not able to predict the emotional states well, one can doubt the selected features. 
+In a cross-person setting, the DCAU features seem to perform well. These features are selected from front and posterior channels. However these results should be treated with caution, especially in case of valence, which only obtained a test accuracy of 55\%. If the classifier was not able to predict the emotional states well, one can doubt the selected features. 
 
 \section{Stability}
 TODO
