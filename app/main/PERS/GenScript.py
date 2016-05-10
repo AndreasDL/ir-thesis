@@ -488,7 +488,7 @@ class GenScript():
             corr = pearsonr(dists, probs)[0]
             f.write(str(corr) + ';')
 
-            f.write('\n')
+        f.write('\n')
         f.close()
 
     def genAccReport(self):

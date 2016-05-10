@@ -15,7 +15,7 @@ matplotlib.rc('font', **font)
 matplotlib.rcParams['axes.titlesize'] = 25
 matplotlib.rcParams['axes.labelsize'] = 25
 
-def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../results/plots/"):
+def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../results/plots/", type='normal'):
 
     fname = fpad + 'accComp_' + str(title) + '.png'
 
@@ -38,22 +38,22 @@ def genPlot(avgs,stds,lbls,title,xLbl= '', yLbl='',bar_colors=None,fpad="../resu
             yerr=std,
             label=str(i) + " - " + lbls[i]
         )
-    type = 'normal'
     if type == 'normal':
         #normal
         plt.xticks(range(0, len(avgs), 1))
         plt.yticks(np.arange(0,10,0.1))
         plt.xlim([-0.2, len(avgs)])
         plt.ylim([0,1])
+
+        ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.2),
+            ncol=3, fancybox=True, shadow=True)
+
     else:
         #corrs
         plt.xticks(range(0, len(avgs), 1))
         plt.yticks(np.arange(-10,10,0.1))
         plt.xlim([-0.2, len(avgs)])
         plt.ylim([-1,1])
-
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 0.2),
-        ncol=3, fancybox=True, shadow=True)
 
     ax.set_xlabel(xLbl)
     ax.set_ylabel(yLbl)
@@ -397,7 +397,7 @@ def corrs():
         vals = np.array(line[2:])
         vals = vals[sort_indices]
 
-        genPlot(vals,[0 for val in vals],names,'Correlation predict probability and level of '+ str(dim),'FS method','Pearson correlation')
+        genPlot(vals,[0 for val in vals],names,'Correlation predict probability and level of '+ str(dim),'FS method','Pearson correlation', type='corrs')
 
 
 
@@ -565,8 +565,32 @@ def pieplotsgen():
     plt.close()
     f.close()
 
+def corrs_gen():
+    names = np.array(['pearson R', 'Mutual information', 'Distance correlation',
+                      'Linear regression', 'Lasso regression', 'Ridge regression',
+                      'SVM', 'Random forest', 'STD',
+                      'ANOVA', 'LDA', 'PCA']
+                     )
+
+    sort_indices = np.array([0, 1, 2, 8, 3, 6, 9, 4, 5, 7, 10])  # TODO PCA
+    names = names[sort_indices]
+
+    f = open('../results/corrs_gen.csv')
+    f.readline()
+    for line in f:
+        line = line.split(';')
+
+        dim, featset = line[0], line[1]
+
+        vals = np.array(line[2:])
+        vals = vals[sort_indices]
+
+        genPlot(vals, [0 for val in vals], names, 'Correlation predict probability and level of ' + str(dim), 'FS method', 'Pearson correlation', type='corrs')
+
+    f.close()
+
 if __name__ == '__main__':
-    phyeegall_gen()
+    corrs_gen()
 
 
 

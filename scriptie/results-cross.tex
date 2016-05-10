@@ -38,8 +38,40 @@ The performance of the cross-subject classifier is 63\% for arousal and 55\% for
 \mijnfiguur{width=1.\textwidth}{accComp_valenceSVM_gen}{Comparison of different feature selection methods for valence recognition in a cross subject setting. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
 
 \section{Correlation probability and level of valence/arousal}
-TODO
-%TODO
+
+The correlation between the prediction probability of a model and the distance of the arousal/valence level from the separation boundary was also research. In an ideal scenario, samples with a clear valence rating, i.e. far from the separation boundary, e.g. 9, should be easier to predict than one with a valence rating close to the separation boundary, e.g. 5 or 6. A model should be more certain of valence/ arousal values that lie further away from the separation boundary.
+
+\npar
+
+The Pearson correlation coefficients between the prediction probability and the distance to the separation are shown in Table \ref{corrsCompLblGen}. These values were also plotted in Figure \ref{arousal_corrs_gen} and Figure \ref{valence_corrs_gen} for arousal and valence respectively.
+
+%discussion
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llll}
+\textbf{Number} & \textbf{Feature}        & \textbf{arousal} & \textbf{valence} \\
+                & \textbf{selection method} & \textbf{correlation} & \textbf{correlation}\\ \hline
+0               & pearson              & 0.0329           & -0.0600 \\
+1               & mutual information   & 0.0234           & -0.1000 \\
+2               & distance correlation & 0.1563           & -0.1467 \\
+3               & ANOVA                & -0.0079          & 0.0446  \\
+4               & linear regression    & 0.0297           & 0.0058  \\
+5               & SVM                  & -0.0421          & 0.0356  \\
+6               & LDA                  & 0.0009           & 0.0764  \\
+7               & lasso regression     & 0.0725           & 0.0572  \\
+8               & ridge regression     & 0.0043           & -0.0141 \\
+9               & random forests       & -0.0272          & 0.0623  \\
+10              & PCA                  & -0.0611          & -0.0738
+\end{tabular}
+\caption{The correlations between the prediction probability of the different feature selection methods and the distance to the separation boundary\label{corrsCompLblGen}.}
+\end{table}
+
+\mijnfiguur{width=1.\textwidth}{arousal_corrs_gen}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of arousal and the separation boundary in a cross-subject setting.}
+
+\mijnfiguur{width=1.\textwidth}{valence_corrs_gen}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of valence and the separation boundary in a cross-subject setting.}
+
 
 \section{Selected features}
 
