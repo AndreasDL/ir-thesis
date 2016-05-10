@@ -28,6 +28,7 @@ lessen/
 *.bak
 *.nlo
 *.nls
+*.glsdefs
 
 #python
 # Byte-compiled / optimized / DLL files
