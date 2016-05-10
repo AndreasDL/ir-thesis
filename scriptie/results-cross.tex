@@ -16,6 +16,7 @@ The performance of the cross-person classifier is 63\% for arousal and 55\% for 
 
 \begin{table}[H]
 \centering
+\caption{The different feature selection methods and their labels\label{genacctable}.}
 \begin{tabular}{llll}
 \textbf{Number} & \textbf{Feature selection method} & \textbf{Avg test acc - arousal} & \textbf{Avg test acc - valence} \\ \hline
 0               & Pearson R                          & 0.62187                             & 0.51875                             \\
@@ -30,7 +31,6 @@ The performance of the cross-person classifier is 63\% for arousal and 55\% for 
 9               & LDA                               & 0.63438                             & 0.52812                             \\
 10              & PCA                               & 0.62187                             & 0.5375                             
 \end{tabular}
-\caption{The different feature selection methods and their labels\label{genacctable}.}
 \end{table}
 
 \mijnfiguur{width=1.\textwidth}{accComp_arousalSVM_gen}{Comparison of different feature selection methods for arousal recognition in a cross-person setting. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
@@ -51,6 +51,7 @@ For arousal, the correlations are quite low, even negative. The distance correla
 
 \begin{table}[H]
 \centering
+\caption{The correlations between the prediction probability of the different feature selection methods and the distance to the separation boundary\label{corrsCompLblGen}.}
 \begin{tabular}{llll}
 \textbf{Number} & \textbf{FS Method}        & \textbf{corr. arousal} & \textbf{corr. valence} \\ \hline
 0               & Pearson              & 0.03295          & -0.05998         \\
@@ -65,7 +66,6 @@ For arousal, the correlations are quite low, even negative. The distance correla
 9               & random forests       & 0.07254          & 0.05722          \\
 10              & PCA                  & -0.06113861835   & -0.07378720791  
 \end{tabular}
-\caption{The correlations between the prediction probability of the different feature selection methods and the distance to the separation boundary\label{corrsCompLblGen}.}
 \end{table}
 
 \mijnfiguur{width=1.\textwidth}{arousal_corrs_gen}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of arousal and the separation boundary in a cross-person setting.}
@@ -239,13 +239,13 @@ To further look at the difference between EEG and non-EEG features, the random f
 
 \begin{table}[H]
 \centering
+\caption{The test accuracies for both arousal and valence, using different feature sets.\label{phyeegallgenTable}}
 \begin{tabular}{l|ll}
 \textbf{Feat set}  & \textbf{Avg acc - arousal}       & \textbf{Avg acc - valence}          \\ \hline
 \textbf{All}       & 0.6344           & 0.5531           \\
 \textbf{EEG}       & 0.6094           & 0.5656           \\
 \textbf{non-EEG}   & 0.6344           & 0.5531          
 \end{tabular}
-\caption{The test accuracies for both arousal and valence, using different feature sets.\label{phyeegallgenTable}}
 \end{table}
 
 Comparing Table \ref{phyeegallgenTable} with Table \ref{phyeegalltable}, one can see that the difference in accuracy between non-EEG features and all and/or EEG features only is much smaller. This is an indication that the non-EEG features might work better in a cross-person setting. The reason that the feature selection methods select only EEG features might be due to the fact there are more EEG features available. Given that EEG features often contain a lot of noise, chances are that the selection methods are able to find EEG features that fit the limit sample set well. 

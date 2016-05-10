@@ -91,6 +91,7 @@ To further explain how machine learning works, have a look at the following exam
 
 \begin{table}[H]
 \centering
+\caption{total area of different houses and their corresponding asking prices.\label{mlexampleTable}}
 \begin{tabular}{ll}
 \textbf{Area of the house ($m^{2}$)} & \textbf{Price ( x 1000 EUR)} \\
 70                              & 312                          \\
@@ -100,7 +101,6 @@ To further explain how machine learning works, have a look at the following exam
 82                              & 334                          \\
 $\vdots$                        & $\vdots$
 \end{tabular}
-\caption{total area of different houses and their corresponding asking prices.\label{mlexampleTable}}
 \end{table}
 
 One possible way of predicting the asking price of a house is machine learning. Machine learning works in several steps, first you train the machine learning algorithm with a list of asking prices and the corresponding area of the house. This process is called training or fitting and gives the machine learning component an idea to what price corresponds to a house with a certain area. Once trained, the algorithm's output will look like Figure \ref{mlexample}. The black dots represent the data points from Table\ref{mlexampleTable}. The blue line represents the predicted price for different area. The predicted price is simply defined by the total area of the house multiplied by some weight.
@@ -150,6 +150,7 @@ A lot of different physiological features are reported in the literature. Unfort
 
 \begin{table}[H]
 \centering
+\caption{Six different papers on emotion recognition, six different feature sets\label{diffFeat}.}
 \begin{tabular}{ll}
 \textbf{study} & \textbf{features used}                         \\
 \citep{ref4}     & Alpha and beta power                           \\
@@ -159,7 +160,6 @@ A lot of different physiological features are reported in the literature. Unfort
 \citep{ExtendedPaper}	&	alpha/beta ratio, Fpz beta and alpha band power \\
 \citep{killyPaper} & PSD, RCAU, DCAU, DASM, RASM, DE \\
 \end{tabular}
-\caption{Six different papers on emotion recognition, six different feature sets\label{diffFeat}.}
 \end{table}
 
 \npar

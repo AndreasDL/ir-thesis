@@ -9,6 +9,7 @@ One of the most used datasets in the context of emotion recognition is the Datas
 The next part of the dataset is the physiological experiment that contains emotional reactions of 32 subjects. The emotional reactions were triggered using music video excerpts. Each subject watched 40 one-minute videos, while several physiological signals were recorded. These physiological signals consist of 32 channel, 512Hz EEG signals combined with peripheral physiological signals like respiration rate, skin temperature, etc. More concretely, this dataset contains following signals:
 \begin{table}[H]
 \centering
+\caption{The available signals in the DEAP dataset\label{DEAPSignals}.}
 \begin{tabular}{l|ll|l|ll}
 \textbf{Channel} & \textbf{Name} & \textbf{Category} & \textbf{Channel} & \textbf{Name}    & \textbf{Category} \\ \hline
 \textbf{1}       & Fp1           & EEG               & \textbf{21}      & F8               & EEG               \\
@@ -32,7 +33,6 @@ The next part of the dataset is the physiological experiment that contains emoti
 \textbf{19}      & Fz            & EEG               & \textbf{39}      & plethysmograph   & non-EEG           \\
 \textbf{20}      & F4            & EEG               & \textbf{40}      & skin temperature & non-EEG          
 \end{tabular}
-\caption{The available signals in the DEAP dataset\label{DEAPSignals}.}
 \end{table}
 
 \npar
@@ -144,6 +144,7 @@ The following table gives an overview of the different features and their amount
 
 \begin{table}[H]
 \centering
+\caption{An overview of the different features that were compared in this thesis.\label{featOverviewTable}}
 \begin{tabular}{lllll}
 \textbf{Name}           & \textbf{Type} & \textbf{no. Channels}   & \textbf{no. Frequency bands} & \textbf{Total} \\
 \textbf{PSD}            & EEG           & 32                            & 6                         & 192          \\
@@ -166,7 +167,6 @@ The following table gives an overview of the different features and their amount
                         &               &                               &                           &              \\
 \textbf{Overall Total}  & \textbf{894}  &                               &                           &             
 \end{tabular}
-\caption{An overview of the different features that were compared in this thesis.\label{featOverviewTable}}
 \end{table}
 
 The feature set has a size of 894, which is huge considering that there are only 40 samples for each person. Using this many features in combination with the low sample count, will quickly result in overfitting\citep{prml}. To solve this problem, one can either increase the number of samples or decrease the number of features. Increasing the number of samples is hard. Since EEG data is very personal \citep{DEAP}, several recordings of the same subjects are required. 
@@ -530,6 +530,7 @@ The importance is averaged over different nodes and different trees. As a result
 
 \begin{table}[H]
 \centering
+\caption{Some feature are not significant on its own, but a might be part of a combination of features.\label{featPair}}
 \begin{tabular}{lll}
 \textbf{label} & \textbf{feature A} & \textbf{feature B} \\
 \textbf{Happy} & +                  & +                  \\
@@ -537,7 +538,6 @@ The importance is averaged over different nodes and different trees. As a result
 \textbf{Sad}   & -                  & +                  \\
 \textbf{Sad}   & +                  & -                 
 \end{tabular}
-\caption{Some feature are not significant on its own, but a might be part of a combination of features.\label{featPair}}
 \end{table}
 
 It is clear that feature A and B are very important when it comes to predicting whether or not a person is happy or sad. When both features have the same sign, the person is happy, otherwise he is not. Combinations of features are often not found by feature selection methods as they look for correlations between a single feature and the output.

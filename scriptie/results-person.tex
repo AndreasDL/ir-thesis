@@ -59,6 +59,7 @@ For each feature selection method, the test accuracy and standard deviation are 
 
 \begin{table}[H]
 \centering
+\caption{The different feature selection methods, their average test accuracy and their standard deviation for arousal\label{accCompLblarousal}.}
 \begin{tabular}{llll}
 \textbf{Number} & \textbf{Feature selection method} & \textbf{Avg test acc - arousal} & \textbf{Std test acc - arousal} \\ \hline
 0               & pearson                           & 0.68125                             & 0.1615199978                    \\
@@ -73,13 +74,13 @@ For each feature selection method, the test accuracy and standard deviation are 
 9               & random forests                    & 0.7                                 & 0.1391216687                    \\
 10              & PCA                               & 0.578125                            & 0.1518368713                   
 \end{tabular}
-\caption{The different feature selection methods, their average test accuracy and their standard deviation for arousal\label{accCompLblarousal}.}
 \end{table}
 
 \mijnfiguur{width=1.\textwidth}{accComp_valenceSVM}{Comparison of different feature selection methods for valence recognition. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
 
 \begin{table}[H]
 \centering
+\caption{The different feature selection methods, their average test accuracy and their standard deviation for valence\label{accCompLblvalence}.}
 \begin{tabular}{llll}
 \textbf{Number} & \textbf{Feature selection method} & \textbf{Avg test acc - arousal} & \textbf{Std test acc - arousal} \\ \hline
 0               & pearson                           & 0.6875                              & 0.1313699529                    \\
@@ -94,7 +95,6 @@ For each feature selection method, the test accuracy and standard deviation are 
 9               & random forests                    & 0.7375                              & 0.1313699529                    \\
 10              & PCA                               & 0.6                                 & 0.1586231078                   
 \end{tabular}
-\caption{The different feature selection methods, their average test accuracy and their standard deviation for valence\label{accCompLblvalence}.}
 \end{table}
 
 \section{Correlation probability and level of valence/arousal}
@@ -115,6 +115,7 @@ One reason for these low correlations might be that the used model is an SVM wit
 
 \begin{table}[H]
 \centering
+\caption{The different feature selection methods and their labels\label{corrsCompLbl}.}
 \begin{tabular}{llll}
 \textbf{Number} & \textbf{What}        & \textbf{arousal} & \textbf{valence}  \\ \hline
 0               & pearson              & 0.03797          & 0.00957  \\
@@ -129,7 +130,6 @@ One reason for these low correlations might be that the used model is an SVM wit
 9               & random forests       & 0.00439          & 0.10738  \\
 10              & PCA                  & 0.02182          & 0.00875 
 \end{tabular}
-\caption{The different feature selection methods and their labels\label{corrsCompLbl}.}
 \end{table}
 
 \mijnfiguur{width=1.\textwidth}{arousal_corrs}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of arousal and the separation boundary.}
@@ -311,6 +311,7 @@ The resulting performances of these different features sets are displayed in Fig
 
 \begin{table}[H]
 \centering
+\caption{The average and standard deviation of the test accuracies (over the different persons) for the different feature sets, using the random forest feature selection model.\label{phyeegalltable}}
 \begin{tabular}{l|ll|ll}
          & \textbf{Arousal} &         & \textbf{Valence} &         \\
 \textbf{Feat set} & \textbf{avg acc} & \textbf{std acc} & \textbf{avg acc} & \textbf{std acc} \\ \hline 
@@ -318,18 +319,17 @@ The resulting performances of these different features sets are displayed in Fig
 \textbf{EEG}      & 0.7188  & 0.1310  & 0.7281  & 0.1179  \\
 \textbf{non-EEG}  & 0.6031  & 0.1425  & 0.6031  & 0.1591 
 \end{tabular}
-\caption{The average and standard deviation of the test accuracies (over the different persons) for the different feature sets, using the random forest feature selection model.\label{phyeegalltable}}
 \end{table}
 
 It is clear that for both valence and arousal, the average test performances are lower in case only non-EEG features are used. However the difference was not significant. The two sided p-values for each pair of features sets, are displayed in Table \ref{pvals} below:
 
 \begin{table}[H]
 \centering
+\caption{P-values\label{pvals}}
 \begin{tabular}{l|lll}
 	    & \textbf{all / eeg} & \textbf{all / phy} & \textbf{eeg / phy} \\ \hline
 \textbf{P-value} & 0.2225             & 0.79999            & 0.7955            
 \end{tabular}
-\caption{P-values\label{pvals}}
 \end{table}
 \clearpage
 
@@ -637,6 +637,7 @@ Another component of this work is to dig into the EEG features and find out whic
 At first it seems that there is no agreement on the channels, one possible reason for this, might be that electrodes are not placed exactly. Even though the 10/20 system defines the different locations quite well, it is still possible that small variations in the locations exists. Grouping the channels might give a more clear view of the important regions of the brain. The channels were grouped as follows: 
 \begin{table}[H]
 \centering
+\caption{The region for each EEG channel}
 \begin{tabular}{ll|ll|ll|ll}
 \textbf{Channel} & \textbf{Region} & \textbf{Channel} & \textbf{Region} & \textbf{Channel} & \textbf{Region}      & \textbf{Channel} & \textbf{Region}     \\ \hline
 \textbf{Fp1}     & front left      & \textbf{CP5}     & back left       & \textbf{Fp2}     & front right & \textbf{C4}      & back right \\
@@ -648,7 +649,6 @@ At first it seems that there is no agreement on the channels, one possible reaso
 \textbf{C3}      & back left       & \textbf{Oz}      & midline         & \textbf{FC2}     & front right & \textbf{PO4}     & back right \\
 \textbf{T7}      & back left       & \textbf{Pz}      & midline         & \textbf{Cz}      & midline     & \textbf{O2}      & back right
 \end{tabular}
-\caption{The region for each EEG channel}
 \end{table}
 
 These Region are also depicted in Figure \ref{regions}.
@@ -683,6 +683,7 @@ The same principle can be done for the asymmetry features, here a distinction wa
 %table
 \begin{table}[H]
 \centering
+\caption{the region for each DASM and RASM channel pair\label{ASMgroupTable}}
 \begin{tabular}{ll|ll}
 \textbf{Channel pair} & \textbf{Group} & \textbf{Channel pair} & \textbf{Group} \\ \hline
 Fp1,Fp2               & front          & C3,C4                 & back           \\
@@ -693,7 +694,6 @@ FC5,FC6               & front          & P3,P4                 & back           
 FC1,FC2               & front          & P7,P8                 & back           \\
                       &                & PO3,PO4               & back          
 \end{tabular}
-\caption{the region for each DASM and RASM channel pair\label{ASMgroupTable}}
 \end{table}
 
 \begin{figure}[H]
@@ -723,6 +723,7 @@ The caudality features also measure asymmetry, but between a frontal and posteri
 %table
 \begin{table}[H]
 \centering
+\caption{The region for each corresponding DASM and RASM channel pair\label{CAUgroupTable}.}
 \begin{tabular}{ll|ll}
 \textbf{Channel pair} & \textbf{Group} & \textbf{Channel pair} & \textbf{Group} \\ \hline
 FC5,CP5               & left           & FC6,CP6               & right          \\
@@ -732,7 +733,6 @@ F7,P7                 & left           & F8,P8                 & right          
 Fp1,O1                & left           & Fp2,O2                & right          \\
 Fz,Pz                 & Fz/Pz          &                       &                \\
 \end{tabular}
-\caption{The region for each corresponding DASM and RASM channel pair\label{CAUgroupTable}.}
 \end{table}
 
 \begin{figure}[H]
