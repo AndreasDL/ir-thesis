@@ -139,8 +139,11 @@
 \pagestyle{fancy}
 \frontmatter
 
+\setcounter{page}{6}
+
 % inhoudstafel
 \tableofcontents
+\addcontentsline{toc}{chapter}{Table of Contents}
 
 % eventueel: lijst van figuren en tabellen
 \listoffigures
@@ -156,7 +159,7 @@
 \setlength{\parskip}{0.5\baselineskip plus 0.5ex minus 0.2ex}
 \setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
 
-\renewcommand{\thepage}{\arabic{page}}
+%\renewcommand{\thepage}{\arabic{page}}
 
 % hoofdstukken
 \mainmatter
