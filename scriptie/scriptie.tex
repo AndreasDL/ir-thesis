@@ -126,6 +126,7 @@
 
 % geen paginanummering tot we aan de inhoudsopgave komen
 \pagestyle{empty}
+\renewcommand{\thepage}{\roman{page}}
 
 % voorwoord met dankwoord en toelating tot bruikleen (ondertekend)
 \include{preface}
@@ -133,7 +134,7 @@
 % abstract
 \include{abstract}
 
-%\include{extendedAbstract} %TODO
+\include{extendedAbstract} %TODO
 
 \pagestyle{fancy}
 \frontmatter
@@ -145,8 +146,7 @@
 \listoffigures
 \listoftables
 
-%afkortingen %TODO
-\glsaddall
+%afkortingen
 \printglossaries
 
 % opmaak voor het eigenlijke boek; onderstaande lijnen
@@ -155,6 +155,8 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.5\baselineskip plus 0.5ex minus 0.2ex}
 \setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+\renewcommand{\thepage}{\arabic{page}}
 
 % hoofdstukken
 \mainmatter
@@ -168,6 +170,8 @@
 \include{conclusion}
 
 \include{futureResearch}
+
+\glsaddall
 
 % appendices
 \appendix

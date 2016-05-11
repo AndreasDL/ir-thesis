@@ -21,7 +21,7 @@ POOL_SIZE = 2
 
 
 class PersScript():
-    def __init__(self, feats, stopperson, threshold, classifier, ddpad = "../../../dumpedData/persScript/"):
+    def __init__(self, feats, stopperson, threshold, classifier, runs, ddpad = "../../../dumpedData/persScript/"):
         self.featExtr = FE.MultiFeatureExtractor()
         self.feats = feats
         if feats == 'EEG':
@@ -36,6 +36,7 @@ class PersScript():
         self.threshold = threshold
 
         self.classifier = classifier
+        self.runs = runs
 
         self.ddpad = ddpad
         if self.classifier.name == "ContArousalClasses":
@@ -193,6 +194,7 @@ class PersScript():
             X = X - np.average(X, axis=0)
             X = np.true_divide(X, np.std(X, axis=0))
 
+            '''
             #pearson
             corr = []
             for index in range(len(X[0])):
@@ -297,22 +299,28 @@ class PersScript():
             svm_weights = (clf.coef_ ** 2).sum(axis=0)
             svm_weights /= float(svm_weights.max())
             pers_results.append(svm_weights)
-
+            '''
             #Random Forests
             #rf importances
-            #grow forest
-            forest = RandomForestClassifier(
-                n_estimators=2000,
-                max_features='auto',
-                criterion='gini',
-                n_jobs=-1,
-            )
-            forest.fit(X,y_disc)
-            importances = forest.feature_importances_
-            std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis = 0)
-            pers_results.append(importances)
-            pers_results.append(std)
+            #grow forestµ
 
+            importances = []
+            for run in range(self.runs):
+
+                forest = RandomForestClassifier(
+                    n_estimators=2000,
+                    max_features='auto',
+                    criterion='gini',
+                    n_jobs=-1,
+                )
+                forest.fit(X,y_disc)
+                importances.append(forest.feature_importances_)
+                #stds.append( np.std([tree.feature_importances_ for tree in forest.estimators_], axis = 0) )
+
+
+            pers_results.append(np.average(importances, axis=0))
+            pers_results.append(np.std(importances, axis=0))
+            '''
             #ANOVA
             anova = SelectKBest(f_regression, k=self.threshold)
             anova.fit(X,y_disc)
@@ -328,7 +336,7 @@ class PersScript():
             pca = PCA(n_components=1)
             pca.fit(X)
             pers_results.append(pca.components_[0])
-
+            '''
             #absolute values
             pers_results = np.absolute(np.array(pers_results))
 
@@ -763,11 +771,10 @@ class PersScript():
         #self.genFinalReport()
 
 if __name__ == '__main__':
-    #PersScript("PHY", 32, 30, Classificators.ContValenceClassificator()).run()
-    #PersScript("EEG", 32, 30, Classificators.ContValenceClassificator()).run()
-    #PersScript("ALL", 32, 30, Classificators.ContValenceClassificator()).run()
+    RUNS= 50
+    for i in range(2):
+        ddpad = "../../../dumpedData/persScript_run" + str(i) + "/"
+        PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), RUNS, ddpad).run()
 
-    #PersScript("EEG", 32, 30, Classificators.ContArousalClassificator()).run()
-    PersScript("PHY", 32, 30, Classificators.ContArousalClassificator()).run()
-    PersScript("ALL", 32, 30, Classificators.ContArousalClassificator()).run()
+        PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(), RUNS, ddpad).run()
 

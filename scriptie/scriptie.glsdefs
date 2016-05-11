@@ -28,3 +28,1023 @@ parent={},%
 %
 }%
 }%
+\ifglsentryexists{MEG}{}%
+{%
+\gls@defglossaryentry{MEG}%
+{%
+name={MEG},%
+sort={MEG},%
+type={main},%
+first={magnetoencephalography\glsspace (MEG)},%
+firstplural={magnetoencephalographys\glsspace (MEGs)},%
+text={MEG},%
+plural={MEGs},%
+description={magnetoencephalography},%
+descriptionplural={magnetoencephalography\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={magnetoencephalography},%
+longplural={magnetoencephalographys},%
+short={MEG},%
+shortplural={MEGs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{fMRI}{}%
+{%
+\gls@defglossaryentry{fMRI}%
+{%
+name={fMRI},%
+sort={fMRI},%
+type={main},%
+first={Functional Magnetic Resonance\glsspace (fMRI)},%
+firstplural={Functional Magnetic Resonances\glsspace (fMRIs)},%
+text={fMRI},%
+plural={fMRIs},%
+description={Functional Magnetic Resonance},%
+descriptionplural={Functional Magnetic Resonance\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Functional Magnetic Resonance},%
+longplural={Functional Magnetic Resonances},%
+short={fMRI},%
+shortplural={fMRIs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{CT}{}%
+{%
+\gls@defglossaryentry{CT}%
+{%
+name={CT},%
+sort={CT},%
+type={main},%
+first={Computed Tomography\glsspace (CT)},%
+firstplural={Computed Tomographys\glsspace (CTs)},%
+text={CT},%
+plural={CTs},%
+description={Computed Tomography},%
+descriptionplural={Computed Tomography\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Computed Tomography},%
+longplural={Computed Tomographys},%
+short={CT},%
+shortplural={CTs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{PET}{}%
+{%
+\gls@defglossaryentry{PET}%
+{%
+name={PET},%
+sort={PET},%
+type={main},%
+first={Positron Emission Tomography\glsspace (PET)},%
+firstplural={Positron Emission Tomographys\glsspace (PETs)},%
+text={PET},%
+plural={PETs},%
+description={Positron Emission Tomography},%
+descriptionplural={Positron Emission Tomography\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Positron Emission Tomography},%
+longplural={Positron Emission Tomographys},%
+short={PET},%
+shortplural={PETs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{NIRS}{}%
+{%
+\gls@defglossaryentry{NIRS}%
+{%
+name={NIRS},%
+sort={NIRS},%
+type={main},%
+first={Near Infrared Spectroscopy\glsspace (NIRS)},%
+firstplural={Near Infrared Spectroscopys\glsspace (NIRSs)},%
+text={NIRS},%
+plural={NIRSs},%
+description={Near Infrared Spectroscopy},%
+descriptionplural={Near Infrared Spectroscopy\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Near Infrared Spectroscopy},%
+longplural={Near Infrared Spectroscopys},%
+short={NIRS},%
+shortplural={NIRSs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{OCR}{}%
+{%
+\gls@defglossaryentry{OCR}%
+{%
+name={OCR},%
+sort={OCR},%
+type={main},%
+first={Optical Character Recognition\glsspace (OCR)},%
+firstplural={Optical Character Recognitions\glsspace (OCRs)},%
+text={OCR},%
+plural={OCRs},%
+description={Optical Character Recognition},%
+descriptionplural={Optical Character Recognition\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Optical Character Recognition},%
+longplural={Optical Character Recognitions},%
+short={OCR},%
+shortplural={OCRs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{DEAP}{}%
+{%
+\gls@defglossaryentry{DEAP}%
+{%
+name={DEAP},%
+sort={DEAP},%
+type={main},%
+first={Dataset for Emotion Analysis using Physiological Signals\glsspace (DEAP)},%
+firstplural={Dataset for Emotion Analysis using Physiological Signalss\glsspace (DEAPs)},%
+text={DEAP},%
+plural={DEAPs},%
+description={Dataset for Emotion Analysis using Physiological Signals},%
+descriptionplural={Dataset for Emotion Analysis using Physiological Signals\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Dataset for Emotion Analysis using Physiological Signals},%
+longplural={Dataset for Emotion Analysis using Physiological Signalss},%
+short={DEAP},%
+shortplural={DEAPs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{SAM}{}%
+{%
+\gls@defglossaryentry{SAM}%
+{%
+name={SAM},%
+sort={SAM},%
+type={main},%
+first={self-assessment manikins\glsspace (SAM)},%
+firstplural={self-assessment manikinss\glsspace (SAMs)},%
+text={SAM},%
+plural={SAMs},%
+description={self-assessment manikins},%
+descriptionplural={self-assessment manikins\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={self-assessment manikins},%
+longplural={self-assessment manikinss},%
+short={SAM},%
+shortplural={SAMs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{PSD}{}%
+{%
+\gls@defglossaryentry{PSD}%
+{%
+name={PSD},%
+sort={PSD},%
+type={main},%
+first={Power Spectral Density\glsspace (PSD)},%
+firstplural={Power Spectral Densitys\glsspace (PSDs)},%
+text={PSD},%
+plural={PSDs},%
+description={Power Spectral Density},%
+descriptionplural={Power Spectral Density\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Power Spectral Density},%
+longplural={Power Spectral Densitys},%
+short={PSD},%
+shortplural={PSDs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{DE}{}%
+{%
+\gls@defglossaryentry{DE}%
+{%
+name={DE},%
+sort={DE},%
+type={main},%
+first={Differential Entropy\glsspace (DE)},%
+firstplural={Differential Entropys\glsspace (DEs)},%
+text={DE},%
+plural={DEs},%
+description={Differential Entropy},%
+descriptionplural={Differential Entropy\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Differential Entropy},%
+longplural={Differential Entropys},%
+short={DE},%
+shortplural={DEs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{DASM}{}%
+{%
+\gls@defglossaryentry{DASM}%
+{%
+name={DASM},%
+sort={DASM},%
+type={main},%
+first={Differential Asymmetry\glsspace (DASM)},%
+firstplural={Differential Asymmetrys\glsspace (DASMs)},%
+text={DASM},%
+plural={DASMs},%
+description={Differential Asymmetry},%
+descriptionplural={Differential Asymmetry\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Differential Asymmetry},%
+longplural={Differential Asymmetrys},%
+short={DASM},%
+shortplural={DASMs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{RASM}{}%
+{%
+\gls@defglossaryentry{RASM}%
+{%
+name={RASM},%
+sort={RASM},%
+type={main},%
+first={Rational Asymmetry\glsspace (RASM)},%
+firstplural={Rational Asymmetrys\glsspace (RASMs)},%
+text={RASM},%
+plural={RASMs},%
+description={Rational Asymmetry},%
+descriptionplural={Rational Asymmetry\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Rational Asymmetry},%
+longplural={Rational Asymmetrys},%
+short={RASM},%
+shortplural={RASMs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{DCAU}{}%
+{%
+\gls@defglossaryentry{DCAU}%
+{%
+name={DCAU},%
+sort={DCAU},%
+type={main},%
+first={Differential Caudality\glsspace (DCAU)},%
+firstplural={Differential Caudalitys\glsspace (DCAUs)},%
+text={DCAU},%
+plural={DCAUs},%
+description={Differential Caudality},%
+descriptionplural={Differential Caudality\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Differential Caudality},%
+longplural={Differential Caudalitys},%
+short={DCAU},%
+shortplural={DCAUs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{RCAU}{}%
+{%
+\gls@defglossaryentry{RCAU}%
+{%
+name={RCAU},%
+sort={RCAU},%
+type={main},%
+first={Rational Caudality\glsspace (RCAU)},%
+firstplural={Rational Caudalitys\glsspace (RCAUs)},%
+text={RCAU},%
+plural={RCAUs},%
+description={Rational Caudality},%
+descriptionplural={Rational Caudality\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Rational Caudality},%
+longplural={Rational Caudalitys},%
+short={RCAU},%
+shortplural={RCAUs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{GSR}{}%
+{%
+\gls@defglossaryentry{GSR}%
+{%
+name={GSR},%
+sort={GSR},%
+type={main},%
+first={Galvanic Skin Response\glsspace (GSR)},%
+firstplural={Galvanic Skin Responses\glsspace (GSRs)},%
+text={GSR},%
+plural={GSRs},%
+description={Galvanic Skin Response},%
+descriptionplural={Galvanic Skin Response\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Galvanic Skin Response},%
+longplural={Galvanic Skin Responses},%
+short={GSR},%
+shortplural={GSRs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{RSP}{}%
+{%
+\gls@defglossaryentry{RSP}%
+{%
+name={RSP},%
+sort={RSP},%
+type={main},%
+first={Respiration Belt\glsspace (RSP)},%
+firstplural={Respiration Belts\glsspace (RSPs)},%
+text={RSP},%
+plural={RSPs},%
+description={Respiration Belt},%
+descriptionplural={Respiration Belt\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Respiration Belt},%
+longplural={Respiration Belts},%
+short={RSP},%
+shortplural={RSPs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{LDS}{}%
+{%
+\gls@defglossaryentry{LDS}%
+{%
+name={LDS},%
+sort={LDS},%
+type={main},%
+first={Linear Dynamic System\glsspace (LDS)},%
+firstplural={Linear Dynamic Systems\glsspace (LDSs)},%
+text={LDS},%
+plural={LDSs},%
+description={Linear Dynamic System},%
+descriptionplural={Linear Dynamic System\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Linear Dynamic System},%
+longplural={Linear Dynamic Systems},%
+short={LDS},%
+shortplural={LDSs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{MRMR}{}%
+{%
+\gls@defglossaryentry{MRMR}%
+{%
+name={MRMR},%
+sort={MRMR},%
+type={main},%
+first={Minimal Redundancy Maximal Relevance\glsspace (MRMR)},%
+firstplural={Minimal Redundancy Maximal Relevances\glsspace (MRMRs)},%
+text={MRMR},%
+plural={MRMRs},%
+description={Minimal Redundancy Maximal Relevance},%
+descriptionplural={Minimal Redundancy Maximal Relevance\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Minimal Redundancy Maximal Relevance},%
+longplural={Minimal Redundancy Maximal Relevances},%
+short={MRMR},%
+shortplural={MRMRs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{KNN}{}%
+{%
+\gls@defglossaryentry{KNN}%
+{%
+name={KNN},%
+sort={KNN},%
+type={main},%
+first={k-nearest neightbors\glsspace (KNN)},%
+firstplural={k-nearest neightborss\glsspace (KNNs)},%
+text={KNN},%
+plural={KNNs},%
+description={k-nearest neightbors},%
+descriptionplural={k-nearest neightbors\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={k-nearest neightbors},%
+longplural={k-nearest neightborss},%
+short={KNN},%
+shortplural={KNNs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{LR}{}%
+{%
+\gls@defglossaryentry{LR}%
+{%
+name={LR},%
+sort={LR},%
+type={main},%
+first={Logistic Regression\glsspace (LR)},%
+firstplural={Logistic Regressions\glsspace (LRs)},%
+text={LR},%
+plural={LRs},%
+description={Logistic Regression},%
+descriptionplural={Logistic Regression\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Logistic Regression},%
+longplural={Logistic Regressions},%
+short={LR},%
+shortplural={LRs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{GELM}{}%
+{%
+\gls@defglossaryentry{GELM}%
+{%
+name={GELM},%
+sort={GELM},%
+type={main},%
+first={Graph regularized Extreme Learning Machine\glsspace (GELM)},%
+firstplural={Graph regularized Extreme Learning Machines\glsspace (GELMs)},%
+text={GELM},%
+plural={GELMs},%
+description={Graph regularized Extreme Learning Machine},%
+descriptionplural={Graph regularized Extreme Learning Machine\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Graph regularized Extreme Learning Machine},%
+longplural={Graph regularized Extreme Learning Machines},%
+short={GELM},%
+shortplural={GELMs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{ELM}{}%
+{%
+\gls@defglossaryentry{ELM}%
+{%
+name={ELM},%
+sort={ELM},%
+type={main},%
+first={Extreme Learning Machine\glsspace (ELM)},%
+firstplural={Extreme Learning Machines\glsspace (ELMs)},%
+text={ELM},%
+plural={ELMs},%
+description={Extreme Learning Machine},%
+descriptionplural={Extreme Learning Machine\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Extreme Learning Machine},%
+longplural={Extreme Learning Machines},%
+short={ELM},%
+shortplural={ELMs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{MLP}{}%
+{%
+\gls@defglossaryentry{MLP}%
+{%
+name={MLP},%
+sort={MLP},%
+type={main},%
+first={Multilayer Perceptron\glsspace (MLP)},%
+firstplural={Multilayer Perceptrons\glsspace (MLPs)},%
+text={MLP},%
+plural={MLPs},%
+description={Multilayer Perceptron},%
+descriptionplural={Multilayer Perceptron\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Multilayer Perceptron},%
+longplural={Multilayer Perceptrons},%
+short={MLP},%
+shortplural={MLPs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{SC}{}%
+{%
+\gls@defglossaryentry{SC}%
+{%
+name={SC},%
+sort={SC},%
+type={main},%
+first={Skin conductivity\glsspace (SC)},%
+firstplural={Skin conductivitys\glsspace (SCs)},%
+text={SC},%
+plural={SCs},%
+description={Skin conductivity},%
+descriptionplural={Skin conductivity\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Skin conductivity},%
+longplural={Skin conductivitys},%
+short={SC},%
+shortplural={SCs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{ANOVA}{}%
+{%
+\gls@defglossaryentry{ANOVA}%
+{%
+name={ANOVA},%
+sort={ANOVA},%
+type={main},%
+first={Analysis of Variance\glsspace (ANOVA)},%
+firstplural={Analysis of Variances\glsspace (ANOVAs)},%
+text={ANOVA},%
+plural={ANOVAs},%
+description={Analysis of Variance},%
+descriptionplural={Analysis of Variance\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Analysis of Variance},%
+longplural={Analysis of Variances},%
+short={ANOVA},%
+shortplural={ANOVAs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{SFS}{}%
+{%
+\gls@defglossaryentry{SFS}%
+{%
+name={SFS},%
+sort={SFS},%
+type={main},%
+first={Sequential Forward Selection\glsspace (SFS)},%
+firstplural={Sequential Forward Selections\glsspace (SFSs)},%
+text={SFS},%
+plural={SFSs},%
+description={Sequential Forward Selection},%
+descriptionplural={Sequential Forward Selection\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Sequential Forward Selection},%
+longplural={Sequential Forward Selections},%
+short={SFS},%
+shortplural={SFSs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{SBS}{}%
+{%
+\gls@defglossaryentry{SBS}%
+{%
+name={SBS},%
+sort={SBS},%
+type={main},%
+first={Sequential Backward Selection\glsspace (SBS)},%
+firstplural={Sequential Backward Selections\glsspace (SBSs)},%
+text={SBS},%
+plural={SBSs},%
+description={Sequential Backward Selection},%
+descriptionplural={Sequential Backward Selection\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Sequential Backward Selection},%
+longplural={Sequential Backward Selections},%
+short={SBS},%
+shortplural={SBSs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{LDA}{}%
+{%
+\gls@defglossaryentry{LDA}%
+{%
+name={LDA},%
+sort={LDA},%
+type={main},%
+first={Linear Disciminant Analysis\glsspace (LDA)},%
+firstplural={Linear Disciminant Analysiss\glsspace (LDAs)},%
+text={LDA},%
+plural={LDAs},%
+description={Linear Disciminant Analysis},%
+descriptionplural={Linear Disciminant Analysis\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Linear Disciminant Analysis},%
+longplural={Linear Disciminant Analysiss},%
+short={LDA},%
+shortplural={LDAs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{RF}{}%
+{%
+\gls@defglossaryentry{RF}%
+{%
+name={RF},%
+sort={RF},%
+type={main},%
+first={Random Forests\glsspace (RF)},%
+firstplural={Random Forestss\glsspace (RFs)},%
+text={RF},%
+plural={RFs},%
+description={Random Forests},%
+descriptionplural={Random Forests\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Random Forests},%
+longplural={Random Forestss},%
+short={RF},%
+shortplural={RFs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{OOB}{}%
+{%
+\gls@defglossaryentry{OOB}%
+{%
+name={OOB},%
+sort={OOB},%
+type={main},%
+first={Out of Bag\glsspace (OOB)},%
+firstplural={Out of Bags\glsspace (OOBs)},%
+text={OOB},%
+plural={OOBs},%
+description={Out of Bag},%
+descriptionplural={Out of Bag\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Out of Bag},%
+longplural={Out of Bags},%
+short={OOB},%
+shortplural={OOBs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{PCA}{}%
+{%
+\gls@defglossaryentry{PCA}%
+{%
+name={PCA},%
+sort={PCA},%
+type={main},%
+first={Principal Component Analysis\glsspace (PCA)},%
+firstplural={Principal Component Analysiss\glsspace (PCAs)},%
+text={PCA},%
+plural={PCAs},%
+description={Principal Component Analysis},%
+descriptionplural={Principal Component Analysis\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Principal Component Analysis},%
+longplural={Principal Component Analysiss},%
+short={PCA},%
+shortplural={PCAs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{RBF}{}%
+{%
+\gls@defglossaryentry{RBF}%
+{%
+name={RBF},%
+sort={RBF},%
+type={main},%
+first={Radial Basis Functions\glsspace (RBF)},%
+firstplural={Radial Basis Functionss\glsspace (RBFs)},%
+text={RBF},%
+plural={RBFs},%
+description={Radial Basis Functions},%
+descriptionplural={Radial Basis Functions\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Radial Basis Functions},%
+longplural={Radial Basis Functionss},%
+short={RBF},%
+shortplural={RBFs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{ERP}{}%
+{%
+\gls@defglossaryentry{ERP}%
+{%
+name={ERP},%
+sort={ERP},%
+type={main},%
+first={Event-Related Potential\glsspace (ERP)},%
+firstplural={Event-Related Potentials\glsspace (ERPs)},%
+text={ERP},%
+plural={ERPs},%
+description={Event-Related Potential},%
+descriptionplural={Event-Related Potential\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Event-Related Potential},%
+longplural={Event-Related Potentials},%
+short={ERP},%
+shortplural={ERPs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{ERP}{}%
+{%
+\gls@defglossaryentry{ERP}%
+{%
+name={ERP},%
+sort={ERP},%
+type={main},%
+first={Event-Related Potential\glsspace (ERP)},%
+firstplural={Event-Related Potentials\glsspace (ERPs)},%
+text={ERP},%
+plural={ERPs},%
+description={Event-Related Potential},%
+descriptionplural={Event-Related Potential\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Event-Related Potential},%
+longplural={Event-Related Potentials},%
+short={ERP},%
+shortplural={ERPs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
