@@ -776,10 +776,10 @@ class PersScript():
         #self.genFinalReport()
 
 if __name__ == '__main__':
-    RUNS= 20
-    for i in range(2):
-        ddpad = "../../../dumpedData/persScript_run" + str(i) + "/"
-        PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), RUNS, ddpad).run()
+    for RUNS in [20, 40, 5]:
+        for i in range(2):
+            ddpad = "../../../dumpedData/persScript_run" + str(i) + "_2000_" + str(RUNS) + "/"
+            PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), RUNS, ddpad).run()
 
-        PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(), RUNS, ddpad).run()
+            PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(), RUNS, ddpad).run()
 

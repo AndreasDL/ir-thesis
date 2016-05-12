@@ -6,7 +6,7 @@ ddpath = '../dumpedData/'
 trees = 2000
 for dim in ['valence','arousal']:
     for featSet in ['all']:
-        for runs in [1,10,30,50]:
+        for runs in [1,5,10,20,30,40,50]:
             #open first & second trial
             ppath  = ddpath
             ppath += 'persScript_run0_' + str(trees) + '_' + str(runs) + '/'
