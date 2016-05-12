@@ -30,6 +30,7 @@ pdfsubject={Emotion recognition},
 pdfauthor={Andreas De Lille},
 pdfkeywords={Emotion recognition, physiological, machine learning, EEG}}
 
+\setlength{\parindent}{0cm}
 \newcommand{\npar}{\par \vspace{2.3ex plus 0.3ex minus 0.3ex}}
 
 % Nieuw commando om figuren in te voegen. Gebruik:
@@ -57,7 +58,7 @@ pdfkeywords={Emotion recognition, physiological, machine learning, EEG}}
 
 
 % The paper headers
-\markboth{Extended Abstract, University of Ghent, May 2016}%
+\markboth{University of Ghent, May 2016}%
 {}
 
 \IEEEtitleabstractindextext{%
@@ -81,17 +82,19 @@ Emotion recognition, physiological signals, machine learning, feature selection 
 
 \npar
 
-This work will focus on emotion recognition using physiological signals. Next the classification of emotions will be explained in Section \ref{classification}, before an introduction of physiological signals is given in Section \ref{phyintro}. What follows in Section \ref{features} is an overview of the used features. The problem statement is given in \ref{problem} This papers ends with explaining the used approach, results and conclusion of this work. %TODO
+This work will focus on emotion recognition using physiological signals. Next the classification of emotions will be explained in Section \ref{classification}, before an introduction of physiological signals is given in Section \ref{phyintro}. What follows in Section \ref{features} is an overview of the used features. The problem statement and goal of this work is given in \ref{problem}. Sections \ref{approach} and \ref{conclusion} give the used approach, results and conclusion.
 
-\section{classification of emotions}\label{classification}
+\section{Classification of emotions}\label{classification}
 Before emotion can be recognized, different emotions need to be defined. One way to do this is to use several distinct emotions, e.g. anger, joy, sad and pleasure. The advantage of this approach is that all emotions have a clear label. The disadvantage is that this model is often not complex enough to fully represent an emotion state. To solve this problem, the bipolar valence-arousal model was introduced. This model puts each emotion in a two dimensional space. The first dimension, ranges from inactive to active and indicates how active a person is feeling. The next dimension is valence. This dimension indicates how pleasant or unpleasant the emotion is perceived. 
+
 \npar
-The valence-arousal model has the advantage that an emotion can be defined, without needing to explicitly labelling it. Additionally, all discrete emotions can be mapped to the valence-arousal space. For example, excitement corresponds to an active feeling with a pleasant experience, meaning that is will be in the high valence, high arousal quadrant of the space. The mapping of other emotions can be done similarly and is shown in Figure \ref{ArousalValenceModel}.
+
+The valence-arousal model has the advantage that an emotion can be defined, without needing to explicitly labelling it. All discrete emotions can be mapped to the valence-arousal space. For example, excitement corresponds to an active feeling with a pleasant experience, meaning that is will be in the high valence, high arousal quadrant of the space. A depressed feeling, on the other hand, will have a low valence and low arousal. As a result depressed is mapped in the low valence, low arousal quadrant. The mapping of other emotions can be done similarly and is shown in Figure \ref{ArousalValenceModel}.
 
 \mijnfiguur{width=0.5\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.}
 
 \section{Physiological signals} \label{phyintro}
-The emotion recognition will thus take some physiological signals as input and output a valence or arousal score. The 'processing' part is done using machine learning. In short, machine learning is an input output model that predicts output values for different samples based on the inputs. The inputs are features of the input samples, e.g. the frequency or amplitude of a signal.
+In case machine learning is used for emotion recognition, some physiological signals are taken as input. The machine learning will then output a valence or arousal score. In short, machine learning can be defined as an input output model that predicts output values for different samples based on the inputs. The inputs are features of the input samples, e.g. the frequency or amplitude of a signal.
 
 \npar
 
@@ -157,8 +160,8 @@ Another feature are the power fractions. These fractions give the power distribu
 $frac_{band,channel} = \frac{power_{band,channel}}{power_{total,channel}}$
 \end{center}
 
-\section{problem statement}\label{problem}
-Looking at different features in Table \ref{featOverviewTable}, one can see that the features counts quickly adds up. Having a total of 897 features will increase the risk for overfitting significantly. Additionally, not all 897 features are important. There is no agreement on the important features in literature. 
+\section{Problem statement}\label{problem}
+Looking at different features in Table \ref{featOverviewTable}, one can see that the features counts quickly adds up. Having a total of 894 features will increase the risk for overfitting significantly. Additionally, not all 897 features are important. There is no agreement on the important features in literature. 
 
 \begin{table}[H]
 \centering
@@ -187,20 +190,84 @@ Looking at different features in Table \ref{featOverviewTable}, one can see that
 \end{tabular}
 \end{table}
 
+The goal of this work is twofold, first important features are needed for person specific emotion recognition. Second, feature are needed that enable the machine learning algorithm to work in a cross-person setting. In the second goal the machine learning algorithm is trained on several person and tested on other people. Working in a cross-subject setting is more challenging, because physiological signals are personal by nature. %TODO ref
 
-%approach
+\section{Used approach and results} \label{approach}
 
+Several feature selection methods were compared. A feature selection method is a method that takes as input a large set of features, and returns a (smaller) set of important features. There exists three categories of feature selection methods, filter, wrapper and embedded.
 
-%results
+\npar
 
-%conclusion
+Filter methods are the less complex method that simply use a statistical test to rank the features. An example would be to use the Pearson correlation between a feature and the valence. Features with low of zero importance would then be filtered. This method is fast and simple, but is not capable to find groups of relevant features, as each feature is reviewed on its own. Groups of relevant features are features that are not important on their own, but give insight when combined with other features.
 
+\npar
 
-% Can use something like this to put references on a page
-% by themselves when using endfloat and the captionsoff option.
-\ifCLASSOPTIONcaptionsoff
-  \newpage
-\fi
+Wrapper methods are somewhat more advanced, they use an arbitrary machine learning technique and look at the assigned weights. Features with large weights have more influence on the output than features with low weights. Absolute values are used here; large positive and negative values have the same amount of influence on the result. The performance of this methods are often dependent on the underlying machine learning algorithms.
+
+\npar
+
+The last category of feature selection methods are the embedded methods. Embedded methods also use an underlying machine learning technique. This time the machine learning algorithm has a build-in feature selection functionality though. Random forest are a good example of this category. Random forest use multiple decision trees that each have a random subset of the samples and features.
+
+\npar
+
+Building a decision tree starts with all samples in one node. This node will therefore be impure, meaning that it has samples of multiple classes. In the next step, the data will be split iteratively. In each iteration, a features is picked at random and the data is split according to the different values of features. This split is done so that it lower the impurity of the child nodes. After several iteration, the node will eventually be pure. A pure node contains only samples of one class. %fig ?
+
+\npar
+
+Each feature corresponds to a drop in impurity. By averaging the drop in impurity over all trees, one can estimate the importance of the different features quite well. The advantage is that this method is capable of finding groups of relevant features. When a group of random features is selected at different nodes in a decision tree, the impurity will drop significantly. This will result in a higher feature ranking.
+
+\npar
+
+The following approach was used, first the DEAP dataset is splitted in a train and test set (30 and 10 samples respectively). The test set is kept separate, while the random forest feature selection is performed on the train set. This step return the top 30 features. With these 30 features a model is build by iteratively repeating the following steps:
+\begin{enumerate}
+\item add a new feature to the feature set
+\item determine the cross validation error and standard deviation (std)
+\item if the validation error and std are better than the previous best, the feature is kept. Otherwise the feature is neglected.
+\end{enumerate}
+Note that this model is build using a support vector machine (SVM) as SVM's have proven themselves in emotion recognition studies. The cross validation step ensures that the chosen features also work well on unseen samples. The final result is evaluated on the test set.
+
+\npar
+
+This was done for each person, the resulting performance was averaged over all persons giving a performance of  70 and 73.75 \% with std 13.9 and 13.1 \% for arousal and valence respectively. 
+
+\npar
+
+To review which features were selected, group of similar EEG features were created. These groups are:
+\begin{itemize}
+\item Power features: the PSD and DE features
+\item Asymmetry features: DASM, RASM, DCAU, RCAU
+\item Fraction features: the fractions
+\end{itemize}
+The non-EEG features are:
+\begin{itemize}
+\item heart rate
+\item GSR
+\item respiration rate
+\item blood pressure
+\item skin temperature
+\end{itemize}
+
+The distribution of the selected features is given in Figure \ref{arousalALLRF} for arousal and Figure \ref{valenceALLRF} for valence, the legend is given in Figure \ref{legend}.
+
+%fig 
+\mijnfiguur{width=0.25\textwidth}{arousalALLRF}{Selected features for arousal}
+\mijnfiguur{width=0.25\textwidth}{valenceALLRF}{Selected features for valence}
+\mijnfiguur{width=0.25\textwidth}{legend}{Each color and its corresponding feature category.}
+
+It is clear that for both arousal and valence, the asymmetry features are the most important. The second most important category are the power features. The non-EEG features seem to have very little influence on the result. To verify that the non-EEG feature are worse than the EEG features, the setup was run two additional times. One time with only EEG features and one time with only non-EEG features. The results are visible in Figure \ref{arousalphyeegall} and Figure \ref{valencephyeegall} for arousal and valence respectively. 
+
+\mijnfiguur{width=.5\textwidth}{arousalphyeegall}{The performance of arousal prediction for all, EEG and non-EEG features.}
+
+\mijnfiguur{width=.5\textwidth}{valencephyeegall}{The performance of valence prediction for all, EEG and non-EEG features.}
+
+Statistical tests conclude that the EEG and ALL feature sets have better performance than the non-EEG sets, albeit with a p-value of only 80\%. Repeating this with more data might give a more definitive results. 
+
+% stability %TODO
+
+% cross-person
+
+\section{Conclusion and future work} \label{conclusion}
+
 
 \begin{thebibliography}{1}
 
