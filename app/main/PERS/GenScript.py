@@ -18,11 +18,11 @@ from personLoader import load, dump
 import numpy as np
 
 from multiprocessing import Pool
-POOL_SIZE = 3
+POOL_SIZE = 2
 
 
 class GenScript():
-    def __init__(self, feats, stopperson, threshold, classifier, ddpad = "../../../dumpedData/genScript/"):
+    def __init__(self, feats, stopperson, threshold, classifier, runs, ddpad = "../../../dumpedData/genScript/"):
         self.featExtr = FE.MultiFeatureExtractor()
         self.feats = feats
         if feats == 'EEG':
@@ -37,6 +37,7 @@ class GenScript():
         self.threshold = threshold
 
         self.classifier = classifier
+        self.runs = runs
 
         self.ddpad = ddpad
         if self.classifier.name == "ContArousalClasses":
@@ -220,6 +221,8 @@ class GenScript():
             y_disc[y_disc > 5] = 1
 
             metrics = []
+
+            '''
             #pearson
             corr = []
             for index in range(len(X[0])):
@@ -324,12 +327,26 @@ class GenScript():
             svm_weights = (clf.coef_ ** 2).sum(axis=0)
             svm_weights /= float(svm_weights.max())
             metrics.append(svm_weights)
-
+            '''
             #Random Forests
             #rf importances
             #grow forest
-            forest = PersTree(n_trees=1000)
 
+            importances = []
+            for run in range(self.runs):
+                forest = RandomForestClassifier(
+                    n_estimators=2000,
+                    max_features='auto',
+                    criterion='gini',
+                    n_jobs=-1,
+                )
+                forest.fit(X, y_disc)
+                importances.append(forest.feature_importances_)
+                # stds.append( np.std([tree.feature_importances_ for tree in forest.estimators_], axis = 0) )
+
+            metrics.append(np.average(importances, axis=0))
+            metrics.append(np.std(importances, axis=0))
+            '''
             X, y_disc = self.reverseFixStructure(X, y_disc)
 
             forest.fit(X,y_disc)
@@ -354,7 +371,7 @@ class GenScript():
             pca = PCA(n_components=1)
             pca.fit(X)
             metrics.append(pca.components_[0])
-
+            '''
             #absolute values
             metrics = np.absolute(np.array(metrics))
 
@@ -703,15 +720,13 @@ class GenScript():
 
         self.probVsDim()
         self.genAccReport()
-        self.genFinalReport()
+        #self.genFinalReport()
 
 
 if __name__ == '__main__':
-    GenScript("PHY", 32, 30, Classificators.ContValenceClassificator()).run()
-    GenScript("EEG", 32, 30, Classificators.ContValenceClassificator()).run()
-    GenScript("ALL", 32, 30, Classificators.ContValenceClassificator()).run()
+    for RUNS in [1,5,10,20,30,40,50]:
+        for i in range(2):
+            ddpad = "../../../dumpedData/genScript_run" + str(i) + "_2000_" + str(RUNS) + "/"
 
-    GenScript("EEG", 32, 30, Classificators.ContArousalClassificator()).run()
-    GenScript("PHY", 32, 30, Classificators.ContArousalClassificator()).run()
-    GenScript("ALL", 32, 30, Classificators.ContArousalClassificator()).run()
-
+            GenScript("ALL", 32, 30, Classificators.ContValenceClassificator(), RUNS, ddpad).run()
+            GenScript("ALL", 32, 30, Classificators.ContArousalClassificator(), RUNS, ddpad).run()
