@@ -1,14 +1,40 @@
 \textbf{\huge Extended Abstract}
 \addcontentsline{toc}{chapter}{Extended Abstract}
 
+\npar
+\npar
 %intro
 %emotion recognition
+Emotion recognition is the process of recognizing a person's emotion. Observing and recognizing emotion can be done in several ways. Psychology makes a clear distinction between physiological behaviour and a person's expression of emotion. The expression is often prone to social masking, the process of hiding emotion to conform to social standards and ideas, making it less reliable. The physiological behaviour on the other hand is much harder to control, making it more reliable. 
 
-%valence arousal
+\npar
+
+This work will focus on emotion recognition using physiological signals. Next the classification of emotion will be explained, before an introduction of basic machine learning techniques is given. What follows is an overview of the used features and the problem statement. This papers end with explaining the used approach, results and conclusion of this work.
+
+\npar
+
+Before emotion can be recognized, different emotions need to be defined. One way to do this is to use several distinct emotions, e.g. anger, joy, sad and pleasure. The advantage of this approach is that all emotions have a clear label. The disadvantage is that this model is often not complex enough to fully represent an emotion state. To solve this problem, the bipolar valence-arousal model was introduced. This model puts each emotion in a two dimensional space. The first dimension, ranges from inactive to active and indicates how active a person is feeling. The next dimension is valence. This dimension indicates how pleasant or unpleasant the emotion is perceived. 
+
+\npar
+
+The valence-arousal model has the advantage that an emotion can be defined, without needing to explicitly labelling it. Additionally, all discrete emotions can be mapped to the valence-arousal space. For example, excitement corresponds to an active feeling with a pleasant experience, meaning that is will be in the high valence, high arousal quadrant of the space. The mapping of other emotions can be done similarly and is shown in Figure \ref{ArousalValenceModel}.
+
+\mijnfiguur{width=0.5\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane\citep{ValArrFig}}
+
+\npar
 
 %machine learning
+The emotion recognition will thus take some physiological signals as input and output a valence or arousal score. The 'processing' part is done using machine learning. In short, machine learning is an input output model that predicts output values for different samples based on the inputs. The inputs are features of the input samples, e.g. the frequency or amplitude of a signal.
+
+\npar
 
 %features
+To do emotion recognition with machine learning, good features are required. This work focusses on physiological signals that can be split into two groups of features. The first group is are the peripheral signals, a.o. heart rate, blood pressure, respiration rate, perspiration, etc. The second group are brain signals. The brain signals were recorded using electroencephalography (EEG) %TODO gloss
+, a technique that measures electrical activity of the brain, by placing electrodes on the scalp. EEG is very noisy by nature as the signal is distorted by the bone between the cortex and the electrodes. The electrodes are place according to the 10/20 system, that labels each location. The locations used in this work are visible in Figure \ref{}.
+
+%TODO figure
+
+EEG measures electrical activity at each electrode. Each measurement can be splitted in different frequency bands, with medical relevance. The 
 
 %problem statement
 
