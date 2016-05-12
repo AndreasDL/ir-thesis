@@ -1,3 +1,33 @@
+\ifglsentryexists{RASM}{}%
+{%
+\gls@defglossaryentry{RASM}%
+{%
+name={RASM},%
+sort={RASM},%
+type={main},%
+first={Rational Asymmetry\glsspace (RASM)},%
+firstplural={Rational Asymmetrys\glsspace (RASMs)},%
+text={RASM},%
+plural={RASMs},%
+description={Rational Asymmetry},%
+descriptionplural={Rational Asymmetry\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Rational Asymmetry},%
+longplural={Rational Asymmetrys},%
+short={RASM},%
+shortplural={RASMs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
 \ifglsentryexists{EEG}{}%
 {%
 \gls@defglossaryentry{EEG}%
