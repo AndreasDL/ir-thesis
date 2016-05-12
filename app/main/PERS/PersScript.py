@@ -56,6 +56,11 @@ class PersScript():
         self.metricnames =  ['pearsonR','MutInf','dCorr','LR','L1','L2','SVM','RF', 'RFSTD', 'ANOVA','LDA', 'PCA']
         self.modelnames  = ["SVMLIN","SVMRBF","KNN3","KNN5","KNN7"]
 
+        #f = open('translate.csv', 'w')
+        #for index, featname in enumerate(self.featExtr.getFeatureNames()):
+        #    f.write(featname + ';' + str(index) + '\n')
+        #f.close()
+
     def addEEGFeatures(self):
 
         # EEG
@@ -771,7 +776,7 @@ class PersScript():
         #self.genFinalReport()
 
 if __name__ == '__main__':
-    RUNS= 50
+    RUNS= 20
     for i in range(2):
         ddpad = "../../../dumpedData/persScript_run" + str(i) + "/"
         PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), RUNS, ddpad).run()
