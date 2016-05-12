@@ -1,4 +1,3 @@
-
 %% bare_adv.tex
 %% V1.4
 %% 2012/12/27
@@ -7,7 +6,7 @@
 %% http://www.michaelshell.org/
 %% for current contact information.
 %%
-%% This is a skeleton file demonstrating the advanced use of IEEEtran.cls
+%% based on a skeleton file demonstrating the advanced use of IEEEtran.cls
 %% (requires IEEEtran.cls version 1.8 or later) with an IEEE Computer
 %% Society journal paper.
 %%
@@ -17,35 +16,12 @@
 %% and
 %% http://www.ieee.org/
 
-%%*************************************************************************
-%% Legal Notice:
-%% This code is offered as-is without any warranty either expressed or
-%% implied; without even the implied warranty of MERCHANTABILITY or
-%% FITNESS FOR A PARTICULAR PURPOSE! 
-%% User assumes all risk.
-%% In no event shall IEEE or any contributor to this code be liable for
-%% any damages or losses, including, but not limited to, incidental,
-%% consequential, or any other damages, resulting from the use or misuse
-%% of any information contained here.
-%%
-%% All comments are the opinions of their respective authors and are not
-%% necessarily endorsed by the IEEE.
-%%
-%% This work is distributed under the LaTeX Project Public License (LPPL)
-%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
-%% distributed and modified. A copy of the LPPL, version 1.3, is included
-%% in the base LaTeX documentation of all distributions of LaTeX released
-%% 2003/12/01 or later.
-%% Retain all contribution notices and credits.
-%% ** Modified files should be clearly indicated as such, including  **
-%% ** renaming them and changing author support contact information. **
-%%
-%% File list of work: IEEEtran.cls, IEEEtran_HOWTO.pdf, bare_adv.tex,
-%%                    bare_conf.tex, bare_jrnl.tex, bare_jrnl_compsoc.tex,
-%%                    bare_jrnl_transmag.tex
-%%*************************************************************************
-
 \documentclass[12pt,journal,compsoc]{IEEEtran}
+
+\usepackage{graphicx}                   % Om figuren te kunnen verwerken
+\usepackage{float}
+
+
 \newcommand\MYhyperrefoptions{bookmarks=true,bookmarksnumbered=true,
 pdfpagemode={UseOutlines},plainpages=false,pdfpagelabels=true,
 colorlinks=true,linkcolor={black},citecolor={black},urlcolor={black},
@@ -54,10 +30,22 @@ pdfsubject={Emotion recognition},
 pdfauthor={Andreas De Lille},
 pdfkeywords={Emotion recognition, physiological, machine learning, EEG}}
 
+\newcommand{\npar}{\par \vspace{2.3ex plus 0.3ex minus 0.3ex}}
+
+% Nieuw commando om figuren in te voegen. Gebruik:
+\newcommand{\mijnfiguur}[4][H]{            % Het eerste argument is standaar `ht'. op H zetten voor HIER EN NERGENS ANDERS
+    \begin{figure}[#1]                      % Beginnen van de figure omgeving
+        \begin{center}                      % Beginnen van de center omgeving
+            \includegraphics[#2]{#3}        % Het eigenlijk invoegen van de figuur (2: opties, 3: bestandsnaam)
+            \caption{#4\label{#3}}          % Het bijschrift (argument 4) en het label (argument 3)
+        \end{center}
+    \end{figure}
+    }
+
+\graphicspath{{../fig/}}               % De plaars waar latex zijn figuren gaat halen.
+
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
-
-\newcommand{\npar}{\par \vspace{2.3ex plus 0.3ex minus 0.3ex}}
 
 \begin{document}
 %
@@ -93,14 +81,14 @@ Emotion recognition, physiological signals, machine learning, feature selection 
 
 \npar
 
-This work will focus on emotion recognition using physiological signals. Next the classification of emotions will be explained in Section \ref{classification}, before an introduction of physiological signals is given in Section \ref{phyintro}. What follows in Sections \ref{features} and \ref{dataset} is an overview of the used features and the used dataset. The problem statement is given in \ref{} This papers ends with explaining the used approach, results and conclusion of this work. %TODO
+This work will focus on emotion recognition using physiological signals. Next the classification of emotions will be explained in Section \ref{classification}, before an introduction of physiological signals is given in Section \ref{phyintro}. What follows in Section \ref{features} is an overview of the used features. The problem statement is given in \ref{problem} This papers ends with explaining the used approach, results and conclusion of this work. %TODO
 
 \section{classification of emotions}\label{classification}
 Before emotion can be recognized, different emotions need to be defined. One way to do this is to use several distinct emotions, e.g. anger, joy, sad and pleasure. The advantage of this approach is that all emotions have a clear label. The disadvantage is that this model is often not complex enough to fully represent an emotion state. To solve this problem, the bipolar valence-arousal model was introduced. This model puts each emotion in a two dimensional space. The first dimension, ranges from inactive to active and indicates how active a person is feeling. The next dimension is valence. This dimension indicates how pleasant or unpleasant the emotion is perceived. 
 \npar
 The valence-arousal model has the advantage that an emotion can be defined, without needing to explicitly labelling it. Additionally, all discrete emotions can be mapped to the valence-arousal space. For example, excitement corresponds to an active feeling with a pleasant experience, meaning that is will be in the high valence, high arousal quadrant of the space. The mapping of other emotions can be done similarly and is shown in Figure \ref{ArousalValenceModel}.
 
-%TODO \mijnfiguur{width=0.5\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane\citep{ValArrFig}}
+\mijnfiguur{width=0.5\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.}
 
 \section{Physiological signals} \label{phyintro}
 The emotion recognition will thus take some physiological signals as input and output a valence or arousal score. The 'processing' part is done using machine learning. In short, machine learning is an input output model that predicts output values for different samples based on the inputs. The inputs are features of the input samples, e.g. the frequency or amplitude of a signal.
@@ -111,10 +99,9 @@ To do emotion recognition with machine learning, good features are required. Thi
 
 \npar
 
-The second group of features originate from the brain. These signals are recordings of brain activity using electroencephalography (EEG) %TODO gloss. 
-EEG is a technique that measures electrical activity of the brain, by placing electrodes on the scalp. Even though EEG is very noisy by nature as the signal is distorted by the bone between the cortex and the electrodes it still provides significant insight in the brain activity. The electrodes are placed according to the 10/20 system, that labels each location. The locations and the corresponding channel names used in this work are visible in Figure \ref{1020labels}.
+The second group of features originate from the brain. These signals are recordings of brain activity using electroencephalography (EEG). EEG is a technique that measures electrical activity of the brain, by placing electrodes on the scalp. Even though EEG is very noisy by nature as the signal is distorted by the bone between the cortex and the electrodes it still provides significant insight in the brain activity. The electrodes are placed according to the 10/20 system, that labels each location. The locations and the corresponding channel names used in this work are visible in Figure \ref{1020labels}.
 
-%\mijnfiguur{width=0.7\textwidth}{1020labels}{Placement of the 32 electrodes in this thesis.}
+\mijnfiguur{width=0.5\textwidth}{1020labels}{Placement of the 32 electrodes in this thesis.}
 
 EEG measures electrical activity at each channel. Each measurement can be split in different frequency bands, with medical relevance. The frequency bands are:
 \begin{itemize}
@@ -128,16 +115,22 @@ EEG measures electrical activity at each channel. Each measurement can be split 
 %problem statement
 \section{Features} \label{features}
 \npar
-In literature, a lot of features have been found. For the peripheral signals, statistical values of each channel are used. These statistical values are minimum, maximum, variation, standard deviation, average and median of each channel. EEG features use a different approach, here the power spectral density (PSD) of each EEG signal is calculated. The PSD gives the distribution of the signal's energy in the frequency domain. Another power feature is the differential entropy (DE), which is defined as:
-\begin{center}
-$DE_{channel} = - \int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2}} exp(\frac{(x-\mu)^2}{2\sigma^2}) log(\frac{1}{\sqrt{2\pi\sigma^2}}) exp(\frac{(x-\mu)^2}{2\sigma^2})dx$
-\end{center}
-It is proven that the differential entropy of a certain band is equivalent to the logarithmic power spectral density for a fixed length EEG sequence. This simplifies the calculations significantly.
-\begin{center}
-$DE_{channel} = log(PSD_{channel})$
-\end{center}
+In this work the Dataset for Emotion Analysis using Physiological Signals (DEAP) was used. This dataset consists of recordings of a physiological experiment. This experiment recorded emotional reactions of 32 subjects. The reactions were triggered using music video excerpts. Each subject watched 40 one-minute videos, while several physiological signals were recorded. These physiological signals consist of 32 channel, 512Hz EEG signals combined with the following peripheral signals:
+\begin{itemize}
+\item galvanic skin response (GSR), which measures perspiration
+\item respiration belt, which measures the respiration rate
+\item plethysmograph, which measures the blood pressure
+\item skin temperature
+\end{itemize}
+For the peripheral signals, statistical values of each channel are used. These statistical values are minimum, maximum, variation, standard deviation, average and median of each channel. 
 
 \npar
+
+EEG features use a different approach, here the power spectral density (PSD) of each EEG signal is calculated. The PSD gives the distribution of the signal's energy in the frequency domain. Another power feature is the differential entropy (DE), it is proven that the differential entropy of a certain band is equivalent to the logarithmic power spectral density for a fixed length EEG sequence.
+
+\begin{center}
+$DE_{ch} = log(PSD_{ch})$
+\end{center}
 
 The most used features for valence classification are asymmetry features that measure asymmetry between two channels. This can be done in two ways. The first way is the differential asymmetry (DASM) which is defined as:
 
@@ -145,13 +138,11 @@ The most used features for valence classification are asymmetry features that me
 $DASM = DE_{left} - DE_{right}$
 \end{center}
 
-Another way to measure the asymmetry is by division. The Rational Asymmetry (RASM) does exactly this and is given by: \\
+Another way to measure the asymmetry is by division. The Rational Asymmetry (RASM) does exactly this and is given by:
 
 \begin{center}
 $RASM = \frac{DE_{left}}{DE_{right}}$
 \end{center}
-
-\npar
 
 The asymmetry features can also be used in the other direction. Instead of looking at the asymmetry between left and right, one can also compare the frontal power with the posterior power. This is known as the caudality. The differential caudality (DCAU) and rational caudality (RCAU) are defined as:
 \begin{center}
@@ -166,46 +157,36 @@ Another feature are the power fractions. These fractions give the power distribu
 $frac_{band,channel} = \frac{power_{band,channel}}{power_{total,channel}}$
 \end{center}
 
-\section{dataset} \label{dataset}
-In this work the Dataset for Emotion Analysis using Physiological Signals (DEAP)\cite{DEAP} was used. This dataset consists of recordings of a physiological experiment. This experiment recorded emotional reactions of 32 subjects. The reactions were triggered using music video excerpts. Each subject watched 40 one-minute videos, while several physiological signals were recorded. These physiological signals consist of 32 channel, 512Hz EEG signals combined with the following peripheral signals:
-\begin{itemize}
-\item galvanic skin response (GSR), which measures perspiration
-\item respiration belt, which measures the respiration rate
-\item plethysmograph, which measures the blood pressure
-\item skin temperature
-\end{itemize}
-
-\npar
-%problem statement
-
-
+\section{problem statement}\label{problem}
+Looking at different features in Table \ref{featOverviewTable}, one can see that the features counts quickly adds up. Having a total of 897 features will increase the risk for overfitting significantly. Additionally, not all 897 features are important. There is no agreement on the important features in literature. 
 
 \begin{table}[H]
 \centering
 \caption{An overview of the different features that were compared in this thesis.\label{featOverviewTable}}
-\begin{tabular}{lllll}
-\textbf{Name}           & \textbf{Type} & \textbf{no. Channels}   & \textbf{no. Frequency bands} & \textbf{Total} \\
+\begin{tabular}{l|llll}
+\textbf{Name}           & \textbf{Type} & \textbf{Channels}   & \textbf{Freq bands} & \textbf{Total} \\ \hline
 \textbf{PSD}            & EEG           & 32                            & 6                         & 192          \\
-\textbf{DE}             & eeg           & 32                            & 6                         & 192          \\
-\textbf{DASM}           & eeg           & 13                            & 6                         & 78           \\
-\textbf{RASM}           & eeg           & 13                            & 6                         & 78           \\
-\textbf{DCAU}           & eeg           & 11                            & 6                         & 66           \\
-\textbf{RCAU}           & eeg  & 11                            & 6                         & 66           \\
-\textbf{Frac}           & eeg           & 32                            & 5                         & 160          \\
-\textbf{Alpha / Beta}   & eeg           & 32                            & 1                         & 32           \\
-\textbf{EEG Total}      &               &                               &                           & 864          \\
+\textbf{DE}             & EEG           & 32                            & 6                         & 192          \\
+\textbf{DASM}           & EEG           & 13                            & 6                         & 78           \\
+\textbf{RASM}           & EEG           & 13                            & 6                         & 78           \\
+\textbf{DCAU}           & EEG           & 11                            & 6                         & 66           \\
+\textbf{RCAU}           & EEG  			& 11                            & 6                         & 66           \\
+\textbf{Frac}           & EEG           & 32                            & 5                         & 160          \\
+\textbf{Alpha / Beta}   & EEG           & 32                            & 1                         & 32           \\
+\textbf{EEG Total}      &               &                               &                           & 864          \\ \hline
                         &               &                               &                           &              \\
-\textbf{Name}           & \textbf{Type} & \textbf{no. Statistics} &                          &              \\
-\textbf{HR}             & non-eeg       & 6                             &                           &              \\
-\textbf{Plethysmograph} & non-eeg       & 6                             &                           &              \\
-\textbf{GSR}            & non-eeg       & 6                             &                           &              \\
-\textbf{ST}             & non-eeg       & 6                             &                           &              \\
-\textbf{RSP}            & non-eeg       & 6                             &                           &              \\
+\textbf{Name}           & \textbf{Type} & \textbf{Total} 			&                          &              \\ \hline
+\textbf{HR}             & non-EEG       & 6                             &                           &              \\
+\textbf{Plethysmograph} & non-EEG       & 6                             &                           &              \\
+\textbf{GSR}            & non-EEG       & 6                             &                           &              \\
+\textbf{ST}             & non-EEG       & 6                             &                           &              \\
+\textbf{RSP}            & non-EEG       & 6                             &                           &              \\
 \textbf{non-EEG Total}  &               & 30                            &                           &              \\
-                        &               &                               &                           &              \\
+                        &               &                               &                           &              \\ \hline
 \textbf{Overall Total}  & \textbf{894}  &                               &                           &             
 \end{tabular}
 \end{table}
+
 
 %approach
 
@@ -232,5 +213,3 @@ G.D.~Abowd, A.K.~Deyand P.J.~Brown, N.~Davies, M.~Smith and P.~Steggles.
 \end{thebibliography}
 
 \end{document}
-
-
