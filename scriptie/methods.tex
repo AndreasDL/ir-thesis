@@ -140,7 +140,7 @@ The combination of a local minimum and maximum correspond to a heart beat\citep{
 
 \subsection{Overview}
 
-The following table gives an overview of the different features and their amount. The 32 EEG channels can be found in Table \ref{DEAPSignals}. There are 6 frequency bands: Alpha, Beta, Gamma, Delta, Theta and All. All refers to taking the total power of a channel. Note that the fractions only have 5 different frequency bands, as the percentage of all power would always be 100$\%$. 
+Table \ref{featOverviewTable} gives an overview of the different feature types and their sizes. The 32 EEG channels can be found in Table \ref{DEAPSignals}. As mentioned in Section \ref{wavebands}, there are 6 frequency bands: Alpha, Beta, Gamma, Delta, Theta and All. All refers to taking the total power of a channel. Note that the fractions only have 5 different frequency bands, as the percentage of all power would always be 100$\%$. 
 
 \begin{table}[H]
 \centering
@@ -309,10 +309,6 @@ The next part is different, in each iteration a feature is introduced. When the 
 \npar
 
 In the end the paper notes several observations, the step two-prediction method provides better OOB scores using fewer features. Additionally they mention that highly correlated features might confuse the algorithm, as correlated features have lower importances.
-
-\section{Contribution of this thesis}
-
-It is clear from the aforementioned papers, that some research has already been done for emotion recognition. The contribution of this thesis is threefold, first compare a bigger ranger of feature selection methods on a bigger set of physiological features. Second, compare EEG features to non-EEG features to see how much information can be retrieved from the EEG signals compared to the non-EEG signals, which are usually easier to obtain. Third, perform the feature selection methods in a cross-person setting to see which feature generalise well across subjects. It is also important to note that the feature selection will be performed on the DEAP dataset, so that it can serve as a benchmark. This is important as performance of emotion recognition algorithms based on physiological signals often varies a lot for different datasets\citep{PhytoEm}.
 
 \section{Feature selection methods}
 \label{FSSel}
