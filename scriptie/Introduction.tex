@@ -135,7 +135,13 @@ The function on the right corresponds to an overfit. The function fits or 'goes 
 
 \npar 
 
-Part of a good machine learning algorithm is finding the right tradeoff between overfitting and underfitting. In case of the aforementioned overfitting, it would be better to lower the performance of the algorithm on the sample datapoints, to gain performance on the 'unseen' datapoints. Different techniques exist to estimate how good an algorithm performs on unseen points. Often a part of the sample points is put in a test set that is neglected during training. After the algorithm is designed, the performance on the test set will indicate how well the algorithm generalises. It is only the performance of the test set that gives a fair estimation of the performance of a machine learning algorithm.
+Part of a good machine learning algorithm is finding the right tradeoff between overfitting and underfitting. In case of the aforementioned overfitting, it would be better to lower the performance of the algorithm on the sample datapoints, to gain performance on the 'unseen' datapoints. Different techniques exist to estimate how good an algorithm performs on unseen points. to evaluate how good a designed machine learning algorithm performs on unseen data a part of the sample points is put in a test set. This test set is neglected during training and only used after the training of the algorithm is complete. The performance on the test set will indicate how well the algorithm generalises, since these are all unseen points. It is only the performance of the test set that gives a fair estimation of the performance of a machine learning algorithm. 
+
+\npar
+
+Sometimes it might be important to estimate generalisation during training to prevent overfitting. One way to do this, is cross validation. Cross validation (CV)\newacronym{CV}{CV}{Cross Validation} is a technique that separates the data in N folds, as shown in Figure \ref{CVscheme}. The algorithm is then trained on N-1 blocks and tested on the remaining blocks. This is done N times and the average of the performance is then reported as cross validation error. Note that the test set, displayed in red, is not used during cross validation. The test set is kept completely separate to ensure that a fair estimate of the generalisation is achieved.
+
+\mijnfiguur{width=0.55\textwidth}{CVscheme}{Cross validation}
 
 \subsection{Feature selection}
 Feature selection is a technique that aims at selecting the features that perform well, while trying to remove irrelevant features\citep{rfPaper}. The advantages of having a smaller features set are twofold. First having fewer features, will lower the risk of overfitting\citep{rfPaper}. Second, knowing which features are important makes it possible for humans to interpret the machine learning model. In this thesis, knowing which features are relevant might help in gaining insight in the processing of emotion by the brain. 
