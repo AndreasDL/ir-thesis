@@ -12,9 +12,9 @@ The performance of the different algorithms is depicted in Figure \ref{accComp_a
 
 \begin{table}[H]
 \centering
-\caption{A comparison of the accuracy of different feature selection methods for both arousal and valence. The reported scores are test accuracies averaged over \label{genacctable}.} %TODO
+\caption{A comparison of the test accuracy of different feature selection methods for both arousal and valence. The reported scores are test accuracies averaged over \label{genacctable}.} %TODO
 \begin{tabular}{llll}
-\textbf{Number} & \textbf{Feature selection method} & \textbf{Avg test acc - arousal} & \textbf{Avg test acc - valence} \\ \hline
+\textbf{Number} & \textbf{Feature selection method} & \textbf{Test acc - arousal} & \textbf{Test acc - valence} \\ \hline
 0               & Pearson R                          & 0.62187                             & 0.51875                             \\
 1               & Mututal information                            & 0.59688                             & 0.56563                             \\
 2               & Distance correlation                             & 0.58125                             & 0.51875                             \\
@@ -29,9 +29,9 @@ The performance of the different algorithms is depicted in Figure \ref{accComp_a
 \end{tabular}
 \end{table}
 
-\mijnfiguur{width=1.\textwidth}{accComp_arousalSVM_gen}{Comparison of different feature selection methods for arousal recognition in a cross-subject setting. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
+\mijnfiguur{width=1.\textwidth}{accComp_arousalSVM_gen}{Comparison of different feature selection methods' test accuracies for arousal recognition in a cross-subject setting. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
 
-\mijnfiguur{width=1.\textwidth}{accComp_valenceSVM_gen}{Comparison of different feature selection methods for valence recognition in a cross-subject setting. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
+\mijnfiguur{width=1.\textwidth}{accComp_valenceSVM_gen}{Comparison of different feature selection methods' test accuracies for valence recognition in a cross-subject setting. The blue bars correspond to filter selection methods. Red bars correspond to wrapper methods and green bars are used for the embedded methods.}
 
 \section{Correlation probability and level of valence/arousal}
 
@@ -68,6 +68,12 @@ For arousal, the correlations are quite low, even negative. The distance correla
 
 \mijnfiguur{width=1.\textwidth}{valence_corrs_gen}{The pearson correlations of the model's prediction probability versus the distance between the subject's level of valence and the separation boundary in a cross-subject setting.}
 
+Similar to the person specific results discussed in Section \ref{corrs}, the correlations are quite low. Some correlations are even negative, meaning that the model is more certain of examples that lie closer to the separation boundary. To explain why, additional research might be needed. At first sight, several explanations for this are possible:
+\begin{enumerate}
+\item The correlation is present, but is more complex than a simple linear correlation. As a result, the Pearson coefficient is not able to capture this correlation well.
+\item The assumption that high valence and arousal values are easier to recognise is wrong. It might be possible that a high valence/arousal levels do not correspond to increased physiological responses. Future research could look at the dominance values, that indicate how strong the emotion is perceived. The dominance values are explained in Section \ref{valarrdomspace} and were neglected during this work.
+\end{enumerate}
+However one has to keep in mind that it might be difficult to draw conclusions from these results, as the performance of the cross-subject emotion recognition is quite low.
 
 \section{Selected features}
 
@@ -229,15 +235,15 @@ Similar things can be observed for valence. Again, the asymmetry features are pr
 To further look at the difference between EEG and non-EEG features, the random forest selection method was again used three times. The first time, all features were available. The second and third time, only EEG and non-EEG features were available respectively. The results are shown in Figure \ref{arousalphyeegall_gen}, for arousal and Figure \ref{valencephyeegall_gen} for valence. The exact values are shown in Table \ref{phyeegallgenTable}.
 
 
-\mijnfiguur{width=1.\textwidth}{arousalphyeegall_gen}{The performance of arousal prediction for all, EEG and non-EEG features in a cross-subject setting.}
+\mijnfiguur{width=1.\textwidth}{arousalphyeegall_gen}{The performance of arousal prediction for all, EEG and non-EEG features on the test set in a cross-subject setting.}
 
-\mijnfiguur{width=1.\textwidth}{valencephyeegall_gen}{The performance of valence prediction for all, EEG and non-EEG features in a cross-subject setting.}
+\mijnfiguur{width=1.\textwidth}{valencephyeegall_gen}{The performance of valence prediction for all, EEG and non-EEG features on the test set in a cross-subject setting.}
 
 \begin{table}[H]
 \centering
 \caption{The test accuracies for both arousal and valence, using different feature sets.\label{phyeegallgenTable}}
 \begin{tabular}{l|ll}
-\textbf{Feat set}  & \textbf{Avg acc - arousal}       & \textbf{Avg acc - valence}          \\ \hline
+\textbf{Feat set}  & \textbf{Acc - arousal}       & \textbf{Acc - valence}          \\ \hline
 \textbf{All}       & 0.6344           & 0.5531           \\
 \textbf{EEG}       & 0.6094           & 0.5656           \\
 \textbf{non-EEG}   & 0.6344           & 0.5531          
@@ -411,5 +417,32 @@ For valence the features are:
 In a cross-subject setting, the DCAU features seem to perform well. These features are selected from front and posterior channels. However these results should be treated with caution, especially in case of valence, which only obtained a test accuracy of 55\%. If the classifier was not able to predict the emotional states well, one can doubt the selected features. 
 
 \section{Stability}
-TODO
-%TODO
+Random forests have the disadvantage that they have an element of randomness, meaning that they might not always select the same features, making them potentially unstable. It is possible to make the random forest algorithm more stable, by adding additional trees or running the algorithm several times and averaging the importance values. 
+
+\npar
+
+One way to measure the stability is to run the algorithm twice and look at the similarity of the selected features. The similarity can be calculated using the Jaccard index, as explained in Section \ref{jaccard}. The importances of the random forest features selection were averaged over 30 runs to ensure stability. The Jaccard index was measured for several runs, the results are shown in Table \ref{Jaccard_gen}.
+
+\begin{table}[H]
+\centering
+\caption{The Jaccard index of two consecutive features sets for the random forest feature selection method. \label{Jaccard_gen}}
+\begin{tabular}{l|l|ll}
+\textbf{what} & \textbf{runs} & \textbf{Jaccard index}    \\ \hline
+valence       & 1             & 0.89432                   \\
+valence       & 5             & 0.90278                   \\
+valence       & 10            & 0.92562                   \\
+valence       & 20            & 0.90000                   \\
+valence       & 30            & 0.88522                   \\
+valence       & 40            & 0.92930                   \\
+valence       & 50            & 0.90909                   \\ \hline
+arousal       & 1             & 0.93048                   \\
+arousal       & 5             & 0.86364                   \\
+arousal       & 10            & 0.86364                   \\
+arousal       & 20            & 0.88025                   \\
+arousal       & 30            & 0.87273                   \\
+arousal       & 40            & 0.89721                   \\
+arousal       & 50            & 0.90190                  
+\end{tabular}
+\end{table}
+
+When comparing the cross-subject results in Table \ref{jaccard_gen} with the person specific results in Table \ref{specificJaccard}, it is clear that the random forest selection method is more stable in the cross subject setting. This is due to the fact that here, training data of different persons is combined, which results in a large data set for the RF method to estimate the importances.
