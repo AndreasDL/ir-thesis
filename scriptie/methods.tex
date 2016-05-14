@@ -542,6 +542,19 @@ It is clear that feature A and B are very important when it comes to predicting 
 
 This problem does not occur for random forest though, as combinations of features are also 'tested' in the sense that a tree might split on them in different stages. Once the combination of features occurs randomly in a decision tree, the impurity will drop significantly, which will result in higher importance rankings.
 
+\npar
+
+\label{jaccard}
+Random forest have an element of randomness, which might make them unstable in the sense that running this method several times might give different features. One way to measure how similar the outputs of different runs are is the Jaccard index. The Jaccard index measures similarity between two sets. The Jaccard index J, between set A and B is given by:
+\begin{center}
+$J_{A,B} = \frac{|A \cap B|}{|A \cup B|} $
+\end{center}
+The Jaccard index ranges from zero to one. A value of zero corresponds to no similarity, while a value of 1 indicates that the two sets are identical.
+
+\npar
+
+Several ways are available to make random forest more stable for feature selection. First, one can increase the number of trees used. In this thesis 2000 trees were used to estimate the importance. Second, taking an average of the importance values over several runs will also increase the stability. In this work, the random forest were run 30 times to ensure stability.
+
 \subsubsection{Principal Component Analysis}
 \label{pcaExaplained}
 Principal Component Analysis (PCA) \newacronym{PCA}{PCA}{Principal Component Analysis} is a technique to do dimension reduction. Intuitively, PCA can be seen as fitting an n-dimensional ellipsoid to the data. The Principal components are then the axes of the ellipsoid. Less variation in one direction, corresponds to a smaller axis. Removing that axis, will only remove a small fraction of the information, as there is only little variation in that direction. This is shown in Figure \ref{ellipsoid}, where the ellipsoid covers a three dimensional features space. The ellipsoid has three axes: a,b and c. Intuitively, one can see that there is more variation (information) in the c ans b direction, while the a axis is relatively small.

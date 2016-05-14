@@ -37,8 +37,14 @@ for setting in ['pers','gen']:
                 nfile = open(npath, 'r')
 
                 jaccards = []
+                stopIndex = 34
+                if setting == 'gen':
+                    stopIndex = 3
                 for person, (pline, nline) in enumerate(zip(pfile,nfile)):
-                    if person > 1 and person < 34:
+
+                    if person > 1 and person < stopIndex:
+                        #print(pline.strip('\n'))
+
                         pfeats = pline.strip('\n').split(';')
                         nfeats = nline.strip('\n').split(';')
 

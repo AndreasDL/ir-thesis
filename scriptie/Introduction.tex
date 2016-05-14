@@ -121,7 +121,7 @@ Another way to group algorithms is based on their training data\citep{prml}. In 
 
 \subsection{Over- and underfitting}
 
-Over and underfitting is a common problem in many machine learning projects\citep{prml}. Suppose the example in Figure \ref{overunderfitting}, where one tries to find a good function to fit the given data points. Looking at the three proposed functions, one can easily see that the middle figure corresponds to the most logical generator function<\footnote{A generator function is a theoretical concept to describe the 'actual' function that generated the outputs.} of the red points.
+Over and underfitting is a common problem in many machine learning projects\citep{prml}. Suppose the example in Figure \ref{overunderfitting}, where one tries to find a good function to fit the given data points. The green line corresponds to the generator function, the 'actual' function that generated the outputs. The blue line is the line represents the machine learning algorithm's fit of the data. Looking at the three proposed functions, one can easily see that the middle figure corresponds to the best fit of the sample points.
 
 \mijnfiguur{width=0.9\textwidth}{overunderfitting}{Overfitting versus underfitting\cite{overunderfittingFig}.}
 
@@ -131,7 +131,7 @@ The figure on the left corresponds to an underfit, where the proposed function i
 
 \npar
 
-The function on the right corresponds to an overfit. The function fits or 'goes through' each point exactly, which will a very low error for these data points. However, one can see that the behaviour of the hypothesis function in between data points is not what one would expect. This is the result of using a too complex function to fit the data. As a results, all sample points are matched exactly, which results in a very low error for these points. However, the problems arise when the algorithm is test on unseen points. The algorithm will have a much higher error for those points. 
+The function on the right corresponds to an overfit. The function is trying too hard to fit each point exactly, which results in low train error for these data points. However, one can see that the behaviour of the hypothesis function in between data points is not what one would expect. This is the result of using a too complex function to fit the data. As a result the error is very low error for these points.
 
 \npar 
 
