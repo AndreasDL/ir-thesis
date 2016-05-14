@@ -1018,3 +1018,63 @@ parent={},%
 %
 }%
 }%
+\ifglsentryexists{ERP}{}%
+{%
+\gls@defglossaryentry{ERP}%
+{%
+name={ERP},%
+sort={ERP},%
+type={main},%
+first={Event-Related Potential\glsspace (ERP)},%
+firstplural={Event-Related Potentials\glsspace (ERPs)},%
+text={ERP},%
+plural={ERPs},%
+description={Event-Related Potential},%
+descriptionplural={Event-Related Potential\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Event-Related Potential},%
+longplural={Event-Related Potentials},%
+short={ERP},%
+shortplural={ERPs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{ERP}{}%
+{%
+\gls@defglossaryentry{ERP}%
+{%
+name={ERP},%
+sort={ERP},%
+type={main},%
+first={Event-Related Potential\glsspace (ERP)},%
+firstplural={Event-Related Potentials\glsspace (ERPs)},%
+text={ERP},%
+plural={ERPs},%
+description={Event-Related Potential},%
+descriptionplural={Event-Related Potential\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Event-Related Potential},%
+longplural={Event-Related Potentials},%
+short={ERP},%
+shortplural={ERPs},%
+counter={page},%
+parent={},%
+%
+}%
+}%

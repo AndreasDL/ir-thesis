@@ -32,14 +32,13 @@ Some feature selection methods use a machine learning technique as basis. These 
 
 \section{Performance}
 
-When looking at the accuracies of the different feature selection models in combination with the SVM, it is clear that there is not a lot of difference. Statistically, all these results are equivalent.
-For each feature selection method, the test accuracy and standard deviation are shown in Table \ref{accCompLblarousal} and Table \ref{accCompLblvalence} for valence and arousal respectively. The accuracies are also plotted in in Figure \ref{accComp_arousalSVM} and Figure \ref{accComp_valenceSVM} for arousal and valence respectively.
+When looking at the accuracies of the different feature selection models in combination with the SVM, it is clear that there is not a lot of difference. Statistically, all these results are equivalent. For each feature selection method, the test accuracy and standard deviation are shown in Table \ref{accCompLblarousal} and Table \ref{accCompLblvalence} for valence and arousal respectively. The accuracies are also plotted in in Figure \ref{accComp_arousalSVM} and Figure \ref{accComp_valenceSVM} for arousal and valence respectively.
 
-\mijnfiguur{width=1.\textwidth}{accComp_arousalSVM}{Comparison of different feature selection methods for arousal recognition. The y-axis shows the test accuracy averages over all persons as well as the standard deviation. The x-axis shows the different models, each number corresponds to the number in Table \section{accCompLblarousal}. Blue bars correspond to filter selection methods, red bars correspond to wrapper methods and green bars are used for the embedded methods.}
+\mijnfiguur{width=1.\textwidth}{accComp_arousalSVM}{Comparison of different feature selection methods for arousal recognition. The y-axis shows the test accuracy averages over all persons as well as the standard deviation. The x-axis shows the different models, each number corresponds to the number in Table \ref{accCompLblarousal}. Blue bars correspond to filter selection methods, red bars correspond to wrapper methods and green bars are used for the embedded methods.}
 
 \begin{table}[H]
 \centering
-\caption{A comparison of the accuracy of different feature selection methods for arousal. The reported scores are test accuracies averaged over the different persons with their standard deviation. A plot of this table is shown in Figure \ref{accComp_arousalSVM}\label{accCompLblarousal}.}
+\caption{A comparison of the accuracy of different feature selection methods for arousal. The reported scores are test accuracies averaged over the different persons with their standard deviation.\label{accCompLblarousal}.}
 \begin{tabular}{llll}
 \textbf{Number} & \textbf{Feature selection method} & \textbf{Avg test acc - arousal} & \textbf{Std test acc - arousal} \\ \hline
 0               & pearson                           & 0.68125                             & 0.1615199978                    \\
@@ -56,11 +55,11 @@ For each feature selection method, the test accuracy and standard deviation are 
 \end{tabular}
 \end{table}
 
-\mijnfiguur{width=1.\textwidth}{accComp_valenceSVM}{Comparison of different feature selection methods for valence recognition. The y-axis shows the test accuracy averages over all persons as well as the standard deviation. The x-axis shows the different models, each number corresponds to the number in Table \section{accCompLblvalence}. Blue bars correspond to filter selection methods, red bars correspond to wrapper methods and green bars are used for the embedded methods.}
+\mijnfiguur{width=1.\textwidth}{accComp_valenceSVM}{Comparison of different feature selection methods for valence recognition. The y-axis shows the test accuracy averages over all persons as well as the standard deviation. The x-axis shows the different models, each number corresponds to the number in Table \ref{accCompLblvalence}. Blue bars correspond to filter selection methods, red bars correspond to wrapper methods and green bars are used for the embedded methods.}
 
 \begin{table}[H]
 \centering
-\caption{A comparison of the accuracy of different feature selection methods for valence. The reported scores are test accuracies averaged over the different persons with their standard deviation. A plot of this table is shown in Figure \ref{accComp_valenceSVM}\label{accCompLblvalence}.}
+\caption{A comparison of the accuracy of different feature selection methods for valence. The reported scores are test accuracies averaged over the different persons with their standard deviation.\label{accCompLblvalence}}
 \begin{tabular}{llll}
 \textbf{Number} & \textbf{Feature selection method} & \textbf{Avg test acc - valence} & \textbf{Std test acc - valence} \\ \hline
 0               & pearson                           & 0.6875                              & 0.1313699529                    \\
@@ -72,7 +71,7 @@ For each feature selection method, the test accuracy and standard deviation are 
 6               & LDA                               & 0.6125                              & 0.187943025                     \\
 7               & lasso regression                  & 0.678125                            & 0.1660438632                    \\
 8               & ridge regression                  & 0.575                               & 0.1436842416                    \\
-9               & random forests                    & \textbf{0.7375à                     & \textbf{0.1313699529}           \\
+9               & random forests                    & \textbf{0.7375}                     & \textbf{0.1313699529}           \\
 10              & PCA                               & 0.6                                 & 0.1586231078                   
 \end{tabular}
 \end{table}
