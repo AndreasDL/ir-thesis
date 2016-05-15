@@ -21,6 +21,9 @@
 \usepackage{graphicx}                   % Om figuren te kunnen verwerken
 \usepackage{float}
 
+\usepackage[numbers]{natbib}
+
+
 
 \newcommand\MYhyperrefoptions{bookmarks=true,bookmarksnumbered=true,
 pdfpagemode={UseOutlines},plainpages=false,pdfpagelabels=true,
@@ -78,20 +81,20 @@ Emotion recognition, physiological signals, machine learning, feature selection 
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-\IEEEPARstart{E}{m}otion recognition is the process of recognizing a person's emotion. Observing and recognizing emotion can be done in several ways. Psychology makes a clear distinction between physiological behaviour and a person's expression of emotion. The expression is often prone to social masking, the process of hiding emotion to conform to social standards and ideas, making it less reliable. The physiological behaviour on the other hand is much harder to control, making it more reliable. 
+\IEEEPARstart{E}{m}otion recognition is the process of recognizing a person's emotion. Observing and recognizing emotion can be done in several ways. Psychology makes a clear distinction between physiological behaviour and a person's expression of emotion\cite{ExtendedPaper}. The expression is often prone to social masking\citep{PhytoEm}, the process of hiding emotion to conform to social standards and ideas, making it less reliable. The physiological behaviour on the other hand is much harder to control, making it more reliable. 
 
 \npar
 
 This work will focus on emotion recognition using physiological signals. Next the classification of emotions will be explained in Section \ref{classification}, before an introduction of physiological signals is given in Section \ref{phyintro}. What follows in Section \ref{features} is an overview of the used features. The problem statement and goal of this work is given in \ref{problem}. Sections \ref{approach} and \ref{conclusion} give the used approach, results and conclusion.
 
 \section{Classification of emotions}\label{classification}
-Before emotion can be recognized, different emotions need to be defined. One way to do this is to use several distinct emotions, e.g. anger, joy, sad and pleasure. The advantage of this approach is that all emotions have a clear label. The disadvantage is that this model is often not complex enough to fully represent an emotion state. To solve this problem, the bipolar valence-arousal model was introduced. This model puts each emotion in a two dimensional space. The first dimension, ranges from inactive to active and indicates how active a person is feeling. The next dimension is valence. This dimension indicates how pleasant or unpleasant the emotion is perceived. 
+Before emotion can be recognized, different emotions need to be defined. One way to do this is to use several distinct emotions, e.g. anger, joy, sad and pleasure. The advantage of this approach is that all emotions have a clear label. The disadvantage is that this model is often not complex enough to fully represent an emotion state. To solve this problem, the bipolar valence-arousal model was introduced\cite{ExtendedPaper,RealTimeEEGEmotion}. This model puts each emotion in a two dimensional space. The first dimension, ranges from inactive to active and indicates how active a person is feeling. The next dimension is valence. This dimension indicates how pleasant or unpleasant the emotion is perceived. 
 
 \npar
 
 The valence-arousal model has the advantage that an emotion can be defined, without needing to explicitly labelling it. All discrete emotions can be mapped to the valence-arousal space. For example, excitement corresponds to an active feeling with a pleasant experience, meaning that is will be in the high valence, high arousal quadrant of the space. A depressed feeling, on the other hand, will have a low valence and low arousal. As a result depressed is mapped in the low valence, low arousal quadrant. The mapping of other emotions can be done similarly and is shown in Figure \ref{ArousalValenceModel}.
 
-\mijnfiguur{width=0.5\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.}
+\mijnfiguur{width=0.5\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.\citep{ValArrFig}}
 
 \section{Physiological signals} \label{phyintro}
 In case machine learning is used for emotion recognition, some physiological signals are taken as input. The machine learning will then output a valence or arousal score. In short, machine learning can be defined as an input output model that predicts output values for different samples based on the inputs. The inputs are features of the input samples, e.g. the frequency or amplitude of a signal.
@@ -102,11 +105,11 @@ To do emotion recognition with machine learning, good features are required. Thi
 
 \npar
 
-The second group of features originate from the brain. These signals are recordings of brain activity using electroencephalography (EEG). EEG is a technique that measures electrical activity of the brain, by placing electrodes on the scalp. Even though EEG is very noisy by nature as the signal is distorted by the bone between the cortex and the electrodes it still provides significant insight in the brain activity. The electrodes are placed according to the 10/20 system, that labels each location. The locations and the corresponding channel names used in this work are visible in Figure \ref{1020labels}.
+The second group of features originate from the brain. These signals are recordings of brain activity using electroencephalography (EEG). EEG is a technique that measures electrical activity of the brain, by placing electrodes on the scalp\cite{ExtendedPaper}. Even though EEG is very noisy by nature as the signal is distorted by the bone between the cortex and the electrodes it still provides significant insight in the brain activity\cite{GivenPaper}. The electrodes are placed according to the 10/20 system, that labels each location. The locations and the corresponding channel names used in this work are visible in Figure \ref{1020labels}.
 
-\mijnfiguur{width=0.5\textwidth}{1020labels}{Placement of the 32 electrodes in this thesis.}
+\mijnfiguur{width=0.5\textwidth}{1020labels}{Placement of the 32 electrodes in this thesis.\cite{1020Site}}
 
-EEG measures electrical activity at each channel. Each measurement can be split in different frequency bands, with medical relevance. The frequency bands are:
+EEG measures electrical activity at each channel. Each measurement can be split in different frequency bands, with medical relevance\cite{EmotionRelativePower,WavesSite}. The frequency bands are:
 \begin{itemize}
 \item \textbf{Alpha:} 8-13Hz, indicate how relaxed and/or inactive the brain is.
 \item \textbf{Beta:} 13-30HZ, indicate a more active and focused state of mind.
@@ -118,7 +121,7 @@ EEG measures electrical activity at each channel. Each measurement can be split 
 %problem statement
 \section{Features} \label{features}
 \npar
-In this work the Dataset for Emotion Analysis using Physiological Signals (DEAP) was used. This dataset consists of recordings of a physiological experiment. This experiment recorded emotional reactions of 32 subjects. The reactions were triggered using music video excerpts. Each subject watched 40 one-minute videos, while several physiological signals were recorded. These physiological signals consist of 32 channel, 512Hz EEG signals combined with the following peripheral signals:
+In this work the Dataset for Emotion Analysis using Physiological Signals (DEAP) was used. This dataset consists of recordings of a physiological experiment\citep{DEAP}. This experiment recorded emotional reactions of 32 subjects. The reactions were triggered using music video excerpts. Each subject watched 40 one-minute videos, while several physiological signals were recorded. These physiological signals consist of 32 channel, 512Hz EEG signals combined with the following peripheral signals:
 \begin{itemize}
 \item galvanic skin response (GSR), which measures perspiration
 \item respiration belt, which measures the respiration rate
@@ -129,13 +132,13 @@ For the peripheral signals, statistical values of each channel are used. These s
 
 \npar
 
-EEG features use a different approach, here the power spectral density (PSD) of each EEG signal is calculated. The PSD gives the distribution of the signal's energy in the frequency domain. Another power feature is the differential entropy (DE), it is proven that the differential entropy of a certain band is equivalent to the logarithmic power spectral density for a fixed length EEG sequence.
+EEG features use a different approach, here the power spectral density (PSD) of each EEG signal is calculated. The PSD gives the distribution of the signal's energy in the frequency domain. Another power feature is the differential entropy (DE), it is proven that the differential entropy of a certain band is equivalent to the logarithmic power spectral density for a fixed length EEG sequence\citep{killyPaper}.
 
 \begin{center}
 $DE_{ch} = log(PSD_{ch})$
 \end{center}
 
-The most used features for valence classification are asymmetry features that measure asymmetry between two channels. This can be done in two ways. The first way is the differential asymmetry (DASM) which is defined as:
+The most used features for valence classification are asymmetry features that measure asymmetry between two channels\cite{GivenPaper}. This can be done in two ways. The first way is the differential asymmetry (DASM) which is defined as:
 
 \begin{center}
 $DASM = DE_{left} - DE_{right}$
@@ -147,7 +150,7 @@ Another way to measure the asymmetry is by division. The Rational Asymmetry (RAS
 $RASM = \frac{DE_{left}}{DE_{right}}$
 \end{center}
 
-The asymmetry features can also be used in the other direction. Instead of looking at the asymmetry between left and right, one can also compare the frontal power with the posterior power. This is known as the caudality. The differential caudality (DCAU) and rational caudality (RCAU) are defined as:
+The asymmetry features can also be used in the other direction\cite{GivenPaper}. Instead of looking at the asymmetry between left and right, one can also compare the frontal power with the posterior power. This is known as the caudality. The differential caudality (DCAU) and rational caudality (RCAU) are defined as:
 \begin{center}
 $DCAU = DE_{front} - DE_{post}$
 $RCAU = \frac{DE_{front}}{DE_{post}}$
@@ -155,13 +158,14 @@ $RCAU = \frac{DE_{front}}{DE_{post}}$
 
 \npar
 
-Another feature are the power fractions. These fractions give the power distribution for each channel and are defined as:
+Another feature are the power fractions. These fractions give the power distribution for each channel\citep{ExtendedPaper} and are defined as:
 \begin{center}
 $frac_{band,channel} = \frac{power_{band,channel}}{power_{total,channel}}$
 \end{center}
+Often the ratio of Alpha/beta power is also used for classification of arousal\citep{ref4}.
 
 \section{Problem statement}\label{problem}
-Looking at different features in Table \ref{featOverviewTable}, one can see that the features counts quickly adds up. Having a total of 894 features will increase the risk for overfitting significantly. Additionally, not all 897 features are important. There is no agreement on the important features in literature. 
+Looking at different features in Table \ref{featOverviewTable}, one can see that the features counts quickly adds up. Having a total of 894 features will increase the risk for overfitting significantly\citep{rfPaper}. Additionally, not all 894 features are important. There is no agreement on the important features in literature. 
 
 \begin{table}[H]
 \centering
@@ -190,7 +194,7 @@ Looking at different features in Table \ref{featOverviewTable}, one can see that
 \end{tabular}
 \end{table}
 
-The goal of this work is twofold, first important features are needed for person specific emotion recognition. Second, feature are needed that enable the machine learning algorithm to work in a cross-person setting. In the second goal the machine learning algorithm is trained on several person and tested on other people. Working in a cross-subject setting is more challenging, because physiological signals are personal by nature. %TODO ref
+The goal of this work is twofold, first important features are needed for person specific emotion recognition. Second, feature are needed that enable the machine learning algorithm to work in a cross-subject setting. In the second goal the machine learning algorithm is trained on several person and tested on other people. Working in a cross-subject setting is more challenging, because physiological signals are personal by nature\citep{DEAP}.
 
 \section{Used approach and results} \label{approach}
 
@@ -206,15 +210,7 @@ Wrapper methods are somewhat more advanced, they use an arbitrary machine learni
 
 \npar
 
-The last category of feature selection methods are the embedded methods. Embedded methods also use an underlying machine learning technique. This time the machine learning algorithm has a build-in feature selection functionality though. Random forest are a good example of this category. Random forest use multiple decision trees that each have a random subset of the samples and features.
-
-\npar
-
-Building a decision tree starts with all samples in one node. This node will therefore be impure, meaning that it has samples of multiple classes. In the next step, the data will be split iteratively. In each iteration, a features is picked at random and the data is split according to the different values of features. This split is done so that it lower the impurity of the child nodes. After several iteration, the node will eventually be pure. A pure node contains only samples of one class. %fig ?
-
-\npar
-
-Each feature corresponds to a drop in impurity. By averaging the drop in impurity over all trees, one can estimate the importance of the different features quite well. The advantage is that this method is capable of finding groups of relevant features. When a group of random features is selected at different nodes in a decision tree, the impurity will drop significantly. This will result in a higher feature ranking.
+The last category of feature selection methods are the embedded methods. Embedded methods also use an underlying machine learning technique. This time the machine learning algorithm has a build-in feature selection functionality though. Random forest are a good example of this category. Random forest use multiple decision trees that each have a random subset of the samples and features\citep{rfPaper}. Building a decision tree starts with all samples in one node. This node will therefore be impure, meaning that it has samples of multiple classes. In the next step, the data will be split iteratively. In each iteration, a features is picked at random and the data is split according to the different values of features. This split is done so that it lower the impurity of the child nodes. After several iteration, the node will eventually be pure. A pure node contains only samples of one class. Each split corresponds to a drop in impurity, cause by evaluating the chosen features. By averaging the drop in impurity over all trees, one can estimate the importance of the different features quite well. The advantage is that this method is capable of finding groups of relevant features. When a group of random features is selected at different nodes in a decision tree, the impurity will drop significantly. This will result in a higher feature ranking.
 
 \npar
 
@@ -222,17 +218,17 @@ The following approach was used, first the DEAP dataset is splitted in a train a
 \begin{enumerate}
 \item add a new feature to the feature set
 \item determine the cross validation error and standard deviation (std)
-\item if the validation error and std are better than the previous best, the feature is kept. Otherwise the feature is neglected.
+\item if the validation error and standard deviation are better than the previous best, the feature is kept. Otherwise the feature is neglected. This was done to increase the stability method and was inspired by literature \citep{rfPaper}.
 \end{enumerate}
-Note that this model is build using a support vector machine (SVM) as SVM's have proven themselves in emotion recognition studies. The cross validation step ensures that the chosen features also work well on unseen samples. The final result is evaluated on the test set.
+The model that is being build is an SVM with an Radial basis functions (RBF) kernel, sometimes referred to as a Gaussian SVM. This model was chosen because it has proven itself in multiple emotion recognition studies\citep{killyPaper,emorecoghard,SVMUsage,SVMUsage2}. SVMs look for a separation boundary between two classes, and thus only look at points close to that boundary. This gives this method an advantage, as the dataset only contains 40 samples for each person, only 30 of them are available for training. Another advantage is that SVMs are capable of handling large features sets\citep{SVMLargeFeatSets,SVMLargeFeatSets2}. Both advantages concur with this work's problem statement. 
 
 \npar
 
-This was done for each person, the resulting performance was averaged over all persons giving a performance of  70 and 73.75 \% with std 13.9 and 13.1 \% for arousal and valence respectively. 
+For each person a model is build and tested on the test set, the resulting performances are averaged over all persons giving a performance of  70 and 73.75 \% with std 13.9 and 13.1 \% for arousal and valence respectively. 
 
 \npar
 
-To review which features were selected, group of similar EEG features were created. These groups are:
+To review which features were selected, groups of similar EEG features were created. These groups are:
 \begin{itemize}
 \item Power features: the PSD and DE features
 \item Asymmetry features: DASM, RASM, DCAU, RCAU
@@ -246,37 +242,48 @@ The non-EEG features are:
 \item blood pressure
 \item skin temperature
 \end{itemize}
-
 The distribution of the selected features is given in Figure \ref{arousalALLRF} for arousal and Figure \ref{valenceALLRF} for valence, the legend is given in Figure \ref{legend}.
 
-%fig 
 \mijnfiguur{width=0.25\textwidth}{arousalALLRF}{Selected features for arousal}
 \mijnfiguur{width=0.25\textwidth}{valenceALLRF}{Selected features for valence}
 \mijnfiguur{width=0.25\textwidth}{legend}{Each color and its corresponding feature category.}
 
-It is clear that for both arousal and valence, the asymmetry features are the most important. The second most important category are the power features. The non-EEG features seem to have very little influence on the result. To verify that the non-EEG feature are worse than the EEG features, the setup was run two additional times. One time with only EEG features and one time with only non-EEG features. The results are visible in Figure \ref{arousalphyeegall} and Figure \ref{valencephyeegall} for arousal and valence respectively. 
+It is clear that for both arousal and valence, the asymmetry features are the most important. The second most important category are the power features\footnote{Without going into detail; a similar trend was also found for other, less advanced feature selection methods.}. The non-EEG features seem to have very little influence on the result. To verify that the non-EEG feature are worse than the EEG features, the setup was run two additional times. One time with only EEG features and one time with only non-EEG features. The results are visible in Figure \ref{arousalphyeegall} and Figure \ref{valencephyeegall} for arousal and valence respectively. 
 
 \mijnfiguur{width=.5\textwidth}{arousalphyeegall}{The performance of arousal prediction for all, EEG and non-EEG features.}
 
 \mijnfiguur{width=.5\textwidth}{valencephyeegall}{The performance of valence prediction for all, EEG and non-EEG features.}
 
-Statistical tests conclude that the EEG and ALL feature sets have better performance than the non-EEG sets, albeit with a p-value of only 80\%. Repeating this with more data might give a more definitive results. 
+The results were compared with a two-sided p-test which does confirm that the non-EEG features have a lower performance. The P-values are shown in Table \ref{pvals}.
+\begin{table}[H]
+\centering
+\caption{P-values for the comparison of the performance of different feature sets.\label{pvals}}
+\begin{tabular}{l|lll}
+	    		 & \textbf{all / EEG} & \textbf{all / non-EEG} & \textbf{EEG / non-EEG} \\ \hline
+\textbf{Arousal} & $0.4386$          & $5.891 * 10^{-7}$  & $1.201 * 10^{-4}$ \\
+\textbf{Valence} & $0.6817$          & $1.993 * 10^{-9}$  & $1.763 * 10^{-6}$                 
+\end{tabular}
+\end{table}
 
-% stability %TODO
+% stability
+For the stability, the Jaccard index, an index that measures the similarity between two sets, was calculated. A Jaccard index of zero corresponds to two totally different sets, while a Jaccard index of one corresponds to two identical sets. For the Random forest the average Jaccard index over all persons was 0.743 with standard deviation 0.24 for valence and 0.791 with standard deviation 0.244 for arousal. The large standard deviation indicates that even though the RF method is quite stable, it varies from person to person.
 
-% cross-person
+\npar
+% cross-subject
+For the cross-subject setting, performance was much lower than person specific. This was expected, as the physiological signals are very personal by nature \ref{DEAP}. The test accuracy was 64\% for arousal and 55\% for valence. The drop in performance, caused by the transition from person specific to a cross-subject setting was large for valence than arousal. This might indicate that physiological reactions to a change in arousal are more common between person than valence. 
+
+\npar
+
+The selected features are similar to the person-specific case. Asymmetry EEG features are selected most of the time and non-EEG features were rarely selected. However when comparing performance of three feature sets containing all, EEG, non-EEG features, the non-EEG feature set scores higher than in a person specific setting.
+
+\mijnfiguur{width=.5\textwidth}{arousalphyeegall_gen}{The performance of arousal prediction for all, EEG and non-EEG features.}
+
+\mijnfiguur{width=.5\textwidth}{valencephyeegall_gen}{The performance of valence prediction for all, EEG and non-EEG features.}
 
 \section{Conclusion and future work} \label{conclusion}
+The most important conclusion in this work is that EEG signals outperform non-EEG signals in a person specific setting. In a cross-subject, the performance is similar. This indicates that non-EEG physiological reactions to changes in a person's emotion state are more common between persons. Further research for more advanced transfer learning methods is needed to do cross-subject emotion recognition, as the found performance in this work remained quite low.
 
-
-\begin{thebibliography}{1}
-
-\bibitem{dey2000}
-G.D.~Abowd, A.K.~Deyand P.J.~Brown, N.~Davies, M.~Smith and P.~Steggles.
-\newblock Towards a Better Understanding of Context and Context-Awareness.
-\newblock In {\em Proceedings of the 1st International Symposium on Handheld and Ubiquitous Computing (HUC),
-	1999}, pages 304--307.
-
-\end{thebibliography}
+\bibliographystyle{ieeetr}
+\bibliography{../bibfile.bib}
 
 \end{document}
