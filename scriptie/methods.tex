@@ -460,6 +460,16 @@ Back in the original feature space the separation boundary might look like Figur
 
 \mijnfiguur{width=0.5\textwidth}{SVM5}{Separation boundary in the original feature space.} 
 
+\label{rbfkernel}
+In this work a Radial Basis Function (RBF) \newacronym{RBF}{RBF}{Radial Basis Function} was used. This kernels is sometimes called the Gaussian kernel. The RBF kernel K for two input vectors x and y is given by\citep{RBFKernel}:
+\begin{center}
+$K(x,y) = exp(\frac{-\norm{x-y}^2}{2\sigma^2}$
+\end{center}
+The numerator can be recognized as the squared Euclidean distance between two sample points in the feature space. The $\sigma$ is a parameter. The kernel can be interpreted as a similarity measure\citep{RBFSimilarity}. Furthermore, this kernel has an infinite number of dimensions\citep{RBFExpansion}, this is visible when the kernel is expanded. For $\sigma = 1$ the kernels becomes:
+\begin{center}
+$exp(-\frac{1}{2}\norm{x-y}^2) = \sum_{j=0}^{\infty} \frac{(x^Ty)^j}{j!} exp(-\frac{1}{2}\norm{x}^2)exp(-\frac{1}{2}\norm{y}^2)$
+\end{center}
+
 \subsubsection{Linear discriminant analysis}
 Linear Discriminant Analysis (LDA)\newacronym{LDA}{LDA}{Linear Disciminant Analysis}, is a machine learning technique often used in combination with CSP\cite{ErrorPotentials,svmldacomp,currTrends}. LDA looks for a projection of the data where the data is linearly separable, as shown in Figure \ref{lda}. Looking at the coefficients of the LDA model, one can again determine the importance of the different features.
 

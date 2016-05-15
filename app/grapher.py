@@ -205,25 +205,27 @@ def svm_rbf_accs():
     print(names)
 
 def phyeegall():
+    f = open("temp.csv", 'w')
+
     # get testaccs
     test_accs = []
 
     all = []
-    model = PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(), "D:/dumpedData/persScript/")
+    model = PersScript("ALL", 32, 30, Classificators.ContValenceClassificator(),1, "D:/ir-thesis/dumpedData/persScript/")
     model.run()
     for person in model.accs:
         all.append(person[0][7][7])
     test_accs.append(all)
 
     all = []
-    model = PersScript("EEG", 32, 30, Classificators.ContValenceClassificator(), "D:/dumpedData/persScript/")
+    model = PersScript("EEG", 32, 30, Classificators.ContValenceClassificator(),1, "D:/ir-thesis/dumpedData/persScript/")
     model.run()
     for person in model.accs:
         all.append(person[0][7][7])
     test_accs.append(all)
 
     all = []
-    model = PersScript("PHY", 32, 30, Classificators.ContValenceClassificator(), "D:/dumpedData/persScript/")
+    model = PersScript("PHY", 32, 30, Classificators.ContValenceClassificator(),1, "D:/ir-thesis/dumpedData/persScript/")
     model.run()
     for person in model.accs:
         all.append(person[0][7][7])
@@ -249,21 +251,21 @@ def phyeegall():
     test_accs = []
 
     all = []
-    model = PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(), "D:/dumpedData/persScript/")
+    model = PersScript("ALL", 32, 30, Classificators.ContArousalClassificator(),1,"D:/ir-thesis/dumpedData/persScript/")
     model.run()
     for person in model.accs:
         all.append(person[0][7][7])
     test_accs.append(all)
 
     all = []
-    model = PersScript("EEG", 32, 30, Classificators.ContArousalClassificator(), "D:/dumpedData/persScript/")
+    model = PersScript("EEG", 32, 30, Classificators.ContArousalClassificator(),1, "D:/ir-thesis/dumpedData/persScript/")
     model.run()
     for person in model.accs:
         all.append(person[0][7][7])
     test_accs.append(all)
 
     all = []
-    model = PersScript("PHY", 32, 30, Classificators.ContArousalClassificator(), "D:/dumpedData/persScript/")
+    model = PersScript("PHY", 32, 30, Classificators.ContArousalClassificator(),1, "D:/ir-thesis/dumpedData/persScript/")
     model.run()
     for person in model.accs:
         all.append(person[0][7][7])
@@ -286,6 +288,9 @@ def phyeegall():
 
     print(avgs)
     print(stds)
+
+    f.close()
+
 
 def linear_regression_example():
     X = []
@@ -592,7 +597,4 @@ def corrs_gen():
     f.close()
 
 if __name__ == '__main__':
-    corrs()
-
-
-
+    phyeegall()
