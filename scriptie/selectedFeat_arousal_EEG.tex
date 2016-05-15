@@ -1,0 +1,474 @@
+\chapter{Detailed overview of the selected features for Arousal using EEG features}
+
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+pearsonR &                &                &                &                &                &                &                &                &               &              \\
+person   & usedFeatures   &                &                &                &                &                &                &                &               &              \\
+0        & A/B P3         & DE Fp1(alpha)  & RASM P3,P4     &                &                &                &                &                &               &              \\
+1        & RASM F3,F4     & DCAU F7,P7     &                &                &                &                &                &                &               &              \\
+2        & DE AF4(all)    & DE AF4(theta)  & RASM P7,P8     & DASM T7,T8     & DASM C3,C4     &                &                &                &               &              \\
+3        & DASM T7,T8     & RCAU FC2,CP2   & DASM CP1,CP2   & RASM PO3,PO4   & RCAU Fz,Pz     &                &                &                &               &              \\
+4        & RASM FC1,FC2   & DE P8(alpha)   & DE Fz(delta)   &                &                &                &                &                &               &              \\
+5        & 23-gamma       & DCAU FC5,CP5   & RCAU F7,P7     &                &                &                &                &                &               &              \\
+6        & DCAU F4,P4     &                &                &                &                &                &                &                &               &              \\
+7        & DCAU F4,P4     & DASM PO3,PO4   & DCAU Fp1,O1    & DE P3(alpha)   & DE FC2(alpha)  &                &                &                &               &              \\
+8        & RCAU Fp1,O1    & DCAU Fp1,O1    & 17-alpha       & DCAU F7,P7     & 27-gamma       & DASM F3,F4     &                &                &               &              \\
+9        & DE P7(delta)   & DASM P7,P8     & DE PO4(delta)  &                &                &                &                &                &               &              \\
+10       & RASM F7,F8     & RCAU FC6,CP6   & RCAU FC5,CP5   & DASM FC1,FC2   &                &                &                &                &               &              \\
+11       & RCAU F7,P7     & RASM C3,C4     &                &                &                &                &                &                &               &              \\
+12       & 4-alpha        &                &                &                &                &                &                &                &               &              \\
+13       & DASM PO3,PO4   & RASM CP5,CP6   &                &                &                &                &                &                &               &              \\
+14       & PSD FC1(gamma) & DE FC1(theta)  &                &                &                &                &                &                &               &              \\
+15       & A/B Fz         & A/B PO4        & DE O2(theta)   & A/B O1         &                &                &                &                &               &              \\
+16       & DCAU F4,P4     & RCAU F4,P4     & DCAU FC5,CP5   &                &                &                &                &                &               &              \\
+17       & RASM P7,P8     & RCAU F8,P8     & PSD Oz(alpha)  &                &                &                &                &                &               &              \\
+18       & RASM F7,F8     & DE F4(delta)   & RCAU F4,P4     & RASM FC5,FC6   &                &                &                &                &               &              \\
+19       & RCAU FC5,CP5   & DCAU FC5,CP5   & DASM AF3,AF4   & 11-alpha       & DE AF4(alpha)  &                &                &                &               &              \\
+20       & RASM T7,T8     &                &                &                &                &                &                &                &               &              \\
+21       & RCAU Fp2,O2    & DCAU FC6,CP6   & RCAU FC1,CP1   & A/B Cz         & RASM C3,C4     &                &                &                &               &              \\
+22       & PSD CP6(alpha) & PSD F4(beta)   & DCAU Fp1,O1    & 31-gamma       & 31-theta       &                &                &                &               &              \\
+23       & 11-theta       &                &                &                &                &                &                &                &               &              \\
+24       & RASM FC1,FC2   & RASM FC1,FC2   & DASM PO3,PO4   &                &                &                &                &                &               &              \\
+25       & RCAU Fz,Pz     & DASM F7,F8     & RASM F7,F8     &                &                &                &                &                &               &              \\
+26       & RCAU FC1,CP1   & RCAU FC5,CP5   & DE PO3(all)    & DCAU F4,P4     & RCAU Fz,Pz     &                &                &                &               &              \\
+27       & RCAU FC6,CP6   & DCAU F4,P4     &                &                &                &                &                &                &               &              \\
+28       & RASM Fp1,Fp2   & RASM CP5,CP6   & DASM CP5,CP6   & DE PO4(all)    &                &                &                &                &               &              \\
+29       & RCAU Fp2,O2    & DASM Fp1,Fp2   & DE Oz(all)     &                &                &                &                &                &               &              \\
+30       & PSD C4(all)    & PSD PO3(theta) & PSD FC2(theta) &                &                &                &                &                &               &              \\
+31       & DCAU F7,P7     & 0-alpha        & PSD PO3(beta)  & PSD P3(alpha)  &                &                &                &                &               &              \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+MutInf   &                &                &                &                &                &                &                &                &               &              \\
+person   & usedFeatures   &                &                &                &                &                &                &                &               &              \\
+0        & 5-theta        & DASM PO3,PO4   & DCAU F7,P7     & DCAU Fp2,O2    & DCAU FC5,CP5   & DCAU F3,P3     & DE Fp1(gamma)  &                &               &              \\
+1        & PSD F3(beta)   & DASM C3,C4     &                &                &                &                &                &                &               &              \\
+2        & 3-theta        &                &                &                &                &                &                &                &               &              \\
+3        & DCAU FC2,CP2   & PSD AF3(theta) & PSD P3(alpha)  & DCAU FC6,CP6   & PSD FC1(alpha) & A/B C4         & DE AF3(delta)  &                &               &              \\
+4        & PSD FC1(alpha) & DASM CP1,CP2   & DCAU F4,P4     & 8-alpha        &                &                &                &                &               &              \\
+5        & DCAU F8,P8     & PSD FC2(alpha) & DCAU FC6,CP6   &                &                &                &                &                &               &              \\
+6        & PSD CP2(delta) & DE F7(beta)    & DE P3(beta)    &                &                &                &                &                &               &              \\
+7        & PSD F8(alpha)  & DCAU F4,P4     & DASM P3,P4     & DCAU FC5,CP5   &                &                &                &                &               &              \\
+8        & DCAU F8,P8     & PSD PO3(beta)  & 25-gamma       & DE Fp2(alpha)  &                &                &                &                &               &              \\
+9        & 17-gamma       & DASM P3,P4     & 8-gamma        &                &                &                &                &                &               &              \\
+10       & 29-theta       & DASM F3,F4     & DASM P7,P8     &                &                &                &                &                &               &              \\
+11       & DASM FC5,FC6   &                &                &                &                &                &                &                &               &              \\
+12       & 3-alpha        &                &                &                &                &                &                &                &               &              \\
+13       & 3-alpha        &                &                &                &                &                &                &                &               &              \\
+14       & DCAU F8,P8     & PSD Fz(theta)  & 10-gamma       & DASM CP5,CP6   & 26-gamma       & PSD C3(alpha)  & 29-theta       & 0-alpha        & PSD P7(alpha) & PSD Pz(beta) \\
+15       & RCAU FC5,CP5   & RASM C3,C4     & DCAU F8,P8     & RASM CP5,CP6   & DCAU Fz,Pz     &                &                &                &               &              \\
+16       & DE PO4(alpha)  & DE CP2(beta)   &                &                &                &                &                &                &               &              \\
+17       & PSD C3(alpha)  & DASM F3,F4     & 15-delta       & DASM FC1,FC2   &                &                &                &                &               &              \\
+18       & DASM CP1,CP2   & DE P7(all)     & DASM FC1,FC2   &                &                &                &                &                &               &              \\
+19       & 7-gamma        &                &                &                &                &                &                &                &               &              \\
+20       & RCAU Fp2,O2    &                &                &                &                &                &                &                &               &              \\
+21       & DCAU FC5,CP5   & DCAU FC6,CP6   &                &                &                &                &                &                &               &              \\
+22       & PSD P8(alpha)  &                &                &                &                &                &                &                &               &              \\
+23       & PSD Fp2(alpha) &                &                &                &                &                &                &                &               &              \\
+24       & 11-alpha       &                &                &                &                &                &                &                &               &              \\
+25       & DASM C3,C4     & PSD Fp1(beta)  & DCAU F7,P7     & DASM T7,T8     & DASM CP1,CP2   & RCAU FC6,CP6   & 29-alpha       & PSD PO3(alpha) &               &              \\
+26       & DASM FC1,FC2   & DASM FC1,FC2   &                &                &                &                &                &                &               &              \\
+27       & DCAU FC1,CP1   & PSD FC6(alpha) & DASM F7,F8     & 25-gamma       & 15-beta        & PSD Pz(delta)  & PSD Pz(beta)   &                &               &              \\
+28       & 3-alpha        & DCAU FC6,CP6   & DASM CP5,CP6   & DASM PO3,PO4   & RCAU Fz,Pz     &                &                &                &               &              \\
+29       & DASM AF3,AF4   & DASM F7,F8     & PSD C4(alpha)  & DCAU F7,P7     & DCAU F3,P3     &                &                &                &               &              \\
+30       & DCAU F8,P8     & 10-gamma       & DE O1(all)     & DASM T7,T8     & DCAU Fz,Pz     & DE T7(beta)    &                &                &               &              \\
+31       & DE Cz(gamma)   & 15-theta       & PSD F3(alpha)  &                &                &                &                &                &               &              \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+dCorr    &                &                &                &                &                &                &                &                &               &              \\
+person   & usedFeatures   &                &                &                &                &                &                &                &               &              \\
+0        & A/B P3         & DE Fp1(alpha)  &                &                &                &                &                &                &               &              \\
+1        & RASM F3,F4     & DE FC1(all)    & PSD FC5(gamma) & DCAU FC5,CP5   &                &                &                &                &               &              \\
+2        & DE AF4(theta)  &                &                &                &                &                &                &                &               &              \\
+3        & DASM T7,T8     & DASM CP5,CP6   & DCAU FC1,CP1   & RASM T7,T8     &                &                &                &                &               &              \\
+4        & DASM CP5,CP6   &                &                &                &                &                &                &                &               &              \\
+5        & RCAU F7,P7     & DE P7(all)     &                &                &                &                &                &                &               &              \\
+6        & DCAU FC2,CP2   & PSD FC1(all)   & RCAU FC2,CP2   &                &                &                &                &                &               &              \\
+7        & DCAU F4,P4     & DE P3(alpha)   & DCAU Fp1,O1    & RCAU F4,P4     &                &                &                &                &               &              \\
+8        & RCAU Fp1,O1    & DCAU Fp1,O1    & RCAU Fp1,O1    & DASM F3,F4     & DE O1(alpha)   & DCAU FC1,CP1   &                &                &               &              \\
+9        & RCAU FC2,CP2   & RCAU F4,P4     & RCAU FC6,CP6   &                &                &                &                &                &               &              \\
+10       & RASM C3,C4     & RCAU FC2,CP2   & RASM F7,F8     & RASM Fp1,Fp2   & RCAU Fp1,O1    & DASM P7,P8     &                &                &               &              \\
+11       & DCAU F7,P7     & RCAU Fz,Pz     &                &                &                &                &                &                &               &              \\
+12       & DCAU F3,P3     &                &                &                &                &                &                &                &               &              \\
+13       & RASM F7,F8     & DASM CP5,CP6   &                &                &                &                &                &                &               &              \\
+14       & PSD FC1(theta) & PSD FC1(gamma) & DE FC1(gamma)  & PSD P3(gamma)  &                &                &                &                &               &              \\
+15       & A/B Fz         & DE O2(theta)   & A/B PO4        & A/B O1         &                &                &                &                &               &              \\
+16       & DCAU F4,P4     & RCAU F4,P4     & RCAU FC5,CP5   & PSD O2(gamma)  &                &                &                &                &               &              \\
+17       & RASM P7,P8     & RCAU F4,P4     & DCAU FC5,CP5   & PSD P3(beta)   & RASM F3,F4     & 10-delta       &                &                &               &              \\
+18       & RCAU F8,P8     & DCAU F8,P8     & RCAU F4,P4     & DCAU Fp1,O1    & DASM FC5,FC6   &                &                &                &               &              \\
+19       & RCAU FC5,CP5   & DCAU FC5,CP5   & PSD AF4(alpha) &                &                &                &                &                &               &              \\
+20       & A/B T8         & DE T8(beta)    & RASM CP5,CP6   &                &                &                &                &                &               &              \\
+21       & DE PO3(alpha)  & RCAU FC6,CP6   & RCAU FC5,CP5   & RCAU FC1,CP1   & RCAU Fp2,O2    &                &                &                &               &              \\
+22       & PSD F4(beta)   & 19-theta       & DASM T7,T8     & DASM T7,T8     &                &                &                &                &               &              \\
+23       & A/B P3         &                &                &                &                &                &                &                &               &              \\
+24       & RASM FC1,FC2   & RASM FC1,FC2   & DASM PO3,PO4   &                &                &                &                &                &               &              \\
+25       & RCAU FC6,CP6   & RASM F7,F8     & DASM F7,F8     &                &                &                &                &                &               &              \\
+26       & RCAU FC1,CP1   & RCAU FC5,CP5   & DCAU Fz,Pz     & RCAU FC1,CP1   &                &                &                &                &               &              \\
+27       & DE PO4(alpha)  & RCAU FC6,CP6   & DE T7(alpha)   & RCAU Fp2,O2    &                &                &                &                &               &              \\
+28       & RCAU Fp1,O1    & A/B Pz         &                &                &                &                &                &                &               &              \\
+29       & RCAU Fp2,O2    & DASM Fp1,Fp2   & RASM F3,F4     & RASM P3,P4     &                &                &                &                &               &              \\
+30       & RCAU F7,P7     & DE P4(theta)   & DE CP5(all)    &                &                &                &                &                &               &              \\
+31       & RCAU F7,P7     & PSD AF4(theta) & PSD F7(beta)   & PSD PO3(beta)  &                &                &                &                &               &              \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+LR       &                &                &                &                &                &                &                &                &               &              \\
+person   & usedFeatures   &                &                &                &                &                &                &                &               &              \\
+0        & 17-alpha       & DE Fp1(alpha)  & DCAU Fp1,O1    & DE F7(alpha)   & A/B P3         & DCAU FC1,CP1   &                &                &               &              \\
+1        & PSD P4(alpha)  & PSD FC6(alpha) & RASM Fp1,Fp2   & RASM CP1,CP2   & DASM F3,F4     &                &                &                &               &              \\
+2        & PSD T7(alpha)  & RASM CP5,CP6   & DASM CP5,CP6   &                &                &                &                &                &               &              \\
+3        & 3-alpha        &                &                &                &                &                &                &                &               &              \\
+4        & DCAU F3,P3     & DASM T7,T8     &                &                &                &                &                &                &               &              \\
+5        & PSD AF3(alpha) & DE Cz(beta)    & DASM CP5,CP6   & RASM CP5,CP6   & DE CP1(alpha)  & DE PO4(beta)   & PSD PO4(alpha) &                &               &              \\
+6        & DE C3(beta)    &                &                &                &                &                &                &                &               &              \\
+7        & RASM F7,F8     & DCAU FC5,CP5   & DASM AF3,AF4   & 11-alpha       & DASM CP5,CP6   & RASM CP5,CP6   & 22-alpha       & DASM P7,P8     & RASM F3,F4    &              \\
+8        & RCAU FC5,CP5   & DCAU F7,P7     & RCAU Fp1,O1    & DE CP5(alpha)  & DASM FC1,FC2   & 10-alpha       &                &                &               &              \\
+9        & DE Fp1(alpha)  & 15-alpha       & RCAU FC2,CP2   & RASM PO3,PO4   &                &                &                &                &               &              \\
+10       & 8-alpha        & DE CP5(alpha)  & DASM P3,P4     & 28-alpha       &                &                &                &                &               &              \\
+11       & DASM PO3,PO4   & RASM FC5,FC6   &                &                &                &                &                &                &               &              \\
+12       & DE FC5(alpha)  & DCAU Fp1,O1    &                &                &                &                &                &                &               &              \\
+13       & PSD C3(alpha)  &                &                &                &                &                &                &                &               &              \\
+14       & DASM Fp1,Fp2   & RASM P7,P8     & DE P7(alpha)   & PSD Oz(alpha)  &                &                &                &                &               &              \\
+15       & 11-gamma       & 5-alpha        & RASM C3,C4     & RCAU Fz,Pz     & DASM C3,C4     & DCAU Fz,Pz     & RCAU F7,P7     & 27-delta       &               &              \\
+16       & PSD CP5(alpha) & PSD P4(alpha)  &                &                &                &                &                &                &               &              \\
+17       & PSD CP2(alpha) & 0-alpha        & PSD Cz(beta)   &                &                &                &                &                &               &              \\
+18       & 17-alpha       & 0-alpha        & RASM FC5,FC6   &                &                &                &                &                &               &              \\
+19       & 11-alpha       & DASM AF3,AF4   &                &                &                &                &                &                &               &              \\
+20       & PSD Oz(alpha)  &                &                &                &                &                &                &                &               &              \\
+21       & DE PO3(alpha)  & DE T7(beta)    & 3-alpha        &                &                &                &                &                &               &              \\
+22       & DASM T7,T8     & PSD O2(alpha)  & 31-alpha       &                &                &                &                &                &               &              \\
+23       & 30-alpha       &                &                &                &                &                &                &                &               &              \\
+24       & PSD T8(alpha)  & PSD FC1(alpha) &                &                &                &                &                &                &               &              \\
+25       & 4-alpha        & 11-alpha       & DE PO4(alpha)  & DE P3(alpha)   &                &                &                &                &               &              \\
+26       & RASM F3,F4     & RCAU Fp2,O2    & DE F4(alpha)   & PSD P3(alpha)  & RCAU FC1,CP1   &                &                &                &               &              \\
+27       & DE Oz(alpha)   & DE T7(alpha)   & PSD Fp2(alpha) & 16-alpha       & 10-alpha       & DE F3(alpha)   & DE Fp2(alpha)  & RASM CP5,CP6   &               &              \\
+28       & RASM CP5,CP6   & RCAU FC6,CP6   & DCAU FC6,CP6   & DE FC6(alpha)  &                &                &                &                &               &              \\
+29       & 2-alpha        & RASM PO3,PO4   &                &                &                &                &                &                &               &              \\
+30       & PSD Fp2(alpha) & DE P3(alpha)   & RCAU F7,P7     & DASM CP1,CP2   & DASM F3,F4     &                &                &                &               &              \\
+31       & 0-alpha        & DCAU F7,P7     &                &                &                &                &                &                &               &              \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+L1       &                &                &                &                &                &                &                &                &               &              \\
+person   & usedFeatures   &                &                &                &                &                &                &                &               &              \\
+0        & A/B P3         & 17-alpha       & RCAU Fp1,O1    & RCAU FC1,CP1   & RASM FC5,FC6   &                &                &                &               &              \\
+1        & DASM FC5,FC6   & PSD P4(alpha)  & RASM Fp1,Fp2   & DASM CP1,CP2   & DE O2(alpha)   & PSD FC2(alpha) & DCAU FC5,CP5   &                &               &              \\
+2        & DCAU FC1,CP1   & DASM CP5,CP6   &                &                &                &                &                &                &               &              \\
+3        & 3-alpha        & DASM C3,C4     & 15-alpha       & PSD Fz(alpha)  & DCAU F3,P3     &                &                &                &               &              \\
+4        & DCAU F8,P8     & DASM Fp1,Fp2   & DE CP1(alpha)  & 28-alpha       &                &                &                &                &               &              \\
+5        & DE CP5(all)    & DE P3(alpha)   & DE PO4(beta)   & 10-delta       & RASM FC1,FC2   &                &                &                &               &              \\
+6        & DE C3(beta)    &                &                &                &                &                &                &                &               &              \\
+7        & DASM AF3,AF4   & 22-alpha       & RASM F7,F8     & DCAU FC5,CP5   & RCAU Fz,Pz     & DASM P3,P4     & 7-alpha        & DE FC5(beta)   & RASM FC5,FC6  &              \\
+8        & RCAU Fp1,O1    & DCAU F3,P3     & DCAU F7,P7     & DASM F3,F4     & PSD P8(alpha)  & 17-alpha       & 22-beta        &                &               &              \\
+9        & DE Fp1(alpha)  & DASM Fp1,Fp2   & DCAU F7,P7     & RCAU F4,P4     & DCAU F3,P3     & RCAU FC2,CP2   & 7-delta        & 22-alpha       & DE Fz(beta)   &              \\
+10       & DE T7(delta)   & DASM P3,P4     & DASM FC5,FC6   & DE CP5(alpha)  & DASM P7,P8     &                &                &                &               &              \\
+11       & DASM C3,C4     &                &                &                &                &                &                &                &               &              \\
+12       & 4-alpha        &                &                &                &                &                &                &                &               &              \\
+13       & RASM C3,C4     & DE Pz(beta)    &                &                &                &                &                &                &               &              \\
+14       & 31-theta       & DASM Fp1,Fp2   & 8-alpha        & DCAU F3,P3     & PSD F8(alpha)  & RASM P7,P8     & PSD FC1(theta) & DCAU FC1,CP1   & DE T8(beta)   &              \\
+15       & RCAU Fz,Pz     & 11-gamma       & DCAU Fz,Pz     & PSD F7(alpha)  & 5-alpha        & RASM C3,C4     & DE FC1(delta)  & DE AF3(alpha)  &               &              \\
+16       & PSD CP2(theta) & 21-alpha       & DCAU Fz,Pz     & PSD P4(alpha)  & 4-theta        &                &                &                &               &              \\
+17       & PSD Oz(alpha)  & 23-delta       & DCAU Fp1,O1    & DASM F3,F4     &                &                &                &                &               &              \\
+18       & DASM F3,F4     & RCAU FC6,CP6   &                &                &                &                &                &                &               &              \\
+19       & 11-alpha       & DASM AF3,AF4   &                &                &                &                &                &                &               &              \\
+20       & PSD Oz(alpha)  &                &                &                &                &                &                &                &               &              \\
+21       & DE F3(alpha)   & DE PO3(alpha)  & DCAU F8,P8     & DCAU Fp2,O2    & RCAU F8,P8     & PSD CP1(gamma) &                &                &               &              \\
+22       & DASM T7,T8     & PSD CP6(alpha) & 31-delta       & DCAU Fp1,O1    &                &                &                &                &               &              \\
+23       & DASM Fp1,Fp2   &                &                &                &                &                &                &                &               &              \\
+24       & RASM FC1,FC2   & PSD T8(alpha)  & DCAU FC6,CP6   &                &                &                &                &                &               &              \\
+25       & RASM F3,F4     & PSD FC5(alpha) & 4-alpha        & DASM F7,F8     & DCAU FC2,CP2   & RCAU Fp2,O2    & DE Cz(all)     &                &               &              \\
+26       & PSD Fz(beta)   & DCAU Fp2,O2    & RCAU F8,P8     & RCAU Fp2,O2    & 19-alpha       &                &                &                &               &              \\
+27       & RCAU FC6,CP6   & DE T7(alpha)   & DE Oz(alpha)   & PSD PO4(alpha) & DE P3(alpha)   & 17-alpha       &                &                &               &              \\
+28       & RCAU Fp1,O1    & DASM CP5,CP6   & RASM CP5,CP6   & DASM F3,F4     &                &                &                &                &               &              \\
+29       & DCAU Fp2,O2    & 2-alpha        & DCAU FC2,CP2   & RASM PO3,PO4   & RASM CP5,CP6   &                &                &                &               &              \\
+30       & DCAU Fp2,O2    & RCAU F7,P7     & DASM CP1,CP2   & DE Fz(alpha)   & 14-delta       &                &                &                &               &              \\
+31       & 0-alpha        & DCAU F7,P7     & RCAU FC2,CP2   &                &                &                &                &                &               &              \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+L2       &                &                &                &                &                &                &                &                &               &              \\
+person   & usedFeatures   &                &                &                &                &                &                &                &               &              \\
+0        & 17-alpha       & DE Fp1(alpha)  & DCAU Fp1,O1    & DE F7(alpha)   & A/B P3         & DCAU FC1,CP1   &                &                &               &              \\
+1        & PSD P4(alpha)  & PSD FC6(alpha) & RASM Fp1,Fp2   & RASM CP1,CP2   & DASM F3,F4     &                &                &                &               &              \\
+2        & PSD T7(alpha)  & RASM CP5,CP6   & DASM CP5,CP6   &                &                &                &                &                &               &              \\
+3        & 3-alpha        &                &                &                &                &                &                &                &               &              \\
+4        & DCAU F3,P3     & DASM T7,T8     &                &                &                &                &                &                &               &              \\
+5        & PSD AF3(alpha) & DE Cz(beta)    & DASM CP5,CP6   & RASM CP5,CP6   & DE CP1(alpha)  & DE PO4(beta)   & PSD PO4(alpha) &                &               &              \\
+6        & DE C3(beta)    &                &                &                &                &                &                &                &               &              \\
+7        & RASM F7,F8     & DCAU FC5,CP5   & DASM AF3,AF4   & 11-alpha       & DASM CP5,CP6   & RASM CP5,CP6   & 22-alpha       & DASM P7,P8     & RASM F3,F4    &              \\
+8        & RCAU FC5,CP5   & DCAU F7,P7     & RCAU Fp1,O1    & DE CP5(alpha)  & DASM FC1,FC2   & 10-alpha       &                &                &               &              \\
+9        & DE Fp1(alpha)  & 15-alpha       & RCAU FC2,CP2   & RASM PO3,PO4   &                &                &                &                &               &              \\
+10       & 8-alpha        & DE CP5(alpha)  & DASM P3,P4     & 28-alpha       &                &                &                &                &               &              \\
+11       & DASM PO3,PO4   & RASM FC5,FC6   &                &                &                &                &                &                &               &              \\
+12       & DE FC5(alpha)  & DCAU Fp1,O1    &                &                &                &                &                &                &               &              \\
+13       & PSD C3(alpha)  &                &                &                &                &                &                &                &               &              \\
+14       & DASM Fp1,Fp2   & RASM P7,P8     & DE P7(alpha)   & PSD Oz(alpha)  &                &                &                &                &               &              \\
+15       & 11-gamma       & 5-alpha        & RASM C3,C4     & RCAU Fz,Pz     & DASM C3,C4     & DCAU Fz,Pz     & RCAU F7,P7     & 27-delta       &               &              \\
+16       & PSD CP5(alpha) & PSD P4(alpha)  &                &                &                &                &                &                &               &              \\
+17       & PSD CP2(alpha) & 0-alpha        & PSD Cz(beta)   &                &                &                &                &                &               &              \\
+18       & 17-alpha       & 0-alpha        & RASM FC5,FC6   &                &                &                &                &                &               &              \\
+19       & 11-alpha       & DASM AF3,AF4   &                &                &                &                &                &                &               &              \\
+20       & PSD Oz(alpha)  &                &                &                &                &                &                &                &               &              \\
+21       & DE PO3(alpha)  & DE T7(beta)    & 3-alpha        &                &                &                &                &                &               &              \\
+22       & DASM T7,T8     & PSD O2(alpha)  & 31-alpha       &                &                &                &                &                &               &              \\
+23       & 30-alpha       &                &                &                &                &                &                &                &               &              \\
+24       & PSD T8(alpha)  & PSD FC1(alpha) &                &                &                &                &                &                &               &              \\
+25       & 4-alpha        & 11-alpha       & DE PO4(alpha)  & DE P3(alpha)   &                &                &                &                &               &              \\
+26       & RASM F3,F4     & DCAU Fp2,O2    & DE F4(alpha)   & PSD P3(alpha)  & 12-alpha       &                &                &                &               &              \\
+27       & DE Oz(alpha)   & DE T7(alpha)   & PSD Fp2(alpha) & 16-alpha       & 10-alpha       & DE F3(alpha)   & DE Fp2(alpha)  & RASM CP5,CP6   &               &              \\
+28       & RASM CP5,CP6   & RCAU FC6,CP6   & DCAU FC6,CP6   & DE FC6(alpha)  &                &                &                &                &               &              \\
+29       & 2-alpha        & RASM PO3,PO4   &                &                &                &                &                &                &               &              \\
+30       & PSD Fp2(alpha) & DE P3(alpha)   & RCAU F7,P7     & DASM CP1,CP2   & DASM F3,F4     &                &                &                &               &              \\
+31       & 0-alpha        & DCAU F7,P7     &                &                &                &                &                &                &               &              \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+SVM      &                &                &                &                &                &                &                &                &               &              \\
+person   & usedFeatures   &                &                &                &                &                &                &                &               &              \\
+0        & RCAU F7,P7     & 30-alpha       & DE P8(beta)    & DE P7(alpha)   & DASM P3,P4     &                &                &                &               &              \\
+1        & PSD P4(alpha)  & PSD AF3(alpha) & 1-alpha        & 28-alpha       & DE P8(beta)    & RCAU FC1,CP1   & DCAU Fp2,O2    &                &               &              \\
+2        & RASM AF3,AF4   & RASM F3,F4     & RASM CP5,CP6   & DASM CP5,CP6   &                &                &                &                &               &              \\
+3        & DCAU Fp1,O1    & DASM Fp1,Fp2   & RASM PO3,PO4   &                &                &                &                &                &               &              \\
+4        & DCAU FC6,CP6   & RASM C3,C4     & DASM T7,T8     & 12-alpha       & DASM FC5,FC6   & DE T8(alpha)   & RCAU F4,P4     &                &               &              \\
+5        & DE PO4(beta)   & DE F8(alpha)   &                &                &                &                &                &                &               &              \\
+6        & 6-beta         &                &                &                &                &                &                &                &               &              \\
+7        & 9-alpha        & DCAU Fz,Pz     & RASM F7,F8     & PSD FC5(alpha) & PSD AF4(alpha) &                &                &                &               &              \\
+8        & DCAU F7,P7     & RCAU FC5,CP5   & PSD P8(alpha)  & PSD FC6(alpha) & DE FC5(alpha)  & DASM F3,F4     & 22-theta       &                &               &              \\
+9        & DE Fp1(alpha)  & DASM Fp1,Fp2   & RASM Fp1,Fp2   & DASM Fp1,Fp2   & DASM F3,F4     & RASM F3,F4     &                &                &               &              \\
+10       & DASM AF3,AF4   & DE AF3(alpha)  & RASM Fp1,Fp2   & DASM Fp1,Fp2   &                &                &                &                &               &              \\
+11       & 14-alpha       &                &                &                &                &                &                &                &               &              \\
+12       & PSD Fp1(alpha) &                &                &                &                &                &                &                &               &              \\
+13       & PSD Fz(alpha)  & RASM AF3,AF4   & DASM AF3,AF4   &                &                &                &                &                &               &              \\
+14       & PSD F8(alpha)  & DCAU Fp1,O1    & DE FC5(beta)   & PSD P3(alpha)  & DE AF4(alpha)  & DE P7(alpha)   & 1-alpha        & PSD P4(alpha)  & PSD T7(alpha) & 4-beta       \\
+15       & RCAU Fz,Pz     & RASM C3,C4     & DASM C3,C4     & DE CP1(alpha)  & 11-gamma       & PSD F7(alpha)  & PSD AF3(alpha) & DASM CP1,CP2   &               &              \\
+16       & RCAU FC6,CP6   & 28-alpha       & 23-alpha       & DCAU F4,P4     & PSD CP2(theta) & RCAU F4,P4     & RCAU F4,P4     &                &               &              \\
+17       & PSD CP2(alpha) & RCAU F4,P4     & DE Oz(alpha)   & 20-gamma       & PSD Cz(beta)   &                &                &                &               &              \\
+18       & 17-alpha       & 0-alpha        & RCAU FC1,CP1   &                &                &                &                &                &               &              \\
+19       & 11-alpha       & DASM AF3,AF4   &                &                &                &                &                &                &               &              \\
+20       & PSD Oz(alpha)  &                &                &                &                &                &                &                &               &              \\
+21       & DE PO3(alpha)  & DE T7(beta)    & PSD P8(alpha)  & DE C3(alpha)   &                &                &                &                &               &              \\
+22       & DE CP5(alpha)  & 19-delta       & 19-theta       & DE CP6(alpha)  &                &                &                &                &               &              \\
+23       & 30-alpha       &                &                &                &                &                &                &                &               &              \\
+24       & PSD T8(alpha)  &                &                &                &                &                &                &                &               &              \\
+25       & 4-alpha        & DE P3(alpha)   & PSD P3(alpha)  & DASM P7,P8     & RASM P7,P8     & DASM P3,P4     &                &                &               &              \\
+26       & RASM F3,F4     & 19-alpha       & DASM FC5,FC6   & DCAU Fp2,O2    & RCAU Fp2,O2    & 3-alpha        & PSD C3(alpha)  &                &               &              \\
+27       & DE T7(alpha)   & 16-alpha       & DCAU Fp2,O2    & PSD C4(all)    & RASM C3,C4     &                &                &                &               &              \\
+28       & RASM CP5,CP6   & RCAU FC6,CP6   & DCAU FC6,CP6   & 22-delta       &                &                &                &                &               &              \\
+29       & DE F3(alpha)   & DE FC5(alpha)  & DE Fz(alpha)   &                &                &                &                &                &               &              \\
+30       & DASM CP1,CP2   & 26-alpha       & DE Fz(alpha)   & DCAU F7,P7     & RCAU F7,P7     & 13-alpha       & DCAU F4,P4     &                &               &              \\
+31       & 0-alpha        &                &                &                &                &                &                &                &               &              \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+RF       &                &                &                &                &                &                &                &                &               &              \\
+person   & usedFeatures   &                &                &                &                &                &                &                &               &              \\
+0        & DCAU F7,P7     & DCAU FC6,CP6   & DCAU Fz,Pz     & 0-alpha        & A/B Pz         &                &                &                &               &              \\
+1        & RCAU Fp2,O2    & DCAU Fp2,O2    & RASM F7,F8     & PSD CP1(alpha) &                &                &                &                &               &              \\
+2        & RASM CP5,CP6   & DASM CP5,CP6   & DE AF4(gamma)  &                &                &                &                &                &               &              \\
+3        & DASM F7,F8     & DASM Fp1,Fp2   & 22-gamma       & DASM P3,P4     & DE FC6(gamma)  &                &                &                &               &              \\
+4        & DASM CP5,CP6   & DCAU F8,P8     & DE F7(beta)    & RCAU F8,P8     & DCAU FC6,CP6   &                &                &                &               &              \\
+5        & DCAU FC5,CP5   & DE FC2(theta)  &                &                &                &                &                &                &               &              \\
+6        & PSD FC1(all)   & RCAU FC2,CP2   & DCAU F3,P3     &                &                &                &                &                &               &              \\
+7        & 10-alpha       & DASM F7,F8     & DE P3(alpha)   & RCAU Fz,Pz     & RCAU F4,P4     & DE CP5(alpha)  & PSD CP5(alpha) & RCAU FC2,CP2   & 22-alpha      &              \\
+8        & DCAU F7,P7     & RASM Fp1,Fp2   & DCAU Fp1,O1    & DCAU Fp1,O1    & RASM FC1,FC2   & PSD FC2(beta)  &                &                &               &              \\
+9        & RCAU FC2,CP2   & DASM Fp1,Fp2   & RCAU FC6,CP6   &                &                &                &                &                &               &              \\
+10       & RCAU FC2,CP2   & RASM AF3,AF4   & RASM P7,P8     & DE T7(delta)   & PSD AF3(alpha) &                &                &                &               &              \\
+11       & DCAU Fz,Pz     & RCAU F7,P7     &                &                &                &                &                &                &               &              \\
+12       & DCAU Fp1,O1    &                &                &                &                &                &                &                &               &              \\
+13       & RASM F7,F8     & 23-alpha       & DASM C3,C4     &                &                &                &                &                &               &              \\
+14       & DE FC1(theta)  & DE FC2(theta)  & RASM Fp1,Fp2   & PSD Oz(gamma)  & PSD P7(alpha)  &                &                &                &               &              \\
+15       & DE O2(gamma)   & PSD O2(gamma)  & A/B P4         &                &                &                &                &                &               &              \\
+16       & DCAU F4,P4     & RCAU F4,P4     & RCAU FC5,CP5   & PSD O2(gamma)  &                &                &                &                &               &              \\
+17       & RCAU F4,P4     & DE CP1(alpha)  & 10-delta       & PSD PO4(beta)  &                &                &                &                &               &              \\
+18       & DCAU F8,P8     & PSD C4(all)    & PSD T8(gamma)  &                &                &                &                &                &               &              \\
+19       & A/B PO3        & DE P7(alpha)   & PSD CP2(alpha) & DCAU FC5,CP5   & 11-alpha       &                &                &                &               &              \\
+20       & DASM FC1,FC2   & DASM CP5,CP6   & 25-beta        & DE FC2(alpha)  &                &                &                &                &               &              \\
+21       & 12-alpha       & RASM F3,F4     & RASM AF3,AF4   &                &                &                &                &                &               &              \\
+22       & 19-gamma       & DASM T7,T8     & RCAU FC2,CP2   &                &                &                &                &                &               &              \\
+23       & A/B O2         & RASM FC5,FC6   &                &                &                &                &                &                &               &              \\
+24       & RASM FC1,FC2   & RASM FC1,FC2   & PSD FC2(alpha) & PSD P7(alpha)  &                &                &                &                &               &              \\
+25       & 4-alpha        & RASM F7,F8     & RCAU FC2,CP2   & DASM F7,F8     & RCAU F7,P7     & RASM P3,P4     &                &                &               &              \\
+26       & DCAU F8,P8     & DASM F3,F4     & RCAU FC5,CP5   & DE F7(delta)   &                &                &                &                &               &              \\
+27       & DASM Fp1,Fp2   & PSD T7(alpha)  & DCAU Fp1,O1    & DE CP1(beta)   & DASM Fp1,Fp2   & DE T7(alpha)   &                &                &               &              \\
+28       & PSD CP6(alpha) & RCAU Fp1,O1    &                &                &                &                &                &                &               &              \\
+29       & RASM CP1,CP2   & DASM Fp1,Fp2   & DASM F3,F4     & RASM T7,T8     &                &                &                &                &               &              \\
+30       & RCAU F7,P7     & DE P4(theta)   & DE F4(all)     & DCAU F3,P3     &                &                &                &                &               &              \\
+31       & DE AF4(theta)  & RASM P3,P4     & DASM P3,P4     & DE CP1(alpha)  &                &                &                &                &               &              \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+ANOVA    &                &                &                &                &                &                &                &                &               &              \\
+person   & usedFeatures   &                &                &                &                &                &                &                &               &              \\
+0        & DCAU F7,P7     & DCAU FC6,CP6   & DCAU Fz,Pz     & RCAU F3,P3     & DASM PO3,PO4   & DASM AF3,AF4   & PSD Pz(all)    &                &               &              \\
+1        & RCAU Fp2,O2    & DCAU Fp2,O2    & DASM CP1,CP2   &                &                &                &                &                &               &              \\
+2        & RASM CP5,CP6   & DASM CP5,CP6   & DE AF4(gamma)  &                &                &                &                &                &               &              \\
+3        & DASM F7,F8     & 26-gamma       & 25-gamma       & 30-gamma       & DASM Fp1,Fp2   &                &                &                &               &              \\
+4        & DASM CP5,CP6   & DCAU F8,P8     & DE F7(beta)    & RCAU F8,P8     & DCAU FC6,CP6   &                &                &                &               &              \\
+5        & DE FC2(theta)  & RASM CP1,CP2   & DCAU FC5,CP5   & DE PO4(beta)   & DASM CP5,CP6   & DASM Fp1,Fp2   &                &                &               &              \\
+6        & PSD FC1(all)   & RCAU FC2,CP2   & DCAU F3,P3     &                &                &                &                &                &               &              \\
+7        & 10-alpha       & DASM F7,F8     & DE P3(alpha)   & RCAU Fz,Pz     & PSD P3(alpha)  & DASM T7,T8     & RCAU Fp2,O2    & 12-beta        &               &              \\
+8        & RASM Fp1,Fp2   & DCAU Fp1,O1    & RASM T7,T8     & DASM T7,T8     & 14-theta       &                &                &                &               &              \\
+9        & RCAU FC2,CP2   & DASM Fp1,Fp2   & RCAU FC6,CP6   &                &                &                &                &                &               &              \\
+10       & RCAU FC2,CP2   & RASM AF3,AF4   & RASM P7,P8     & DASM P7,P8     &                &                &                &                &               &              \\
+11       & DCAU Fz,Pz     & DASM FC5,FC6   &                &                &                &                &                &                &               &              \\
+12       & DCAU Fp1,O1    &                &                &                &                &                &                &                &               &              \\
+13       & RASM F7,F8     & 23-alpha       &                &                &                &                &                &                &               &              \\
+14       & PSD FC1(theta) & DE FC1(gamma)  & DE FC2(theta)  & RCAU Fp1,O1    & PSD FC1(gamma) & RASM Fp1,Fp2   &                &                &               &              \\
+15       & DE O2(theta)   & PSD O2(gamma)  & DE CP5(theta)  & PSD FC1(theta) & A/B FC6        &                &                &                &               &              \\
+16       & DCAU F4,P4     & RCAU F4,P4     & RCAU FC5,CP5   & PSD O2(gamma)  &                &                &                &                &               &              \\
+17       & RCAU F4,P4     & DE CP1(alpha)  & DE P3(beta)    &                &                &                &                &                &               &              \\
+18       & DCAU F8,P8     & PSD C4(all)    & PSD T8(gamma)  &                &                &                &                &                &               &              \\
+19       & A/B PO3        & PSD P7(alpha)  & DASM AF3,AF4   & DE CP6(delta)  & DCAU FC5,CP5   &                &                &                &               &              \\
+20       & DASM FC1,FC2   & DASM CP5,CP6   & 25-beta        & DE FC2(alpha)  &                &                &                &                &               &              \\
+21       & DE AF4(all)    & RASM F3,F4     & PSD O1(all)    & DE T8(all)     & DE PO3(alpha)  &                &                &                &               &              \\
+22       & 19-gamma       & DASM T7,T8     & PSD O2(beta)   &                &                &                &                &                &               &              \\
+23       & RASM FC5,FC6   & A/B O2         &                &                &                &                &                &                &               &              \\
+24       & RASM FC1,FC2   & RASM FC1,FC2   & PSD FC2(alpha) & 22-alpha       &                &                &                &                &               &              \\
+25       & RCAU FC2,CP2   & 4-alpha        & RASM F7,F8     & DASM F7,F8     & RCAU F7,P7     & RASM P3,P4     &                &                &               &              \\
+26       & DASM F3,F4     & RCAU FC5,CP5   & DCAU FC5,CP5   &                &                &                &                &                &               &              \\
+27       & DASM Fp1,Fp2   & PSD T7(alpha)  & DCAU Fp1,O1    & DE CP1(beta)   & 25-beta        & DASM T7,T8     & RCAU Fp2,O2    &                &               &              \\
+28       & RCAU Fp1,O1    & A/B Pz         &                &                &                &                &                &                &               &              \\
+29       & RASM CP1,CP2   & DASM Fp1,Fp2   & DASM F3,F4     &                &                &                &                &                &               &              \\
+30       & RASM P3,P4     & DE C4(all)     &                &                &                &                &                &                &               &              \\
+31       & DE AF4(theta)  & RASM P3,P4     & DASM P3,P4     & DE CP1(alpha)  &                &                &                &                &               &              \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+LDA      &                &                &                &                &                &                &                &                &               &              \\
+person   & usedFeatures   &                &                &                &                &                &                &                &               &              \\
+0        & PSD P7(all)    & PSD FC6(beta)  & A/B P3         & A/B Pz         & DASM PO3,PO4   & DE Fp1(alpha)  & DCAU Fp1,O1    &                &               &              \\
+1        & PSD Oz(gamma)  & PSD P3(gamma)  & DE Oz(gamma)   & DASM CP1,CP2   &                &                &                &                &               &              \\
+2        & RASM FC1,FC2   & RCAU FC1,CP1   & RCAU FC1,CP1   & DASM F3,F4     &                &                &                &                &               &              \\
+3        & DE F7(gamma)   & DE Oz(gamma)   & DASM AF3,AF4   & RCAU F4,P4     &                &                &                &                &               &              \\
+4        & 11-beta        &                &                &                &                &                &                &                &               &              \\
+5        & DE P7(all)     & DE F8(alpha)   & RCAU FC5,CP5   & DCAU FC5,CP5   &                &                &                &                &               &              \\
+6        & DASM Fp1,Fp2   & DE Oz(alpha)   & RCAU FC2,CP2   & DCAU FC2,CP2   &                &                &                &                &               &              \\
+7        & PSD PO3(beta)  & RCAU Fz,Pz     & RCAU Fp2,O2    & DCAU Fp2,O2    &                &                &                &                &               &              \\
+8        & RASM FC5,FC6   & 22-delta       & DCAU FC2,CP2   &                &                &                &                &                &               &              \\
+9        & DE FC1(delta)  & RASM P7,P8     &                &                &                &                &                &                &               &              \\
+10       & DCAU F3,P3     & RCAU F7,P7     & RCAU FC2,CP2   &                &                &                &                &                &               &              \\
+11       & PSD AF4(all)   & 2-theta        & 2-gamma        &                &                &                &                &                &               &              \\
+12       & 6-delta        &                &                &                &                &                &                &                &               &              \\
+13       & DE AF4(alpha)  & RASM F3,F4     & DASM AF3,AF4   & DCAU FC6,CP6   & DASM C3,C4     & RASM C3,C4     &                &                &               &              \\
+14       & DE AF4(theta)  & PSD FC2(gamma) & PSD FC2(theta) & PSD FC1(theta) & DE FC1(theta)  & DASM Fp1,Fp2   & DE FC2(gamma)  &                &               &              \\
+15       & A/B Oz         & PSD O2(gamma)  & A/B O2         & DE O2(theta)   & A/B PO4        & A/B Fz         &                &                &               &              \\
+16       & PSD AF4(delta) & DCAU F4,P4     & DASM CP1,CP2   & DASM F7,F8     & RCAU FC5,CP5   &                &                &                &               &              \\
+17       & 23-theta       & 5-theta        & PSD Cz(beta)   &                &                &                &                &                &               &              \\
+18       & DASM CP1,CP2   & A/B O2         & RCAU Fp1,O1    & DE PO3(alpha)  &                &                &                &                &               &              \\
+19       & DCAU F7,P7     & 11-alpha       & DASM AF3,AF4   &                &                &                &                &                &               &              \\
+20       & A/B Fp1        &                &                &                &                &                &                &                &               &              \\
+21       & DE PO4(delta)  & RCAU FC5,CP5   &                &                &                &                &                &                &               &              \\
+22       & 25-theta       & 19-beta        & PSD Fp2(gamma) & PSD Pz(alpha)  & DCAU Fp2,O2    &                &                &                &               &              \\
+23       & A/B Fp1        &                &                &                &                &                &                &                &               &              \\
+24       & RASM FC1,FC2   & RASM FC1,FC2   & DASM PO3,PO4   &                &                &                &                &                &               &              \\
+25       & RCAU FC6,CP6   & DCAU F7,P7     & RCAU Fz,Pz     &                &                &                &                &                &               &              \\
+26       & DCAU FC5,CP5   & DCAU F4,P4     &                &                &                &                &                &                &               &              \\
+27       & PSD PO3(delta) & DASM AF3,AF4   & DE T7(beta)    & DE T7(alpha)   & DE Oz(alpha)   & RCAU Fp1,O1    &                &                &               &              \\
+28       & A/B PO3        & DASM P7,P8     & DASM F3,F4     & DCAU FC6,CP6   &                &                &                &                &               &              \\
+29       & PSD PO3(delta) & DE F3(alpha)   & RASM F3,F4     & DASM F3,F4     &                &                &                &                &               &              \\
+30       & DE F4(all)     & PSD PO4(theta) & RCAU F4,P4     & PSD F4(all)    & DE FC1(theta)  &                &                &                &               &              \\
+31       & 3-gamma        & 19-beta        & 12-delta       & PSD F7(beta)   &                &                &                &                &               &              \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+PCA      &                &                &                &                &                &                &                &                &               &              \\
+person   & usedFeatures   &                &                &                &                &                &                &                &               &              \\
+0        & RCAU F8,P8     & RCAU F7,P7     & DE Fp1(beta)   & DE P4(all)     & fracAF4-beta   &                &                &                &               &              \\
+1        & PSD O1(beta)   & RCAU F4,P4     & DCAU F4,P4     & PSD FC5(beta)  &                &                &                &                &               &              \\
+2        & PSD CP1(beta)  & PSD AF4(beta)  & RCAU FC2,CP2   &                &                &                &                &                &               &              \\
+3        & fracF4-beta    & PSD AF4(beta)  & RCAU Fp2,O2    & DCAU Fp2,O2    & DE AF3(beta)   &                &                &                &               &              \\
+4        & fracPO3-beta   & DE C4(beta)    & RASM P7,P8     &                &                &                &                &                &               &              \\
+5        & fracO2-beta    & PSD T7(beta)   & RASM FC1,FC2   & PSD F8(beta)   &                &                &                &                &               &              \\
+6        & fracCP5-beta   & fracF3-beta    & PSD F3(delta)  &                &                &                &                &                &               &              \\
+7        & fracCP1-beta   & RASM CP5,CP6   & fracFC6-beta   & DE FC1(beta)   &                &                &                &                &               &              \\
+8        & PSD Fp2(beta)  & DASM T7,T8     & DE F7(beta)    & DCAU Fp1,O1    & DCAU Fp1,O1    & DE AF3(all)    &                &                &               &              \\
+9        & RCAU Fp2,O2    & DASM P3,P4     & RASM P3,P4     & DE P4(beta)    & RCAU F8,P8     &                &                &                &               &              \\
+10       & DE AF4(beta)   & fracPO3-beta   & DE PO3(beta)   &                &                &                &                &                &               &              \\
+11       & PSD FC2(beta)  & RCAU F7,P7     & PSD PO4(beta)  &                &                &                &                &                &               &              \\
+12       & fracFC1-beta   & PSD FC1(beta)  & fracCP6-beta   & fracPO3-alpha  &                &                &                &                &               &              \\
+13       & DE Cz(beta)    & DE FC5(beta)   & RASM CP5,CP6   &                &                &                &                &                &               &              \\
+14       & PSD F8(beta)   & PSD Cz(beta)   &                &                &                &                &                &                &               &              \\
+15       & fracC3-beta    & fracP7-beta    & RASM P7,P8     & RASM C3,C4     &                &                &                &                &               &              \\
+16       & PSD FC1(beta)  & RASM Fp1,Fp2   & DE F7(beta)    & RCAU Fp1,O1    & DASM PO3,PO4   &                &                &                &               &              \\
+17       & DASM P7,P8     & RCAU F3,P3     & DE FC6(beta)   &                &                &                &                &                &               &              \\
+18       & DE C3(beta)    & fracPO3-beta   & DASM FC5,FC6   & PSD PO3(beta)  &                &                &                &                &               &              \\
+19       & fracFz-beta    & DE AF4(beta)   & PSD AF4(beta)  &                &                &                &                &                &               &              \\
+20       & fracPz-beta    & PSD Pz(beta)   & DE CP6(beta)   & PSD Oz(beta)   & DE T8(beta)    &                &                &                &               &              \\
+21       & RCAU FC6,CP6   & DE FC6(beta)   & DCAU FC5,CP5   & PSD CP2(beta)  & DASM C3,C4     & DCAU Fz,Pz     &                &                &               &              \\
+22       & PSD P8(beta)   & PSD CP5(beta)  & DASM FC1,FC2   & PSD PO4(beta)  & PSD Pz(beta)   & fracFp1-alpha  &                &                &               &              \\
+23       & DE T7(beta)    & PSD Fp1(beta)  & fracP7-beta    &                &                &                &                &                &               &              \\
+24       & RASM P7,P8     & DE Cz(beta)    & DE Fp2(beta)   & fracCz-beta    & DE FC2(gamma)  & PSD FC2(gamma) & RCAU FC2,CP2   &                &               &              \\
+25       & DE FC5(beta)   & PSD CP5(beta)  & RCAU FC1,CP1   & fracAF4-alpha  & RCAU Fz,Pz     & PSD F7(beta)   & RCAU FC2,CP2   & fracPO4-theta  &               &              \\
+26       & RCAU FC5,CP5   & RASM P7,P8     &                &                &                &                &                &                &               &              \\
+27       & DASM PO3,PO4   & PSD P7(beta)   & DASM CP1,CP2   & RASM CP1,CP2   &                &                &                &                &               &              \\
+28       & RCAU Fz,Pz     & fracO2-alpha   & DE O2(all)     & fracO2-theta   & A/B Fp2        & DCAU FC6,CP6   &                &                &               &              \\
+29       & PSD T8(beta)   & fracT8-beta    & fracP7-beta    & DCAU F3,P3     & RASM T7,T8     &                &                &                &               &              \\
+30       & PSD F3(beta)   & RASM F7,F8     & DASM F7,F8     & DASM F7,F8     &                &                &                &                &               &              \\
+31       & PSD T7(beta)   & PSD P3(beta)   & PSD Oz(delta)  & PSD PO4(beta)  & PSD C4(beta)   & DE Oz(delta)   &                &                &               &              \\
+\end{tabular}
+\end{table}
+\end{landscape}

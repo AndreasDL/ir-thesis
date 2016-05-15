@@ -1,0 +1,474 @@
+\chapter{Detailed overview of the selected features for Arousal using non-EEG features}
+
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+pearsonR &                         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+person   & usedFeatures            &                       &                         &                         &                         &                       &                      &          &                      &        \\
+0        & avg GSR                 & varHR                 & avg HR                  & median GSR              & var Temperature         & std GSR               &                      &          &                      &        \\
+1        & max GSR                 & median GSR            & maxHR                   & std HR                  &                         &                       &                      &          &                      &        \\
+2        & min Plethysmograph      &                       &                         &                         &                         &                       &                      &          &                      &        \\
+3        & median Plethysmograph   & std HR                & std Plethysmograph      & min GSR                 & avg Temperature         &                       &                      &          &                      &        \\
+4        & varHR                   & std HR                & min Respiration belt    & var Temperature         &                         &                       &                      &          &                      &        \\
+5        & median GSR              & var Plethysmograph    & min GSR                 & min Plethysmograph      & median Temperature      &                       &                      &          &                      &        \\
+6        & std Temperature         & var Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+7        & std GSR                 & var GSR               & min GSR                 & maxHR                   & median Plethysmograph   & minHR                 &                      &          &                      &        \\
+8        & median Temperature      & max Temperature       & avg HR                  & var GSR                 & std GSR                 & min GSR               &                      &          &                      &        \\
+9        & medianHR                & max GSR               & min Respiration belt    & median Respiration belt &                         &                       &                      &          &                      &        \\
+10       & min Plethysmograph      & max Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+11       & avg GSR                 &                       &                         &                         &                         &                       &                      &          &                      &        \\
+12       & var GSR                 & median Temperature    & var Temperature         & max Temperature         &                         &                       &                      &          &                      &        \\
+13       & std Respiration belt    & var Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+14       & max GSR                 & max Temperature       & avg Temperature         & avg HR                  &                         &                       &                      &          &                      &        \\
+15       & min GSR                 & avg HR                & avg Temperature         & varHR                   & std Plethysmograph      & median Plethysmograph &                      &          &                      &        \\
+16       & std Respiration belt    & max Respiration belt  & min GSR                 &                         &                         &                       &                      &          &                      &        \\
+17       & min Temperature         & min Plethysmograph    & var Plethysmograph      & max Temperature         & avg Temperature         & max Respiration belt  & min GSR              & varHR    & min Respiration belt & avg HR \\
+18       & max Respiration belt    &                       &                         &                         &                         &                       &                      &          &                      &        \\
+19       & var Plethysmograph      &                       &                         &                         &                         &                       &                      &          &                      &        \\
+20       & maxHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+21       & max Temperature         & std Plethysmograph    & maxHR                   &                         &                         &                       &                      &          &                      &        \\
+22       & medianHR                & median Plethysmograph &                         &                         &                         &                       &                      &          &                      &        \\
+23       & std HR                  &                       &                         &                         &                         &                       &                      &          &                      &        \\
+24       & std HR                  &                       &                         &                         &                         &                       &                      &          &                      &        \\
+25       & min GSR                 & median GSR            & avg GSR                 & avg HR                  & median Temperature      & var Respiration belt  &                      &          &                      &        \\
+26       & max GSR                 & min Temperature       & max Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+27       & var Plethysmograph      & varHR                 & maxHR                   &                         &                         &                       &                      &          &                      &        \\
+28       & max GSR                 & median GSR            & avg Plethysmograph      & max Plethysmograph      &                         &                       &                      &          &                      &        \\
+29       & medianHR                & median Plethysmograph &                         &                         &                         &                       &                      &          &                      &        \\
+30       & maxHR                   & std Plethysmograph    & max Temperature         & avg Temperature         & std Temperature         &                       &                      &          &                      &        \\
+31       & medianHR                &                       &                         &                         &                         &                       &                      &          &                      &        \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+MutInf   &                         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+person   & usedFeatures            &                       &                         &                         &                         &                       &                      &          &                      &        \\
+0        & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+1        & max Respiration belt    & varHR                 & median GSR              & avg GSR                 &                         &                       &                      &          &                      &        \\
+2        & varHR                   & medianHR              &                         &                         &                         &                       &                      &          &                      &        \\
+3        & min GSR                 & varHR                 & medianHR                & avg Plethysmograph      &                         &                       &                      &          &                      &        \\
+4        & median Temperature      & max Temperature       & varHR                   & max GSR                 & medianHR                & std HR                &                      &          &                      &        \\
+5        & varHR                   & max GSR               & min Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+6        & median Temperature      & min Plethysmograph    &                         &                         &                         &                       &                      &          &                      &        \\
+7        & varHR                   & max Temperature       & min Temperature         &                         &                         &                       &                      &          &                      &        \\
+8        & min GSR                 & avg Respiration belt  & avg Temperature         & max Temperature         &                         &                       &                      &          &                      &        \\
+9        & avg GSR                 & max GSR               & avg Respiration belt    & std Respiration belt    &                         &                       &                      &          &                      &        \\
+10       & avg Plethysmograph      & varHR                 & max Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+11       & avg Respiration belt    &                       &                         &                         &                         &                       &                      &          &                      &        \\
+12       & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+13       & avg Respiration belt    &                       &                         &                         &                         &                       &                      &          &                      &        \\
+14       & median GSR              & max GSR               & avg Temperature         & std Temperature         & max Temperature         &                       &                      &          &                      &        \\
+15       & median Temperature      & varHR                 & avg HR                  & avg GSR                 &                         &                       &                      &          &                      &        \\
+16       & var GSR                 & medianHR              &                         &                         &                         &                       &                      &          &                      &        \\
+17       & std GSR                 &                       &                         &                         &                         &                       &                      &          &                      &        \\
+18       & avg GSR                 &                       &                         &                         &                         &                       &                      &          &                      &        \\
+19       & median Respiration belt & medianHR              & std GSR                 &                         &                         &                       &                      &          &                      &        \\
+20       & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+21       & std HR                  & median Temperature    & min Temperature         &                         &                         &                       &                      &          &                      &        \\
+22       & avg GSR                 & medianHR              & median GSR              &                         &                         &                       &                      &          &                      &        \\
+23       & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+24       & median Temperature      & varHR                 & min Plethysmograph      &                         &                         &                       &                      &          &                      &        \\
+25       & median GSR              & varHR                 &                         &                         &                         &                       &                      &          &                      &        \\
+26       & median GSR              & median Plethysmograph &                         &                         &                         &                       &                      &          &                      &        \\
+27       & varHR                   & medianHR              & avg Respiration belt    & var Respiration belt    &                         &                       &                      &          &                      &        \\
+28       & var GSR                 & median Plethysmograph & min GSR                 & avg Plethysmograph      &                         &                       &                      &          &                      &        \\
+29       & median Plethysmograph   & medianHR              &                         &                         &                         &                       &                      &          &                      &        \\
+30       & minHR                   & median Temperature    & std GSR                 &                         &                         &                       &                      &          &                      &        \\
+31       & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+dCorr    &                         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+person   & usedFeatures            &                       &                         &                         &                         &                       &                      &          &                      &        \\
+0        & max GSR                 & varHR                 & min Temperature         & var Temperature         & median Respiration belt &                       &                      &          &                      &        \\
+1        & max GSR                 & median GSR            & avg GSR                 & varHR                   &                         &                       &                      &          &                      &        \\
+2        & avg HR                  &                       &                         &                         &                         &                       &                      &          &                      &        \\
+3        & median Plethysmograph   & min Temperature       & median Temperature      & avg HR                  & min GSR                 &                       &                      &          &                      &        \\
+4        & varHR                   & std HR                & max GSR                 & max Temperature         & min Respiration belt    & medianHR              &                      &          &                      &        \\
+5        & median GSR              & maxHR                 & medianHR                &                         &                         &                       &                      &          &                      &        \\
+6        & std Temperature         & var Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+7        & var Temperature         & median Plethysmograph & std HR                  & maxHR                   & min Respiration belt    &                       &                      &          &                      &        \\
+8        & median Temperature      & avg HR                & maxHR                   & avg GSR                 & var Temperature         & std Temperature       &                      &          &                      &        \\
+9        & avg GSR                 & max GSR               & median Respiration belt & min Respiration belt    & var Respiration belt    &                       &                      &          &                      &        \\
+10       & min Plethysmograph      & max Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+11       & max GSR                 &                       &                         &                         &                         &                       &                      &          &                      &        \\
+12       & std GSR                 & median Plethysmograph & median Temperature      & avg Respiration belt    &                         &                       &                      &          &                      &        \\
+13       & std Respiration belt    & var Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+14       & max GSR                 & max Temperature       & avg Temperature         & avg HR                  &                         &                       &                      &          &                      &        \\
+15       & avg HR                  & varHR                 & median GSR              & avg Temperature         & std Respiration belt    &                       &                      &          &                      &        \\
+16       & max Respiration belt    & std Respiration belt  & min GSR                 &                         &                         &                       &                      &          &                      &        \\
+17       & min Temperature         & var Plethysmograph    & std Plethysmograph      & min GSR                 & max Respiration belt    &                       &                      &          &                      &        \\
+18       & max Respiration belt    &                       &                         &                         &                         &                       &                      &          &                      &        \\
+19       & max Plethysmograph      & std Plethysmograph    &                         &                         &                         &                       &                      &          &                      &        \\
+20       & maxHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+21       & medianHR                & min Temperature       & median Temperature      & varHR                   &                         &                       &                      &          &                      &        \\
+22       & max Respiration belt    & varHR                 & std Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+23       & std HR                  &                       &                         &                         &                         &                       &                      &          &                      &        \\
+24       & min Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+25       & min Respiration belt    & std Respiration belt  & std GSR                 & var GSR                 &                         &                       &                      &          &                      &        \\
+26       & max GSR                 & avg Temperature       & median Temperature      &                         &                         &                       &                      &          &                      &        \\
+27       & varHR                   & median GSR            & median Plethysmograph   &                         &                         &                       &                      &          &                      &        \\
+28       & max GSR                 & median GSR            & avg Plethysmograph      & max Plethysmograph      &                         &                       &                      &          &                      &        \\
+29       & medianHR                & median Plethysmograph &                         &                         &                         &                       &                      &          &                      &        \\
+30       & max Temperature         & median Plethysmograph & maxHR                   & minHR                   & var Plethysmograph      &                       &                      &          &                      &        \\
+31       & medianHR                &                       &                         &                         &                         &                       &                      &          &                      &        \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+LR       &                         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+person   & usedFeatures            &                       &                         &                         &                         &                       &                      &          &                      &        \\
+0        & avg GSR                 & avg Plethysmograph    & var Temperature         & min Respiration belt    &                         &                       &                      &          &                      &        \\
+1        & avg Respiration belt    & min Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+2        & median Respiration belt &                       &                         &                         &                         &                       &                      &          &                      &        \\
+3        & avg Plethysmograph      & std Respiration belt  & var Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+4        & avg Plethysmograph      & median Plethysmograph & avg GSR                 & std HR                  & min Respiration belt    & minHR                 & max GSR              & medianHR &                      &        \\
+5        & avg Plethysmograph      & median Plethysmograph &                         &                         &                         &                       &                      &          &                      &        \\
+6        & max GSR                 & max Plethysmograph    & median Plethysmograph   &                         &                         &                       &                      &          &                      &        \\
+7        & median GSR              & median Plethysmograph & maxHR                   & max Temperature         &                         &                       &                      &          &                      &        \\
+8        & avg Respiration belt    & min Respiration belt  & max Temperature         & min Plethysmograph      &                         &                       &                      &          &                      &        \\
+9        & avg Respiration belt    & max GSR               &                         &                         &                         &                       &                      &          &                      &        \\
+10       & avg Plethysmograph      & min Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+11       & avg Plethysmograph      &                       &                         &                         &                         &                       &                      &          &                      &        \\
+12       & avg GSR                 & median Plethysmograph &                         &                         &                         &                       &                      &          &                      &        \\
+13       & avg Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+14       & median Respiration belt & avg Respiration belt  & min GSR                 &                         &                         &                       &                      &          &                      &        \\
+15       & median Respiration belt & avg GSR               & median GSR              & std Plethysmograph      & varHR                   &                       &                      &          &                      &        \\
+16       & var Temperature         & std Plethysmograph    & min Plethysmograph      & median Temperature      &                         &                       &                      &          &                      &        \\
+17       & var Respiration belt    & max Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+18       & avg Respiration belt    & var Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+19       & avg Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+20       & avg Respiration belt    & std Plethysmograph    &                         &                         &                         &                       &                      &          &                      &        \\
+21       & avg Respiration belt    & avg Temperature       & median GSR              & min Temperature         & std Temperature         &                       &                      &          &                      &        \\
+22       & avg Plethysmograph      & avg Temperature       & median GSR              &                         &                         &                       &                      &          &                      &        \\
+23       & avg Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+24       & var Respiration belt    & min Plethysmograph    & avg HR                  &                         &                         &                       &                      &          &                      &        \\
+25       & median Plethysmograph   & std GSR               & min Respiration belt    & maxHR                   & std Respiration belt    &                       &                      &          &                      &        \\
+26       & avg GSR                 & avg Respiration belt  & avg Temperature         & max Respiration belt    & max Plethysmograph      &                       &                      &          &                      &        \\
+27       & avg Temperature         & std Temperature       & max Temperature         & avg GSR                 & avg Respiration belt    & median GSR            & max GSR              &          &                      &        \\
+28       & std Temperature         & avg GSR               &                         &                         &                         &                       &                      &          &                      &        \\
+29       & median Respiration belt & var Respiration belt  & var GSR                 & minHR                   &                         &                       &                      &          &                      &        \\
+30       & avg Respiration belt    & avg Plethysmograph    & var GSR                 & std Respiration belt    & max Temperature         &                       &                      &          &                      &        \\
+31       & std Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+L1       &                         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+person   & usedFeatures            &                       &                         &                         &                         &                       &                      &          &                      &        \\
+0        & var Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+1        & max Plethysmograph      & medianHR              & avg Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+2        & min Respiration belt    &                       &                         &                         &                         &                       &                      &          &                      &        \\
+3        & var Plethysmograph      & std HR                & var GSR                 & median Plethysmograph   & min GSR                 &                       &                      &          &                      &        \\
+4        & median Temperature      & var Temperature       & std HR                  & max GSR                 & std Temperature         &                       &                      &          &                      &        \\
+5        & var GSR                 & std GSR               & var Temperature         & std Respiration belt    &                         &                       &                      &          &                      &        \\
+6        & std GSR                 & median Plethysmograph &                         &                         &                         &                       &                      &          &                      &        \\
+7        & var Respiration belt    & maxHR                 & var Temperature         &                         &                         &                       &                      &          &                      &        \\
+8        & median GSR              & min Respiration belt  & std HR                  & minHR                   & median Temperature      & medianHR              &                      &          &                      &        \\
+9        & min Respiration belt    & max GSR               & avg Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+10       & std GSR                 & var Temperature       & std Temperature         & median Temperature      &                         &                       &                      &          &                      &        \\
+11       & min Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+12       & std Respiration belt    &                       &                         &                         &                         &                       &                      &          &                      &        \\
+13       & std Respiration belt    & var Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+14       & max GSR                 & std Temperature       & minHR                   & medianHR                &                         &                       &                      &          &                      &        \\
+15       & max Temperature         & avg HR                & var Temperature         & var GSR                 & varHR                   & max Respiration belt  &                      &          &                      &        \\
+16       & var Temperature         & max Respiration belt  & median Plethysmograph   &                         &                         &                       &                      &          &                      &        \\
+17       & median Respiration belt & avg Respiration belt  & min GSR                 &                         &                         &                       &                      &          &                      &        \\
+18       & std Respiration belt    &                       &                         &                         &                         &                       &                      &          &                      &        \\
+19       & median Respiration belt & min Plethysmograph    & max Plethysmograph      & minHR                   &                         &                       &                      &          &                      &        \\
+20       & min Plethysmograph      &                       &                         &                         &                         &                       &                      &          &                      &        \\
+21       & min Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+22       & std Plethysmograph      & std HR                & varHR                   &                         &                         &                       &                      &          &                      &        \\
+23       & avg Respiration belt    &                       &                         &                         &                         &                       &                      &          &                      &        \\
+24       & var Respiration belt    & min Plethysmograph    & avg HR                  &                         &                         &                       &                      &          &                      &        \\
+25       & min GSR                 & std GSR               & maxHR                   & medianHR                & var Respiration belt    &                       &                      &          &                      &        \\
+26       & min Plethysmograph      & min Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+27       & max Plethysmograph      & median GSR            & varHR                   & max Respiration belt    & min Respiration belt    &                       &                      &          &                      &        \\
+28       & max Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+29       & median Temperature      & median GSR            & medianHR                & max Respiration belt    & maxHR                   &                       &                      &          &                      &        \\
+30       & max Temperature         & var Temperature       & std Temperature         & minHR                   & maxHR                   &                       &                      &          &                      &        \\
+31       & var Plethysmograph      &                       &                         &                         &                         &                       &                      &          &                      &        \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+L2       &                         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+person   & usedFeatures            &                       &                         &                         &                         &                       &                      &          &                      &        \\
+0        & avg GSR                 & min GSR               & var Temperature         & median Respiration belt &                         &                       &                      &          &                      &        \\
+1        & avg Respiration belt    & min Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+2        & avg Plethysmograph      &                       &                         &                         &                         &                       &                      &          &                      &        \\
+3        & var Plethysmograph      & max Temperature       & avg Plethysmograph      & var Respiration belt    & std Temperature         &                       &                      &          &                      &        \\
+4        & avg Plethysmograph      & avg GSR               & median Temperature      & std HR                  & median Respiration belt & min Respiration belt  & min Temperature      &          &                      &        \\
+5        & avg Plethysmograph      & median Plethysmograph &                         &                         &                         &                       &                      &          &                      &        \\
+6        & avg Temperature         & avg Plethysmograph    &                         &                         &                         &                       &                      &          &                      &        \\
+7        & median GSR              & median Plethysmograph & maxHR                   & max Temperature         &                         &                       &                      &          &                      &        \\
+8        & avg Respiration belt    & max Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+9        & avg Respiration belt    & max GSR               &                         &                         &                         &                       &                      &          &                      &        \\
+10       & std GSR                 & avg Respiration belt  & median Plethysmograph   & minHR                   &                         &                       &                      &          &                      &        \\
+11       & avg Plethysmograph      &                       &                         &                         &                         &                       &                      &          &                      &        \\
+12       & max Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+13       & std Respiration belt    & var Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+14       & median Respiration belt & avg Plethysmograph    & median Plethysmograph   & avg HR                  &                         &                       &                      &          &                      &        \\
+15       & median Respiration belt & avg GSR               & median GSR              & std Plethysmograph      & varHR                   & medianHR              & avg Temperature      &          &                      &        \\
+16       & var Temperature         & std Plethysmograph    & min Plethysmograph      & min Temperature         &                         &                       &                      &          &                      &        \\
+17       & var Respiration belt    & max Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+18       & median Respiration belt & std Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+19       & avg Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+20       & std Plethysmograph      &                       &                         &                         &                         &                       &                      &          &                      &        \\
+21       & avg Respiration belt    & avg Temperature       & min Temperature         & std Temperature         & median Temperature      & max GSR               &                      &          &                      &        \\
+22       & avg Plethysmograph      & avg Temperature       & median GSR              &                         &                         &                       &                      &          &                      &        \\
+23       & median Temperature      &                       &                         &                         &                         &                       &                      &          &                      &        \\
+24       & var Respiration belt    & min Plethysmograph    & avg HR                  &                         &                         &                       &                      &          &                      &        \\
+25       & median Plethysmograph   & std GSR               & maxHR                   & min Respiration belt    & std Respiration belt    &                       &                      &          &                      &        \\
+26       & avg GSR                 & avg Respiration belt  & avg Temperature         & max Respiration belt    & max Plethysmograph      &                       &                      &          &                      &        \\
+27       & std Temperature         & avg GSR               &                         &                         &                         &                       &                      &          &                      &        \\
+28       & max Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+29       & median Respiration belt & avg Temperature       & avg Plethysmograph      & max Plethysmograph      & max GSR                 & medianHR              &                      &          &                      &        \\
+30       & avg Respiration belt    & var GSR               & std GSR                 & avg Temperature         & max GSR                 &                       &                      &          &                      &        \\
+31       & std Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+SVM      &                         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+person   & usedFeatures            &                       &                         &                         &                         &                       &                      &          &                      &        \\
+0        & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+1        & median Plethysmograph   & max Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+2        & min Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+3        & min Temperature         & min GSR               & median Temperature      &                         &                         &                       &                      &          &                      &        \\
+4        & std HR                  & var Respiration belt  & max GSR                 & medianHR                &                         &                       &                      &          &                      &        \\
+5        & maxHR                   & min Plethysmograph    & min GSR                 & std Plethysmograph      & avg Temperature         &                       &                      &          &                      &        \\
+6        & var Plethysmograph      & varHR                 & var Temperature         & min GSR                 &                         &                       &                      &          &                      &        \\
+7        & var Plethysmograph      & maxHR                 & medianHR                & median Respiration belt & std Temperature         &                       &                      &          &                      &        \\
+8        & avg HR                  & min Respiration belt  & var Temperature         & std HR                  & min GSR                 & median Temperature    &                      &          &                      &        \\
+9        & max GSR                 & max Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+10       & minHR                   & min Respiration belt  & min Plethysmograph      & median Plethysmograph   & avg GSR                 &                       &                      &          &                      &        \\
+11       & minHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+12       & max Respiration belt    &                       &                         &                         &                         &                       &                      &          &                      &        \\
+13       & std Respiration belt    & max Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+14       & minHR                   & max GSR               &                         &                         &                         &                       &                      &          &                      &        \\
+15       & min Plethysmograph      & avg HR                & varHR                   & var GSR                 & avg Temperature         &                       &                      &          &                      &        \\
+16       & max Plethysmograph      & min GSR               &                         &                         &                         &                       &                      &          &                      &        \\
+17       & min GSR                 &                       &                         &                         &                         &                       &                      &          &                      &        \\
+18       & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+19       & min Plethysmograph      & var Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+20       & std HR                  & maxHR                 &                         &                         &                         &                       &                      &          &                      &        \\
+21       & median Plethysmograph   & var Plethysmograph    & min Temperature         & max GSR                 & max Plethysmograph      &                       &                      &          &                      &        \\
+22       & medianHR                & median GSR            &                         &                         &                         &                       &                      &          &                      &        \\
+23       & std HR                  &                       &                         &                         &                         &                       &                      &          &                      &        \\
+24       & min GSR                 & maxHR                 &                         &                         &                         &                       &                      &          &                      &        \\
+25       & min GSR                 & std GSR               & maxHR                   & medianHR                & var Respiration belt    &                       &                      &          &                      &        \\
+26       & max GSR                 & min Temperature       & avg Temperature         &                         &                         &                       &                      &          &                      &        \\
+27       & maxHR                   & varHR                 &                         &                         &                         &                       &                      &          &                      &        \\
+28       & min GSR                 & max Respiration belt  & std Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+29       & max Plethysmograph      & max Respiration belt  & medianHR                & median GSR              &                         &                       &                      &          &                      &        \\
+30       & max Respiration belt    & medianHR              & max Temperature         & var GSR                 & var Plethysmograph      &                       &                      &          &                      &        \\
+31       & max Plethysmograph      &                       &                         &                         &                         &                       &                      &          &                      &        \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+RF       &                         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+person   & usedFeatures            &                       &                         &                         &                         &                       &                      &          &                      &        \\
+0        & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+1        & max GSR                 & median GSR            & medianHR                &                         &                         &                       &                      &          &                      &        \\
+2        & min GSR                 &                       &                         &                         &                         &                       &                      &          &                      &        \\
+3        & min GSR                 & var Plethysmograph    & min Temperature         & std Temperature         &                         &                       &                      &          &                      &        \\
+4        & std HR                  & var Respiration belt  & std Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+5        & maxHR                   & median GSR            & minHR                   &                         &                         &                       &                      &          &                      &        \\
+6        & var Temperature         & std Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+7        & minHR                   & min Plethysmograph    & varHR                   & maxHR                   & max GSR                 &                       &                      &          &                      &        \\
+8        & maxHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+9        & max Respiration belt    & max GSR               & min Respiration belt    & median Respiration belt &                         &                       &                      &          &                      &        \\
+10       & min Plethysmograph      & max Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+11       & min Respiration belt    &                       &                         &                         &                         &                       &                      &          &                      &        \\
+12       & max GSR                 & var Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+13       & std Respiration belt    & var Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+14       & max GSR                 & max Temperature       & avg Temperature         & avg HR                  &                         &                       &                      &          &                      &        \\
+15       & avg HR                  & varHR                 & max Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+16       & min GSR                 & max Respiration belt  & var Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+17       & std HR                  & min GSR               & median Respiration belt &                         &                         &                       &                      &          &                      &        \\
+18       & max Temperature         & median Temperature    &                         &                         &                         &                       &                      &          &                      &        \\
+19       & avg HR                  & min Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+20       & std HR                  & maxHR                 &                         &                         &                         &                       &                      &          &                      &        \\
+21       & std Plethysmograph      & avg Temperature       & maxHR                   & var Temperature         & std GSR                 &                       &                      &          &                      &        \\
+22       & max Respiration belt    & std HR                & std Plethysmograph      &                         &                         &                       &                      &          &                      &        \\
+23       & max Plethysmograph      &                       &                         &                         &                         &                       &                      &          &                      &        \\
+24       & min Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+25       & std HR                  & maxHR                 & varHR                   &                         &                         &                       &                      &          &                      &        \\
+26       & avg Temperature         & var GSR               &                         &                         &                         &                       &                      &          &                      &        \\
+27       & varHR                   & max GSR               & maxHR                   & median Temperature      & var Respiration belt    & medianHR              &                      &          &                      &        \\
+28       & min GSR                 & min Respiration belt  & min Temperature         & max Temperature         &                         &                       &                      &          &                      &        \\
+29       & medianHR                & median Plethysmograph &                         &                         &                         &                       &                      &          &                      &        \\
+30       & avg Temperature         & std GSR               & minHR                   &                         &                         &                       &                      &          &                      &        \\
+31       & std HR                  &                       &                         &                         &                         &                       &                      &          &                      &        \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+ANOVA    &                         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+person   & usedFeatures            &                       &                         &                         &                         &                       &                      &          &                      &        \\
+0        & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+1        & max GSR                 & median GSR            & avg GSR                 & varHR                   &                         &                       &                      &          &                      &        \\
+2        & min GSR                 &                       &                         &                         &                         &                       &                      &          &                      &        \\
+3        & min GSR                 & var Plethysmograph    & min Temperature         & std Temperature         &                         &                       &                      &          &                      &        \\
+4        & std HR                  & var Respiration belt  & std Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+5        & max GSR                 &                       &                         &                         &                         &                       &                      &          &                      &        \\
+6        & var Temperature         & std Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+7        & minHR                   & min Plethysmograph    & varHR                   & maxHR                   & avg GSR                 & max GSR               &                      &          &                      &        \\
+8        & maxHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+9        & max Respiration belt    & max GSR               & median Respiration belt & avg Respiration belt    &                         &                       &                      &          &                      &        \\
+10       & min Plethysmograph      & max Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+11       & std Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+12       & max GSR                 & var Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+13       & std Respiration belt    & var Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+14       & max GSR                 & max Temperature       & avg GSR                 &                         &                         &                       &                      &          &                      &        \\
+15       & avg HR                  & varHR                 & max Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+16       & min GSR                 & max Respiration belt  & var Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+17       & std HR                  & min GSR               & median Respiration belt &                         &                         &                       &                      &          &                      &        \\
+18       & max Temperature         & median Temperature    &                         &                         &                         &                       &                      &          &                      &        \\
+19       & avg HR                  & min Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+20       & std HR                  & maxHR                 &                         &                         &                         &                       &                      &          &                      &        \\
+21       & std Plethysmograph      & avg Temperature       & maxHR                   & var Temperature         & min GSR                 &                       &                      &          &                      &        \\
+22       & max Respiration belt    & std HR                & std Plethysmograph      &                         &                         &                       &                      &          &                      &        \\
+23       & max Plethysmograph      &                       &                         &                         &                         &                       &                      &          &                      &        \\
+24       & min Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+25       & std HR                  & maxHR                 & varHR                   &                         &                         &                       &                      &          &                      &        \\
+26       & avg Temperature         & var GSR               &                         &                         &                         &                       &                      &          &                      &        \\
+27       & varHR                   & max GSR               & min GSR                 & minHR                   &                         &                       &                      &          &                      &        \\
+28       & min GSR                 & min Respiration belt  & min Temperature         & max Temperature         &                         &                       &                      &          &                      &        \\
+29       & medianHR                & median Plethysmograph &                         &                         &                         &                       &                      &          &                      &        \\
+30       & avg Temperature         & std GSR               & minHR                   &                         &                         &                       &                      &          &                      &        \\
+31       & std HR                  &                       &                         &                         &                         &                       &                      &          &                      &        \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+LDA      &                         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+person   & usedFeatures            &                       &                         &                         &                         &                       &                      &          &                      &        \\
+0        & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+1        & varHR                   & max GSR               & median GSR              & min Temperature         &                         &                       &                      &          &                      &        \\
+2        & varHR                   & medianHR              &                         &                         &                         &                       &                      &          &                      &        \\
+3        & varHR                   & max Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+4        & varHR                   & max GSR               & var GSR                 & median Plethysmograph   & avg Temperature         & avg HR                & std HR               &          &                      &        \\
+5        & varHR                   & max GSR               & min Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+6        & varHR                   & avg Plethysmograph    & std Plethysmograph      &                         &                         &                       &                      &          &                      &        \\
+7        & varHR                   & max Temperature       & min Temperature         &                         &                         &                       &                      &          &                      &        \\
+8        & varHR                   & medianHR              & avg Temperature         &                         &                         &                       &                      &          &                      &        \\
+9        & varHR                   & std Respiration belt  & avg HR                  &                         &                         &                       &                      &          &                      &        \\
+10       & varHR                   & medianHR              & avg Plethysmograph      & min Plethysmograph      &                         &                       &                      &          &                      &        \\
+11       & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+12       & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+13       & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+14       & varHR                   & max GSR               & max Respiration belt    & minHR                   & avg GSR                 &                       &                      &          &                      &        \\
+15       & varHR                   & medianHR              & std GSR                 & max GSR                 & median GSR              & avg Respiration belt  & minHR                &          &                      &        \\
+16       & varHR                   & medianHR              &                         &                         &                         &                       &                      &          &                      &        \\
+17       & varHR                   & medianHR              & avg Temperature         &                         &                         &                       &                      &          &                      &        \\
+18       & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+19       & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+20       & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+21       & varHR                   & max Respiration belt  & avg Plethysmograph      &                         &                         &                       &                      &          &                      &        \\
+22       & varHR                   & avg Plethysmograph    & avg HR                  &                         &                         &                       &                      &          &                      &        \\
+23       & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+24       & varHR                   & max GSR               & min Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+25       & varHR                   & std GSR               & min GSR                 & median GSR              & std Respiration belt    & max Temperature       &                      &          &                      &        \\
+26       & varHR                   & min GSR               &                         &                         &                         &                       &                      &          &                      &        \\
+27       & varHR                   & medianHR              & avg Respiration belt    & var Respiration belt    &                         &                       &                      &          &                      &        \\
+28       & varHR                   & medianHR              & std GSR                 & avg Respiration belt    & min Temperature         &                       &                      &          &                      &        \\
+29       & varHR                   & medianHR              &                         &                         &                         &                       &                      &          &                      &        \\
+30       & varHR                   & std GSR               & max GSR                 & median GSR              & std Plethysmograph      & max Temperature       & maxHR                &          &                      &        \\
+31       & varHR                   &                       &                         &                         &                         &                       &                      &          &                      &        \\
+\end{tabular}
+\end{table}
+\end{landscape}
+\clearpage
+\begin{landscape}
+\begin{table}[]
+\centering
+\caption{The selected features for each person}
+\begin{tabular}{l|llllllll}
+PCA      &                         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+person   & usedFeatures            &                       &                         &                         &                         &                       &                      &          &                      &        \\
+0        & avg GSR                 & std GSR               & var GSR                 & var Temperature         & median Respiration belt &                       &                      &          &                      &        \\
+1        & avg Respiration belt    & min Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+2        & median Respiration belt &                       &                         &                         &                         &                       &                      &          &                      &        \\
+3        & avg Plethysmograph      & std Respiration belt  & var Respiration belt    &                         &                         &                       &                      &          &                      &        \\
+4        & avg Plethysmograph      & avg Respiration belt  & var Temperature         & median Plethysmograph   & avg Temperature         & std HR                & min Respiration belt & medianHR & max GSR              &        \\
+5        & avg Plethysmograph      & median Plethysmograph &                         &                         &                         &                       &                      &          &                      &        \\
+6        & max GSR                 & avg Plethysmograph    & std Plethysmograph      &                         &                         &                       &                      &          &                      &        \\
+7        & avg Respiration belt    & var Respiration belt  & max Respiration belt    & std HR                  & max Temperature         & minHR                 &                      &          &                      &        \\
+8        & avg Respiration belt    & max Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+9        & avg Respiration belt    & max GSR               &                         &                         &                         &                       &                      &          &                      &        \\
+10       & avg Plethysmograph      & min Respiration belt  &                         &                         &                         &                       &                      &          &                      &        \\
+11       & avg Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+12       & avg GSR                 & avg Temperature       & median Respiration belt &                         &                         &                       &                      &          &                      &        \\
+13       & avg Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+14       & avg Respiration belt    & avg Plethysmograph    & median Plethysmograph   & avg HR                  &                         &                       &                      &          &                      &        \\
+15       & median Respiration belt & avg GSR               & median GSR              & std Plethysmograph      & varHR                   & medianHR              &                      &          &                      &        \\
+16       & std Plethysmograph      & var Temperature       & min Plethysmograph      & median Temperature      &                         &                       &                      &          &                      &        \\
+17       & var Respiration belt    & std Temperature       &                         &                         &                         &                       &                      &          &                      &        \\
+18       & avg Respiration belt    & median Plethysmograph &                         &                         &                         &                       &                      &          &                      &        \\
+19       & avg Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+20       & std Plethysmograph      &                       &                         &                         &                         &                       &                      &          &                      &        \\
+21       & avg Respiration belt    & std Respiration belt  & std Plethysmograph      & maxHR                   & minHR                   &                       &                      &          &                      &        \\
+22       & std Plethysmograph      & varHR                 &                         &                         &                         &                       &                      &          &                      &        \\
+23       & avg Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+24       & std Temperature         & median GSR            & min Respiration belt    & minHR                   &                         &                       &                      &          &                      &        \\
+25       & avg GSR                 & std GSR               & maxHR                   &                         &                         &                       &                      &          &                      &        \\
+26       & avg GSR                 & avg Plethysmograph    &                         &                         &                         &                       &                      &          &                      &        \\
+27       & avg Temperature         & std Temperature       & var Temperature         & median GSR              & varHR                   & maxHR                 &                      &          &                      &        \\
+28       & max Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\
+29       & median Respiration belt & var Respiration belt  & var GSR                 & min Respiration belt    &                         &                       &                      &          &                      &        \\
+30       & avg Respiration belt    & avg Plethysmograph    & var GSR                 & max Temperature         & std Respiration belt    &                       &                      &          &                      &        \\
+31       & std Temperature         &                       &                         &                         &                         &                       &                      &          &                      &        \\     
+\end{tabular}
+\end{table}
+\end{landscape}
