@@ -463,7 +463,7 @@ Back in the original feature space the separation boundary might look like Figur
 \label{rbfkernel}
 In this work a Radial Basis Function (RBF) \newacronym{RBF}{RBF}{Radial Basis Function} was used. This kernels is sometimes called the Gaussian kernel. The RBF kernel K for two input vectors x and y is given by\citep{RBFKernel}:
 \begin{center}
-$K(x,y) = exp(\frac{-\norm{x-y}^2}{2\sigma^2}$
+$ K(x,y) = exp(\frac{-\norm{x-y}^2}{2\sigma^2} $
 \end{center}
 The numerator can be recognized as the squared Euclidean distance between two sample points in the feature space. The $\sigma$ is a parameter. The kernel can be interpreted as a similarity measure\citep{RBFSimilarity}. Furthermore, this kernel has an infinite number of dimensions\citep{RBFExpansion}, this is visible when the kernel is expanded. For $\sigma = 1$ the kernels becomes:
 \begin{center}
