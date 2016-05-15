@@ -51,7 +51,21 @@ pdfkeywords={Emotion recognition, physiological, machine learning, EEG}}
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
 
+% marges aanpassen
+% (opmerking: moet *voor* inclusie van fancyhdr package komen)
+%\setlength{\hoffset}{-1in}
+%\setlength{\voffset}{-1in}
+%\setlength{\topmargin}{2cm}
+%\setlength{\headheight}{0.5cm}
+%\setlength{\headsep}{1cm}
+%\setlength{\oddsidemargin}{3.5cm}
+%\setlength{\evensidemargin}{3.5cm}
+%\setlength{\textwidth}{16cm}
+%\setlength{\textheight}{23.3cm}
+%\setlength{\footskip}{1.5cm}
+
 \begin{document}
+\pagenumbering{gobble}% Remove page numbers (and reset to 1)
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
@@ -244,15 +258,15 @@ The non-EEG features are:
 \end{itemize}
 The distribution of the selected features is given in Figure \ref{arousalALLRF} for arousal and Figure \ref{valenceALLRF} for valence, the legend is given in Figure \ref{legend}.
 
-\mijnfiguur{width=0.25\textwidth}{arousalALLRF}{Selected features for arousal}
-\mijnfiguur{width=0.25\textwidth}{valenceALLRF}{Selected features for valence}
-\mijnfiguur{width=0.25\textwidth}{legend}{Each color and its corresponding feature category.}
+\mijnfiguur{width=0.25\textwidth}{arousalALLRF}{Distribution of the selected features for arousal classification.}
+\mijnfiguur{width=0.25\textwidth}{valenceALLRF}{Distribution of the selected features for valence classification.}
+\mijnfiguur{width=0.25\textwidth}{legend}{Legend for Figure \ref{arousalALLRF} and \ref{valenceALLRF}.}
 
 It is clear that for both arousal and valence, the asymmetry features are the most important. The second most important category are the power features\footnote{Without going into detail; a similar trend was also found for other, less advanced feature selection methods.}. The non-EEG features seem to have very little influence on the result. To verify that the non-EEG feature are worse than the EEG features, the setup was run two additional times. One time with only EEG features and one time with only non-EEG features. The results are visible in Figure \ref{arousalphyeegall} and Figure \ref{valencephyeegall} for arousal and valence respectively. 
 
-\mijnfiguur{width=.5\textwidth}{arousalphyeegall}{The performance of arousal prediction for all, EEG and non-EEG features.}
+\mijnfiguur{width=.5\textwidth}{arousalphyeegall}{The performance of arousal prediction for all, EEG and non-EEG features. The reported accuracies are test accuracies averaged over all persons, with their standard deviation.}
 
-\mijnfiguur{width=.5\textwidth}{valencephyeegall}{The performance of valence prediction for all, EEG and non-EEG features.}
+\mijnfiguur{width=.5\textwidth}{valencephyeegall}{The performance of valence prediction for all, EEG and non-EEG features. The reported accuracies are test accuracies averaged over all persons, with their standard deviation.}
 
 The results were compared with a two-sided p-test which does confirm that the non-EEG features have a lower performance. The P-values are shown in Table \ref{pvals}.
 \begin{table}[H]
