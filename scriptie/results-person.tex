@@ -593,158 +593,59 @@ Here, no single category can be labelled as most important. This is the case for
 
 \section{Important EEG channels}
 
-Another component of this work is to dig into the EEG features and find out which channels are most important. This was done by taking the Random forest as a feature selection model and looking at the models that were build. By simply counting the occurrences of different EEG channels in these models, pie charts were constructed. This was done for both valence and arousal. The results are displayed in Figure\ref{arousalchannel} for arousal and Figure \ref{valencechannel} for valence.
-
-\begin{figure}[H]
-\centering
-  \begin{subfigure}[b]{.5\textwidth}
-    \includegraphics[width=\textwidth]{arousalchannel}
-    \caption{The different selected channels for arousal.\label{arousalchannel}}
-  \end{subfigure}
-\hfill
-  \begin{subfigure}[b]{.4\textwidth}
-    \includegraphics[width=\textwidth]{channellegend}
-    \caption{Each color and its corresponding EEG channel.}
-  \end{subfigure}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-  \begin{subfigure}[b]{.5\textwidth}
-    \includegraphics[width=\textwidth]{valencechannel}
-    \caption{The different selected channels for valence.\label{valencechannel}}
-  \end{subfigure}
-\hfill
-  \begin{subfigure}[b]{.4\textwidth}
-    \includegraphics[width=\textwidth]{channellegend}
-    \caption{Each color and its corresponding EEG channel.}
-  \end{subfigure}
-\end{figure}
-
-At first it seems that there is no agreement on the channels, one possible reason for this, might be that electrodes are not placed exactly. Even though the 10/20 system defines the different locations quite well, it is still possible that small variations in the locations exists. Grouping the channels might give a more clear view of the important regions of the brain. The channels were grouped as follows: 
-\begin{table}[H]
-\centering
-\caption{The region for each EEG channel}
-\begin{tabular}{ll|ll|ll|ll}
-\textbf{Channel} & \textbf{Region} & \textbf{Channel} & \textbf{Region} & \textbf{Channel} & \textbf{Region}      & \textbf{Channel} & \textbf{Region}     \\ \hline
-\textbf{Fp1}     & front left      & \textbf{CP5}     & back left       & \textbf{Fp2}     & front right & \textbf{C4}      & back right \\
-\textbf{AF3}     & front left      & \textbf{CP1}     & back left       & \textbf{AF4}     & front right & \textbf{T8}      & back right \\
-\textbf{F3}      & front left      & \textbf{P3}      & back left       & \textbf{Fz}      & midline     & \textbf{CP6}     & back right \\
-\textbf{F7}      & front left      & \textbf{P7}      & back left       & \textbf{F4}      & front right & \textbf{CP2}     & back right \\
-\textbf{FC5}     & front left      & \textbf{PO3}     & back left       & \textbf{F8}      & front right & \textbf{P4}      & back right \\
-\textbf{FC1}     & front left      & \textbf{O1}      & back left       & \textbf{FC6}     & front right & \textbf{P8}      & back right \\
-\textbf{C3}      & back left       & \textbf{Oz}      & midline         & \textbf{FC2}     & front right & \textbf{PO4}     & back right \\
-\textbf{T7}      & back left       & \textbf{Pz}      & midline         & \textbf{Cz}      & midline     & \textbf{O2}      & back right
-\end{tabular}
-\end{table}
-
-These Region are also depicted in Figure \ref{regions}.
-\mijnfiguur{width=.8\textwidth}{regions}{All EEG channels were grouped in 4 regions: left-front (blue), right-front (red), left-back(black), right-back (purple) and midline (yellow).}
-
-The resulting distributions are shown in Figure \ref{arousalzones} for arousal and in Figure \ref{valencezones}, the legend is shown in Figure \ref{zonelegend}.
+Another component of this work is to dig into the EEG features and find out which channels are most important. This was done by taking the Random forest as a feature selection model and looking at the models that were build. The occurrences of each channel were counted and with these frequencies as weights, the following topoplots were created.
 
 \begin{figure}[H]
 \centering
   \begin{subfigure}[b]{.4\textwidth}
-    \includegraphics[width=\textwidth]{arousalzones}
-    \caption{Origin of the power features for arousal classification.\label{arousalzones}}
+    \includegraphics[width=\textwidth]{arousal_psd.eps}
+    \caption{The occurences of the selected channels for arousal classification. The model seems to use channels all over the brain, with channel FC2.\label{arousalchannel}}
   \end{subfigure}
 \hfill
   \begin{subfigure}[b]{.4\textwidth}
-    \includegraphics[width=\textwidth]{valencezones}
-    \caption{Origin of the power features for valence classification.\label{valencezones}}
-  \end{subfigure}
-\\
-  \begin{subfigure}[b]{.7\textwidth}
-    \includegraphics[width=\textwidth]{zonelegend}
-    \caption{The corresponding zone for each color.\label{zonelegend}}
+    \includegraphics[width=\textwidth]{valence_psd.eps}
+    \caption{The occurences of the selected channels for valence classification. The model seems to give most weight to frontal channels.\label{valencechannel}}
   \end{subfigure}
 \end{figure}
 
-Looking at the pie plots, one can see that there is no clear region used. The back left and right regions appear most often, but the difference with the front left and right is little. It seems that for both valence and arousal, power values of all different regions might be of importance. The distributions for the regions are the same for both valence and arousal, but they differ in terms of channels.
+
+Looking at the topoplots depicted in Figure \ref{arousalchannel} for arousal and Figure \ref{valencechannel} for valence, one can see that for arousal, no clear region is used. Channel Fc2 has the largest weight, combined with some importance for the channels at the outer left side of the scalp. For valence, most of the importances is located in the frontal channels, which concurs with results of similar research in literature. 
 
 \npar
 
-The same principle can be done for the asymmetry features, here a distinction was made between DASM and RASM features on one hand and the DCAU and RCAU features on the other hand. The DASM and RASM features were divided in channel pairs located at the front and back of the brain. A specific list is given in Table \ref{ASMgroupTable} below.
-
-%table
-\begin{table}[H]
-\centering
-\caption{the region for each DASM and RASM channel pair\label{ASMgroupTable}}
-\begin{tabular}{ll|ll}
-\textbf{Channel pair} & \textbf{Group} & \textbf{Channel pair} & \textbf{Group} \\ \hline
-Fp1,Fp2               & front          & C3,C4                 & back           \\
-AF3,AF4               & front          & T7,T8                 & back           \\
-F3,F4                 & front          & CP5,CP6               & back           \\
-F7,F8                 & front          & CP1,CP2               & back           \\
-FC5,FC6               & front          & P3,P4                 & back           \\
-FC1,FC2               & front          & P7,P8                 & back           \\
-                      &                & PO3,PO4               & back          
-\end{tabular}
-\end{table}
+The same can be done for the asymmetry features, here a distinction was made between DASM and RASM features on one hand and the DCAU and RCAU features on the other hand. Again, occurrences were counted and topoplots were created.
 
 \begin{figure}[H]
 \centering
   \begin{subfigure}[b]{.4\textwidth}
-    \includegraphics[width=\textwidth]{arousalasymzonesASM}
-    \caption{Origin of the asymmetry features for arousal classification.\label{arousalasymzonesASM}}
+    \includegraphics[width=\textwidth]{arousal_asym.eps}
+    \caption{The occurences of the selected DASM and RASM channel pairs for arousal classification. The model seems to focus on frontal EEG channels.\label{arousal_asym}}
   \end{subfigure}
 \hfill
   \begin{subfigure}[b]{.4\textwidth}
-    \includegraphics[width=\textwidth]{valenceasymzonesASM}
-    \caption{Origin of the asymmetry features for valence classification.\label{valenceasymzonesASM}}
-  \end{subfigure}
-\\
-  \begin{subfigure}[b]{.4\textwidth}
-    \includegraphics[width=\textwidth]{ASMlegend}
-    \caption{The corresponding zone for each color.\label{ASMlegend}}
+    \includegraphics[width=\textwidth]{valence_asym.eps}
+    \caption{The occurences of the selected DASM and RASM channel pairs for valence classification. The model seems to focus on frontal EEG channels.\label{valence_asym}}
   \end{subfigure}
 \end{figure}
 
-For the DASM and RASM features, it is clear that the asymmetry should be measured at the front of the scalp for arousal. For valence however, features are selected from the front and the back of the scalp. This is in contradiction with the literature, most studies suggest that the frontal asymmetry of alpha power is most valuable.
+The DASM and RASM features are depicted in Figure \ref{arousal_asym} and Figure \ref{valence_asym} for arousal and valence respectively. It is clear that the asymmetry should be measured at the front of the scalp for both arousal and valence. Some importance can be found at the center and back of the scalp though, but this might also be noise.
 
 \npar
 
-The caudality features also measure asymmetry, but between a frontal and posterior channel. Here, the channel pairs were grouped in three groups: left, right and Fz/PZ, since the Fz/Pz channel pair lies on the central line. The specific grouping is shown in Table \ref{CAUgroupTable} below.
-
-%table
-\begin{table}[H]
-\centering
-\caption{The region for each corresponding DASM and RASM channel pair\label{CAUgroupTable}.}
-\begin{tabular}{ll|ll}
-\textbf{Channel pair} & \textbf{Group} & \textbf{Channel pair} & \textbf{Group} \\ \hline
-FC5,CP5               & left           & FC6,CP6               & right          \\
-FC1,CP1               & left           & FC2,CP2               & right          \\
-F3,P3                 & left           & F4,P4                 & right          \\
-F7,P7                 & left           & F8,P8                 & right          \\
-Fp1,O1                & left           & Fp2,O2                & right          \\
-Fz,Pz                 & Fz/Pz          &                       &                \\
-\end{tabular}
-\end{table}
+The DCAU and RCAU features are depicted in Figure \ref{arousal_dcau} and Figure \ref{valence_dcau} for arousal and valence respectively. Arousal seems to use frontal left EEG channels combined with some center right EEG channel pairs. For valence, the opposite is true, the frontal right EEG channels are used in combination with the left center EEG channel pairs.
 
 \begin{figure}[H]
 \centering
   \begin{subfigure}[b]{.4\textwidth}
-    \includegraphics[width=\textwidth]{arousalasymzonesCAU}
-    \caption{Origin of the asymmetry features for arousal classification.\label{arousalasymzonesCAU}}
+    \includegraphics[width=\textwidth]{arousal_dcau}
+    \caption{Origin of the asymmetry features for arousal classification.\label{arousal_dcau}}
   \end{subfigure}
 \hfill
   \begin{subfigure}[b]{.4\textwidth}
-    \includegraphics[width=\textwidth]{valenceasymzonesCAU}
-    \caption{Origin of the asymmetry features for valence classification.\label{valenceasymzonesCAU}}
-  \end{subfigure}
-\\
-  \begin{subfigure}[b]{.5\textwidth}
-    \includegraphics[width=\textwidth]{CAUlegend}
-    \caption{The corresponding zone for each color.\label{CAUlegend}}
+    \includegraphics[width=\textwidth]{valence_dcau}
+    \caption{Origin of the asymmetry features for valence classification.\label{valence_dcau}}
   \end{subfigure}
 \end{figure}
-
-For the arousal it seems that the caudality of the right of the brain might be of more interest. Valence uses caudality features from all over the brain.
-
-\npar
-
-These results indicate that for valence can be measured with channels from all over the scalp, while arousal seems to rely most on frontal channels.
 
 \section{Stability}
 Random forests have the disadvantage that they have an element of randomness, meaning that they might not always select the same features, making them potentially unstable. It is possible to make the random forest algorithm more stable, by adding additional trees or running the algorithm several times and averaging the importance values. 

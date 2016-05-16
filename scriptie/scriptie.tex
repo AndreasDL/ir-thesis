@@ -19,6 +19,7 @@
 \usepackage{hyperref}
 \usepackage{float}
 \usepackage{afterpage}
+\usepackage{epstopdf}
 \usepackage[
     type={CC},
     modifier={by},
@@ -134,6 +135,7 @@
 \include{abstract}
 
 %extended abstract as pdf
+\addcontentsline{toc}{chapter}{Extended Abstract}
 \includepdf[pages={1,2,3,4,5,6,7},offset=75 -75]{paper/bare_adv.pdf}
 
 \pagestyle{fancy}

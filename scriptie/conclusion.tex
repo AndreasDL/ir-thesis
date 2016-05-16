@@ -2,21 +2,21 @@
 {\samenvatting This chapter will give the conclusion of this work for both person specific and cross-person emotion recognition.}
 
 \section{Person specific}
-In case of arousal, the conclusion is that it is possible to achieve accuracies around 73\% on the DEAP dataset. The random forest is the best feature selection method as it is more certain when the arousal or valences are more extreme. The most prominent features for arousal recognition, according to this study, were the asymmetry features. Those features are often described as good features for valence recognition though. Repeating this study with more data, might be desired.
+In case of arousal, the conclusion is that it is possible to achieve accuracies around 73\% on the DEAP dataset. The random forest is the best feature selection method as it is more certain when the arousal or valences are more extreme. The most prominent features for arousal recognition, according to this study, were the asymmetry features. Those features are often described as good features for valence recognition though. The difference in features for valence and arousal might be the channels they use. The arousal looks for activity and is thus more interested in alpha and beta powers. Repeating this study with more data, might give more conclusive results.
 
 \npar
 
-For valence, it is indeed confirmed that the asymmetry features work best. These asymmetry features should not be limited to the asymmetry of frontal channels. Posterior channels also seem to contain additional information. A performance of 70\% was obtained which is similar, if not better than the state of the art studies described in Section \ref{sota}. 
+For valence, it is indeed confirmed that the asymmetry features work best. The focus should be on asymmetry features of frontal EEG channels. Posterior channels also seem to contain some additional information, albeit limited. A performance of 70\% was obtained which is similar, if not better than the state of the art studies described in Section \ref{sota}. 
 
 \npar
 
-The performance of non-EEG features is statistically proven to be lower than the performance of the all and EEG-only feature sets. One can conclude that adding non-EEG features will not improve performance. This is further supported by the fact that all feature selection methods rarely select non-EEG features. 
+The performance of non-EEG features is lower than the performance of the all and EEG-only feature sets. One can conclude that non-EEG features will not improve performance in a person specific setting. This is further supported by the fact that all feature selection methods rarely select non-EEG features. 
 
 \clearpage
 
 \section{Cross-subject}
 
-The main conclusion for cross-subject emotion recognition, is that cross-subject emotion recognition is still an open topic for research. Physiological signals are quite personal by nature, which might explain the drop in performance.
+The main conclusion for cross-subject emotion recognition, is that cross-subject emotion recognition is still an open topic for research. Physiological signals are quite personal by nature, which might explain the drop in performance. More advanced transfer learning methods are needed to boost the cross-subject performance.
 
 \npar 
 
@@ -24,16 +24,8 @@ A distinction between arousal and valence should be made though. The performance
 
 \npar
 
-Arousal levels on the other hand are harder to recognize, but the reaction seem to be more shared. Different persons will react more similar to a change in arousal than a change in valence.
-
-\npar
-
-Further research is needed to confirm this, as the problem could also be in the labelling. Each subject rated their own feeling, which might result in biased ratings, i.e. an valence level of 6 might have a different meaning for person A than person B. Following this line of thought, the difference between valence and arousal classification would be that subjects have a more common definition of active/inactive, than they have on happy/unhappy.
+Arousal levels on the other hand are harder to recognize, but the reaction seem to be more shared. Different persons will react more similar to a change in arousal than a change in valence. Further research is needed to confirm this though, as the problem could also be in the labelling. Each subject rated their own feelings, which might result in biased ratings, i.e. an valence level of 6 might have a different meaning for person A than person B. Following this line of thought, the difference between valence and arousal classification would be that subjects have a more common definition of active/inactive, than they have on happy/unhappy.
 
 \npar
 
 Another thing to note is that non-EEG features work better in a cross-subject setting than in a person specific setting. The selected features are again EEG features. When comparing the performance of the ALL, EEG-only and non-EEG-only features sets, the non-EEG set scores higher in a cross-subject setting than a person specific set. This might mean that non-EEG, physiological reactions to changes in an emotional state are more common between different persons than the reaction inside a person's brain features.
-
-\npar
-
-To further improve the performance of cross-subject emotion recognition, simple feature selection will not suffice. Instead, more complex techniques like transfer learning are desired. 
