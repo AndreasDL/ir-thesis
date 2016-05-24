@@ -8,11 +8,11 @@ The second part of this work was to search for features that work well in a cros
 The approach from Section \ref{approach} was modified slightly. The main difference is that the splits in test and train set as well as the cross validation was based on subjects. Once a single sample from a subject is placed in a set, all his other samples are added as well. Special care was taken to ensure that the random forest would also work correctly. The problem with random forest is that it creates an out of bag sample, as explained in Section \ref{rfexpl}. Because this out of bag sample is used for validation, a custom random forest was created. This random forest splits the out of bag sample based on the different subject.
 
 \section{Performance}
-The performance of the different algorithms is depicted in Figure \ref{accComp_arousalSVM_gen} for arousal and Figure \ref{accComp_valenceSVM_gen} for valence. The legend, combined with an overview of the accuracy values is given in Table \ref{genacctable}. The performance in a cross-subject setting is lower than the aforementioned person specific results. This is not surprising, considering that EEG data is very personal by nature. A person specific classifier, using the random forest's build-in feature selection method, achieves a test accuracy around of 70\% (stdev. of 14) for arousal and 73\% (stdev. of 13) for valence. The performance of the cross-subject classifier is 63\% for arousal and 55\% for valence. This is a drop of 7 \% and 18 \%. The performance for the arousal classification is lower in a person specific setting, but drops less when when transitioning to a cross-subject setting, when compared to the valence classification. The performance of the valence classification, on the other hand, takes a huge drop. This might indicate that the physiological reactions with respect to valence, might be more person specific. Another explanation might be that users are more consistent when rating arousal, than rating values. This would mean that everyone has more of less the same idea of active and inactive, while happy and unhappy are less strictly defined.
+The performance of the different algorithms is depicted in Figure \ref{accComp_arousalSVM_gen} for arousal and Figure \ref{accComp_valenceSVM_gen} for valence. The legend, combined with an overview of the accuracy values is given in Table \ref{genacctable}. The performance in a cross-subject setting is lower than the aforementioned person specific results. This is not surprising, considering that EEG data is very personal by nature. A person specific classifier, using the random forest's build-in feature selection method, achieves a test accuracy around of 70\% (stdev. of 14) for arousal and 73\% (stdev. of 13) for valence. The performance of the cross-subject classifier is 63\% for arousal and 55\% for valence. This is a drop of 7 \% and 18 \%. The performance for the arousal classification is lower in a person specific setting, but drops less when when transitioning to a cross-subject setting, when compared to the valence classification. The performance of the valence classification, on the other hand, takes a huge drop. This might indicate that the physiological reactions with respect to valence, might be more person specific. Another explanation might be that users are more consistent when rating arousal, than rating values. This would mean that everyone has more of less the same idea of active and inactive, while happy and unhappy are defined in a more personal way.
 
 \begin{table}[H]
 \centering
-\caption{A comparison of the test accuracy of different feature selection methods for both arousal and valence. The reported scores are test accuracies averaged over \label{genacctable}.} %TODO
+\caption{A comparison of the test accuracies of different feature selection methods for both arousal and valence. \label{genacctable}.}
 \begin{tabular}{llll}
 \textbf{Number} & \textbf{Feature selection method} & \textbf{Test acc - arousal} & \textbf{Test acc - valence} \\ \hline
 0               & Pearson R                          & 0.62187                             & 0.51875                             \\
@@ -35,7 +35,7 @@ The performance of the different algorithms is depicted in Figure \ref{accComp_a
 
 \section{Correlation probability and level of valence/arousal}
 
-The correlation between the prediction probability of a model and the distance of the arousal/valence level from the separation boundary was also research. In an ideal scenario, samples with a clear valence rating, i.e. far from the separation boundary, e.g. 9, should be easier to predict than one with a valence rating close to the separation boundary, e.g. 5 or 6. A model should be more certain of valence/ arousal values that lie further away from the separation boundary.
+The correlation between the prediction probability of a model and the distance of the arousal/valence level from the separation boundary was also researched. In an ideal scenario, samples with a clear valence rating, i.e. far from the separation boundary, e.g. 9, should be easier to predict than samples with a valence rating close to the separation boundary, e.g. 5 or 6. A model should thus be more certain of valence/ arousal values that lie further away from the separation boundary.
 
 \npar
 
@@ -43,7 +43,7 @@ The Pearson correlation coefficients between the prediction probability and the 
 
 \npar
 
-For arousal, the correlations are quite low, even negative. The distance correlation features, are more promising, but the disadvantage of this method is that it cannot find groups of good features. It might thus be overfitting on a few features that work well for this sample set. This is further supported when looking at the correlations for valence. Here the correlation is even negative.
+For arousal, the correlations are quite low, even negative. The distance correlation features, are more promising, but the disadvantage of this method is that it cannot find groups of good features. It might thus be overfitting on a few features that work well for this sample set. This is further supported when looking at the correlations for valence. Here the correlation is even negative for the distance correlation.
 
 \begin{table}[H]
 \centering
@@ -224,7 +224,7 @@ The selected features are depicted in Figure \ref{arousalpiesgen} and \ref{valen
 \end{figure}
 \clearpage
 
-For arousal, it is clear that the EEG features are quite dominant. None of the non-EEG features were selected. The EEG features themselves differ from selection method to selection method. One possible explanation for this is that the accuracies of the model are quite low. The models are thus not fitting very well. This may cause unstable behaviour. The random forest method is the most advanced feature selection method and it gives a small preference to asymmetry features. This concurs with the person specific findings.
+For arousal, it is clear that the EEG features are quite dominant. None of the non-EEG features were selected. The EEG features themselves differ from selection method to selection method. One possible explanation for this lies in the fact that the accuracies of the model are quite low. The models are thus not fitting very well, which might cause unstable behaviour. The random forest method is the most advanced feature selection method. It gives a small preference to asymmetry features, which concurs with the person specific findings and less with literature.
 
 \npar
 
@@ -250,7 +250,7 @@ To further look at the difference between EEG and non-EEG features, the random f
 \end{tabular}
 \end{table}
 
-Comparing Table \ref{phyeegallgenTable} with Table \ref{phyeegalltable}, one can see that the difference in accuracy between non-EEG features and all and/or EEG features only is much smaller. This is an indication that the non-EEG features might work better in a cross-subject setting. The reason that the feature selection methods select only EEG features might be due to the fact there are more EEG features available. Given that EEG features often contain a lot of noise, chances are that the selection methods are able to find EEG features that fit the limit sample set well. 
+Comparing Table \ref{phyeegallgenTable} with Table \ref{phyeegalltable}, one can see that the difference in accuracy between non-EEG features and all and/or EEG features only is much smaller. This is an indication that the non-EEG features might work better in a cross-subject setting. The reason that the feature selection methods select only EEG features might be due to the fact there are more EEG features available. Given that EEG features often contain a lot of noise, chances are that the selection methods are able to find EEG features that fit the limited sample set well. 
 
 \npar
 
@@ -414,7 +414,55 @@ For valence the features are:
 \item frac P3, delta band
 \end{enumerate}
 
-In a cross-subject setting, the DCAU features seem to perform better than in a person specific setting. These features are selected from front and posterior channels. However these results should be treated with caution, especially in case of valence, which only obtained a test accuracy of 55\%. If the classifier was not able to predict the emotional states well, one can doubt the selected features. 
+Counting occurences for the different channels and plotting them in topoplots gives the following results. The single EEG channel features for arousal, depicted in Figure \ref{arousalchannel_gen} seem to originate more from the posterior side of the scalp. For valence, frontal right EEG features are of most importance. This is depicted in Figure \ref{valencechannel_gen}.
+
+\begin{figure}[H]
+\centering
+  \begin{subfigure}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{arousal_psd_gen.eps}
+    \caption{The occurences of the selected EEG channels for arousal classification in a cross-subject setting.\label{arousalchannel_gen}}
+  \end{subfigure}
+\hfill
+  \begin{subfigure}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{valence_psd_gen.eps}
+    \caption{The occurences of the selected EEG channels for valence classification in a cross-subject setting.\label{valencechannel_gen}}
+  \end{subfigure}
+\caption{Selected EEG channel pairs.}
+\end{figure}
+
+As you can see in Figure \ref{arousalasym_gen}, no DASM or RASM features were selected for arousal. For valence the asymmetry in the Cp1, Cp2 channel pair seems to be most important.
+
+\begin{figure}[H]
+\centering
+  \begin{subfigure}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{arousal_asym_gen.eps}
+    \caption{The occurences of the selected RASM and DASM EEG channel pairs for arousal classification in a cross-subject setting. In this case no DASM or RASM channels were selected for arousal\label{arousalasym_gen}}
+  \end{subfigure}
+\hfill
+  \begin{subfigure}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{valence_asym_gen.eps}
+    \caption{The occurences of the selected RASM and DASM EEG channel pairs for valence classification in a cross-subject setting.\label{valenceasym_gen}}
+  \end{subfigure}
+\caption{Selected RASM and DASM EEG channel pairs.}
+\end{figure}
+
+DCAU features seem to perform better in a cross-subject setting than in a person specific setting. For both arousal and valence, depicted in Figure \ref{arousaldcau_gen} and Figure \ref{valencedcau_gen} respectively, the right channels seem to have the largest importance.
+
+\begin{figure}[H]
+\centering
+  \begin{subfigure}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{arousal_dcau_gen.eps}
+    \caption{The occurences of the selected RCAU and DCAU EEG channel pairs for arousal classification in a cross-subject setting.\label{arousaldcau_gen}}
+  \end{subfigure}
+\hfill
+  \begin{subfigure}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{valence_dcau_gen.eps}
+    \caption{The occurences of the selected RCAU and DCAU EEG channel pairs for valence classification in a cross-subject setting.\label{valencedcau_gen}}
+  \end{subfigure}
+\caption{Selected RCAU and DCAU EEG channel pairs.}
+\end{figure}
+
+Note that these results should be treated with caution, especially in case of valence, which only obtained a test accuracy of 55\%. If the classifier was not able to predict the emotional states well, one can doubt the selected features. 
 
 \section{Stability}
 Random forests have the disadvantage that they have an element of randomness, meaning that they might not always select the same features, making them potentially unstable. It is possible to make the random forest algorithm more stable, by adding additional trees or running the algorithm several times and averaging the importance values. 

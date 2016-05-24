@@ -1,5 +1,5 @@
-\chapter{Conclusion}
-{\samenvatting This chapter will give the conclusion of this work for both person specific and cross-person emotion recognition.}
+\chapter{Conclusion and future applications}
+{\samenvatting This chapter will give the conclusion of this work for both person specific and cross-person emotion recognition. The last section in this chapter covers the future applications / topics for research.}
 
 \section{Person specific}
 In case of arousal, the conclusion is that it is possible to achieve accuracies around 73\% on the DEAP dataset. The random forest is the best feature selection method as it is more certain when the arousal or valences are more extreme. The most prominent features for arousal recognition, according to this study, were the asymmetry features. Those features are often described as good features for valence recognition though. The difference in features for valence and arousal might be the channels they use. The arousal looks for activity and is thus more interested in alpha and beta powers. Repeating this study with more data, might give more conclusive results.
@@ -16,7 +16,7 @@ The performance of non-EEG features is lower than the performance of the all and
 
 \section{Cross-subject}
 
-The main conclusion for cross-subject emotion recognition, is that cross-subject emotion recognition is still an open topic for research. Physiological signals are quite personal by nature, which might explain the drop in performance. More advanced transfer learning methods are needed to boost the cross-subject performance.
+The main conclusion for cross-subject emotion recognition, is that cross-subject emotion recognition is still an open topic for research. Physiological signals are quite personal by nature, which might explain the difference in performance between person specific and cross-subject emotion recognition. More advanced transfer learning methods might boost the cross-subject performance.
 
 \npar 
 
@@ -29,3 +29,23 @@ Arousal levels on the other hand are harder to recognize, but the reaction seem 
 \npar
 
 Another thing to note is that non-EEG features work better in a cross-subject setting than in a person specific setting. The selected features are again EEG features. When comparing the performance of the ALL, EEG-only and non-EEG-only features sets, the non-EEG set scores higher in a cross-subject setting than a person specific set. This might mean that non-EEG, physiological reactions to changes in an emotional state are more common between different persons than the reaction inside a person's brain features.
+
+\section{Applications for emotion recognition}
+
+Emotion recognition has many different applications, e.g. as an improvement for brain computer interfaces or marketing analysis. A Brain Computer Interface (BCI)\newacronym{ERP}{ERP}{Event-Related Potential}, creates a direct link between the brain and the computer\cite{LangModel}, that enables a subject to control the computer using only his mind. This means that physical actions like moving a mouse or typing on a keyboard are no longer needed to control a computer. A BCI is usually composed of two components. The first component is the extraction component, which extracts brain signals from the brain. The second component is a decoder that interprets signals translates them to device commands.
+
+\mijnfiguur{width=0.9\textwidth}{bcicomponents}{The basic components of a BCI system\citep{bcicomps}}
+
+A very well-known BCI is the P300 speller. The P300 speller is an active topic of research. It uses EEG signals to enable patients with a locked in syndrome to communicate\cite{P300Origin}. The basic version uses a six by six grid of characters, each row and column is flashed in a random order while the subject silently counts the number of flashes of a certain character, as shown in figure \ref{P300SpellerPerson}. This procedure, where a train of stimuli with some infrequent occurring target stimuli is applied, is called the oddball paradigm\cite{PaperThibault}. It is known that this technique triggers an increase in the potential difference in the EEG around the parietal lobe. When a potential difference in the brain occurs as a reaction to an event, it is referred to as en event-related potential (ERP) \newacronym{ERP}{ERP}{Event-Related Potential}. The P300 ERP occurs roughly 300 milliseconds after the stimulus is flashed, hence its name\citep{ComparisonClassifications}. The presence or absence of the P300 waveform is used by the P300 speller to determine what character the subject was focusing on, which basically allows the subject to spell text. 
+
+\mijnfiguur{width=0.7\textwidth}{P300SpellerPerson}{Different parts of the P300 speller, found at \cite{P300SpellerPerson}.}
+
+Research with visual stimuli on healthy subjects, has shown that emotion has an effect on the auditory P300 wave\cite{AuditoryP300Effect}. Both the P300 peak amplitude and area were highest when viewing neutral pictures and descended further, in decreasing order, for sadness, anger and pleasure. The latency of the P300 ERP speller was shortest for subjects in an emotionally neutral state. The latency increased for pleasure, anger and sadness. It is expected that a visually triggered P300 wave, will also be influenced by emotion. Having a good emotion recognition system, can help a P300 detector in finding the correct latency of the P300 wave. This can then, in turn improve the detection of P300 waves. Additionally knowing a subject's emotional state can help detecting when a subject gets frustrated, e.g. because of mistakes he makes.
+
+\npar
+
+An improvement in performance is not the only advantage an emotionally aware P300 speller has. Contrary to what subjects might think, the P300 speller is unable to read the mind and know what a person is thinking about\cite{P300Origin}. The P300 speller provides no more than a means of communication that the subject can use. Should he chose to ignore the instructions and focus his attention elsewhere, then the recordings become useless. Nevertheless, ethical questions often remain unanswered. Knowing how the subject feels, can provide more insight for ethical issues, e.g. "How does the subject think about the P300 speller recording and analysing his brain activity?". Information about the subject's emotional state can help answering some of these ethical questions. Integrating the results from this thesis with the P300 speller, is an opportunity for future research.
+
+\npar
+
+Another application for emotion recognition is in the field of marketing and customer satisfaction research. Discovering how a person feels about a product is often tricky. Questionnaires is one way to go, but they might contain a lot of noise. Being able to 'read' the emotion straight from a subject's mind, is expected to give more accurate results as it avoids any form of social masking.

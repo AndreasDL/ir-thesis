@@ -1,10 +1,10 @@
 \chapter{Results - Person specific}
-{\samenvatting This section explains the result found in a person specific setting. It starts by explaining the used approach before proceeding with a performance comparison of the different classifiers. Next the certainty of the classifiers is investigated, combined with the selected features and EEG channels. This chapters end with a discussion about the stability of the different methods.}
+{\samenvatting This section explains the results found in a person specific setting. It starts by explaining the used approach before proceeding with a performance comparison of the different classifiers. Next the certainty of the classifiers is investigated, combined with the selected features and EEG channels. This chapters end with a discussion about the stability of the different methods.}
 
 \section{Used approach}
 \label{approach}
 
-The first part of this work is looking at features in a person specific setting. This means that the algorithm is trained and tested on data from the same person. The main goals was to find features that give insight in the arousal and valence state of a person. This was done by comparing the aforementioned features and feature selection methods. For this a two stepped algorithm, inspired by the advanced random forest method, explained in Section \ref{rfmethod}, was used. In short, the first step is to rank all the features and only take the top X of the features. This threshold is applied to limit computation times and cancel features with low or zero importance. The next step is to build a model by selecting features out of the remaining feature set. This approach is depicted in Figure \ref{flow}.
+The first part of this work is looking at features in a person specific setting. This means that the algorithm is trained and tested on data from the same person. The main goal was to find features that give insight in the arousal and valence state of a person. This was done by comparing the aforementioned features and feature selection methods. For this a two stepped algorithm, inspired by the advanced random forest method, explained in Section \ref{rfmethod}, was used. In short, the first step is to rank all the features and only take the top X of the features. This threshold is applied to limit computation times and cancel features with low or zero importance. The next step is to build a model by selecting features out of the remaining feature set. This approach is depicted in Figure \ref{flow}.
 
 \mijnfiguur{width=0.9\textwidth}{flow}{The used approach of this thesis.}
 
@@ -12,7 +12,7 @@ As you can see in Figure \ref{flow}, the approach starts by separating a test se
 
 \npar
 
-In the next step a model is build with the selected features. This is done iteratively by starting with an empty feature set. In the add step, a feature is added to this set and the cross validation error is determined. This step is important because it ensures that chosen features have good generalisation properties. Next the average of the cross validation errors and the standard deviation is calculated. The average cross validation minus the standard deviation is then compared to the previous best performance. If the performance is better, the feature is kept in the feature set. If the performance is not better, the feature is neglected. This is repeated for all the features and is knwon as greedy forward selection in literature \citep{greedyFS}. The standard deviation is included to increase the stability of the algorithm, by avoiding that small differences in averages lead to a different model. This was used rather than a statistical test, as it already provided good results in the original algorithm\ref{rfmethod}.
+In the next step a model is build with the selected features. This is done iteratively by starting with an empty feature set. In the add step, a feature is added to this set and the cross validation error is determined. This step is important because it ensures that chosen features have good generalisation properties. Next the average of the cross validation errors and the standard deviation is calculated. The average cross validation minus the standard deviation is then compared to the previous best performance. If the performance is better, the feature is kept in the feature set. If the performance is not better, the feature is neglected. This is repeated for all the features and is known as greedy forward selection in literature \citep{greedyFS}. The standard deviation is included to increase the stability of the algorithm, by avoiding that small differences in averages lead to a different model. This was used rather than a statistical test, as it already provided good results in the original algorithm\ref{rfmethod}.
 
 \npar
 
@@ -32,7 +32,7 @@ Some feature selection methods use a machine learning technique as basis. These 
 
 \section{Performance}
 
-When looking at the accuracies of the different feature selection models in combination with the SVM, it is clear that there is not a lot of difference. For each feature selection method, the test accuracy and standard deviation are shown in Table \ref{accCompLblarousal} and Table \ref{accCompLblvalence} for valence and arousal respectively. The accuracies are also plotted in in Figure \ref{accComp_arousalSVM} and Figure \ref{accComp_valenceSVM} for arousal and valence respectively. Scores for each person can be found in Appendix \ref{persScores}.
+When looking at the accuracies of different feature selection models in combination with the SVM, it is clear that there is not a lot of difference. For each feature selection method, the test accuracy and standard deviation are shown in Table \ref{accCompLblarousal} and Table \ref{accCompLblvalence} for valence and arousal respectively. The accuracies are also plotted in in Figure \ref{accComp_arousalSVM} and Figure \ref{accComp_valenceSVM} for arousal and valence respectively. Scores for each person can be found in Appendix \ref{persScores}.
 
 \mijnfiguur{width=1.\textwidth}{accComp_arousalSVM}{Comparison of different feature selection methods for arousal recognition. The y-axis shows the test accuracy averages over all persons as well as the standard deviation. The x-axis shows the different models, each number corresponds to the number in Table \ref{accCompLblarousal}. Blue bars correspond to filter selection methods, red bars correspond to wrapper methods and green bars are used for the embedded methods.}
 
@@ -86,7 +86,7 @@ It might be interesting to look at the prediction probability a model gives to i
 \begin{center}
 $dist_{v, sb} = | v - sb |$
 \end{center}
-Using simple binary classification, the separation boundary has value 5, which simple splits the range into two. A valence level 9 has thus a distance of 4.
+Using simple binary classification, which simply splits the range into two, the separation boundary has value 5. A valence level 9 has thus a distance of 4.
 
 \npar
 
@@ -127,7 +127,7 @@ On the other hand one can observe that the correlation for valence is a little h
 
 \section{Selected features}
 
-To compare which features where chosen, the feature set was divided into 8 categories:
+To compare which features were chosen, the feature set was divided into 8 categories:
 \begin{enumerate}
 \item \textbf{Power features:} PSD and FE features of a single EEG channel
 \item \textbf{Asymmetry features:} DASM, RASM, DCAU and RCAU features that represent a the (a)symmetry between two EEGchannels.
@@ -144,15 +144,11 @@ The results for arousal are depicted in Figure \ref{arousalpies}, the legend is 
 
 \npar
 
-The conclusion for arousal is that the different feature selection methods agree mostly on what the relevant feature categories. The most import features are the asymmetry features, followed by the power features. The non-EEG features are rarely chose and do not seem to be of importance here. It is also important to note that the fractions of frequency bands is not as important as previously thought. Literature suggested that the fractions of the alpha versus the beta frequency band would give an indication for the arousal of a subject. The main argument for this was the fact that arousal measures how active a person is feeling. A large fraction of alpha and beta power means that the brain is in a relaxed state or in an active and focussed state respectively. Looking at these fractions was therefore supposed to give insight in the arousal level of a subject. These results indicate that the asymmetry and power features are more relevant. This might mean two things, either the asymmetry and power features do contain valuable information for arousal or the algorithm is overfitting on these features.
+The conclusion for arousal is that the different feature selection methods agree mostly on what the relevant feature categories. The most import features are the asymmetry features, followed by the power features. The non-EEG features are rarely chose and do not seem to be of importance here. It is also important to note that the fractions of frequency bands are not as important as previously thought. Literature suggested that the fractions of the alpha versus the beta frequency band would give an indication for the arousal of a subject. The main argument for this was the fact that arousal measures how active a person is feeling. A large fraction of alpha and beta power means that the brain is in a relaxed state or in an active and focussed state respectively. Looking at these fractions was therefore supposed to give insight in the arousal level of a subject. These results indicate that the asymmetry and power features are more relevant. This might mean two things, either the asymmetry and power features do contain valuable information for arousal or the algorithm is overfitting on these features.
 
 \npar
 
 The results for valence are depicted in Figure \ref{valencepies} and the corresponding legend in Figure \ref{valencepieslegend}. The selected features are similar to the selected features for arousal recognition. The most valuable features are again the asymmetry and power features. These results were expected, as most of the emotion recognition studies agree that the asymmetry features give insight in the valence level of a subject.
-
-\npar
-
-
 
 \clearpage
 \begin{figure}[!tbp]
@@ -286,7 +282,7 @@ The results for valence are depicted in Figure \ref{valencepies} and the corresp
 \end{figure}
 \clearpage
 
-The fact that the non-EEG features are almost never chosen might indicate that they are less important. In an attempt to further investigate the difference between EEG features and non-EEG features, the performance of three different feature sets was compared. The first feature set is the previously used feature set with all possible features. The second and third feature sets contained only EEG and non-EEG features respectively. The feature selection was done with random forest, as this method had the best average performance and is the most advanced. 
+The fact that non-EEG features are almost never chosen might indicate that they are less important. In an attempt to further investigate the difference between EEG features and non-EEG features, the performance of three different feature sets was compared. The first feature set is the previously used feature set with all possible features. The second and third feature sets contained only EEG and non-EEG features respectively. The feature selection was done with random forest, as this method had the best average performance and is the most advanced. 
 
 \npar
 
@@ -325,7 +321,7 @@ Next, for each of the three feature sets, a comparison of the selected features 
 
 \npar
 
-The results for the non-EEG features are shown in Figure \ref{arousalnon-EEGpies} for arousal and Figure \ref{valencenon-EEGpies} for valence.
+The results for the non-EEG features are shown in Figure \ref{arousalnon-EEGpies} for arousal and Figure \ref{valencenon-EEGpies} for valence, on the following pages.
 Here, no single category can be labelled as most important. This is the case for both arousal and valence. However, the feature that was selected the most as being the most important for one person was the GSR, which measures perspiration. In case of valence, the first selected features were heart rate and GSR.
 
 \clearpage
@@ -593,7 +589,7 @@ Here, no single category can be labelled as most important. This is the case for
 
 \section{Important EEG channels}
 
-Another component of this work is to dig into the EEG features and find out which channels are most important. This was done by taking the Random forest as a feature selection model and looking at the models that were build. The occurrences of each channel were counted and with these frequencies as weights, the following topoplots were created.
+Another component of this work is to dig into the EEG features and find out which channels are most important. This was done by taking the Random forest as a feature selection model and looking and building a model with EEG features only. From this model, the selected features were taken and the occurrences of each EEG channel were counted. These frequencies were used as weights to create the following topoplots in Figure \ref{arousalchannel} and Figure \ref{valencechannel}.
 
 \begin{figure}[H]
 \centering
@@ -628,7 +624,7 @@ The same can be done for the asymmetry features, here a distinction was made bet
   \end{subfigure}
 \end{figure}
 
-The DASM and RASM features are depicted in Figure \ref{arousal_asym} and Figure \ref{valence_asym} for arousal and valence respectively. It is clear that the asymmetry should be measured at the front of the scalp for both arousal and valence. Some importance can be found at the center and back of the scalp though, but this might also be noise.
+The DASM and RASM features are depicted in Figure \ref{arousal_asym} and Figure \ref{valence_asym} for arousal and valence respectively. It is clear that the asymmetry should be measured at the front of the scalp for both arousal and valence. Some importance can be found at the center and back of the scalp though, albeit limited.
 
 \npar
 
@@ -652,7 +648,7 @@ Random forests have the disadvantage that they have an element of randomness, me
 
 \npar
 
-One way to measure the stability is to run the algorithm twice and look at the similarity of the selected features. The similarity can be calculated using the Jaccard index, as explained in Section \ref{jaccard}. The importances of the random forest features selection were averaged over 30 runs to ensure stability. The Jaccard index was measured for several runs for each person. The average and standard deviation over all persons is shown in Table \ref{specificJaccard}.
+One way to measure the stability is to run the algorithm twice and look at the similarity of the selected features. The similarity can be calculated using the Jaccard index, as explained in Section \ref{jaccard}. In this work, the importances of the random forest features selection were averaged over 30 runs to ensure stability. The Jaccard index was measured for different values of the 'runs' parameter for each person. The average and standard deviation over all persons is shown in Table \ref{specificJaccard}.
 
 \begin{table}[H]
 \centering
@@ -676,4 +672,4 @@ arousal       & 50            & 0.76370                   & 0.22673
 \end{tabular}
 \end{table}
 
-Looking at Table \ref{specificJaccard}, the Jaccard index is less stable when fewer runs are used, due to the fact that the importance values are estimated a limited number of times. When the random forest feature selection uses importance values, averaged over 30 runs, the value of the Jaccard index become more or less stable, around 0.75-0.77. One thing to keep in mind though is that the standard deviation of 0.2-0.25 is quite large, which means that the stability of the RF method varies from person to person.
+Looking at Table \ref{specificJaccard}, the Jaccard index is less stable, meaning that its values changes rapidly between 1 and 5 runs. This might be due to the fact that importance values are estimated a limited number of times. When the random forest feature selection uses importance values, averaged over 30 runs, the value of the Jaccard index become more or less stable, around 0.75-0.77. One thing to keep in mind though is that the standard deviation of 0.2-0.25 is quite large, which means that the stability of the RF method varies from person to person.

@@ -146,7 +146,7 @@ Sometimes it might be important to estimate generalisation during training to pr
 \subsection{Feature selection}
 Feature selection is a technique that aims at selecting the features that perform well, while trying to remove irrelevant features\citep{rfPaper}. The advantages of having a smaller features set are twofold. First having fewer features, will lower the risk of overfitting\citep{rfPaper}. Second, knowing which features are important makes it possible for humans to interpret the machine learning model. In this thesis, knowing which features are relevant might help in gaining insight in the processing of emotion by the brain. 
 
-\clearpage
+\npar
 
 There exist several approaches to do feature selection. The first one is to simple use a statistical metric and remove all features with low correlation to the output. Another approach is to look at the weights of a model. When a machine learning model gives a large weight to a feature, then that feature is considered more important than a feature with an assigned weight close to zero. Embedded methods also exist, they rely on the build in feature selection mechanisms of some machine learning algorithms. A more thorough  overview of the different feature selection techniques is given in Section \ref{FSSel}. 
 
@@ -180,7 +180,7 @@ The last problem is that is hard to compare the performance of different physiol
 \section{Goal of the thesis}
 The first goal is finding relevant features for emotion recognition in a person specific setting. This is already quite challenging as there are fuzzy boundaries and individual variation of emotion\citep{emorecoghard}. To do so, the output of different feature selection methods is compared. In a successful scenario, good features are found. These features could be used by a machine learning algorithm to accurately predict the emotions of one person. Some attention will also be spend on comparing non-EEG and EEG features to see which whether it is useful or not to include EEG and/or non-EEG signals in the emotion recognition.
 
-\clearpage
+\npar
 
 The second goal is finding features for emotion recognition in a cross-subject setting. In this setting features should generalise well across different persons, thus the algorithm should be able to recognize emotions from unseen persons. The comparison for non-EEG and EEG features will also be done here. Emotion recognition is harder in a cross-subject setting, since physiological signals are very personal\citep{DEAP}.
 
@@ -193,4 +193,4 @@ Both goals are tackled by comparing a large range of different feature selection
 The contents of this thesis are as follows. The next chapter gives an overview of the dataset, features and feature selection methods that are used in this thesis. It also gives an overview of similar state of the art emotion recognition studies.
  
 \npar
-Chapter 3 and 4 give an overview of the obtained results for person specific and cross-subject emotion recognition respectively. Chapter 5 gives the conclusion of this work. Chapter 6 gives an overview of future research that is possible.
+Chapter 3 and 4 give an overview of the obtained results for person specific and cross-subject emotion recognition respectively. Chapter 5 gives the conclusion of this work combined with an overview of future research applications.
