@@ -16,7 +16,7 @@
 %% and
 %% http://www.ieee.org/
 
-\documentclass[12pt,journal,compsoc]{IEEEtran}
+\documentclass[11pt,journal,compsoc]{IEEEtran}
 
 \usepackage{graphicx}                   % Om figuren te kunnen verwerken
 \usepackage{float}
@@ -99,14 +99,14 @@ Emotion recognition, physiological signals, machine learning, feature selection 
 
 \npar
 
-In the next section, the classification of emotions will be explained. Before an introduction of physiological signals is given in Section \ref{phyintro}. What follows in Section \ref{features} is an overview of the used features. The problem statement and goal of this work is given in \ref{problem}. Sections \ref{approach} and \ref{conclusion} give the used approach, results and conclusion.
+In the next section, the classification of emotions will be explained. Before an introduction of physiological signals is given in Section \ref{phyintro}. What follows in Section \ref{features} is an overview of the used features. The problem statement and goal of this work are given in \ref{problem}. Section \ref{approach} gives the used approach and results. In Section \ref{conclusion} the conclusion is given.
 
 \section{Classification of emotions}\label{classification}
 Before emotion can be recognized, different emotions need to be defined. One way to do this is to use several distinct emotions, e.g. anger, joy, sad and pleasure. The advantage of this approach is that all emotions have a clear label. The disadvantage is that this model is often not complex enough to represent the whole emotion space. To solve this problem, the bipolar valence-arousal model was introduced\cite{ExtendedPaper,RealTimeEEGEmotion}. This model puts each emotion in a two dimensional space. The first dimension indicates how active a person is feeling. The next dimension is valence, which indicates how pleasant or unpleasant the emotion is perceived. 
 
 \npar
 
-The valence-arousal model has the advantage that an emotion can be defined, without the explicit need for a label. All discrete emotions are mapped to the valence-arousal space. For example, excitement corresponds to an active feeling with a pleasant experience, meaning that is will be in the high valence, high arousal quadrant of the space. A depressed feeling, on the other hand, will have a low valence and low arousal. As a result depressed is mapped in the low valence, low arousal quadrant. The mapping of other emotions can be done similarly and is shown in Figure \ref{ArousalValenceModel}.
+The valence-arousal model has the advantage that an emotion can be defined, without the explicit need for a label. All discrete emotions are mapped to the valence-arousal space. For example, excitement corresponds to an active feeling with a pleasant experience, meaning that it will be in the high valence, high arousal quadrant of the space. A depressed feeling, on the other hand, will have a low valence and low arousal. As a result depressed is mapped in the low valence, low arousal quadrant. The mapping of other emotions can be done similarly and is shown in Figure \ref{ArousalValenceModel}.
 
 \mijnfiguur{width=0.4\textwidth}{ArousalValenceModel}{The arousal - valence model maps emotions in a two dimensional plane.\citep{ValArrFig}}
 
@@ -115,7 +115,7 @@ In case machine learning is used for emotion recognition, some physiological sig
 
 \npar
 
-To do emotion recognition with machine learning, good features are required. This work focusses on physiological signals that can be split into two groups of features. The first group contains the peripheral signals, a.o. heart rate, blood pressure, respiration rate, perspiration, etc. The second group of features originate from the brain. These signals are recordings of brain activity using electroencephalography (EEG). EEG is a technique that measures electrical activity of the brain, by placing electrodes on the scalp\cite{ExtendedPaper}. Even though EEG is very noisy by nature as the signal is distorted by the bone between the cortex and the electrodes, it still provides significant insight in the brain activity\cite{GivenPaper}. The electrodes are placed according to the 10/20 system, that labels each location. The locations and the corresponding channel names used in this work are visible in Figure \ref{1020labels}.
+To do emotion recognition with machine learning, good features are required. This work focusses on physiological signals from which two groups of features can be extracted. The first group contains the peripheral signals, a.o. heart rate, blood pressure, respiration rate, perspiration, etc. The second group of features originate from the brain. These signals are recordings of brain activity using electroencephalography (EEG). EEG is a technique that measures electrical activity of the brain, by placing electrodes on the scalp\cite{ExtendedPaper}. EEG is very noisy by nature as the signal is distorted by the bone between the cortex and the electrodes. Still, it provides significant insight in the brain activity\cite{GivenPaper}. All electrodes are placed according to the 10/20 system, that labels each location. The locations and the corresponding channel names used in this work are visible in Figure \ref{1020labels}.
 
 \mijnfiguur{width=0.5\textwidth}{1020labels}{Placement of the 32 electrodes in this work.\cite{1020Site}}
 
@@ -128,10 +128,9 @@ EEG measures electrical activity at each channel. Each measurement can be split 
 \item \textbf{Theta:} 4-8Hz, occurs during dreaming.
 \end{itemize}
 
-%problem statement
 \section{Features} \label{features}
-\npar
-In this work the Dataset for Emotion Analysis using Physiological Signals (DEAP) was used. This dataset consists of recordings of a physiological experiment\citep{DEAP}. This experiment recorded emotional reactions of 32 subjects. Each subject watched 40 one-minute video excerpts to trigger emotions, while physiological signals were recorded. These physiological signals consist of 32 channel, 512Hz EEG signals combined with the following peripheral signals:
+
+In this work the Dataset for Emotion Analysis using Physiological Signals (DEAP) was used. This dataset consists of recordings of a physiological experiment\citep{DEAP}. This experiment recorded emotional reactions of 32 subjects. Each subject watched 40 one-minute video excerpts to trigger emotions, while physiological signals were recorded. These physiological signals consist of 32-channel, 512Hz EEG signals combined with the following peripheral signals:
 \begin{itemize}
 \item galvanic skin response (GSR), which measures perspiration
 \item respiration belt, which measures the respiration rate
@@ -146,7 +145,7 @@ EEG features use a different approach, here the power spectral density (PSD) of 
 
 \npar
 
-The most used features for valence classification are asymmetry features that measure asymmetry between two channels\cite{GivenPaper}. This can be done in two ways. The first way is the differential asymmetry (DASM) which is defined as:
+The most used features for valence classification are asymmetry features that measure asymmetry between two channels\cite{GivenPaper}. This can be done in four ways. The first way is the differential asymmetry (DASM) which is defined as:
 
 \begin{center}
 $DASM = DE_{left} - DE_{right}$
@@ -158,22 +157,22 @@ Another way to measure the asymmetry is by division. The Rational Asymmetry (RAS
 $RASM = \frac{DE_{left}}{DE_{right}}$
 \end{center}
 
-The asymmetry features can also be used in the other direction\cite{GivenPaper}. Instead of looking at the asymmetry between left and right, one can also compare the frontal power with the posterior power. This is known as the caudality. The differential caudality (DCAU) and rational caudality (RCAU) are defined as:
+Instead of looking at the asymmetry between left and right, one can also compare the frontal power with the posterior power\cite{GivenPaper}. This is known as the caudality. The differential caudality (DCAU) and rational caudality (RCAU) are defined as:
 \begin{center}
-$DCAU = DE_{front} - DE_{post}$
+$DCAU = DE_{front} - DE_{post}$ \\
 $RCAU = \frac{DE_{front}}{DE_{post}}$
 \end{center}
 
 \npar
 
-Another feature category are the power fractions, which give the power distributions for each channel\citep{ExtendedPaper}. They are defined as:
+Another category of features are the power fractions, which give the power distributions for each channel\citep{ExtendedPaper}. They are defined as:
 \begin{center}
 $frac_{band,channel} = \frac{power_{band,channel}}{power_{total,channel}}$
 \end{center}
 Often the ratio of Alpha/beta power is also used for classification of arousal\citep{ref4}.
 
 \section{Problem statement}\label{problem}
-Looking at different features in Table \ref{featOverviewTable}, one can see that the features quickly add up. Having a total of 894 features will increase the risk for overfitting significantly\citep{rfPaper}. Additionally, not all 894 features are important, but there is no agreement on the most important features in literature. 
+Looking at different features in Table \ref{featOverviewTable}, one can see that the features quickly add up. Having a total of 894 features will increase the risk for overfitting significantly\citep{rfPaper}. Additionally, not all 894 features are important, and there is no agreement on the most important features in literature. 
 
 \begin{table}[H]
 \centering
@@ -206,27 +205,27 @@ The goal of this work is twofold, first important features are needed for person
 
 \section{Used approach and results} \label{approach}
 
-Several feature selection methods were compared. A feature selection method is a method that takes as input a large set of features, and returns a (smaller) set of important features. There exists three categories of feature selection methods, filter, wrapper and embedded.
+Several feature selection methods were compared. A feature selection method is a method that takes as input a large set of features, and returns a (smaller) set of important features. The feature selection methods are grouped into three categories: filter, wrapper and embedded.
 
 \npar
 
-Filter methods are the less complex method that simply use a statistical test to rank the features. An example would be to use the Pearson correlation between a feature and the valence. Features with low of zero importance would then be filtered. This method is fast and simple, but is not capable to find groups of relevant features, as each feature is reviewed on its own. 
+Filter methods are less complex methods that simply use a statistical test to rank the features. An example would be to use the Pearson correlation between a feature and the valence. Features with low of zero importance would then be filtered. This method is fast and simple, but is not capable to find groups of relevant features, as each feature is reviewed on its own.
 
 \npar
 
-Wrapper methods are somewhat more advanced. They use an arbitrary machine learning technique and look at the assigned weights. Features with large weights have more influence on the output than features with low weights. Note that absolute values are used; large positive and negative values have the same amount of influence on the result. 
+Wrapper methods are more advanced. They use an arbitrary machine learning technique and look at the assigned weights. Features with large weights have more influence on the output than features with low weights. Note that absolute values are used; large positive and negative values have the same amount of influence on the result. 
 
 \npar
 
-The last category of feature selection methods are the embedded methods. Embedded methods also use an underlying machine learning technique, but with build-in feature selection functionality. Random forest are a good example of this category. Random forest use multiple decision trees that each have a random subset of the samples and features\citep{rfPaper}. Building a decision tree starts with all samples in one node. This node will therefore be impure, meaning that it has samples of multiple classes. In the next step, the data will be split iteratively. In each iteration, a features is picked at random and the data is split according to the different values of features. This split is done so that it lower the impurity of the child nodes. After several iteration, the node will eventually be pure. A pure node contains only samples of one class. Each split corresponds to a drop in impurity, cause by evaluating the chosen features. By averaging the drop in impurity over all trees, one can estimate the importance of the different features quite well. The advantage is that this method is capable of finding groups of relevant features. When a group of random features is selected at different nodes in a decision tree, the impurity will drop significantly. This will result in a higher feature ranking.
+The last category of feature selection methods are the embedded methods. Like wrapper methods, embedded methods also use an underlying machine learning technique, but with build-in feature selection functionality. Random forest are a good example of this category. Random forest use multiple decision trees that each have a random subset of the samples and features\citep{rfPaper}. Building a decision tree starts with all samples in one node. This node will therefore be impure, meaning that it has samples of multiple classes. In the next step, the data will be split iteratively. In each iteration, a features is picked at random and the data is split according to the different values of features. This split is done in order to lower the impurity of the child nodes. After several iterations, the node will eventually be pure. A pure node contains only samples of one class. Each split corresponds to a drop in impurity, cause by evaluating the chosen features. By averaging the drop in impurity over all trees, one can estimate the importance of the different features quite well. The advantage is that this method is capable of finding groups of relevant features. When a group of random features is selected at different nodes in a decision tree, the impurity will drop significantly. This will result in a higher feature ranking.
 
 \npar
 
-The following approach was used, first the DEAP dataset is splitted in a train and test set (30 and 10 samples respectively). The test set is kept separate, while the random forest feature selection is performed on the train set. This step return the top 30 features. With these 30 features a model is build by iteratively repeating the following steps:
+The following approach was used, first the DEAP dataset is split in a train and test set (30 and 10 samples respectively). The test set is kept separate, while the random forest feature selection is performed on the train set. This step returns the top 30 features. 30 was selected after observing that 30 features was large enough to contain enough relevant features. With these 30 features a model is build by iteratively repeating the following steps:
 \begin{enumerate}
 \item add a new feature to the feature set
 \item determine the cross validation error and standard deviation (std)
-\item if the validation error and standard deviation are better than the previous best, the feature is kept. Otherwise the feature is neglected. This was done to increase the stability method and was inspired by literature \citep{rfPaper}.
+\item if the validation error and standard deviation are better than the previous best, the feature is kept. Otherwise the feature is neglected. This was done to increase the stability of the method and was inspired by literature \citep{rfPaper}.
 \end{enumerate}
 The model that is being build is an SVM with an Radial basis functions (RBF) kernel, sometimes referred to as a Gaussian SVM. This model was chosen because it has proven itself in multiple emotion recognition studies\citep{killyPaper,emorecoghard,SVMUsage,SVMUsage2}. SVMs look for a separation boundary between two classes, and thus only look at points close to that boundary. This gives this method an advantage, as the dataset only contains 40 samples for each person, only 30 of them are available for training. Another advantage is that SVMs are capable of handling large features sets\citep{SVMLargeFeatSets,SVMLargeFeatSets2}. Both advantages concur with this work's problem statement. 
 
@@ -273,12 +272,11 @@ The results were compared with a two-sided p-test which does confirm that the no
 \end{tabular}
 \end{table}
 
-% stability
-For the stability, the Jaccard index, an index that measures the similarity between two sets, was calculated. A Jaccard index of zero corresponds to two totally different sets, while a Jaccard index of one corresponds to two identical sets. For the Random forest the average Jaccard index over all persons was 0.743 with standard deviation 0.24 for valence and 0.791 with standard deviation 0.244 for arousal. The large standard deviation indicates that even though the RF method is quite stable, it varies from person to person.
+For the stability, the Jaccard index, an index that measures the similarity between two sets, was calculated. A Jaccard index of zero corresponds to two totally different sets, while a Jaccard index of one corresponds to two identical sets. For the Random forest the average Jaccard index over all persons was 0.743 with a standard deviation of 0.24 for valence and 0.791 with a standard deviation of 0.244 for arousal. The large standard deviation indicates that even though the RF method is quite stable, results vary from person to person.
 
 \npar
 
-For the cross-subject setting, performance was much lower than person specific. This was expected, as physiological signals are very personal by nature \ref{DEAP}. The test accuracy was 64\% for arousal and 55\% for valence. The drop in performance, caused by the transition from person specific to a cross-subject setting was larger for valence than arousal. This indicates that physiological reactions to a change in arousal are more common between person than valence. 
+For the cross-subject setting, performance was much lower than the person specific setting. This was expected, as physiological signals are very personal by nature \ref{DEAP}. The test accuracy was 64\% for arousal and 55\% for valence. The drop in performance, caused by the transition from person specific to a cross-subject setting was larger for valence than arousal. This indicates that physiological reactions to a change in arousal are more common between persons than a change in valence. 
 
 \npar
 
