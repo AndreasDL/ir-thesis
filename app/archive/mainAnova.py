@@ -1,13 +1,12 @@
-import personLoader
-import classificators
-import featureExtractor as FE
-import models
-import reporters
-
 import time
-
-
 from multiprocessing import Pool
+
+import classificators
+
+import featureExtractor as FE
+import personLoader
+from archive import models, reporters
+
 POOL_SIZE = 6
 
 #use with CSV reporter
@@ -58,7 +57,7 @@ def valenceAnovaWorker(person):
     personLdr = personLoader.PersonLoader(classificator,featExtr)
 
     #put in model
-    model = models.StdModel(personLdr,4)
+    model = models.StdModel(personLdr, 4)
 
     #run model
     results = model.run(person)
@@ -86,7 +85,7 @@ def arousalAnovaWorker(person):
     personLdr = personLoader.PersonLoader(classificator,featExtr)
 
     #put in model
-    model = models.StdModel(personLdr,4)
+    model = models.StdModel(personLdr, 4)
 
     #run model
     results = model.run(person)

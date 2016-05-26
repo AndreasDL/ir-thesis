@@ -1,8 +1,7 @@
 import numpy as np
+
 import Classificators
-from main.PERS.PersScript import PersScript
-from main.PERS.RFPers import RFPers
-from personLoader import load,dump
+from PersScript import PersScript
 
 
 #appendix tables

@@ -1,13 +1,11 @@
-import personLoader
+import time
+from multiprocessing import Pool
+
 import Classificators
 import featureExtractor as FE
-import models
-import reporters
+import personLoader
+from archive import models, reporters
 
-import time
-
-
-from multiprocessing import Pool
 POOL_SIZE = 6
 
 #use with analytics reporter

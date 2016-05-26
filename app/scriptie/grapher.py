@@ -1,12 +1,13 @@
+import random
+
 import matplotlib
 import matplotlib.pylab as plt
 import numpy as np
+from sklearn import linear_model
+
 import Classificators
-from main.PERS.PersScript import PersScript
-from main.PERS.RFPers import RFPers
-from personLoader import load,dump
-from sklearn import datasets, linear_model
-import random
+from PersScript import PersScript
+from personLoader import load
 
 font = {'family': 'normal',
 #        'weight': 'bold',

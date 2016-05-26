@@ -1,9 +1,7 @@
+import Classificators
 import featureExtractor as FE
 import personLoader
-import models
-import Classificators
-import reporters
-
+from archive import models, reporters
 
 
 def getFeatures():

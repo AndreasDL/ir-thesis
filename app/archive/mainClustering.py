@@ -1,15 +1,14 @@
-import personLoader
-import classificators
-import featureExtractor as FE
-import models
-
 import time
 
-from personLoader import dump, load
-from sklearn.decomposition import PCA
+import classificators
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import os.path
+from sklearn.decomposition import PCA
+
+import featureExtractor as FE
+import personLoader
+from archive import models
+from personLoader import dump, load
 
 
 #use with analytics reporter

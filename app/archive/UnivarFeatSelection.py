@@ -1,12 +1,7 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn import svm
-from sklearn.feature_selection import SelectPercentile, f_classif
+import Classificators
 import featureExtractor as FE
 import personLoader
-import models
-import Classificators
-import reporters
+from archive import models, reporters
 
 
 def getFeatures():

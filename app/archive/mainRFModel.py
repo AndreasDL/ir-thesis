@@ -1,10 +1,9 @@
+import Classificators
 import featureExtractor as FE
 import personLoader
-import models
-import Classificators
-import reporters
-
+from archive import models, reporters
 from personLoader import load, dump
+
 
 def getFeatures():
     # create the features
@@ -102,7 +101,7 @@ def valenceWorker(criterion,treecount,threshold):
     personLdr = personLoader.NoTestsetLoader(classificator, featExtr)
 
     # put in model
-    model = models.RFModel(personLoader=personLdr,criterion=criterion,treeCount=treecount,threshold=threshold)
+    model = models.RFModel(personLoader=personLdr, criterion=criterion, treeCount=treecount, threshold=threshold)
 
     # run model
     results = model.run()
@@ -118,7 +117,7 @@ def arousalWorker(criterion,treecount,threshold):
     personLdr = personLoader.NoTestsetLoader(classificator, featExtr)
 
     # run model
-    model = models.RFModel(personLoader=personLdr,criterion=criterion,treeCount=treecount,threshold=threshold)
+    model = models.RFModel(personLoader=personLdr, criterion=criterion, treeCount=treecount, threshold=threshold)
 
     return results
 

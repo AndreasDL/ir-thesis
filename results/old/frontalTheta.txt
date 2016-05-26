@@ -1,2 +1,0 @@
-testVideosRatio: 0.25 classCount: 2 borderDist: 0.25
- result: 0.5533203125
